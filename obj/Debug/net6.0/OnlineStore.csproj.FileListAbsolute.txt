@@ -1,0 +1,129 @@
+D:/WORK/JOB/SRC-DEFAULT/OnlineStore/bin/Debug/net6.0/appsettings.Development.json
+D:/WORK/JOB/SRC-DEFAULT/OnlineStore/bin/Debug/net6.0/appsettings.json
+D:/WORK/JOB/SRC-DEFAULT/OnlineStore/bin/Debug/net6.0/OnlineStore.staticwebassets.runtime.json
+D:/WORK/JOB/SRC-DEFAULT/OnlineStore/bin/Debug/net6.0/OnlineStore.staticwebassets.endpoints.json
+D:/WORK/JOB/SRC-DEFAULT/OnlineStore/bin/Debug/net6.0/OnlineStore.exe
+D:/WORK/JOB/SRC-DEFAULT/OnlineStore/bin/Debug/net6.0/OnlineStore.deps.json
+D:/WORK/JOB/SRC-DEFAULT/OnlineStore/bin/Debug/net6.0/OnlineStore.runtimeconfig.json
+D:/WORK/JOB/SRC-DEFAULT/OnlineStore/bin/Debug/net6.0/OnlineStore.dll
+D:/WORK/JOB/SRC-DEFAULT/OnlineStore/bin/Debug/net6.0/OnlineStore.pdb
+D:/WORK/JOB/SRC-DEFAULT/OnlineStore/obj/Debug/net6.0/rpswa.dswa.cache.json
+D:/WORK/JOB/SRC-DEFAULT/OnlineStore/obj/Debug/net6.0/OnlineStore.GeneratedMSBuildEditorConfig.editorconfig
+D:/WORK/JOB/SRC-DEFAULT/OnlineStore/obj/Debug/net6.0/OnlineStore.AssemblyInfoInputs.cache
+D:/WORK/JOB/SRC-DEFAULT/OnlineStore/obj/Debug/net6.0/OnlineStore.AssemblyInfo.cs
+D:/WORK/JOB/SRC-DEFAULT/OnlineStore/obj/Debug/net6.0/OnlineStore.csproj.CoreCompileInputs.cache
+D:/WORK/JOB/SRC-DEFAULT/OnlineStore/obj/Debug/net6.0/OnlineStore.MvcApplicationPartsAssemblyInfo.cache
+D:/WORK/JOB/SRC-DEFAULT/OnlineStore/obj/Debug/net6.0/OnlineStore.RazorAssemblyInfo.cache
+D:/WORK/JOB/SRC-DEFAULT/OnlineStore/obj/Debug/net6.0/OnlineStore.RazorAssemblyInfo.cs
+D:/WORK/JOB/SRC-DEFAULT/OnlineStore/obj/Debug/net6.0/rjimswa.dswa.cache.json
+D:/WORK/JOB/SRC-DEFAULT/OnlineStore/obj/Debug/net6.0/rjsmrazor.dswa.cache.json
+D:/WORK/JOB/SRC-DEFAULT/OnlineStore/obj/Debug/net6.0/rjsmcshtml.dswa.cache.json
+D:/WORK/JOB/SRC-DEFAULT/OnlineStore/obj/Debug/net6.0/scopedcss/Pages/Shared/_Layout.cshtml.rz.scp.css
+D:/WORK/JOB/SRC-DEFAULT/OnlineStore/obj/Debug/net6.0/scopedcss/bundle/OnlineStore.styles.css
+D:/WORK/JOB/SRC-DEFAULT/OnlineStore/obj/Debug/net6.0/scopedcss/projectbundle/OnlineStore.bundle.scp.css
+D:/WORK/JOB/SRC-DEFAULT/OnlineStore/obj/Debug/net6.0/staticwebassets.build.json
+D:/WORK/JOB/SRC-DEFAULT/OnlineStore/obj/Debug/net6.0/staticwebassets.build.json.cache
+D:/WORK/JOB/SRC-DEFAULT/OnlineStore/obj/Debug/net6.0/staticwebassets.development.json
+D:/WORK/JOB/SRC-DEFAULT/OnlineStore/obj/Debug/net6.0/staticwebassets.build.endpoints.json
+D:/WORK/JOB/SRC-DEFAULT/OnlineStore/obj/Debug/net6.0/staticwebassets.upToDateCheck.txt
+D:/WORK/JOB/SRC-DEFAULT/OnlineStore/obj/Debug/net6.0/OnlineStore.dll
+D:/WORK/JOB/SRC-DEFAULT/OnlineStore/obj/Debug/net6.0/refint/OnlineStore.dll
+D:/WORK/JOB/SRC-DEFAULT/OnlineStore/obj/Debug/net6.0/OnlineStore.pdb
+D:/WORK/JOB/SRC-DEFAULT/OnlineStore/obj/Debug/net6.0/OnlineStore.genruntimeconfig.cache
+D:/WORK/JOB/SRC-DEFAULT/OnlineStore/obj/Debug/net6.0/ref/OnlineStore.dll
+C:/Users/Dev-Pos/Documents/Zalo Received Files/OnlineStore/OnlineStore/bin/Debug/net6.0/appsettings.Development.json
+C:/Users/Dev-Pos/Documents/Zalo Received Files/OnlineStore/OnlineStore/bin/Debug/net6.0/appsettings.json
+C:/Users/Dev-Pos/Documents/Zalo Received Files/OnlineStore/OnlineStore/bin/Debug/net6.0/OnlineStore.staticwebassets.endpoints.json
+C:/Users/Dev-Pos/Documents/Zalo Received Files/OnlineStore/OnlineStore/bin/Debug/net6.0/OnlineStore.staticwebassets.runtime.json
+C:/Users/Dev-Pos/Documents/Zalo Received Files/OnlineStore/OnlineStore/bin/Debug/net6.0/OnlineStore.exe
+C:/Users/Dev-Pos/Documents/Zalo Received Files/OnlineStore/OnlineStore/bin/Debug/net6.0/OnlineStore.deps.json
+C:/Users/Dev-Pos/Documents/Zalo Received Files/OnlineStore/OnlineStore/bin/Debug/net6.0/OnlineStore.runtimeconfig.json
+C:/Users/Dev-Pos/Documents/Zalo Received Files/OnlineStore/OnlineStore/bin/Debug/net6.0/OnlineStore.dll
+C:/Users/Dev-Pos/Documents/Zalo Received Files/OnlineStore/OnlineStore/bin/Debug/net6.0/OnlineStore.pdb
+C:/Users/Dev-Pos/Documents/Zalo Received Files/OnlineStore/OnlineStore/obj/Debug/net6.0/rpswa.dswa.cache.json
+C:/Users/Dev-Pos/Documents/Zalo Received Files/OnlineStore/OnlineStore/obj/Debug/net6.0/OnlineStore.GeneratedMSBuildEditorConfig.editorconfig
+C:/Users/Dev-Pos/Documents/Zalo Received Files/OnlineStore/OnlineStore/obj/Debug/net6.0/OnlineStore.AssemblyInfoInputs.cache
+C:/Users/Dev-Pos/Documents/Zalo Received Files/OnlineStore/OnlineStore/obj/Debug/net6.0/OnlineStore.AssemblyInfo.cs
+C:/Users/Dev-Pos/Documents/Zalo Received Files/OnlineStore/OnlineStore/obj/Debug/net6.0/OnlineStore.csproj.CoreCompileInputs.cache
+C:/Users/Dev-Pos/Documents/Zalo Received Files/OnlineStore/OnlineStore/obj/Debug/net6.0/OnlineStore.MvcApplicationPartsAssemblyInfo.cache
+C:/Users/Dev-Pos/Documents/Zalo Received Files/OnlineStore/OnlineStore/obj/Debug/net6.0/OnlineStore.RazorAssemblyInfo.cache
+C:/Users/Dev-Pos/Documents/Zalo Received Files/OnlineStore/OnlineStore/obj/Debug/net6.0/OnlineStore.RazorAssemblyInfo.cs
+C:/Users/Dev-Pos/Documents/Zalo Received Files/OnlineStore/OnlineStore/obj/Debug/net6.0/rjimswa.dswa.cache.json
+C:/Users/Dev-Pos/Documents/Zalo Received Files/OnlineStore/OnlineStore/obj/Debug/net6.0/rjsmrazor.dswa.cache.json
+C:/Users/Dev-Pos/Documents/Zalo Received Files/OnlineStore/OnlineStore/obj/Debug/net6.0/rjsmcshtml.dswa.cache.json
+C:/Users/Dev-Pos/Documents/Zalo Received Files/OnlineStore/OnlineStore/obj/Debug/net6.0/scopedcss/Pages/Shared/_Layout.cshtml.rz.scp.css
+C:/Users/Dev-Pos/Documents/Zalo Received Files/OnlineStore/OnlineStore/obj/Debug/net6.0/scopedcss/bundle/OnlineStore.styles.css
+C:/Users/Dev-Pos/Documents/Zalo Received Files/OnlineStore/OnlineStore/obj/Debug/net6.0/scopedcss/projectbundle/OnlineStore.bundle.scp.css
+C:/Users/Dev-Pos/Documents/Zalo Received Files/OnlineStore/OnlineStore/obj/Debug/net6.0/staticwebassets.build.json
+C:/Users/Dev-Pos/Documents/Zalo Received Files/OnlineStore/OnlineStore/obj/Debug/net6.0/staticwebassets.build.json.cache
+C:/Users/Dev-Pos/Documents/Zalo Received Files/OnlineStore/OnlineStore/obj/Debug/net6.0/staticwebassets.development.json
+C:/Users/Dev-Pos/Documents/Zalo Received Files/OnlineStore/OnlineStore/obj/Debug/net6.0/staticwebassets.build.endpoints.json
+C:/Users/Dev-Pos/Documents/Zalo Received Files/OnlineStore/OnlineStore/obj/Debug/net6.0/staticwebassets.upToDateCheck.txt
+C:/Users/Dev-Pos/Documents/Zalo Received Files/OnlineStore/OnlineStore/obj/Debug/net6.0/OnlineStore.dll
+C:/Users/Dev-Pos/Documents/Zalo Received Files/OnlineStore/OnlineStore/obj/Debug/net6.0/refint/OnlineStore.dll
+C:/Users/Dev-Pos/Documents/Zalo Received Files/OnlineStore/OnlineStore/obj/Debug/net6.0/OnlineStore.pdb
+C:/Users/Dev-Pos/Documents/Zalo Received Files/OnlineStore/OnlineStore/obj/Debug/net6.0/OnlineStore.genruntimeconfig.cache
+C:/Users/Dev-Pos/Documents/Zalo Received Files/OnlineStore/OnlineStore/obj/Debug/net6.0/ref/OnlineStore.dll
+C:/Users/Dev-Pos/Desktop/POS_FE/OnlineStore/OnlineStore/bin/Debug/net6.0/appsettings.Development.json
+C:/Users/Dev-Pos/Desktop/POS_FE/OnlineStore/OnlineStore/bin/Debug/net6.0/appsettings.json
+C:/Users/Dev-Pos/Desktop/POS_FE/OnlineStore/OnlineStore/bin/Debug/net6.0/OnlineStore.staticwebassets.endpoints.json
+C:/Users/Dev-Pos/Desktop/POS_FE/OnlineStore/OnlineStore/bin/Debug/net6.0/OnlineStore.staticwebassets.runtime.json
+C:/Users/Dev-Pos/Desktop/POS_FE/OnlineStore/OnlineStore/bin/Debug/net6.0/OnlineStore.exe
+C:/Users/Dev-Pos/Desktop/POS_FE/OnlineStore/OnlineStore/bin/Debug/net6.0/OnlineStore.deps.json
+C:/Users/Dev-Pos/Desktop/POS_FE/OnlineStore/OnlineStore/bin/Debug/net6.0/OnlineStore.runtimeconfig.json
+C:/Users/Dev-Pos/Desktop/POS_FE/OnlineStore/OnlineStore/bin/Debug/net6.0/OnlineStore.dll
+C:/Users/Dev-Pos/Desktop/POS_FE/OnlineStore/OnlineStore/bin/Debug/net6.0/OnlineStore.pdb
+C:/Users/Dev-Pos/Desktop/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/rpswa.dswa.cache.json
+C:/Users/Dev-Pos/Desktop/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/OnlineStore.GeneratedMSBuildEditorConfig.editorconfig
+C:/Users/Dev-Pos/Desktop/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/OnlineStore.AssemblyInfoInputs.cache
+C:/Users/Dev-Pos/Desktop/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/OnlineStore.AssemblyInfo.cs
+C:/Users/Dev-Pos/Desktop/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/OnlineStore.csproj.CoreCompileInputs.cache
+C:/Users/Dev-Pos/Desktop/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/OnlineStore.MvcApplicationPartsAssemblyInfo.cache
+C:/Users/Dev-Pos/Desktop/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/OnlineStore.RazorAssemblyInfo.cache
+C:/Users/Dev-Pos/Desktop/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/OnlineStore.RazorAssemblyInfo.cs
+C:/Users/Dev-Pos/Desktop/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/rjimswa.dswa.cache.json
+C:/Users/Dev-Pos/Desktop/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/rjsmrazor.dswa.cache.json
+C:/Users/Dev-Pos/Desktop/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/rjsmcshtml.dswa.cache.json
+C:/Users/Dev-Pos/Desktop/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/scopedcss/Pages/Shared/_Layout.cshtml.rz.scp.css
+C:/Users/Dev-Pos/Desktop/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/scopedcss/bundle/OnlineStore.styles.css
+C:/Users/Dev-Pos/Desktop/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/scopedcss/projectbundle/OnlineStore.bundle.scp.css
+C:/Users/Dev-Pos/Desktop/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/staticwebassets.build.json
+C:/Users/Dev-Pos/Desktop/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/staticwebassets.build.json.cache
+C:/Users/Dev-Pos/Desktop/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/staticwebassets.development.json
+C:/Users/Dev-Pos/Desktop/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/staticwebassets.build.endpoints.json
+C:/Users/Dev-Pos/Desktop/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/staticwebassets.upToDateCheck.txt
+C:/Users/Dev-Pos/Desktop/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/OnlineStore.dll
+C:/Users/Dev-Pos/Desktop/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/refint/OnlineStore.dll
+C:/Users/Dev-Pos/Desktop/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/OnlineStore.pdb
+C:/Users/Dev-Pos/Desktop/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/OnlineStore.genruntimeconfig.cache
+C:/Users/Dev-Pos/Desktop/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/ref/OnlineStore.dll
+/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/bin/Debug/net6.0/appsettings.Development.json
+/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/bin/Debug/net6.0/appsettings.json
+/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/bin/Debug/net6.0/OnlineStore.staticwebassets.runtime.json
+/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/bin/Debug/net6.0/OnlineStore
+/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/bin/Debug/net6.0/OnlineStore.deps.json
+/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/bin/Debug/net6.0/OnlineStore.runtimeconfig.json
+/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/bin/Debug/net6.0/OnlineStore.dll
+/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/bin/Debug/net6.0/OnlineStore.pdb
+/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/OnlineStore.GeneratedMSBuildEditorConfig.editorconfig
+/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/OnlineStore.AssemblyInfoInputs.cache
+/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/OnlineStore.AssemblyInfo.cs
+/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/OnlineStore.csproj.CoreCompileInputs.cache
+/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/OnlineStore.MvcApplicationPartsAssemblyInfo.cache
+/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/OnlineStore.RazorAssemblyInfo.cache
+/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/OnlineStore.RazorAssemblyInfo.cs
+/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/staticwebassets.build.json
+/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/staticwebassets.development.json
+/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/staticwebassets/msbuild.OnlineStore.Microsoft.AspNetCore.StaticWebAssets.props
+/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/staticwebassets/msbuild.build.OnlineStore.props
+/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/staticwebassets/msbuild.buildMultiTargeting.OnlineStore.props
+/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/staticwebassets/msbuild.buildTransitive.OnlineStore.props
+/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/staticwebassets.pack.json
+/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/scopedcss/Pages/Shared/_Layout.cshtml.rz.scp.css
+/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/scopedcss/bundle/OnlineStore.styles.css
+/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/scopedcss/projectbundle/OnlineStore.bundle.scp.css
+/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/OnlineStore.dll
+/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/refint/OnlineStore.dll
+/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/OnlineStore.pdb
+/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/OnlineStore.genruntimeconfig.cache
+/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/ref/OnlineStore.dll

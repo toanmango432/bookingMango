@@ -1,0 +1,1524 @@
+﻿// Write your JavaScript code.
+// Override the global moment function
+// Save a reference to the original moment function and its methods
+const originalMoment = moment;
+
+// List of formats to handle different cases, including 'MM/DD/YYYY', 'MM-DD-YYYY', etc.
+// List of formats to handle different cases, including ISO-like strings and various custom formats
+const validFormats = [
+  "MM-DD-YYYY hh:mm A",
+  "MM/DD/YYYY HH:mm:ss",
+  "MM-DD-YYYY HH:mm:ss",
+  "YYYY-MM-DDTHH:mm:ss",
+  "YYYY-MM-DDTHH:mm:ss.SSS", // Added case for ISO-like string with milliseconds
+  "YYYY-MM-DD HH:mm:ss",
+  "YYYY/MM/DD HH:mm:ss",
+  "MM-DD-YYYY",
+  "YYYY-MM-DD",
+];
+
+const methodsToPreserve = [
+  "utc",
+  "add",
+  "diff",
+  "format",
+  "isValid",
+  "startOf",
+  "endOf",
+  "subtract",
+  "toDate",
+  "toISOString",
+  "year",
+  "month",
+  "date",
+  "hour",
+  "minute",
+  "second",
+  "millisecond",
+  "day",
+  "dayOfYear",
+  "week",
+  "weekYear",
+  "isoWeek",
+  "isoWeekYear",
+  "quarter",
+  "isLeapYear",
+  "isSame",
+  "isBefore",
+  "isAfter",
+  "isBetween",
+  "isSameOrAfter",
+  "isSameOrBefore",
+  "toObject",
+  "toJSON",
+  "fromNow",
+  "toNow",
+  "calendar",
+  "from",
+  "to",
+  "locale",
+  "set",
+  "clone",
+];
+
+// Create a wrapper function around the original moment function
+function customMoment(date, format) {
+  // Check for null or undefined date and return today's date in default format
+  if (date === null || date === undefined) {
+    date = originalMoment().format("MM-DD-YYYY hh:mm A"); // Return today's date as a moment instance
+  }
+  // Handle string date input
+  if (typeof date === "string") {
+    // If a format is not provided, try parsing the date with valid formats
+    if (!format) {
+      for (let fmt of validFormats) {
+        const parsed = originalMoment(date, fmt, true);
+        if (parsed.isValid()) {
+          return wrapMomentInstance(parsed);
+        }
+      }
+      // If no valid format is found, return today's date
+      return wrapMomentInstance(originalMoment());
+    }
+  }
+
+  // Use originalMoment to parse the date with or without format
+  const parsedDate = format
+    ? originalMoment(date, format)
+    : originalMoment(date);
+
+  // Return a moment instance directly if it's valid; otherwise, return today's date
+  return wrapMomentInstance(
+    parsedDate.isValid() ? parsedDate : originalMoment()
+  );
+}
+
+// Helper function to wrap the moment instance and preserve methods
+function wrapMomentInstance(validDate) {
+  // Create an object to wrap the moment instance
+  const wrappedInstance = Object.create(validDate);
+
+  // Attach all Moment.js methods to the wrapped instance
+  methodsToPreserve.forEach((method) => {
+    if (typeof validDate[method] === "function") {
+      wrappedInstance[method] = function (...args) {
+        return validDate[method](...args);
+      };
+    }
+  });
+
+  return wrappedInstance;
+}
+
+// Override the global moment function with customMoment
+moment = customMoment;
+
+// Call api
+const fetchAPI = {
+  get: (url, data) => {
+    return fetchAPI.request("GET", url, data);
+  },
+
+  post: (url, data, queryParams) => {
+    return fetchAPI.request("POST", url, data, queryParams);
+  },
+
+  put: (url, data, queryParams) => {
+    return fetchAPI.request("PUT", url, data, queryParams);
+  },
+
+  delete: (url, data, queryParams) => {
+    return fetchAPI.request("DELETE", url, data, queryParams);
+  },
+
+  patch: (url, data, queryParams) => {
+    return fetchAPI.request("PATCH", url, data, queryParams);
+  },
+
+  request: async (method, url, data, queryParams) => {
+    try {
+      let headers = {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers":
+          "Content-type, X-Auth-Token, Origin, Authorization",
+        "Content-Type": "application/json; charset=utf-8",
+      };
+
+      let fullUrl = url;
+      if (queryParams) {
+        const query = new URLSearchParams(queryParams);
+        fullUrl += `?${query.toString()}`;
+      }
+
+      if (method === "GET" && data) {
+        const query = new URLSearchParams(data);
+        fullUrl += `?${query.toString()}`;
+      }
+
+      let bodyData;
+
+      if (
+        method === "POST" ||
+        method === "PUT" ||
+        method === "PATCH" ||
+        method === "DELETE"
+      ) {
+        if (data instanceof FormData) {
+          bodyData = data;
+          headers = {
+            "Access-Control-Allow-Origin": "*",
+          };
+        } else if (
+          headers["Content-Type"] === "application/x-www-form-urlencoded"
+        ) {
+          const formData = new URLSearchParams();
+          Object.entries(data).forEach(([key, value]) => {
+            formData.append(key, value);
+          });
+          bodyData = formData;
+        } else {
+          bodyData = JSON.stringify(data);
+        }
+      }
+
+      const response = await fetch(fullUrl, {
+        method,
+        headers,
+        body: bodyData,
+      });
+      try {
+        if (response.ok) {
+          // Handle the successful response here
+          const resData = await response.json();
+          return resData;
+        } else {
+          // Handle non-successful responses with an appropriate error message
+          return response.status;
+        }
+      } catch (error) {
+        // Handle other errors (e.g., network issues)
+        console.error("Error occurred:", error);
+
+        // Make sure to rethrow the error to propagate it further if needed
+        throw error;
+      }
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  },
+};
+
+// Apis name
+const apis = {
+  setting: {},
+};
+
+// Tracking img load
+const imgTrack = {
+  error: (e) => {
+    let $this = $(e);
+
+    $this.parent().find("i").removeClass("dis-none");
+
+    $this.addClass("dis-none");
+  },
+};
+
+// Sweetalert2 Customizable Alert
+const alertCustom = (options = {}, callback) => {
+  // Default options for notification and actions
+  const defaultOptions = {
+    isNoti: true,
+    notify: {
+      icon: "success",
+      toast: true,
+      timer: 3000,
+      position: "top-right",
+      showConfirmButton: false,
+      customClass: { container: "is-notify" },
+    },
+    action: {
+      title: "",
+      text: "",
+      icon: "",
+      showCloseButton: true,
+      confirmButtonText: "Confirm",
+      confirmButtonColor: "var(--bs-main)",
+      cancelButtonText: "Cancel",
+      cancelButtonColor: "unset",
+      onBeforeOpen: () => console.log("Dialog is about to open"),
+      onOpen: () => console.log("Dialog is now open"),
+      onClose: () => console.log("Dialog is closed"),
+    },
+    classCustom: {},
+  };
+
+  // Check if the type is success or error, and adjust the configuration
+  const alertType = options.type || "success"; // Default is success
+  const isSuccess = alertType === "success";
+
+  // Dynamically build the title with icon and text based on success/error
+  const dynamicTitle = `
+        <div class="alert-custom-icon-text ${isSuccess ? "success" : "error"}">
+            <i class="fa-duotone fa-solid ${
+              isSuccess ? "fa-circle-check" : "fa-circle-xmark"
+            }" style="--fa-primary-color: ${
+    isSuccess ? "#45c65a" : "#e74c3c"
+  }; --fa-secondary-color: ${isSuccess ? "#45c65a" : "#e74c3c"};"></i>
+            <span>${
+              options.notify.title ||
+              (isSuccess ? "Save changes successfully" : "An error occurred")
+            }</span>
+        </div>
+    `;
+
+  // Merge the options for notification or action
+  const mergedOptions = options.isNoti
+    ? {
+        ...defaultOptions.notify,
+        ...options.notify,
+        title: dynamicTitle, // Use the dynamically created title
+        icon: isSuccess ? "success" : "error", // Set the icon based on type
+        customClass: { ...defaultOptions.classCustom, ...options.classCustom },
+      }
+    : {
+        ...defaultOptions.action,
+        ...options.action,
+        customClass: { ...defaultOptions.classCustom, ...options.classCustom },
+      };
+
+  // Display the alert
+  Swal.fire(mergedOptions).then((result) => {
+    if (callback && typeof callback === "function") {
+      callback(result);
+    }
+  });
+};
+
+// Format something
+const formatJS = {
+  phone: (phoneNumber, replace = false, hiddenPhone = false) => {
+    if (phoneNumber !== null) {
+      // Remove any non-numeric characters from the phone number
+      phoneNumber = phoneNumber.replace(/[^\d]/g, "");
+
+      if (replace) return phoneNumber;
+
+      if (!hiddenPhone && (isNaN(phoneNumber) || phoneNumber == "")) return "";
+
+      const zip = phoneNumber.substring(0, 3);
+      const middle = phoneNumber.substring(3, 6);
+      const last = phoneNumber.substring(6, 10);
+
+      if (hiddenPhone == 0) {
+        if (phoneNumber.length > 6) {
+          phoneNumber = `(${zip}) ${middle} - ${last}`;
+        } else if (phoneNumber.length > 3) {
+          phoneNumber = `(${zip}) ${middle}`;
+        } else if (phoneNumber.length > 0) {
+          phoneNumber = `(${zip})`;
+        }
+      } else phoneNumber = `(XXX) XXX - ${last || "XXXX"}`;
+
+      return phoneNumber;
+    } else phoneNumber = "Phone number is not available";
+    return phoneNumber;
+  },
+
+  phoneHidden: (phoneNumber) => {
+    const cleanedPhoneNumber = phoneNumber.replace(/\D/g, "");
+    const remainingDigits = cleanedPhoneNumber.slice(3);
+    const formattedPhoneNumber = `(XXX) XXX - ${remainingDigits.slice(3)}`;
+    return formattedPhoneNumber;
+  },
+
+  currency: (amount) => {
+    // Format the amount as currency
+    const localeName = "vi-VN";
+    const currencyCode = "VND";
+
+    amount = amount == "" ? 0 : amount;
+
+    return new Intl.NumberFormat(localeName, {
+      style: "currency",
+      currency: currencyCode,
+    }).format(amount);
+  },
+
+  currencyReplace: (amount) => {
+    return amount.replace("₫", "").replaceAll(".", "").trim();
+  },
+
+  currencyFloat: (amount) => {
+    return parseFloat(amount.replace(".", ""));
+  },
+
+  formatNameAvt: (name) => {
+    if (name && name.trim() !== "") {
+      const nameParts = name.trim().split(" ");
+      const firstNameInitial = nameParts[0]?.[0] || " ";
+      const lastNameInitial = nameParts[1]?.[0] || " ";
+      return `${firstNameInitial}${lastNameInitial}`;
+    }
+    return "NA"; // or any other default value you prefer
+  },
+
+  ticketNo: (apptId) => {
+    apptId = apptId.toString();
+
+    const lastIndex = apptId.lastIndexOf("000");
+
+    if (lastIndex === -1) {
+      // Pattern not found
+      return "#" + apptId;
+    }
+
+    return "#" + apptId.substring(lastIndex + 3);
+  },
+
+  isValidUrl: (url) => {
+    if (!url) {
+      return false; // Return false if URL is empty or undefined
+    }
+
+    // Regular expression pattern to validate URL
+    const urlPattern = new RegExp(
+      "^(https?:\\/\\/)?" + // Protocol
+        "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // Domain name
+        "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR IP address
+        "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // Port and path
+        "(\\?[;&a-z\\d%_.~+=-]*)?" + // Query string
+        "(\\#[-a-z\\d_]*)?$",
+      "i"
+    ); // Fragment locator
+
+    return urlPattern.test(url);
+  },
+
+  keyup: ($this) => {
+    let value = $this.val();
+
+    let phone = formatJS.phone(value, false, false);
+
+    $this.val(phone);
+
+    if (value.length >= 16) {
+      $this.parent().find("button.send").removeClass("disable");
+    } else {
+      $this.parent().find("button.send").addClass("disable");
+    }
+  },
+};
+
+// Main
+const onlineStore = {
+  load: () => {
+    const dataTemplates = [
+      {
+        id: 1,
+        imageLink: "/assets/images/retro.png",
+        titleItem: "Restro",
+        subTitleItem: "Classic and modern style",
+      },
+      {
+        id: 2,
+        imageLink: "/assets/images/pastel.png",
+        titleItem: "Pastel",
+        subTitleItem: "Popular style",
+      },
+      {
+        id: 1,
+        imageLink: "/assets/images/neon.jpg",
+        titleItem: "Neon",
+        subTitleItem: "Classic and modern style",
+      },
+      {
+        id: 1,
+        imageLink: "/assets/images/vintage.png",
+        titleItem: "Vintage",
+        subTitleItem: "Classic and modern style",
+      },
+      {
+        id: 5,
+        imageLink: "/assets/images/retro.png",
+        titleItem: "Restro",
+        subTitleItem: "Classic and modern style",
+      },
+      {
+        id: 6,
+        imageLink: "/assets/images/pastel.png",
+        titleItem: "Pastel",
+        subTitleItem: "Popular style",
+      },
+      {
+        id: 7,
+        imageLink: "/assets/images/neon.jpg",
+        titleItem: "Neon",
+        subTitleItem: "Classic and modern style",
+      },
+      {
+        id: 8,
+        imageLink: "/assets/images/vintage.png",
+        titleItem: "Vintage",
+        subTitleItem: "Classic and modern style",
+      },
+    ];
+    const dataTable = {
+      header: [
+        {
+          label: "Name",
+          key: "name",
+          sort: false,
+          type: "STRING",
+          icon: null,
+          style: {
+            color: null,
+            background: null,
+          },
+        },
+        {
+          label: "Domain",
+          key: "domain",
+          sort: false,
+          type: "LINK",
+          color: null,
+          style: {
+            color: null,
+            background: null,
+          },
+          class: "",
+        },
+        {
+          label: "Create date",
+          key: "createDate",
+          sort: true,
+          type: "DATE",
+          icon: `
+                            <svg class="icon-sort-date" xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21" fill="none" >
+                                <path class="sort-up-1" d="M9.37188 5.66052L6.27185 2.56055L3.17188 5.66052" stroke="#747474" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                <path class="sort-up-2" d="M6.27344 17.5605V2.56055" stroke="#747474" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                <path class="sort-down-1" d="M11.9531 14.4609L15.0532 17.5609L18.1531 14.4609" stroke="#747474" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                <path class="sort-down-2" d="M15.0547 2.56055V17.5605" stroke="#747474" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                          `,
+          style: {
+            color: null,
+            background: null,
+          },
+          class: "header-date",
+        },
+        {
+          label: "Status",
+          key: "status",
+          sort: false,
+          type: "STATUS",
+          icon: null,
+          style: {
+            color: null,
+            background: null,
+          },
+          class: "",
+        },
+      ],
+      body: [
+        {
+          id: "1",
+          name: {
+            text: "Retro",
+            class: "name-item",
+          },
+          domain: {
+            text: "http://www.websiteretro.com",
+            class: "domain-item",
+          },
+          createDate: {
+            text: "May 15, 2025",
+            class: "date-item",
+          },
+          status: {
+            text: "Public",
+            class: "status-item public",
+            style: {
+              color: "white",
+              background: "#45C65A",
+            },
+            icon: `<i class="fa-solid fa-ellipsis-vertical"></i>`,
+          },
+        },
+        {
+          id: "2",
+          name: {
+            text: "Pastel",
+            class: "name-item",
+          },
+          domain: {
+            text: "http://www.websiteretro.com",
+            class: "domain-item",
+          },
+          createDate: {
+            text: "May 20, 2025",
+            class: "date-item",
+          },
+          status: {
+            text: "Draft",
+            class: "status-item draft",
+            style: {
+              color: "white",
+              background: "#45C65A",
+            },
+            icon: `<i class="fa-solid fa-ellipsis-vertical"></i>`,
+          },
+        },
+      ],
+    };
+    return { dataTemplates, dataTable };
+  },
+};
+// * Function runder
+// templates render
+const renderItemTemplate = (item) => `
+    <div class="wrap-item-templates" data-id="${item.id}">
+        <div class="image-templates">
+            <img src="${item.imageLink}" alt="Image ${item.titleItem}" class="img-original" />
+        </div>
+        <div class="info-templates">
+            <p class="title-item-templates mb-0">${item.titleItem}</p>
+            <span class="subtitle-item-templates">${item.subTitleItem}</span>
+        </div>
+    </div>
+`;
+const renderHeader = (header) => {
+  return `
+                 <thead>
+                    <tr>
+                        ${header
+                          .map((col) => {
+                            const icon = col.icon
+                              ? `<span class="mr-2">${col.icon}</span>`
+                              : "";
+                            return `
+                                                    <th class="${
+                                                      col.class ? col.class : ""
+                                                    } text-uppercase px-4 py-3 ${
+                              col.type === "STATUS" ? "col-small" : "col-large"
+                            }">
+                                    <span>${col.label}</span>
+                                    ${icon}
+                                </th>
+                            `;
+                          })
+                          .join("")}
+                    </tr>
+                </thead>
+        `;
+};
+
+const renderBody = (body) => {
+  return `
+
+            <tbody>
+                    ${body
+                      .map((row) => {
+                        return `
+                            <tr>
+                                    <td class="px-4 py-3 ${row.name?.class}">
+                                        <span>${row.name.text}</span>
+                                    </td>
+                                    <td class="${row.domain?.class} px-4 py-3">
+                                        <span>${row.domain.text}</span>
+                                    </td>
+                                    <td class="${row.createDate.class} px-4 py-3">
+                                        <span>${row.createDate.text}</span>
+                                    </td>
+                                    <td class="${row.status.class} d-flex align-items-center justify-content-between pa-3">
+                                        <span class="py-1 px-6">${row.status.text}</span>
+                                        ${row.status.icon}
+                                    </td>
+                            </tr>
+                        `;
+                      })
+                      .join("")}
+           </tbody>
+        `;
+};
+
+const renderItemTable = (header, body) => {
+  return `
+        <table class="custom-table">
+                <div class="wrap-list-deploy">
+                    <div class="wrap-search-recent d-flex justify-content-between">
+                        <h4 class="text-uppercase header-templates-left mb-0">Recent</h4>
+                        <div class="search-filter-recent">
+                            <div class="left-search-filter">
+                                <div class="search-recent">
+                                    <input placeholder="Search item" class="input-search"/>
+                                    <div class="btn-search">
+                                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
+                                           <path d="M11.5 21.0605C16.7467 21.0605 21 16.8073 21 11.5605C21 6.31384 16.7467 2.06055 11.5 2.06055C6.25329 2.06055 2 6.31384 2 11.5605C2 16.8073 6.25329 21.0605 11.5 21.0605Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                           <path d="M22 22.0605L20 20.0605" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                       </svg>
+                                    </div>
+                                </div>
+                                <div class="filter-recent">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
+                                        <path d="M5.39844 2.16016H18.5984C19.6984 2.16016 20.5984 3.06016 20.5984 4.16016V6.36016C20.5984 7.16016 20.0984 8.16016 19.5984 8.66016L15.2984 12.4602C14.6984 12.9602 14.2984 13.9602 14.2984 14.7602V19.0602C14.2984 19.6602 13.8984 20.4602 13.3984 20.7602L11.9984 21.6602C10.6984 22.4602 8.89844 21.5602 8.89844 19.9602V14.6602C8.89844 13.9602 8.49844 13.0602 8.09844 12.5602L4.29844 8.56016C3.79844 8.06016 3.39844 7.16016 3.39844 6.56016V4.26016C3.39844 3.06016 4.29844 2.16016 5.39844 2.16016Z" stroke="black" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+                                        <path d="M10.93 2.16016L6 10.0602" stroke="black" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                    <div class="item-filter">
+                                        <ul class="pl-0 mb-0">
+                                            <li class="text-end py-2 px-4 ">Templates</li>
+                                            <li class="text-end py-2 px-4">Create Dates</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               ${renderHeader(header)}
+               ${renderBody(body)}
+        </table>
+    `;
+};
+
+// tính chiều cao templates
+function animateHeight($element, toExpand) {
+  const el = $element[0];
+  const fullHeight = el.scrollHeight;
+
+  if (toExpand) {
+    $element.css({ maxHeight: 0 });
+    requestAnimationFrame(() => {
+      $element.css({ maxHeight: fullHeight + "px" });
+    });
+  } else {
+    $element.css({ maxHeight: fullHeight + "px" });
+    requestAnimationFrame(() => {
+      $element.css({ maxHeight: 324 });
+    });
+  }
+}
+
+$(document).ready(function () {
+  let isCollapsed = false;
+  const { dataTemplates, dataTable } = onlineStore.load();
+  const $wrapList = $(".wrap-list-templates");
+  const $wrapContainerDeploy = $(".container-deploy");
+  $wrapContainerDeploy.empty();
+
+  function renderTemplates(limit = null) {
+    $wrapList.empty();
+
+    const listToRender = limit ? dataTemplates.slice(0, limit) : dataTemplates;
+
+    for (let i = 0; i < listToRender.length; i += 4) {
+      const chunk = listToRender.slice(i, i + 4);
+      const $grid = $('<div class="gird-4"></div>');
+
+      chunk.forEach((item) => {
+        $grid.append(renderItemTemplate(item));
+      });
+
+      $wrapList.append($grid);
+    }
+  }
+
+  // POPUP templates detail
+  $(document).on("click", ".image-templates", function () {
+    const id = $(this).closest(".wrap-item-templates").data("id");
+    if (id) {
+      showTemplatePopup(id);
+    }
+  });
+
+  function showTemplatePopup(id) {
+    // Lấy dữ liệu template từ dataTemplates dựa trên id
+    const { dataTemplates } = onlineStore.load();
+    const template = dataTemplates.find((item) => item.id === id);
+
+    // Tạo nội dung popup dựa trên template chi tiết
+    const popupContent = `
+        <div class="popup-overlay">
+            <div class="popup-content">
+                <div class="popup-body">
+                    <div class="container-detail-templates">
+                        <div class="header-custom-booking w-100 px-8">
+                            <div class="left-header-detail">
+                                <i class="fa-solid fa-arrow-left icon-left-booking"></i>
+                                <h3 class="text-uppercase title-booking mb-0">Custom online booking</h3>
+                            </div>
+                            <div class="right-header-detail">
+                                <button class="save-bg">
+                                    <h4 class="text-uppercase text-save mb-0">Save</h4>
+                                </button>
+                                <button class="publish-bg">
+                                    <h4 class="text-uppercase text-publish mb-0">Publish</h4>
+                                </button>
+                                <button class="btn-setting">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
+                                        <path d="M3 9.1709V14.9409C3 17.0609 3 17.0609 5 18.4109L10.5 21.5909C11.33 22.0709 12.68 22.0709 13.5 21.5909L19 18.4109C21 17.0609 21 17.0609 21 14.9509V9.1709C21 7.0609 21 7.0609 19 5.7109L13.5 2.5309C12.68 2.0509 11.33 2.0509 10.5 2.5309L5 5.7109C3 7.0609 3 7.0609 3 9.1709Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                        <path d="M12 15.0605C13.6569 15.0605 15 13.7174 15 12.0605C15 10.4037 13.6569 9.06055 12 9.06055C10.3431 9.06055 9 10.4037 9 12.0605C9 13.7174 10.3431 15.0605 12 15.0605Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="body-detail-template w-100 px-8">
+                            <div class="left-body-detail">
+                                <div class="change-logo">
+                                    <div class="wrap-logo-choosed">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
+                                            <path d="M12 16.0605V10.0605M12 10.0605L9 12.0605M12 10.0605L15 12.0605M23 15.0605C23 12.8514 21.2091 11.0605 19 11.0605C18.9764 11.0605 18.9532 11.0608 18.9297 11.0612C18.4447 7.66857 15.5267 5.06055 12 5.06055C9.20335 5.06055 6.79019 6.70059 5.66895 9.07136C3.06206 9.24199 1 11.4104 1 14.0604C1 16.8218 3.23858 19.0606 6 19.0606L19 19.0605C21.2091 19.0605 23 17.2697 23 15.0605Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                    </div>
+                                    <div class="title-change-logo">
+                                        <span>Change your logo here</span>
+                                    </div>
+                                    <div class="subtitle-change-logo">
+                                        <span>Supports: PNG</span>
+                                    </div>
+                                </div>
+                                <div class="list-option-change">
+                                    <div class="wrap-item-option">
+                                      <div class="item-option-change">
+                                          <h4 class="text-option text-uppercase mb-0">Color</h4>
+                                          <button class="btn-option plus">
+                                              <i class="fa-solid fa-plus white"></i>
+                                          </button>
+                                          </div>
+                                        <div class="option-content">
+                                            <div class="option-item">
+                                              <label class="">
+                                                <span class="bold-mid-18">Show all</span>
+                                              </label>
+                                              <input type="checkbox" class="toggle-switch" />
+                                            </div>
+                                            <div class="option-item">Item 2 for Color</div>
+                                            <div class="option-item">Item 3 for Color</div>
+                                            <div class="option-item">Item 4 for Color</div>
+                                            <div class="option-item">Item 5 for Color</div>
+                                        </div>
+                                    </div>
+                                    <div class="wrap-item-option">
+                                      <div class="item-option-change">
+                                          <h4 class="text-option text-uppercase mb-0">Info</h4>
+                                          <button class="btn-option plus">
+                                              <i class="fa-solid fa-plus white"></i>
+                                          </button>
+                                          </div>
+                                        <div class="option-content">
+                                            <div class="option-item">Item 1 for Color</div>
+                                            <div class="option-item">Item 2 for Color</div>
+                                            <div class="option-item">Item 3 for Color</div>
+                                            <div class="option-item">Item 4 for Color</div>
+                                            <div class="option-item">Item 5 for Color</div>
+                                        </div>
+                                    </div>
+                                    <div class="wrap-item-option">
+                                      <div class="item-option-change">
+                                          <h4 class="text-option text-uppercase mb-0">Side info</h4>
+                                          <button #id="side-infor" class="btn-option plus">
+                                              <i class="fa-solid fa-plus white"></i>
+                                          </button>
+                                          </div>
+                                        <div class="option-content">
+                                            <div class="option-item">Item 1 for Color</div>
+                                            <div class="option-item">Item 2 for Color</div>
+                                            <div class="option-item">Item 3 for Color</div>
+                                            <div class="option-item">Item 4 for Color</div>
+                                            <div class="option-item">Item 5 for Color</div>
+                                        </div>
+                                    </div>
+                                    <div class="wrap-item-option">
+                                      <div class="item-option-change">
+                                          <h4 class="text-option text-uppercase mb-0">Banner</h4>
+                                          <button class="btn-option plus">
+                                              <i class="fa-solid fa-plus white"></i>
+                                          </button>
+                                          </div>
+                                        <div class="option-content">
+                                            <div class="option-item">Item 1 for Color</div>
+                                            <div class="option-item">Item 2 for Color</div>
+                                            <div class="option-item">Item 3 for Color</div>
+                                            <div class="option-item">Item 4 for Color</div>
+                                            <div class="option-item">Item 5 for Color</div>
+                                        </div>
+                                    </div>
+                                    <div class="wrap-item-option">
+                                      <div class="item-option-change">
+                                        <h4 class="text-option text-uppercase mb-0">Gift card</h4>
+                                        <button class="btn-option plus">
+                                            <i class="fa-solid fa-plus white"></i>
+                                        </button>
+                                      </div>
+                                      <div class="option-content">
+                                          <div class="option-item">Item 1 for Color</div>
+                                          <div class="option-item">Item 2 for Color</div>
+                                          <div class="option-item">Item 3 for Color</div>
+                                          <div class="option-item">Item 4 for Color</div>
+                                          <div class="option-item">Item 5 for Color</div>
+                                      </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="right-body-detail">
+                                <div class="body-header-right">
+                                    <div class="view-device">
+                                        <button>
+                                            View
+                                            <i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                    <div class="wrap-option-device">
+                                        <button class="device-option">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="23" viewBox="0 0 22 23" fill="none">
+                                                <path d="M13.7474 18.3942H8.2474M6.59456 15.6442C5.56981 15.6442 5.05666 15.6442 4.66488 15.4446C4.31991 15.2688 4.03965 14.9876 3.86388 14.6427C3.75296 14.425 3.70362 14.1701 3.68166 13.8109M6.59456 15.6442H15.4002M6.59456 15.6442H5.13037C4.61699 15.6442 4.36056 15.6439 4.16447 15.5439C3.99199 15.4561 3.85186 15.3169 3.76397 15.1444C3.66406 14.9483 3.66406 14.6909 3.66406 14.1775V13.8109H3.68166M3.68166 13.8109C3.66406 13.5229 3.66406 13.1679 3.66406 12.7111V6.66105C3.66406 5.63429 3.66406 5.12052 3.86388 4.72835C4.03965 4.38339 4.31991 4.10313 4.66488 3.92736C5.05705 3.72754 5.57081 3.72754 6.59757 3.72754H15.3976C16.4243 3.72754 16.937 3.72754 17.3292 3.92736C17.6741 4.10313 17.9553 4.38339 18.1311 4.72835C18.3307 5.12014 18.3307 5.63328 18.3307 6.65804V12.7137C18.3307 13.1692 18.3307 13.5234 18.3132 13.8109M3.68166 13.8109H18.3132M18.3132 13.8109C18.2913 14.1701 18.242 14.425 18.1311 14.6427C17.9553 14.9876 17.6741 15.2688 17.3292 15.4446C16.9374 15.6442 16.425 15.6442 15.4002 15.6442M18.3132 13.8109H18.3307V14.1775C18.3307 14.6909 18.3304 14.9483 18.2305 15.1444C18.1426 15.3169 18.0029 15.4561 17.8304 15.5439C17.6343 15.6439 17.3771 15.6442 16.8637 15.6442H15.4002" stroke="#747474" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                        </button>
+                                        <button class="device-option active">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="23" viewBox="0 0 22 23" fill="none">
+                                                <path d="M3.66406 5.74406V16.3774C3.66406 17.4042 3.66406 17.9173 3.86388 18.3094C4.03965 18.6544 4.31991 18.9352 4.66488 19.1109C5.05666 19.3105 5.56981 19.3105 6.59456 19.3105H15.4002C16.425 19.3105 16.9374 19.3105 17.3292 19.1109C17.6741 18.9352 17.9553 18.6544 18.1311 18.3094C18.3307 17.9177 18.3307 17.4052 18.3307 16.3805V5.74105C18.3307 4.71629 18.3307 4.20315 18.1311 3.81136C17.9553 3.4664 17.6741 3.18614 17.3292 3.01037C16.937 2.81055 16.4243 2.81055 15.3976 2.81055H6.59757C5.57081 2.81055 5.05705 2.81055 4.66488 3.01037C4.31991 3.18614 4.03965 3.4664 3.86388 3.81136C3.66406 4.20353 3.66406 4.7173 3.66406 5.74406Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                        </button>
+                                        <button class="device-option">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="23" viewBox="0 0 22 23" fill="none">
+                                                <path d="M6.41406 5.74406V16.3774C6.41406 17.4042 6.41406 17.9173 6.61388 18.3094C6.78965 18.6544 7.06991 18.9352 7.41488 19.1109C7.80666 19.3105 8.31981 19.3105 9.34456 19.3105H12.6502C13.675 19.3105 14.1874 19.3105 14.5792 19.1109C14.9241 18.9352 15.2053 18.6544 15.3811 18.3094C15.5807 17.9177 15.5807 17.4052 15.5807 16.3805V5.74105C15.5807 4.71629 15.5807 4.20315 15.3811 3.81136C15.2053 3.4664 14.9241 3.18614 14.5792 3.01037C14.187 2.81055 13.6743 2.81055 12.6476 2.81055H9.34757C8.32081 2.81055 7.80705 2.81055 7.41488 3.01037C7.06991 3.18614 6.78965 3.4664 6.61388 3.81136C6.41406 4.20353 6.41406 4.7173 6.41406 5.74406Z" stroke="#747474" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="wrap-web">
+                                    <div class="nav-header-web">
+                                        <div class="wrap-logo-nav-web">
+                                            <img src="/assets/images/templates/logo-template.png" alt="logo" class="img-logo" />
+                                        </div>
+                                        <div class="left-nav-web">
+                                            <div class="list-option">
+                                                <button class="text-uppercase">Fag</button>
+                                                <button class="text-uppercase">Membership</button>
+                                                <button class="text-uppercase">Services</button>
+                                                <button class="text-uppercase">Gift card</button>
+                                                <button class="text-uppercase option">About <i class="fa-solid fa-chevron-down"></i></button>
+                                                <button class="text-uppercase">Contact us</button>
+                                            </div>
+                                            <div class="cart-profile">
+                                                <button class="user">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="19" viewBox="0 0 18 19" fill="none">
+                                                        <path d="M15 15.8066C15 13.7356 12.3137 12.0566 9 12.0566C5.68629 12.0566 3 13.7356 3 15.8066M9 9.80664C6.92893 9.80664 5.25 8.12771 5.25 6.05664C5.25 3.98557 6.92893 2.30664 9 2.30664C11.0711 2.30664 12.75 3.98557 12.75 6.05664C12.75 8.12771 11.0711 9.80664 9 9.80664Z" stroke="#061315" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                                    </svg>
+                                                </button>
+                                                <button class="booking text-uppercase">Book</button>
+                                                <div class="cart-user">
+                                                    <button>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="19" viewBox="0 0 18 19" fill="none">
+                                                            <path d="M5.625 5.81269V5.08519C5.625 3.39769 6.9825 1.74019 8.67 1.58269C10.68 1.38769 12.375 2.97019 12.375 4.94269V5.97769" stroke="black" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+                                                            <path d="M6.7506 16.5605H11.2506C14.2656 16.5605 14.8056 15.353 14.9631 13.883L15.5256 9.38305C15.7281 7.55305 15.2031 6.06055 12.0006 6.06055H6.0006C2.7981 6.06055 2.2731 7.55305 2.4756 9.38305L3.0381 13.883C3.1956 15.353 3.7356 16.5605 6.7506 16.5605Z" stroke="black" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+                                                            <path d="M11.6209 9.06055H11.6276" stroke="black" stroke-linecap="round" stroke-linejoin="round" />
+                                                            <path d="M6.37088 9.06055H6.37762" stroke="black" stroke-linecap="round" stroke-linejoin="round" />
+                                                        </svg>
+                                                    </button>
+                                                    <span class="quantity-prod">1</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="advertise">
+                                        <div class="advertise-bg-1"></div>
+                                        <div class="advertise-bg-2">
+                                            <div class="w-72">
+                                                <p>
+                                                    <span class="thin">Hi Guest! Sign in to access </span>
+                                                    <span class="bold">Past Appointment History </span>
+                                                    <span class="thin">and </span>
+                                                    <span class="bold">view upcoming appointments, or Cancel upcoming appointments</span>
+                                                </p>
+                                            </div>
+                                            <div class="text-uppercase sign-in">Sign in</div>
+                                        </div>
+                                    </div>
+                                    <div class="banner">
+                                        <div class="content-banner">
+                                            <div class="wrap-content-left-banner">
+                                                <div class="hight-text-banner">
+                                                  <div class="welcome-to">Welcome to !</div>
+                                                  <p>
+                                                      <span class="text-mountains-christmas">NAILVIBE</span>
+                                                      <br />
+                                                      <span class="time-relax">It is time to relax !</span>
+                                                  </p>
+                                                  <p class="text-content-banner">
+                                                      We hope that your visit will be a relaxing and wonderful experience.
+                                                      Please do not hesitate to share your opinions with the salon manager
+                                                      so that your next visit at NailVibe Brentwood will be an even better experience.
+                                                  </p>
+                                                </div>
+                                                <div class="book-appoint">
+                                                    <p class="book-for">Book Appointment for</p>
+                                                    <button class="btn-just-me">Just me <i class="fa-solid fa-chevron-down"></i></button>
+                                                </div>
+                                            </div>
+                                            <div class="img-banner-booking">
+                                                <img class="img-booking-2" src="/assets/images/templates/image-banner-booking-2.png">
+                                                <img class="img-booking-1" src="/assets/images/templates/image-banner-booking.png" />
+                                                <img class="img-booking-3" src="/assets/images/templates/image-cloud.png" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="list-more">
+                                        <div class="more-item">
+                                            <div class="expend-title">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M7.16625 11.4688H13.4263V2.46875H1.90625V21.9688H13.4263V12.9688H7.16625V11.4688Z" fill="#E27303" />
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M21.8448 11.4691C19.8328 11.4681 18.0008 9.63605 18.0008 7.62305V6.87305H16.5008V7.62305C16.5008 9.10005 17.1758 10.4801 18.2198 11.4691L13.4219 11.469V12.969L18.2198 12.9691C17.1758 13.9581 16.5008 15.3371 16.5008 16.8141V17.5641H18.0008V16.8141C18.0008 14.8021 19.8338 12.9691 21.8458 12.9691H22.5958V11.4691H21.8448Z" fill="#E27303" />
+                                                </svg>
+                                                <p class="text-uppercase bold-medium-14 mb-0">Manicure</p>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="19" viewBox="0 0 18 19" fill="none">
+                                                    <path d="M14.9425 6.77344L10.0525 11.6634C9.475 12.2409 8.53 12.2409 7.9525 11.6634L3.0625 6.77344" stroke="black" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+                                                </svg>
+                                            </div>
+                                            <div class="card-more">
+                                                <div class="top-card">
+                                                    <div class="left-card">
+                                                        <p class="bold-medium-14">Essential Pedicure</p>
+                                                        <p class="thin-mid-14">Hydrating Pedi Salt Soak</p>
+                                                    </div>
+                                                    <div class="right-card">
+                                                        <p class="bold-medium-20">$45</p>
+                                                        <p class="bold-mid-12">40min</p>
+                                                    </div>
+                                                </div>
+                                                <div class="add-more">
+                                                    <button class="btn-add-more">
+                                                        <i class="fa-solid fa-plus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="card-more">
+                                                <div class="top-card">
+                                                    <div class="left-card">
+                                                        <p class="bold-medium-14">Essential Pedicure</p>
+                                                        <p class="thin-mid-14">Hydrating Pedi Salt Soak</p>
+                                                    </div>
+                                                    <div class="right-card">
+                                                        <p class="bold-medium-20">$45</p>
+                                                        <p class="bold-mid-12">40min</p>
+                                                    </div>
+                                                </div>
+                                                <div class="add-more">
+                                                    <button class="btn-add-more">
+                                                        <i class="fa-solid fa-plus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="card-more">
+                                                <div class="top-card">
+                                                    <div class="left-card">
+                                                        <p class="bold-medium-14">Essential Pedicure</p>
+                                                        <p class="thin-mid-14">Hydrating Pedi Salt Soak</p>
+                                                    </div>
+                                                    <div class="right-card">
+                                                        <p class="bold-medium-20">$45</p>
+                                                        <p class="bold-mid-12">40min</p>
+                                                    </div>
+                                                </div>
+                                                <div class="add-more">
+                                                    <button class="btn-add-more">
+                                                        <i class="fa-solid fa-plus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="more-item">
+                                            <div class="expend-title">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M7.16625 11.4688H13.4263V2.46875H1.90625V21.9688H13.4263V12.9688H7.16625V11.4688Z" fill="#E27303" />
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M21.8448 11.4691C19.8328 11.4681 18.0008 9.63605 18.0008 7.62305V6.87305H16.5008V7.62305C16.5008 9.10005 17.1758 10.4801 18.2198 11.4691L13.4219 11.469V12.969L18.2198 12.9691C17.1758 13.9581 16.5008 15.3371 16.5008 16.8141V17.5641H18.0008V16.8141C18.0008 14.8021 19.8338 12.9691 21.8458 12.9691H22.5958V11.4691H21.8448Z" fill="#E27303" />
+                                                </svg>
+                                                <p class="text-uppercase bold-medium-14 mb-0">Manicure</p>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="19" viewBox="0 0 18 19" fill="none">
+                                                    <path d="M14.9425 6.77344L10.0525 11.6634C9.475 12.2409 8.53 12.2409 7.9525 11.6634L3.0625 6.77344" stroke="black" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+                                                </svg>
+                                            </div>
+                                            <div class="card-more">
+                                                <div class="top-card">
+                                                    <div class="left-card">
+                                                        <p class="bold-medium-14">Essential Pedicure</p>
+                                                        <p class="thin-mid-14">Hydrating Pedi Salt Soak</p>
+                                                    </div>
+                                                    <div class="right-card">
+                                                        <p class="bold-medium-20">$45</p>
+                                                        <p class="bold-mid-12">40min</p>
+                                                    </div>
+                                                </div>
+                                                <div class="add-more">
+                                                    <button class="btn-add-more">
+                                                        <i class="fa-solid fa-plus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Thêm popup vào body
+    $("body").append(popupContent);
+
+    // Xử lý sự kiện đóng popup
+    $(".icon-left-booking").on("click", function () {
+      $(".popup-overlay").remove();
+    });
+
+    // Đóng popup khi click bên ngoài
+    $(".popup-overlay").on("click", function (e) {
+      if (e.target === this) {
+        $(".popup-overlay").remove();
+      }
+    });
+
+    // Sự kiện bên trái template
+    $(document).on("click", ".item-option-change .btn-option", function () {
+      const $optionContent = $(this)
+        .closest(".wrap-item-option")
+        .find(".option-content");
+      const $icon = $(this).find("i");
+      const $itemOptionChange = $(this).parent(".item-option-change"); // Lấy phần tử item-option-change
+      const $btnOption = $(this); // Lấy chính nút btn-option
+
+      $optionContent.toggleClass("expanded");
+      $icon.toggleClass("fa-plus fa-minus");
+
+      // Thêm/xoá class 'active'
+      $itemOptionChange.toggleClass("active");
+      $btnOption.toggleClass("active");
+    });
+  }
+  // POPUP SETTING
+  // Settings Popup Logic
+  $(document).on("click", ".btn-setting", function () {
+    const $overlay = $('<div class="settings-overlay"></div>');
+    const onlineBookingTabContent = `
+      <div class="online-booking-settings">
+        <div class="toggle-group px-3">
+          <label class="">
+            <span class="bold-medium-16">Active Online Booking</span>
+          </label>
+          <input type="checkbox" class="toggle-switch" checked />
+        </div>
+
+        <div class="setting-block px-3">
+          <label class="custom-checkbox">
+              <input type="checkbox" />
+              <span class="checkmark"></span>
+              Confirm Online Booking
+          </label>
+          <div class="setting-sub">
+            <label>Min.(Hour) <input class="number-input bold-mid-14" type="number" value="1" /></label>
+          </div>
+        </div>
+
+        <div class="setting-block px-3">
+          <label class="custom-checkbox">
+              <input type="checkbox" />
+              <span class="checkmark"></span>
+              Confirm Online Booking
+          </label>
+          <div class="setting-sub">
+            <label class="w-100 d-flex justify-content-between align-items-center">
+              <label class="custom-checkbox">
+                  <input type="checkbox" />
+                  <span class="checkmark"></span>
+                  Online Booking Auto Confirm After (Minutes):
+              </label>
+              <input class="number-input bold-mid-14" type="number" value="1" />
+            </label>
+            <span class="time-frame-distance">
+              <span class="mr-1">- Time Frame Distance (Minutes)</span>
+              <input class="number-input bold-mid-14" type="number" value="15" />
+            </span>
+          </div>
+        </div>
+
+        <div class="setting-block px-3">
+          <label class="custom-checkbox">
+              <input type="checkbox" />
+              <span class="checkmark"></span>
+              Hide Price
+          </label>
+        </div>
+
+        <div class="setting-block px-3">
+          <label class="custom-checkbox">
+              <input type="checkbox" />
+              <span class="checkmark"></span>
+              Show Salon Phone When Don’t See Time
+          </label>
+        </div>
+
+        <div class="setting-block px-3">
+          <label class="custom-checkbox">
+                <input type="checkbox" checked/>
+                <span class="checkmark"></span>
+                Auto Assign No Request Appointment To Tech
+            </label>
+          <div class="setting-sub">
+            <label class="custom-checkbox">
+                <input type="checkbox" />
+                <span class="checkmark"></span>
+                Exclude Salon Appt When Auto Assign
+            </label>
+          </div>
+        </div>
+
+        <div class="setting-block px-3">
+          <label class="custom-checkbox">
+              <input type="checkbox" />
+              <span class="checkmark"></span>
+              Don’t Show Next Available
+          </label>
+        </div>
+
+        <div class="setting-block px-3">
+          <label class="custom-checkbox">
+              <input type="checkbox" />
+              <span class="checkmark"></span>
+              Required Client To Create Account To Book
+          </label>
+        </div>
+        <div class="deposit-section pb-3">
+          <div class="toggle-group pa-3">
+            <label>
+              <span class="bold-medium-16"  >Deposit</span>
+            </label>
+            <input type="checkbox" class="toggle-switch" checked />
+          </div>
+
+          <div class="radio-group px-3">
+            <label class="custom-radio">
+              <input type="radio" name="deposit" />
+              <span class="radio-circle"></span> $
+            </label>
+            <label class="custom-radio">
+              <input type="radio" name="deposit" checked />
+              <span class="radio-circle"></span> $
+            </label>
+            <input class="number-input bold-mid-14" type="number" value="10" />
+          </div>
+
+          <div class="setting-block px-3">
+            <label class="custom-checkbox">
+                <input type="checkbox" />
+                <span class="checkmark"></span>
+                Next Available Online Booking Appointments Allowed Within 1 Hour
+            </label>
+          </div>
+
+          <div class="tickets-sub">
+            <label>#Tickets <input class="number-input bold-mid-14" type="number" value="2" /></label>
+          </div>
+        </div>
+      </div>
+    `;
+
+    const membershipTabContent = `
+      <div class="membership-settings">
+        <div class="toggle-group px-3">
+          <label class="bold-medium-16">Active Membership</label>
+          <input type="checkbox" class="toggle-switch" checked />
+        </div>
+
+        <div class="wrap-link px-3 mt-3">
+          <div class="label-link">
+            <span class="mr-1">Link:</span>
+            <i class="fa-solid fa-eye-slash toggle-visibility"></i>
+          </div>
+
+          <div class="link-container">
+            <div class="membership-link">
+              https://manage2.mangoforsalon.com/nextview/membership-settings?salon_id=abc
+            </div>
+            <button class="btn-copy" title="Copy">
+              <i class="fa-regular fa-copy"></i>
+            </button>
+          </div>
+          <div class="d-flex justify-content-center align-items-center">
+            <button class="btn-custom-membership mt-3">Custom Membership</button>
+          </div>
+
+        </div>
+      </div>
+    `;
+
+    const giftCardTabContent = `
+      <div class="gift-card-settings">
+        <div class="setting-gift border-thin-bottom px-3 pt-2 pb-3">
+          <label class="bold-medium-16">Use Mango Gift Card System</label>
+          <input type="checkbox" class="toggle-switch" checked />
+        </div>
+
+        <div class="setting-gift border-thin-bottom px-3 pb-3">
+          <label class="bold-medium-14">Min Digit Re  quired For Gift Card</label>
+          <input type="number" class="number-input" value="05" />
+        </div>
+
+        <div class="setting-gift border-thin-bottom px-3 pb-3">
+          <label class="bold-medium-14">Giftcard will have default date before expired at (Month):</label>
+          <input type="number" class="number-input" value="0" />
+        </div>
+
+        <div class="setting-gift px-3 ">
+          <label class="bold-medium-16">Online Gift Card</label>
+          <input type="checkbox" class="toggle-switch" checked />
+        </div>
+        <div class="min-amount px-3">
+            <label class="bold-mid-14">Min Amount <input class="number-input bold-mid-14" type="number" value="2" /></label>
+          </div>
+
+        <div class="setting-block px-3">
+          <div class="d-flex gap-3 justify-content-center align-items-center mb-2">
+            <label class="custom-checkbox w-50">
+              <input type="checkbox" checked />
+              <span class="checkmark"></span>
+              Discount
+            </label>
+            <label class="custom-checkbox w-50">
+              <input type="checkbox" />
+              <span class="checkmark"></span>
+              Coupon
+            </label>
+          </div>
+
+          <div class="gift-card-pricing d-flex">
+            <div class="w-50 d-flex gap-24px pl-4">
+              <div class="pricing-box d-flex">
+                <div class="price-tag active">$</div>
+                <div class="percent-tag">10</div>
+              </div>
+              <div class="pricing-box d-flex">
+                <div class="price-tag">%</div>
+                <div class="percent-tag">0</div>
+              </div>
+            </div>
+            <div class="w-50 d-flex gap-24px pl-4">
+              <div class="pricing-box d-flex">
+                <div class="price-tag active">$</div>
+                <div class="percent-tag">10</div>
+              </div>
+              <div class="pricing-box d-flex">
+                <div class="price-tag">%</div>
+                <div class="percent-tag">15</div>
+              </div>
+            </div>
+          </div>
+
+          <label class="d-flex align-items-center justify-content-between">
+            Duration (day)
+            <input type="number" class="number-input ms-2" value="30" />
+          </label>
+
+          <div class="link-container">
+            <div class="membership-link">https://manage2.mangoforsalon.com/nextview/membership-settings?salon_id=abc</div>
+            <button class="btn-copy" title="Copy"><i class="fa-regular fa-copy"></i></button>
+          </div>
+
+          <div class="d-flex justify-content-center align-items-center gap-4">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?data=https://manage2.mangoforsalon.com/nextview/membership-settings?salon_id=abc&size=100x100" alt="QR" width="104" height="104"/>
+            <div class="download-gift d-flex flex-column align-items-center">
+                <i class="fa-solid fa-download"></i>
+                <span>Download</span>
+              </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    const $popup = $(`
+      <div class="popup-settings">
+        <div class="container-popup-settings">
+          <div class="settings-tabs">
+            <div class="btn-closepopup-setting">
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+            <div class="settings-tab thin-bold-18 active" data-tab="tab1">Online booking</div>
+            <div class="settings-tab thin-bold-18" data-tab="tab2">Membership</div>
+            <div class="settings-tab thin-bold-18" data-tab="tab3">Gift card</div>
+          </div>
+          <div class="settings-tab-content active" data-tab="tab1">
+            ${onlineBookingTabContent}
+          </div>
+          <div class="settings-tab-content" data-tab="tab2">
+            ${membershipTabContent}
+          </div>
+          <div class="settings-tab-content" data-tab="tab3">
+            ${giftCardTabContent}
+          </div>
+        </div>
+      </div>
+    `);
+
+    $("body").append($overlay).append($popup);
+
+    $overlay.addClass("active");
+    $popup.addClass("active");
+
+    // Handle tab switching
+    $(".settings-tab").on("click", function () {
+      const tab = $(this).data("tab");
+      $(".settings-tab").removeClass("active");
+      $(".settings-tab-content").removeClass("active");
+      $(this).addClass("active");
+      $(`.settings-tab-content[data-tab="${tab}"]`).addClass("active");
+    });
+    // Close popup when clicking close button
+    $(".btn-closepopup-setting").on("click", function () {
+      $overlay.remove();
+      $popup.remove();
+    });
+
+    // Close popup when clicking overlay
+    $overlay.on("click", function () {
+      $overlay.remove();
+      $popup.remove();
+    });
+
+    // Sự kiện trên tab Online Booking
+
+    // Sự kiện trên tab Membership
+    $(document).on("click", ".btn-copy", function () {
+      const linkInput = $(this).siblings(".membership-link")[0];
+      linkInput.select();
+      linkInput.setSelectionRange(0, 99999); // For mobile devices
+      document.execCommand("copy");
+
+      // Optional: Show tooltip
+      $(this).attr("title", "Copied!").tooltip("show");
+
+      // Reset tooltip after 1s
+      setTimeout(() => {
+        $(this).attr("title", "Copy");
+      }, 1000);
+    });
+    $(document).on("click", ".toggle-visibility", function () {
+      const $icon = $(this);
+      const $input = $icon.closest(".wrap-link").find(".membership-link");
+
+      // Toggle input type: text <-> password
+      const isHidden = $input.attr("type") === "password";
+      $input.attr("type", isHidden ? "text" : "password");
+
+      // Toggle icon class
+      $icon
+        .toggleClass("fa-eye fa-eye-slash")
+        .attr("title", isHidden ? "Hide Link" : "Show Link");
+    });
+  });
+
+  // Sự kiện bên trái template
+
+  // TEMPLATE NGOÀI
+
+  function renderTableDeploy(limit = null) {
+    $wrapContainerDeploy.empty();
+    const $tableInfor = $('<div class="table-infor"></div>');
+    $wrapContainerDeploy.append(
+      $tableInfor.append(renderItemTable(dataTable.header, dataTable.body))
+    );
+  }
+
+  renderTemplates();
+
+  const $headerTemplatesRight = $(".header-templates-right");
+  const $iconTemplatesGal = $("#icon-templates-gallery");
+
+  $headerTemplatesRight.on("click", function () {
+    const numItemRow = 4;
+    isCollapsed = !isCollapsed;
+    renderTemplates(isCollapsed ? numItemRow : null);
+    // tính animation chiều cao templates
+    animateHeight($wrapList, !isCollapsed);
+
+    // render table
+    if (isCollapsed) {
+      renderTableDeploy();
+      $iconTemplatesGal.addClass("rotate-180");
+    } else {
+      $wrapContainerDeploy.empty();
+      $iconTemplatesGal.removeClass("rotate-180");
+    }
+  });
+
+  // Search & filter
+  $(document).on("click", ".search-recent", function (e) {
+    e.stopPropagation();
+    $(this).addClass("focus-search");
+  });
+  // -- lick ra ngoài ẩn input search
+  $(document).on("click", ".left-search-filter", function (e) {
+    const $searchRecent = $(this).find(".search-recent")[0];
+
+    if (!$searchRecent.contains(e.target)) {
+      $(`.search-recent`).removeClass("focus-search");
+    }
+  });
+
+  // Toggle khi click vào filter-recent
+  $(document).on("click", ".filter-recent", function (e) {
+    e.stopPropagation(); // Ngăn lan ra ngoài document
+    const $itemFilter = $(this).find(".item-filter");
+    $itemFilter.toggle();
+  });
+
+  // Ngăn không ẩn nếu click vào chính .item-filter
+  $(document).on("click", ".item-filter", function (e) {
+    e.stopPropagation(); // Ngăn lan ra ngoài document
+  });
+
+  // Ẩn nếu click ra ngoài vùng filter-recent hoặc item-filter
+  $(document).on("click", function () {
+    $(".item-filter").hide();
+  });
+
+  // Sort table (colum header-date)
+  let isAscending = true;
+
+  function sortTableByDate(dataTable) {
+    dataTable.body.sort((a, b) => {
+      const dateA = new Date(a.createDate.text);
+      const dateB = new Date(b.createDate.text);
+      return isAscending ? dateA - dateB : dateB - dateA;
+    });
+  }
+
+  $(document).on("click", ".header-date", function () {
+    const store = onlineStore.load();
+    const dataTable = store.dataTable;
+
+    isAscending = !isAscending;
+
+    sortTableByDate(dataTable);
+
+    const newBodyTableSort = renderBody(dataTable.body);
+
+    $("table.custom-table tbody").replaceWith(newBodyTableSort);
+
+    // reset màu icon
+    $(".icon-sort-date path").attr("stroke", "#747474");
+    if (isAscending) {
+      $(".icon-sort-date .sort-up-1, .icon-sort-date .sort-up-2").attr(
+        "stroke",
+        "var(--bs-main)"
+      );
+    } else {
+      $(".icon-sort-date .sort-down-1, .icon-sort-date .sort-down-2").attr(
+        "stroke",
+        "var(--bs-main)"
+      );
+    }
+  });
+});

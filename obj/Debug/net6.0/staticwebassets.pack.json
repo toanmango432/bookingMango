@@ -1,0 +1,577 @@
+{
+  "Files": [
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/obj/Debug/net6.0/scopedcss/projectbundle/OnlineStore.bundle.scp.css",
+      "PackagePath": "staticwebassets/OnlineStore.bundle.scp.css"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/assets/images/neon.jpg",
+      "PackagePath": "staticwebassets/assets/images/neon.jpg"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/assets/images/pastel.png",
+      "PackagePath": "staticwebassets/assets/images/pastel.png"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/assets/images/retro.png",
+      "PackagePath": "staticwebassets/assets/images/retro.png"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/assets/images/templates/image-banner-booking-2.png",
+      "PackagePath": "staticwebassets/assets/images/templates/image-banner-booking-2.png"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/assets/images/templates/image-banner-booking.png",
+      "PackagePath": "staticwebassets/assets/images/templates/image-banner-booking.png"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/assets/images/templates/image-cloud.png",
+      "PackagePath": "staticwebassets/assets/images/templates/image-cloud.png"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/assets/images/templates/logo-template.png",
+      "PackagePath": "staticwebassets/assets/images/templates/logo-template.png"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/assets/images/vintage.png",
+      "PackagePath": "staticwebassets/assets/images/vintage.png"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/css/all.min.css",
+      "PackagePath": "staticwebassets/css/all.min.css"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/css/daterangepicker.css",
+      "PackagePath": "staticwebassets/css/daterangepicker.css"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/css/flag-icons.min.css",
+      "PackagePath": "staticwebassets/css/flag-icons.min.css"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/css/font-family.css",
+      "PackagePath": "staticwebassets/css/font-family.css"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/css/media.css",
+      "PackagePath": "staticwebassets/css/media.css"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/css/montserrat/JTUQjIg1_i6t8kCHKm459WxRxC7mw9c.woff2",
+      "PackagePath": "staticwebassets/css/montserrat/JTUQjIg1_i6t8kCHKm459WxRxC7mw9c.woff2"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/css/montserrat/JTUQjIg1_i6t8kCHKm459WxRxi7mw9c.woff2",
+      "PackagePath": "staticwebassets/css/montserrat/JTUQjIg1_i6t8kCHKm459WxRxi7mw9c.woff2"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/css/montserrat/JTUQjIg1_i6t8kCHKm459WxRxy7mw9c.woff2",
+      "PackagePath": "staticwebassets/css/montserrat/JTUQjIg1_i6t8kCHKm459WxRxy7mw9c.woff2"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/css/montserrat/JTUQjIg1_i6t8kCHKm459WxRyS7m.woff2",
+      "PackagePath": "staticwebassets/css/montserrat/JTUQjIg1_i6t8kCHKm459WxRyS7m.woff2"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/css/montserrat/JTUQjIg1_i6t8kCHKm459WxRzS7mw9c.woff2",
+      "PackagePath": "staticwebassets/css/montserrat/JTUQjIg1_i6t8kCHKm459WxRzS7mw9c.woff2"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/css/montserrat/JTUSjIg1_i6t8kCHKm459W1hyzbi.woff2",
+      "PackagePath": "staticwebassets/css/montserrat/JTUSjIg1_i6t8kCHKm459W1hyzbi.woff2"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/css/montserrat/JTUSjIg1_i6t8kCHKm459WRhyzbi.woff2",
+      "PackagePath": "staticwebassets/css/montserrat/JTUSjIg1_i6t8kCHKm459WRhyzbi.woff2"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/css/montserrat/JTUSjIg1_i6t8kCHKm459WZhyzbi.woff2",
+      "PackagePath": "staticwebassets/css/montserrat/JTUSjIg1_i6t8kCHKm459WZhyzbi.woff2"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/css/montserrat/JTUSjIg1_i6t8kCHKm459Wdhyzbi.woff2",
+      "PackagePath": "staticwebassets/css/montserrat/JTUSjIg1_i6t8kCHKm459Wdhyzbi.woff2"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/css/montserrat/JTUSjIg1_i6t8kCHKm459Wlhyw.woff2",
+      "PackagePath": "staticwebassets/css/montserrat/JTUSjIg1_i6t8kCHKm459Wlhyw.woff2"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/css/paddingmargin.css",
+      "PackagePath": "staticwebassets/css/paddingmargin.css"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/css/select2.css",
+      "PackagePath": "staticwebassets/css/select2.css"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/css/site.css",
+      "PackagePath": "staticwebassets/css/site.css"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/css/slider.css",
+      "PackagePath": "staticwebassets/css/slider.css"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/css/sweetalert2.min.css",
+      "PackagePath": "staticwebassets/css/sweetalert2.min.css"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/css/templateDetail.css",
+      "PackagePath": "staticwebassets/css/templateDetail.css"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/favicon.ico",
+      "PackagePath": "staticwebassets/favicon.ico"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/files/contact.json",
+      "PackagePath": "staticwebassets/files/contact.json"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/files/lottie-hero-desktop.json",
+      "PackagePath": "staticwebassets/files/lottie-hero-desktop.json"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/files/policy.json",
+      "PackagePath": "staticwebassets/files/policy.json"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/files/review.json",
+      "PackagePath": "staticwebassets/files/review.json"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/js/apexchart.js",
+      "PackagePath": "staticwebassets/js/apexchart.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/js/daterangepicker.js",
+      "PackagePath": "staticwebassets/js/daterangepicker.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/js/lodash.js",
+      "PackagePath": "staticwebassets/js/lodash.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/js/lottie.js",
+      "PackagePath": "staticwebassets/js/lottie.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/js/moment-with-locales.min.js",
+      "PackagePath": "staticwebassets/js/moment-with-locales.min.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/js/moment.min.js",
+      "PackagePath": "staticwebassets/js/moment.min.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/js/momenttimezone.js",
+      "PackagePath": "staticwebassets/js/momenttimezone.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/js/qrcode.min.js",
+      "PackagePath": "staticwebassets/js/qrcode.min.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/js/select2.js",
+      "PackagePath": "staticwebassets/js/select2.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/js/site.js",
+      "PackagePath": "staticwebassets/js/site.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/js/slider.js",
+      "PackagePath": "staticwebassets/js/slider.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/js/sweetalert2.all.min.js",
+      "PackagePath": "staticwebassets/js/sweetalert2.all.min.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/js/templateDetail.js",
+      "PackagePath": "staticwebassets/js/templateDetail.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/LICENSE",
+      "PackagePath": "staticwebassets/lib/bootstrap"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-grid.css"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-grid.css.map"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.min.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-grid.min.css"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.min.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-grid.min.css.map"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.rtl.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-grid.rtl.css"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.rtl.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-grid.rtl.css.map"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.rtl.min.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-grid.rtl.min.css"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.rtl.min.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-grid.rtl.min.css.map"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-reboot.css"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-reboot.css.map"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.min.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-reboot.min.css"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.min.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-reboot.min.css.map"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.rtl.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-reboot.rtl.css"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.rtl.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-reboot.rtl.css.map"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.rtl.min.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-reboot.rtl.min.css"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.rtl.min.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-reboot.rtl.min.css.map"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-utilities.css"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-utilities.css.map"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.min.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-utilities.min.css"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.min.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-utilities.min.css.map"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.rtl.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-utilities.rtl.css"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.rtl.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-utilities.rtl.css.map"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.rtl.min.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-utilities.rtl.min.css"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.rtl.min.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap-utilities.rtl.min.css.map"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/css/bootstrap.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap.css"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/css/bootstrap.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap.css.map"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/css/bootstrap.min.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap.min.css"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/css/bootstrap.min.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap.min.css.map"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/css/bootstrap.rtl.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap.rtl.css"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/css/bootstrap.rtl.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap.rtl.css.map"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/css/bootstrap.rtl.min.css",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap.rtl.min.css"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/css/bootstrap.rtl.min.css.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/css/bootstrap.rtl.min.css.map"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/js/bootstrap.bundle.js",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.bundle.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/js/bootstrap.bundle.js.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.bundle.js.map"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/js/bootstrap.bundle.min.js",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.bundle.min.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/js/bootstrap.bundle.min.js.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.bundle.min.js.map"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/js/bootstrap.esm.js",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.esm.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/js/bootstrap.esm.js.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.esm.js.map"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/js/bootstrap.esm.min.js",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.esm.min.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/js/bootstrap.esm.min.js.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.esm.min.js.map"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/js/bootstrap.js",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/js/bootstrap.js.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.js.map"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/js/bootstrap.min.js",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.min.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/bootstrap/dist/js/bootstrap.min.js.map",
+      "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.min.js.map"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/jquery-validation-unobtrusive/LICENSE.txt",
+      "PackagePath": "staticwebassets/lib/jquery-validation-unobtrusive/LICENSE.txt"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js",
+      "PackagePath": "staticwebassets/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js",
+      "PackagePath": "staticwebassets/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/jquery-validation/LICENSE.md",
+      "PackagePath": "staticwebassets/lib/jquery-validation/LICENSE.md"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/jquery-validation/dist/additional-methods.js",
+      "PackagePath": "staticwebassets/lib/jquery-validation/dist/additional-methods.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/jquery-validation/dist/additional-methods.min.js",
+      "PackagePath": "staticwebassets/lib/jquery-validation/dist/additional-methods.min.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/jquery-validation/dist/jquery.validate.js",
+      "PackagePath": "staticwebassets/lib/jquery-validation/dist/jquery.validate.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/jquery-validation/dist/jquery.validate.min.js",
+      "PackagePath": "staticwebassets/lib/jquery-validation/dist/jquery.validate.min.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/jquery/LICENSE.txt",
+      "PackagePath": "staticwebassets/lib/jquery/LICENSE.txt"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/jquery/dist/jquery.js",
+      "PackagePath": "staticwebassets/lib/jquery/dist/jquery.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/jquery/dist/jquery.min.js",
+      "PackagePath": "staticwebassets/lib/jquery/dist/jquery.min.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/lib/jquery/dist/jquery.min.map",
+      "PackagePath": "staticwebassets/lib/jquery/dist/jquery.min.map"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/sounds/ring-1.wav",
+      "PackagePath": "staticwebassets/sounds/ring-1.wav"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/sounds/ring-2.wav",
+      "PackagePath": "staticwebassets/sounds/ring-2.wav"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/sounds/ring-3.mp3",
+      "PackagePath": "staticwebassets/sounds/ring-3.mp3"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/webfonts/fa-brands-400.eot",
+      "PackagePath": "staticwebassets/webfonts/fa-brands-400.eot"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/webfonts/fa-brands-400.svg",
+      "PackagePath": "staticwebassets/webfonts/fa-brands-400.svg"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/webfonts/fa-brands-400.ttf",
+      "PackagePath": "staticwebassets/webfonts/fa-brands-400.ttf"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/webfonts/fa-brands-400.woff",
+      "PackagePath": "staticwebassets/webfonts/fa-brands-400.woff"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/webfonts/fa-brands-400.woff2",
+      "PackagePath": "staticwebassets/webfonts/fa-brands-400.woff2"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/webfonts/fa-duotone-900.ttf",
+      "PackagePath": "staticwebassets/webfonts/fa-duotone-900.ttf"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/webfonts/fa-duotone-900.woff2",
+      "PackagePath": "staticwebassets/webfonts/fa-duotone-900.woff2"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/webfonts/fa-light-300.ttf",
+      "PackagePath": "staticwebassets/webfonts/fa-light-300.ttf"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/webfonts/fa-light-300.woff2",
+      "PackagePath": "staticwebassets/webfonts/fa-light-300.woff2"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/webfonts/fa-regular-400.eot",
+      "PackagePath": "staticwebassets/webfonts/fa-regular-400.eot"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/webfonts/fa-regular-400.svg",
+      "PackagePath": "staticwebassets/webfonts/fa-regular-400.svg"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/webfonts/fa-regular-400.ttf",
+      "PackagePath": "staticwebassets/webfonts/fa-regular-400.ttf"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/webfonts/fa-regular-400.woff",
+      "PackagePath": "staticwebassets/webfonts/fa-regular-400.woff"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/webfonts/fa-regular-400.woff2",
+      "PackagePath": "staticwebassets/webfonts/fa-regular-400.woff2"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/webfonts/fa-sharp-light-300.ttf",
+      "PackagePath": "staticwebassets/webfonts/fa-sharp-light-300.ttf"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/webfonts/fa-sharp-light-300.woff2",
+      "PackagePath": "staticwebassets/webfonts/fa-sharp-light-300.woff2"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/webfonts/fa-sharp-regular-400.ttf",
+      "PackagePath": "staticwebassets/webfonts/fa-sharp-regular-400.ttf"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/webfonts/fa-sharp-regular-400.woff2",
+      "PackagePath": "staticwebassets/webfonts/fa-sharp-regular-400.woff2"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/webfonts/fa-sharp-solid-900.ttf",
+      "PackagePath": "staticwebassets/webfonts/fa-sharp-solid-900.ttf"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/webfonts/fa-sharp-solid-900.woff2",
+      "PackagePath": "staticwebassets/webfonts/fa-sharp-solid-900.woff2"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/webfonts/fa-sharp-thin-100.ttf",
+      "PackagePath": "staticwebassets/webfonts/fa-sharp-thin-100.ttf"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/webfonts/fa-sharp-thin-100.woff2",
+      "PackagePath": "staticwebassets/webfonts/fa-sharp-thin-100.woff2"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/webfonts/fa-solid-900.eot",
+      "PackagePath": "staticwebassets/webfonts/fa-solid-900.eot"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/webfonts/fa-solid-900.svg",
+      "PackagePath": "staticwebassets/webfonts/fa-solid-900.svg"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/webfonts/fa-solid-900.ttf",
+      "PackagePath": "staticwebassets/webfonts/fa-solid-900.ttf"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/webfonts/fa-solid-900.woff",
+      "PackagePath": "staticwebassets/webfonts/fa-solid-900.woff"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/webfonts/fa-solid-900.woff2",
+      "PackagePath": "staticwebassets/webfonts/fa-solid-900.woff2"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/webfonts/fa-thin-100.ttf",
+      "PackagePath": "staticwebassets/webfonts/fa-thin-100.ttf"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/webfonts/fa-thin-100.woff2",
+      "PackagePath": "staticwebassets/webfonts/fa-thin-100.woff2"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/webfonts/fa-v4compatibility.ttf",
+      "PackagePath": "staticwebassets/webfonts/fa-v4compatibility.ttf"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/Zalo Received Files/POS_FE/OnlineStore/OnlineStore/wwwroot/webfonts/fa-v4compatibility.woff2",
+      "PackagePath": "staticwebassets/webfonts/fa-v4compatibility.woff2"
+    },
+    {
+      "Id": "obj/Debug/net6.0/staticwebassets/msbuild.OnlineStore.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj/Debug/net6.0/staticwebassets/msbuild.build.OnlineStore.props",
+      "PackagePath": "build\\OnlineStore.props"
+    },
+    {
+      "Id": "obj/Debug/net6.0/staticwebassets/msbuild.buildMultiTargeting.OnlineStore.props",
+      "PackagePath": "buildMultiTargeting\\OnlineStore.props"
+    },
+    {
+      "Id": "obj/Debug/net6.0/staticwebassets/msbuild.buildTransitive.OnlineStore.props",
+      "PackagePath": "buildTransitive\\OnlineStore.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

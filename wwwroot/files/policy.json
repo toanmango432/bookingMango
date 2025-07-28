@@ -1,0 +1,12 @@
+﻿{
+  "policy": [
+    "- VAT & service charge",
+    "- Breakfast at the restaurant",
+    "- Free tea, coffee and 2 mineral water / room / day",
+    "- Children under 6 years old is complimentary",
+    "- Children from 6 - under 12 years old: breakfast surcharge according to hotel policy",
+    "- Children from 12 years will be charged as 3rd person"
+  ],
+
+  "template": 1
+}

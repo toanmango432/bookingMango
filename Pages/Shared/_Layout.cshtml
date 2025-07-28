@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - OnlineStore</title>
+    <link rel="stylesheet" href="~/css/all.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/css/font-family.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/sweetalert2.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/daterangepicker.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/media.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/select2.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/OnlineStore.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/paddingmargin.css" asp-append-version="true"/>
+</head>
+<body>
+    <header>
+        
+    </header>
+    <div class="">
+        @RenderBody()
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="~/js/moment.min.js" asp-append-version="true"></script>
+    <script src="~/js/daterangepicker.js" asp-append-version="true"></script>
+    <script src="~/js/qrcode.min.js" asp-append-version="true"></script>
+    <script src="~/js/sweetalert2.all.min.js" asp-append-version="true"></script>
+    <script src="~/js/slider.js" asp-append-version="true"></script>
+    <script src="~/js/lodash.js" asp-append-version="true"></script>
+    <script src="~/js/apexchart.js" asp-append-version="true"></script>
+    <script src="~/js/lottie.js" asp-append-version="true"></script>
+    <script src="~/js/select2.js" asp-append-version="true"></script>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/templateDetail.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

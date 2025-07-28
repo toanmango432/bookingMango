@@ -1,0 +1,245 @@
+﻿@media only screen and (max-width: 480px) {
+    /* Styles for extra small devices */
+    :root {
+        --scale: 86;
+    }
+
+    * {
+        touch-action: manipulation;
+    }
+
+    .back-regis-list {
+        padding: 0 var(--px-20);
+    }
+
+    .grid-3 {
+        grid-column: span 4;
+    }
+
+    .grid-4 {
+        grid-column: span 6 !important;
+    }
+
+    .hidden-on-phone {
+        display: none !important;
+    }
+
+    .list-duration-date button {
+        width: var(--px-80);
+    }
+
+    .show-on-phone {
+        display: flex !important;
+    }
+
+    .body-registration .group-ticket-view .box-regis {
+        grid-template-columns: var(--px-60) repeat(2, minmax(var(--px-160), var(--px-228)));
+    }
+
+    .signature {
+        flex: 1;
+        min-width: 100%;
+    }
+
+    div.form-upload-image {
+        height: var(--px-400);
+    }
+
+    .nav-end .dropdown {
+        padding: 0 var(--px-4);
+    }
+
+    .search--form.scale-mb:not(.active) {
+        width: var(--px-44);
+        min-width: var(--px-44);
+        max-width: var(--px-44);
+        overflow: hidden;
+        margin-left: auto;
+        flex: unset;
+    }
+
+    #select-date-range-picker {
+        min-width: var(--px-120);
+    }
+
+    .switch-action-tab-bar {
+        left: 50%;
+        z-index: 1;
+        position: fixed;
+        overflow: hidden;
+        bottom: 2px;
+        height: var(--px-60);
+        transform: translateX(-50%);
+        border-radius: 0;
+        background: var(--bs-white);
+        width: 100% !important;
+        box-shadow: 0 0 20px 10px var(--bs-gray-300);
+        grid-template-columns: repeat(3, 1fr);
+        padding: 0 var(--px-16);
+    }
+
+        .switch-action-tab-bar .btn-switch:hover {
+            color: var(--bs-gray-600);
+            background: var(--bs-white);
+        }
+
+    .reservation-body-page {
+        padding-bottom: var(--px-72);
+    }
+
+    .setting-page .setting-group {
+        grid-template-columns: repeat(1, 1fr);
+    }
+
+        .setting-page .setting-group .title-group {
+            grid-column: span 1;
+        }
+
+    /* .popup-container {
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        box-shadow: 0 2px 20px 10px var(--bs-gray-300);
+        border: 1px solid var(--bs-gray-300);
+    } */
+
+    .login-page .login-main {
+        width: 100%;
+    }
+
+    .login-end {
+        display: none;
+    }
+
+    .login-page {
+        grid-template-columns: 1fr;
+    }
+
+        .login-page .form-typing {
+            grid-template-columns: var(--px-60) 1fr var(--px-80);
+        }
+
+
+    .list-room-append .line-room-info {
+        width: fit-content;
+    }
+
+    #drop-stasus span {
+        display: none;
+    }
+}
+
+@media only screen and (min-width: 481px) and (max-width: 768px) {
+    /* Styles for small devices */
+    :root {
+        --scale: 88;
+    }
+
+    * {
+        touch-action: manipulation;
+    }
+}
+
+@media only screen and (min-width: 769px) and (max-width: 1024px) {
+    /* Styles for medium devices */
+    :root {
+        --scale: 90;
+    }
+
+    * {
+        touch-action: manipulation;
+    }
+
+    #upload-image-or-sign .staff.signature {
+        min-height: var(--px-500);
+    }
+}
+
+@media only screen and (min-width: 1025px) and (max-width: 1200px) {
+    /* Styles for large devices */
+    :root {
+        --scale: 92;
+    }
+
+    * {
+        touch-action: manipulation;
+    }
+}
+
+@media only screen and (min-width: 1201px) {
+    /* Styles for extra large devices */
+    :root {
+        --scale: 94;
+    }
+
+    * {
+        touch-action: manipulation;
+    }
+}
+
+@media only screen and (orientation: portrait) {
+    /* Styles for portrait orientation */
+    :root {
+    }
+}
+
+@media only screen and (orientation: landscape) {
+    /* Styles for landscape orientation */
+    :root {
+    }
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi) {
+    /* Styles for retina displays */
+    :root {
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    /* Styles for dark mode */
+}
+
+@media (prefers-reduced-motion: reduce) {
+    /* Styles for reduced motion preference */
+}
+
+@media only screen and (min-width: 1400px) {
+    /* Custom styles for screens larger than 1400px */
+    :root {
+        --scale: 100;
+    }
+}
+
+@keyframes pulse {
+    from {
+        box-shadow: 0 0 0 0 #AAAAAA;
+    }
+}
+
+@keyframes scale-click {
+    from {
+        transform: scale(.9);
+    }
+
+    to {
+        transform: scale(1);
+    }
+}
+
+@keyframes tada {
+    10%, 20% {
+        transform: scale(0.9) rotate(-1deg);
+    }
+
+    30%, 50%, 70%, 90% {
+        transform: scale(1.1) rotate(1deg);
+    }
+
+    40%, 60%, 80% {
+        transform: scale(1.1) rotate(-1deg);
+    }
+
+    100% {
+        transform: scale(1) rotate(0);
+    }
+}
