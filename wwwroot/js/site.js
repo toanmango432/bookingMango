@@ -6,69 +6,69 @@ const originalMoment = moment;
 // List of formats to handle different cases, including 'MM/DD/YYYY', 'MM-DD-YYYY', etc.
 // List of formats to handle different cases, including ISO-like strings and various custom formats
 const validFormats = [
-  "MM-DD-YYYY hh:mm A",
-  "MM/DD/YYYY HH:mm:ss",
-  "MM-DD-YYYY HH:mm:ss",
-  "YYYY-MM-DDTHH:mm:ss",
-  "YYYY-MM-DDTHH:mm:ss.SSS", // Added case for ISO-like string with milliseconds
-  "YYYY-MM-DD HH:mm:ss",
-  "YYYY/MM/DD HH:mm:ss",
-  "MM-DD-YYYY",
-  "YYYY-MM-DD",
+  'MM-DD-YYYY hh:mm A',
+  'MM/DD/YYYY HH:mm:ss',
+  'MM-DD-YYYY HH:mm:ss',
+  'YYYY-MM-DDTHH:mm:ss',
+  'YYYY-MM-DDTHH:mm:ss.SSS', // Added case for ISO-like string with milliseconds
+  'YYYY-MM-DD HH:mm:ss',
+  'YYYY/MM/DD HH:mm:ss',
+  'MM-DD-YYYY',
+  'YYYY-MM-DD',
 ];
 
 const methodsToPreserve = [
-  "utc",
-  "add",
-  "diff",
-  "format",
-  "isValid",
-  "startOf",
-  "endOf",
-  "subtract",
-  "toDate",
-  "toISOString",
-  "year",
-  "month",
-  "date",
-  "hour",
-  "minute",
-  "second",
-  "millisecond",
-  "day",
-  "dayOfYear",
-  "week",
-  "weekYear",
-  "isoWeek",
-  "isoWeekYear",
-  "quarter",
-  "isLeapYear",
-  "isSame",
-  "isBefore",
-  "isAfter",
-  "isBetween",
-  "isSameOrAfter",
-  "isSameOrBefore",
-  "toObject",
-  "toJSON",
-  "fromNow",
-  "toNow",
-  "calendar",
-  "from",
-  "to",
-  "locale",
-  "set",
-  "clone",
+  'utc',
+  'add',
+  'diff',
+  'format',
+  'isValid',
+  'startOf',
+  'endOf',
+  'subtract',
+  'toDate',
+  'toISOString',
+  'year',
+  'month',
+  'date',
+  'hour',
+  'minute',
+  'second',
+  'millisecond',
+  'day',
+  'dayOfYear',
+  'week',
+  'weekYear',
+  'isoWeek',
+  'isoWeekYear',
+  'quarter',
+  'isLeapYear',
+  'isSame',
+  'isBefore',
+  'isAfter',
+  'isBetween',
+  'isSameOrAfter',
+  'isSameOrBefore',
+  'toObject',
+  'toJSON',
+  'fromNow',
+  'toNow',
+  'calendar',
+  'from',
+  'to',
+  'locale',
+  'set',
+  'clone',
 ];
 
 // Create a wrapper function around the original moment function
 function customMoment(date, format) {
   // Check for null or undefined date and return today's date in default format
   if (date === null || date === undefined) {
-    date = originalMoment().format("MM-DD-YYYY hh:mm A"); // Return today's date as a moment instance
+    date = originalMoment().format('MM-DD-YYYY hh:mm A'); // Return today's date as a moment instance
   }
   // Handle string date input
-  if (typeof date === "string") {
+  if (typeof date === 'string') {
     // If a format is not provided, try parsing the date with valid formats
     if (!format) {
       for (let fmt of validFormats) {
@@ -83,14 +83,10 @@ function customMoment(date, format) {
   }
 
   // Use originalMoment to parse the date with or without format
-  const parsedDate = format
-    ? originalMoment(date, format)
-    : originalMoment(date);
+  const parsedDate = format ? originalMoment(date, format) : originalMoment(date);
 
   // Return a moment instance directly if it's valid; otherwise, return today's date
-  return wrapMomentInstance(
-    parsedDate.isValid() ? parsedDate : originalMoment()
-  );
+  return wrapMomentInstance(parsedDate.isValid() ? parsedDate : originalMoment());
 }
 
 // Helper function to wrap the moment instance and preserve methods
@@ -100,7 +96,7 @@ function wrapMomentInstance(validDate) {
 
   // Attach all Moment.js methods to the wrapped instance
   methodsToPreserve.forEach((method) => {
-    if (typeof validDate[method] === "function") {
+    if (typeof validDate[method] === 'function') {
       wrappedInstance[method] = function (...args) {
         return validDate[method](...args);
       };
@@ -116,32 +112,31 @@ moment = customMoment;
 // Call api
 const fetchAPI = {
   get: (url, data) => {
-    return fetchAPI.request("GET", url, data);
+    return fetchAPI.request('GET', url, data);
   },
 
   post: (url, data, queryParams) => {
-    return fetchAPI.request("POST", url, data, queryParams);
+    return fetchAPI.request('POST', url, data, queryParams);
   },
 
   put: (url, data, queryParams) => {
-    return fetchAPI.request("PUT", url, data, queryParams);
+    return fetchAPI.request('PUT', url, data, queryParams);
   },
 
   delete: (url, data, queryParams) => {
-    return fetchAPI.request("DELETE", url, data, queryParams);
+    return fetchAPI.request('DELETE', url, data, queryParams);
   },
 
   patch: (url, data, queryParams) => {
-    return fetchAPI.request("PATCH", url, data, queryParams);
+    return fetchAPI.request('PATCH', url, data, queryParams);
   },
 
   request: async (method, url, data, queryParams) => {
     try {
       let headers = {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers":
-          "Content-type, X-Auth-Token, Origin, Authorization",
-        "Content-Type": "application/json; charset=utf-8",
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-type, X-Auth-Token, Origin, Authorization',
+        'Content-Type': 'application/json; charset=utf-8',
       };
 
       let fullUrl = url;
@@ -150,27 +145,20 @@ const fetchAPI = {
         fullUrl += `?${query.toString()}`;
       }
 
-      if (method === "GET" && data) {
+      if (method === 'GET' && data) {
         const query = new URLSearchParams(data);
         fullUrl += `?${query.toString()}`;
       }
 
       let bodyData;
 
-      if (
-        method === "POST" ||
-        method === "PUT" ||
-        method === "PATCH" ||
-        method === "DELETE"
-      ) {
+      if (method === 'POST' || method === 'PUT' || method === 'PATCH' || method === 'DELETE') {
         if (data instanceof FormData) {
           bodyData = data;
           headers = {
-            "Access-Control-Allow-Origin": "*",
+            'Access-Control-Allow-Origin': '*',
           };
-        } else if (
-          headers["Content-Type"] === "application/x-www-form-urlencoded"
-        ) {
+        } else if (headers['Content-Type'] === 'application/x-www-form-urlencoded') {
           const formData = new URLSearchParams();
           Object.entries(data).forEach(([key, value]) => {
             formData.append(key, value);
@@ -197,7 +185,7 @@ const fetchAPI = {
         }
       } catch (error) {
         // Handle other errors (e.g., network issues)
-        console.error("Error occurred:", error);
+        console.error('Error occurred:', error);
 
         // Make sure to rethrow the error to propagate it further if needed
         throw error;
@@ -219,9 +207,9 @@ const imgTrack = {
   error: (e) => {
     let $this = $(e);
 
-    $this.parent().find("i").removeClass("dis-none");
+    $this.parent().find('i').removeClass('dis-none');
 
-    $this.addClass("dis-none");
+    $this.addClass('dis-none');
   },
 };
 
@@ -231,44 +219,44 @@ const alertCustom = (options = {}, callback) => {
   const defaultOptions = {
     isNoti: true,
     notify: {
-      icon: "success",
+      icon: 'success',
       toast: true,
       timer: 3000,
-      position: "top-right",
+      position: 'top-right',
       showConfirmButton: false,
-      customClass: { container: "is-notify" },
+      customClass: { container: 'is-notify' },
     },
     action: {
-      title: "",
-      text: "",
-      icon: "",
+      title: '',
+      text: '',
+      icon: '',
       showCloseButton: true,
-      confirmButtonText: "Confirm",
-      confirmButtonColor: "var(--bs-main)",
-      cancelButtonText: "Cancel",
-      cancelButtonColor: "unset",
-      onBeforeOpen: () => console.log("Dialog is about to open"),
-      onOpen: () => console.log("Dialog is now open"),
-      onClose: () => console.log("Dialog is closed"),
+      confirmButtonText: 'Confirm',
+      confirmButtonColor: 'var(--bs-main)',
+      cancelButtonText: 'Cancel',
+      cancelButtonColor: 'unset',
+      onBeforeOpen: () => console.log('Dialog is about to open'),
+      onOpen: () => console.log('Dialog is now open'),
+      onClose: () => console.log('Dialog is closed'),
     },
     classCustom: {},
   };
 
   // Check if the type is success or error, and adjust the configuration
-  const alertType = options.type || "success"; // Default is success
-  const isSuccess = alertType === "success";
+  const alertType = options.type || 'success'; // Default is success
+  const isSuccess = alertType === 'success';
 
   // Dynamically build the title with icon and text based on success/error
   const dynamicTitle = `
-        <div class="alert-custom-icon-text ${isSuccess ? "success" : "error"}">
+        <div class="alert-custom-icon-text ${isSuccess ? 'success' : 'error'}">
             <i class="fa-duotone fa-solid ${
-              isSuccess ? "fa-circle-check" : "fa-circle-xmark"
+              isSuccess ? 'fa-circle-check' : 'fa-circle-xmark'
             }" style="--fa-primary-color: ${
-    isSuccess ? "#45c65a" : "#e74c3c"
-  }; --fa-secondary-color: ${isSuccess ? "#45c65a" : "#e74c3c"};"></i>
+    isSuccess ? '#45c65a' : '#e74c3c'
+  }; --fa-secondary-color: ${isSuccess ? '#45c65a' : '#e74c3c'};"></i>
             <span>${
               options.notify.title ||
-              (isSuccess ? "Save changes successfully" : "An error occurred")
+              (isSuccess ? 'Save changes successfully' : 'An error occurred')
             }</span>
         </div>
     `;
@@ -279,7 +267,7 @@ const alertCustom = (options = {}, callback) => {
         ...defaultOptions.notify,
         ...options.notify,
         title: dynamicTitle, // Use the dynamically created title
-        icon: isSuccess ? "success" : "error", // Set the icon based on type
+        icon: isSuccess ? 'success' : 'error', // Set the icon based on type
         customClass: { ...defaultOptions.classCustom, ...options.classCustom },
       }
     : {
@@ -290,7 +278,7 @@ const alertCustom = (options = {}, callback) => {
 
   // Display the alert
   Swal.fire(mergedOptions).then((result) => {
-    if (callback && typeof callback === "function") {
+    if (callback && typeof callback === 'function') {
       callback(result);
     }
   });
@@ -301,11 +289,11 @@ const formatJS = {
   phone: (phoneNumber, replace = false, hiddenPhone = false) => {
     if (phoneNumber !== null) {
       // Remove any non-numeric characters from the phone number
-      phoneNumber = phoneNumber.replace(/[^\d]/g, "");
+      phoneNumber = phoneNumber.replace(/[^\d]/g, '');
 
       if (replace) return phoneNumber;
 
-      if (!hiddenPhone && (isNaN(phoneNumber) || phoneNumber == "")) return "";
+      if (!hiddenPhone && (isNaN(phoneNumber) || phoneNumber == '')) return '';
 
       const zip = phoneNumber.substring(0, 3);
       const middle = phoneNumber.substring(3, 6);
@@ -319,15 +307,15 @@ const formatJS = {
         } else if (phoneNumber.length > 0) {
           phoneNumber = `(${zip})`;
         }
-      } else phoneNumber = `(XXX) XXX - ${last || "XXXX"}`;
+      } else phoneNumber = `(XXX) XXX - ${last || 'XXXX'}`;
 
       return phoneNumber;
-    } else phoneNumber = "Phone number is not available";
+    } else phoneNumber = 'Phone number is not available';
     return phoneNumber;
   },
 
   phoneHidden: (phoneNumber) => {
-    const cleanedPhoneNumber = phoneNumber.replace(/\D/g, "");
+    const cleanedPhoneNumber = phoneNumber.replace(/\D/g, '');
     const remainingDigits = cleanedPhoneNumber.slice(3);
     const formattedPhoneNumber = `(XXX) XXX - ${remainingDigits.slice(3)}`;
     return formattedPhoneNumber;
@@ -335,46 +323,46 @@ const formatJS = {
 
   currency: (amount) => {
     // Format the amount as currency
-    const localeName = "vi-VN";
-    const currencyCode = "VND";
+    const localeName = 'vi-VN';
+    const currencyCode = 'VND';
 
-    amount = amount == "" ? 0 : amount;
+    amount = amount == '' ? 0 : amount;
 
     return new Intl.NumberFormat(localeName, {
-      style: "currency",
+      style: 'currency',
       currency: currencyCode,
     }).format(amount);
   },
 
   currencyReplace: (amount) => {
-    return amount.replace("₫", "").replaceAll(".", "").trim();
+    return amount.replace('₫', '').replaceAll('.', '').trim();
   },
 
   currencyFloat: (amount) => {
-    return parseFloat(amount.replace(".", ""));
+    return parseFloat(amount.replace('.', ''));
   },
 
   formatNameAvt: (name) => {
-    if (name && name.trim() !== "") {
-      const nameParts = name.trim().split(" ");
-      const firstNameInitial = nameParts[0]?.[0] || " ";
-      const lastNameInitial = nameParts[1]?.[0] || " ";
+    if (name && name.trim() !== '') {
+      const nameParts = name.trim().split(' ');
+      const firstNameInitial = nameParts[0]?.[0] || ' ';
+      const lastNameInitial = nameParts[1]?.[0] || ' ';
       return `${firstNameInitial}${lastNameInitial}`;
     }
-    return "NA"; // or any other default value you prefer
+    return 'NA'; // or any other default value you prefer
   },
 
   ticketNo: (apptId) => {
     apptId = apptId.toString();
 
-    const lastIndex = apptId.lastIndexOf("000");
+    const lastIndex = apptId.lastIndexOf('000');
 
     if (lastIndex === -1) {
       // Pattern not found
-      return "#" + apptId;
+      return '#' + apptId;
     }
 
-    return "#" + apptId.substring(lastIndex + 3);
+    return '#' + apptId.substring(lastIndex + 3);
   },
 
   isValidUrl: (url) => {
@@ -384,13 +372,13 @@ const formatJS = {
 
     // Regular expression pattern to validate URL
     const urlPattern = new RegExp(
-      "^(https?:\\/\\/)?" + // Protocol
-        "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // Domain name
-        "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR IP address
-        "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // Port and path
-        "(\\?[;&a-z\\d%_.~+=-]*)?" + // Query string
-        "(\\#[-a-z\\d_]*)?$",
-      "i"
+      '^(https?:\\/\\/)?' + // Protocol
+        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // Domain name
+        '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR IP address
+        '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // Port and path
+        '(\\?[;&a-z\\d%_.~+=-]*)?' + // Query string
+        '(\\#[-a-z\\d_]*)?$',
+      'i'
     ); // Fragment locator
 
     return urlPattern.test(url);
@@ -404,11 +392,93 @@ const formatJS = {
     $this.val(phone);
 
     if (value.length >= 16) {
-      $this.parent().find("button.send").removeClass("disable");
+      $this.parent().find('button.send').removeClass('disable');
     } else {
-      $this.parent().find("button.send").addClass("disable");
+      $this.parent().find('button.send').addClass('disable');
     }
   },
+};
+
+// Popover handle
+var popupCustom = (
+  $element,
+  contentHtml,
+  quantity = 1,
+  callback = null,
+  addClass = '',
+  position = 'right', // or 'bottom'
+  spaceX = 0,
+  spaceY = 0,
+  widthRatio = 1 // độ rộng popup so với đối tượng click
+) => {
+  if (quantity === 1) {
+    $('.popup-container').remove();
+  }
+
+  var $popupContainer = $(
+    `<div class="popup-container ${addClass}" id="popup-container-custom-id"></div>`
+  );
+
+  var $popupContent = $('<div class="popup-content"></div>').html(contentHtml);
+  $popupContainer.append($popupContent);
+  $('body').append($popupContainer);
+
+  $popupContainer.css({
+    top: '-9999px',
+    left: '-9999px',
+    display: 'block',
+    position: 'absolute',
+    width: $element.outerWidth() * widthRatio, // ✅ set width theo tỷ lệ
+  });
+
+  var popupWidth = $popupContainer.outerWidth();
+  var popupHeight = $popupContainer.outerHeight();
+
+  var elementOffset = $element.offset();
+  var elementWidth = $element.outerWidth();
+  var elementHeight = $element.outerHeight();
+
+  let popupLeft = 0;
+  let popupTop = 0;
+
+  if (position === 'right') {
+    popupLeft = elementOffset.left + elementWidth + spaceX;
+    popupTop = elementOffset.top + spaceY;
+  } else if (position === 'bottom') {
+    popupLeft = elementOffset.left + spaceX;
+    popupTop = elementOffset.top + elementHeight + spaceY;
+  }
+
+  var screenWidth = $(window).width();
+  var screenHeight = $(window).height();
+
+  if (popupLeft + popupWidth > screenWidth) {
+    popupLeft = Math.max(screenWidth - popupWidth - 10, 0);
+  }
+  if (popupTop + popupHeight > screenHeight) {
+    popupTop = Math.max(screenHeight - popupHeight - 10, 0);
+  }
+
+  $popupContainer.css({
+    left: popupLeft,
+    top: popupTop,
+    position: 'absolute',
+    display: 'none',
+    opacity: 1,
+  });
+
+  $popupContainer.fadeIn();
+
+  $(document).on('click.popupCustom', function (event) {
+    if (
+      !$(event.target).closest('.popup-container').length &&
+      !$(event.target).closest('.toggle-select').length
+    ) {
+      $popupContainer.remove();
+      if (typeof callback === 'function') callback('hidden');
+      $(document).off('click.popupCustom');
+    }
+  });
 };
 
 // Main
@@ -417,60 +487,60 @@ const onlineStore = {
     const dataTemplates = [
       {
         id: 1,
-        imageLink: "/assets/images/retro.png",
-        titleItem: "Restro",
-        subTitleItem: "Classic and modern style",
+        imageLink: '/assets/images/retro.png',
+        titleItem: 'Restro',
+        subTitleItem: 'Classic and modern style',
       },
       {
         id: 2,
-        imageLink: "/assets/images/pastel.png",
-        titleItem: "Pastel",
-        subTitleItem: "Popular style",
+        imageLink: '/assets/images/pastel.png',
+        titleItem: 'Pastel',
+        subTitleItem: 'Popular style',
       },
       {
         id: 1,
-        imageLink: "/assets/images/neon.jpg",
-        titleItem: "Neon",
-        subTitleItem: "Classic and modern style",
+        imageLink: '/assets/images/neon.jpg',
+        titleItem: 'Neon',
+        subTitleItem: 'Classic and modern style',
       },
       {
         id: 1,
-        imageLink: "/assets/images/vintage.png",
-        titleItem: "Vintage",
-        subTitleItem: "Classic and modern style",
+        imageLink: '/assets/images/vintage.png',
+        titleItem: 'Vintage',
+        subTitleItem: 'Classic and modern style',
       },
       {
         id: 5,
-        imageLink: "/assets/images/retro.png",
-        titleItem: "Restro",
-        subTitleItem: "Classic and modern style",
+        imageLink: '/assets/images/retro.png',
+        titleItem: 'Restro',
+        subTitleItem: 'Classic and modern style',
       },
       {
         id: 6,
-        imageLink: "/assets/images/pastel.png",
-        titleItem: "Pastel",
-        subTitleItem: "Popular style",
+        imageLink: '/assets/images/pastel.png',
+        titleItem: 'Pastel',
+        subTitleItem: 'Popular style',
       },
       {
         id: 7,
-        imageLink: "/assets/images/neon.jpg",
-        titleItem: "Neon",
-        subTitleItem: "Classic and modern style",
+        imageLink: '/assets/images/neon.jpg',
+        titleItem: 'Neon',
+        subTitleItem: 'Classic and modern style',
       },
       {
         id: 8,
-        imageLink: "/assets/images/vintage.png",
-        titleItem: "Vintage",
-        subTitleItem: "Classic and modern style",
+        imageLink: '/assets/images/vintage.png',
+        titleItem: 'Vintage',
+        subTitleItem: 'Classic and modern style',
       },
     ];
     const dataTable = {
       header: [
         {
-          label: "Name",
-          key: "name",
+          label: 'Name',
+          key: 'name',
           sort: false,
-          type: "STRING",
+          type: 'STRING',
           icon: null,
           style: {
             color: null,
@@ -478,22 +548,22 @@ const onlineStore = {
           },
         },
         {
-          label: "Domain",
-          key: "domain",
+          label: 'Domain',
+          key: 'domain',
           sort: false,
-          type: "LINK",
+          type: 'LINK',
           color: null,
           style: {
             color: null,
             background: null,
           },
-          class: "",
+          class: '',
         },
         {
-          label: "Create date",
-          key: "createDate",
+          label: 'Create date',
+          key: 'createDate',
           sort: true,
-          type: "DATE",
+          type: 'DATE',
           icon: `
                             <svg class="icon-sort-date" xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21" fill="none" >
                                 <path class="sort-up-1" d="M9.37188 5.66052L6.27185 2.56055L3.17188 5.66052" stroke="#747474" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
@@ -506,66 +576,66 @@ const onlineStore = {
             color: null,
             background: null,
           },
-          class: "header-date",
+          class: 'header-date',
         },
         {
-          label: "Status",
-          key: "status",
+          label: 'Status',
+          key: 'status',
           sort: false,
-          type: "STATUS",
+          type: 'STATUS',
           icon: null,
           style: {
             color: null,
             background: null,
           },
-          class: "",
+          class: '',
         },
       ],
       body: [
         {
-          id: "1",
+          id: '1',
           name: {
-            text: "Retro",
-            class: "name-item",
+            text: 'Retro',
+            class: 'name-item',
           },
           domain: {
-            text: "http://www.websiteretro.com",
-            class: "domain-item",
+            text: 'http://www.websiteretro.com',
+            class: 'domain-item',
           },
           createDate: {
-            text: "May 15, 2025",
-            class: "date-item",
+            text: 'May 15, 2025',
+            class: 'date-item',
           },
           status: {
-            text: "Public",
-            class: "status-item public",
+            text: 'Public',
+            class: 'status-item public',
             style: {
-              color: "white",
-              background: "#45C65A",
+              color: 'white',
+              background: '#45C65A',
             },
             icon: `<i class="fa-solid fa-ellipsis-vertical"></i>`,
           },
         },
         {
-          id: "2",
+          id: '2',
           name: {
-            text: "Pastel",
-            class: "name-item",
+            text: 'Pastel',
+            class: 'name-item',
           },
           domain: {
-            text: "http://www.websiteretro.com",
-            class: "domain-item",
+            text: 'http://www.websiteretro.com',
+            class: 'domain-item',
           },
           createDate: {
-            text: "May 20, 2025",
-            class: "date-item",
+            text: 'May 20, 2025',
+            class: 'date-item',
           },
           status: {
-            text: "Draft",
-            class: "status-item draft",
+            text: 'Draft',
+            class: 'status-item draft',
             style: {
-              color: "white",
-              background: "#45C65A",
+              color: 'white',
+              background: '#45C65A',
             },
             icon: `<i class="fa-solid fa-ellipsis-vertical"></i>`,
           },
@@ -574,192 +644,190 @@ const onlineStore = {
     };
     const configThemeColor = {
       config: {
-        width: "36",
-        height: "36",
-        borderRadius: "6",
+        width: '36',
+        height: '36',
+        borderRadius: '6',
       },
       colorTheme: [
         {
-          color: "#4D0000",
+          color: '#4D0000',
           active: false,
           isFirst: true,
         },
         {
-          color: "#520000",
+          color: '#520000',
           active: true,
         },
-        { color: "#5C0000", active: false },
-        { color: "#D0B0B0", active: false },
-        { color: "#E8D9D9", active: true, isSendcond: true },
-        { color: "#F0E6E6", active: false },
-        { color: "#E2CAC1", active: false },
-        { color: "#565656", active: false },
-        { color: "#6F6F6F", active: false },
-        { color: "#949494", active: false },
-        { color: "#B7AA9B", active: false },
-        { color: "#C3B6A6", active: false },
-        { color: "#DCCCBA", active: false },
-        { color: "#F4E3CF", active: false },
-        { color: "#FEFCFA", active: false },
+        { color: '#5C0000', active: false },
+        { color: '#D0B0B0', active: false },
+        { color: '#E8D9D9', active: true, isSendcond: true },
+        { color: '#F0E6E6', active: false },
+        { color: '#E2CAC1', active: false },
+        { color: '#565656', active: false },
+        { color: '#6F6F6F', active: false },
+        { color: '#949494', active: false },
+        { color: '#B7AA9B', active: false },
+        { color: '#C3B6A6', active: false },
+        { color: '#DCCCBA', active: false },
+        { color: '#F4E3CF', active: false },
+        { color: '#FEFCFA', active: false },
       ],
     };
 
     const info = [
       {
-        value: "Nailvibe It is time to relax !",
+        value: 'Nailvibe It is time to relax !',
         style: [],
-        type: "INPUT",
+        type: 'INPUT',
       },
       {
         value: `We hope that your visit will be a relaxing and wonderful experience.
                 Please do not hesitate to share your opinions with the salon manager
                 so that your next visit at MIA will be an even better experience.`,
         style: [],
-        type: "TEXTAREA",
+        type: 'TEXTAREA',
       },
     ];
 
     const sideInfo = [
       {
-        content: "Show All",
+        content: 'Show All',
         action: {
-          type: "TOGGLE",
-          defaultValue: "",
+          type: 'TOGGLE',
+          defaultValue: '',
         },
         // style: {
         //   justify: "space-between",
         // },
       },
       {
-        content: "Promotion",
+        content: 'Promotion',
         action: {
-          type: "TOGGLE",
-          defaultValue: "",
+          type: 'TOGGLE',
+          defaultValue: '',
         },
         style: {
-          justify: "space-between",
+          justify: 'space-between',
         },
       },
     ];
 
     const banner = [
       {
-        content: "Flash.png",
+        content: 'Flash.png',
         action: {
-          type: "TOGGLE",
-          defaultValue: "",
+          type: 'TOGGLE',
+          defaultValue: '',
         },
         style: {
-          justify: "space-between",
+          justify: 'space-between',
         },
       },
       {
-        content: "GiftCard.png",
+        content: 'GiftCard.png',
         action: {
-          type: "TOGGLE",
-          defaultValue: "",
+          type: 'TOGGLE',
+          defaultValue: '',
         },
         style: {
-          justify: "space-between",
+          justify: 'space-between',
         },
       },
       {
-        content: "E-Gift.png",
+        content: 'E-Gift.png',
         action: {
-          type: "TOGGLE",
-          defaultValue: "",
+          type: 'TOGGLE',
+          defaultValue: '',
         },
         style: {
-          justify: "space-between",
+          justify: 'space-between',
         },
       },
       {
-        content: "Unlock.png",
+        content: 'Unlock.png',
         action: {
-          type: "TOGGLE",
-          defaultValue: "",
+          type: 'TOGGLE',
+          defaultValue: '',
         },
         style: {
-          justify: "space-between",
+          justify: 'space-between',
         },
       },
     ];
 
     const giftCard = {
       item: {
-        content: "Active Gift Card",
+        content: 'Active Gift Card',
         action: {
-          type: "TOGGLE",
-          defaultValue: "",
+          type: 'TOGGLE',
+          defaultValue: '',
         },
         style: {
-          justify: "space-between",
+          justify: 'space-between',
         },
       },
       body: {
-        title: "Link:",
-        content:
-          "https://manage2.mangoforsalon.com/nextview/membership-settings?salon_id=abc",
+        title: 'Link:',
+        content: 'https://manage2.mangoforsalon.com/nextview/membership-settings?salon_id=abc',
         iconBody: `<i class="fa-solid fa-eye-slash toggle-visibility"></i>`,
         icon: {
           value: `<i class="fa-regular fa-copy"></i>`,
-          style: "",
+          style: '',
         },
-        style: "",
+        style: '',
       },
       button: {
-        content: "Custom Gift Card",
-        style: "",
+        content: 'Custom Gift Card',
+        style: '',
       },
     };
 
     const membership = {
       item: {
-        content: "Active Membership",
+        content: 'Active Membership',
         action: {
-          type: "TOGGLE",
-          defaultValue: "",
+          type: 'TOGGLE',
+          defaultValue: '',
         },
         style: {
-          justify: "space-between",
+          justify: 'space-between',
         },
       },
       body: {
-        title: "Link:",
-        content:
-          "https://manage2.mangoforsalon.com/nextview/membership-settings?salon_id=abc",
+        title: 'Link:',
+        content: 'https://manage2.mangoforsalon.com/nextview/membership-settings?salon_id=abc',
         iconBody: `<i class="fa-solid fa-eye-slash toggle-visibility"></i>`,
         icon: {
           value: `<i class="fa-regular fa-copy"></i>`,
-          style: "",
+          style: '',
         },
-        style: "",
+        style: '',
       },
       button: {
-        content: "Custom Membership",
-        style: "",
+        content: 'Custom Membership',
+        style: '',
       },
     };
 
     const social = [
       {
-        content: "Google",
+        content: 'Google',
         action: {
-          type: "TOGGLE",
-          defaultValue: "",
+          type: 'TOGGLE',
+          defaultValue: '',
         },
         style: {
-          justify: "space-between",
+          justify: 'space-between',
         },
       },
       {
-        content: "App Store",
+        content: 'App Store',
         action: {
-          type: "TOGGLE",
-          defaultValue: "",
+          type: 'TOGGLE',
+          defaultValue: '',
         },
         style: {
-          justify: "space-between",
+          justify: 'space-between',
         },
       },
     ];
@@ -773,25 +841,23 @@ const onlineStore = {
               <path fill-rule="evenodd" clip-rule="evenodd" d="M21.8448 11.4691C19.8328 11.4681 18.0008 9.63605 18.0008 7.62305V6.87305H16.5008V7.62305C16.5008 9.10005 17.1758 10.4801 18.2198 11.4691L13.4219 11.469V12.969L18.2198 12.9691C17.1758 13.9581 16.5008 15.3371 16.5008 16.8141V17.5641H18.0008V16.8141C18.0008 14.8021 19.8338 12.9691 21.8458 12.9691H22.5958V11.4691H21.8448Z" fill="#E27303" />
           </svg>
           `,
-          value: "Manicure 1",
+          value: 'Manicure 1',
           iconRight: `
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="19" viewBox="0 0 18 19" fill="none">
-              <path d="M14.9425 6.77344L10.0525 11.6634C9.475 12.2409 8.53 12.2409 7.9525 11.6634L3.0625 6.77344" stroke="black" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
+            <i class="fa-solid fa-chevron-down rotate-transition"></i>
           `,
           listItem: [
             {
-              title: "Essential Pedicure 1",
-              subTitle: "Hydrating Pedi Salt Soak 1",
-              priceRental: "$45",
-              timetext: "40min",
+              title: 'Essential Pedicure 1',
+              subTitle: 'Hydrating Pedi Salt Soak 1',
+              priceRental: '$45',
+              timetext: '40min',
               userSelected: {},
             },
             {
-              title: "Essential Pedicure 2",
-              subTitle: "Hydrating Pedi Salt Soak 1",
-              priceRental: "$45",
-              timetext: "40min",
+              title: 'Essential Pedicure 2',
+              subTitle: 'Hydrating Pedi Salt Soak 1',
+              priceRental: '$45',
+              timetext: '40min',
               userSelected: {},
             },
           ],
@@ -805,25 +871,23 @@ const onlineStore = {
               <path fill-rule="evenodd" clip-rule="evenodd" d="M21.8448 11.4691C19.8328 11.4681 18.0008 9.63605 18.0008 7.62305V6.87305H16.5008V7.62305C16.5008 9.10005 17.1758 10.4801 18.2198 11.4691L13.4219 11.469V12.969L18.2198 12.9691C17.1758 13.9581 16.5008 15.3371 16.5008 16.8141V17.5641H18.0008V16.8141C18.0008 14.8021 19.8338 12.9691 21.8458 12.9691H22.5958V11.4691H21.8448Z" fill="#E27303" />
           </svg>
           `,
-          value: "Manicure 2",
+          value: 'Manicure 2',
           iconRight: `
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="19" viewBox="0 0 18 19" fill="none">
-              <path d="M14.9425 6.77344L10.0525 11.6634C9.475 12.2409 8.53 12.2409 7.9525 11.6634L3.0625 6.77344" stroke="black" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
+          <i class="fa-solid fa-chevron-down rotate-transition"></i>
           `,
           listItem: [
             {
-              title: "Essential Pedicure 1",
-              subTitle: "Hydrating Pedi Salt Soak 1",
-              priceRental: "$45",
-              timetext: "40min",
+              title: 'Essential Pedicure 1',
+              subTitle: 'Hydrating Pedi Salt Soak 1',
+              priceRental: '$45',
+              timetext: '40min',
               userSelected: {},
             },
             {
-              title: "Essential Pedicure 2",
-              subTitle: "Hydrating Pedi Salt Soak 1",
-              priceRental: "$45",
-              timetext: "40min",
+              title: 'Essential Pedicure 2',
+              subTitle: 'Hydrating Pedi Salt Soak 1',
+              priceRental: '$45',
+              timetext: '40min',
               userSelected: {},
             },
           ],
@@ -832,79 +896,111 @@ const onlineStore = {
     ];
     const listUser = [
       {
-        id: "default",
-        avatar: "",
-        name: "Next Available",
+        id: 'default',
+        avatar: '/assets/images/listUser/userAvailable.png',
+        name: 'Next Available',
       },
       {
-        id: "1",
-        avatar: "",
-        name: "Lily",
+        id: '1',
+        avatar: '/assets/images/listUser/avatar1.png',
+        name: 'Lily',
       },
       {
-        id: "2",
-        avatar: "",
-        name: "Savananah",
+        id: '2',
+        avatar: '/assets/images/listUser/avatar1.png',
+        name: 'Savananah',
       },
     ];
 
+    const dataPageMembership = {
+      intro: { stepCur: 1, stepEnd: 3 },
+      itemPlan: {
+        id: 1,
+        rank: 'Bronze',
+        title: 'Save Every Time You Visit',
+        subtitle:
+          'Perfect For: Regular clients who want quick, affordable services with solid savings.',
+        price: '$79',
+        timeDura: '3 Month',
+        iconPolicy: `
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M11.4382 2.92495L12.9048 5.85828C13.1048 6.26662 13.6382 6.65828 14.0882 6.73328L16.7465 7.17495C18.4465 7.45828 18.8465 8.69162 17.6215 9.90828L15.5548 11.975C15.2048 12.325 15.0132 13 15.1215 13.4833L15.7132 16.0416C16.1798 18.0666 15.1048 18.85 13.3132 17.7916L10.8215 16.3166C10.3715 16.05 9.62984 16.05 9.17151 16.3166L6.67984 17.7916C4.89651 18.85 3.81317 18.0583 4.27984 16.0416L4.87151 13.4833C4.97984 13 4.78817 12.325 4.43817 11.975L2.37151 9.90828C1.15484 8.69162 1.54651 7.45828 3.24651 7.17495L5.90484 6.73328C6.34651 6.65828 6.87984 6.26662 7.07984 5.85828L8.54651 2.92495C9.34651 1.33328 10.6465 1.33328 11.4382 2.92495Z" fill="url(#paint0_linear_1973_42991)"/>
+          <defs>
+            <linearGradient id="paint0_linear_1973_42991" x1="1.99609" y1="1.99976" x2="17.9961" y2="17.9998" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#FFF158"/>
+              <stop offset="1" stop-color="#FF8000"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        `,
+        itemPolicy: [
+          { content: '$10 off every visit (No minimum spend required)' },
+          { content: 'Unlimited free soak-offs with every nail service' },
+          { content: '$10 gel add-on (regular price: $20) for every visit' },
+          { content: 'Free Essential Pedi after every 5th visit (No restrictions)' },
+          { content: 'Referral Bonus: Get $20 credit for every friend who signs up (No limits)' },
+        ],
+        subEnd: 'Requires Treatment Package ($99/year)',
+      },
+    };
+
     // data fake local storage
     let dataWeb = {
-      logo: "",
+      logo: '',
       color: {
-        bgPrimary: "",
-        bgSecondary: "",
+        bgPrimary: '',
+        bgSecondary: '',
       },
       banner: [
         {
-          img: "",
+          img: '',
         },
       ],
       info: {
-        title: "",
-        desc: "",
+        title: '',
+        desc: '',
       },
       sideInfo: {
         promotion: {
-          img: "",
+          img: '',
           title: {
-            content: "",
-            icon: "",
+            content: '',
+            icon: '',
           },
           percent: {
             number: 15,
-            content: "",
+            content: '',
           },
           datetime: {
-            startTime: "",
-            endTime: "",
+            startTime: '',
+            endTime: '',
           },
         },
         storeInfo: {
-          nameStore: "",
+          nameStore: '',
           addressStore: {
-            icon: "",
-            content: "",
+            icon: '',
+            content: '',
           },
           scheduleWork: [
             {
-              dayOfWeek: "",
+              dayOfWeek: '',
               timeWork: {
-                startTime: "",
-                endTime: "",
+                startTime: '',
+                endTime: '',
               },
             },
           ],
         },
         policy: {
-          title: "",
+          title: '',
           listItem: [
             {
-              content: [{ text: "", style: "" }],
+              content: [{ text: '', style: '' }],
             },
           ],
         },
-        socialLink: "",
+        socialLink: '',
       },
     };
 
@@ -920,43 +1016,60 @@ const onlineStore = {
       social,
       listDataService,
       listUser,
+      dataPageMembership,
     };
   },
 };
 // * Function runder
-// templates render
-const renderItemTemplate = (item) => `
-    <div class="wrap-item-templates" data-id="${item.id}">
-        <div class="image-templates">
-            <img src="${item.imageLink}" alt="Image ${item.titleItem}" class="img-original" />
-        </div>
-        <div class="info-templates">
-            <p class="title-item-templates mb-0">${item.titleItem}</p>
-            <span class="subtitle-item-templates">${item.subTitleItem}</span>
-        </div>
-    </div>
-`;
+// ===== *BEGIN templates home render
+function renderTemplates($wrapList, dataTemplates, limit = null) {
+  $wrapList.empty();
+
+  const listToRender = limit ? dataTemplates.slice(0, limit) : dataTemplates;
+
+  for (let i = 0; i < listToRender.length; i += 4) {
+    const chunk = listToRender.slice(i, i + 4);
+    const $grid = $('<div class="gird-4"></div>');
+
+    chunk.forEach((item) => {
+      $grid.append(renderItemTemplate(item));
+    });
+
+    $wrapList.append($grid);
+  }
+}
+function renderItemTemplate(item) {
+  return `
+          <div class="wrap-item-templates" data-id="${item.id}">
+              <div class="image-templates">
+                  <img src="${item.imageLink}" alt="Image ${item.titleItem}" class="img-original" />
+              </div>
+              <div class="info-templates">
+                  <p class="title-item-templates mb-0">${item.titleItem}</p>
+                  <span class="subtitle-item-templates">${item.subTitleItem}</span>
+              </div>
+            </div>
+      `;
+}
 const renderHeader = (header) => {
   return `
                  <thead>
                     <tr>
                         ${header
                           .map((col) => {
-                            const icon = col.icon
-                              ? `<span class="mr-2">${col.icon}</span>`
-                              : "";
+                            const icon = col.icon ? `<span class="mr-2">${col.icon}</span>` : '';
                             return `
                                                     <th class="${
-                                                      col.class ? col.class : ""
+                                                      col.class ? col.class : ''
                                                     } text-uppercase px-4 py-3 ${
-                              col.type === "STATUS" ? "col-small" : "col-large"
+                              col.type === 'STATUS' ? 'col-small' : 'col-large'
                             }">
                                     <span>${col.label}</span>
                                     ${icon}
                                 </th>
                             `;
                           })
-                          .join("")}
+                          .join('')}
                     </tr>
                 </thead>
         `;
@@ -986,7 +1099,7 @@ const renderBody = (body) => {
                             </tr>
                         `;
                       })
-                      .join("")}
+                      .join('')}
            </tbody>
         `;
 };
@@ -1030,6 +1143,8 @@ const renderItemTable = (header, body) => {
     `;
 };
 
+// ===== *END templates home render
+
 const renderColorTheme = (configThemeColor) => {
   const { config, colorTheme } = configThemeColor;
   return `
@@ -1051,20 +1166,20 @@ const renderColorTheme = (configThemeColor) => {
           </div>
         `;
           })
-          .join("")
+          .join('')
       }
     </div>
   `;
 };
 
 const renderInfo = (info) => {
-  if (!info || !Array.isArray(info)) return "";
+  if (!info || !Array.isArray(info)) return '';
 
   return info
     .map((item) => {
-      const type = item.type ? item.type : "INPUT";
+      const type = item.type ? item.type : 'INPUT';
       const value = item.value;
-      if (type === "TEXTAREA") {
+      if (type === 'TEXTAREA') {
         return `
           <div class="option-item px-0">
             <textarea id="textarea-info" class="textarea-info">${value}</textarea>
@@ -1079,55 +1194,47 @@ const renderInfo = (info) => {
         </div>
       `;
     })
-    .join("");
+    .join('');
 };
 
 const renderSideInfor = (sideInfo) => {
-  if (!sideInfo || !Array.isArray(sideInfo)) return "";
+  if (!sideInfo || !Array.isArray(sideInfo)) return '';
 
   return sideInfo
     .map((item) => {
-      const justify = item.style?.justify || "";
-      const hasToggle = item.action?.type === "TOGGLE";
-      const isChecked =
-        item.action?.defaultValue === true ||
-        item.action?.defaultValue === "true";
+      const justify = item.style?.justify || '';
+      const hasToggle = item.action?.type === 'TOGGLE';
+      const isChecked = item.action?.defaultValue === true || item.action?.defaultValue === 'true';
 
       return `
       <div class="option-item" style="justify-content: ${justify}">
       <span>${item.content}</span>
         ${
           hasToggle
-            ? `<input type='checkbox' class='toggle-switch' ${
-                isChecked ? "checked" : ""
-              }/>`
-            : ""
+            ? `<input type='checkbox' class='toggle-switch' ${isChecked ? 'checked' : ''}/>`
+            : ''
         }
       </div>
     `;
     })
-    .join("");
+    .join('');
 };
 
 const renderBanner = (banner) => {
-  if (!banner || !Array.isArray(banner)) return "";
+  if (!banner || !Array.isArray(banner)) return '';
 
   return banner.map((item) => {
-    const justify = item.style.justify || "";
-    const hasToggle = item.action?.type === "TOGGLE";
+    const justify = item.style.justify || '';
+    const hasToggle = item.action?.type === 'TOGGLE';
 
-    const isChecked =
-      item.action?.defaultValue === true ||
-      item.action?.defaultValue === "true";
+    const isChecked = item.action?.defaultValue === true || item.action?.defaultValue === 'true';
 
     return `
       <div class="option-item" style="justify-content: ${justify}">
         <span>${item.content}</span>
         ${
           hasToggle &&
-          `<input type='checkbox' class='toggle-switch' ${
-            isChecked ? "checked" : ""
-          } />`
+          `<input type='checkbox' class='toggle-switch' ${isChecked ? 'checked' : ''} />`
         }
       </div>
     `;
@@ -1136,11 +1243,10 @@ const renderBanner = (banner) => {
 
 const renderGiftCardAndMembership = (dataCard) => {
   const item = dataCard.item;
-  const justify = item.style?.justify || "";
-  const hasToggle = item.action?.type === "TOGGLE";
+  const justify = item.style?.justify || '';
+  const hasToggle = item.action?.type === 'TOGGLE';
 
-  const isChecked =
-    item.action?.defaultValue === true || item.action?.defaultValue === "true";
+  const isChecked = item.action?.defaultValue === true || item.action?.defaultValue === 'true';
 
   const body = dataCard.body;
   const button = dataCard.button;
@@ -1148,19 +1254,19 @@ const renderGiftCardAndMembership = (dataCard) => {
   return `
       <div class="option-content-item">
          <div class="option-item" style="justify-content: ${justify}">
-        <span>${item.content || "NAN"}</span>
+        <span>${item.content || 'NAN'}</span>
           ${
             hasToggle
-              ? `<input type='checkbox' class='toggle-switch' ${
-                  isChecked ? "checked" : ""
+              ? `<input id="toggle-membership" type='checkbox' class='toggle-switch' ${
+                  isChecked ? 'checked' : ''
                 }/>`
-              : ""
+              : ''
           }
         </div>
         <div class="wrap-link mt-3">
           <div class="label-link">
-            <span class="mr-1">${body.title || "NAN"}</span>
-            ${body.iconBody || ""}
+            <span class="mr-1">${body.title || 'NAN'}</span>
+            ${body.iconBody || ''}
           </div>
 
           <div class="link-container">
@@ -1168,13 +1274,11 @@ const renderGiftCardAndMembership = (dataCard) => {
 ${body.content}
             </textarea>
             <button class="btn-copy" title="Copy">
-              ${body.icon.value || ""}
+              ${body.icon.value || ''}
             </button>
           </div>
           <div class="d-flex justify-content-center align-items-center">
-            <button class="btn-custom-membership mt-3">${
-              button.content
-            }</button>
+            <button class="btn-custom-membership mt-3">${button.content}</button>
           </div>
 
         </div>
@@ -1182,30 +1286,508 @@ ${body.content}
   `;
 };
 
-const renderSocial = (social) => {
-  if (!social || !Array.isArray(social)) return "";
+function renderSocial(social) {
+  if (!social || !Array.isArray(social)) return '';
 
   return social.map((item) => {
-    const justify = item.style.justify || "";
-    const hasToggle = item.action?.type === "TOGGLE";
+    const justify = item.style.justify || '';
+    const hasToggle = item.action?.type === 'TOGGLE';
 
-    const isChecked =
-      item.action?.defaultValue === true ||
-      item.action?.defaultValue === "true";
+    const isChecked = item.action?.defaultValue === true || item.action?.defaultValue === 'true';
 
     return `
       <div class="option-item" style="justify-content: ${justify}">
         <span>${item.content}</span>
         ${
           hasToggle &&
-          `<input type='checkbox' class='toggle-switch' ${
-            isChecked ? "checked" : ""
-          } />`
+          `<input type='checkbox' class='toggle-switch' ${isChecked ? 'checked' : ''} />`
         }
       </div>
     `;
   });
-};
+}
+
+// PAGE MEMBERSHIP
+function renderPageMembership(dataPageMembership) {
+  return `
+    <div class="page-membership">
+      <div class="container-membership">
+        <div class="step-header">
+          <span class="text-step">Step 1 of 3</span>
+          <h2 class="title-step">Choose the plan that's right for you</h2>
+        </div>
+        <div class="slider-membership">
+          <div class="slider-track">
+            <div class="wrap-card-membership">
+              <div class="attrac">
+                <img src="/assets/images/page-membership/attractBuy.png" alt="image attract" class="image-attrac"/>
+              </div>
+              <div class="card-buy-membership">
+                <div class="wrap-rank">
+                  <h2 class="text-rank text-uppercase">Brone</h2>
+                </div>
+                <div class="title-cardbuy">
+                  <h2 class="title">Save Every Time You Visit</h2>
+                  <span class="sub-title-cardbuy">
+                    Perfect For: Regular clients who want quick, affordable services with solid savings.
+                  </span>
+                </div>
+                <div class="info-price">
+                  <span class="price-per">$79</span>
+                  <span class="text-per text-uppercase">Per 3 Month</span>
+                </div>
+              </div>
+              <div class="policy-card">
+                <div class="item-policy">
+                  <i class="fa-solid fa-star"></i>
+                  <span class="text-policy">
+                    $10 off every visit (No minimum spend required)
+                  </span>
+                </div>
+              </div>
+              <div class="wrap-button-buy">
+                <div class="more-detail">
+                  <button class="btn-more-detail text-uppercase">More detail</button>
+                </div>
+                <div class="buy-now">
+                  <button class="btn-buy-now text-uppercase">Buy now</button>
+                </div>
+              </div>
+            </div>
+            <div class="wrap-card-membership">
+              <div class="attrac">
+                <img src="/assets/images/page-membership/attractBuy.png" alt="image attract" class="image-attrac"/>
+              </div>
+              <div class="card-buy-membership">
+                <div class="wrap-rank">
+                  <h2 class="text-rank text-uppercase">Brone</h2>
+                </div>
+                <div class="title-cardbuy">
+                  <h2 class="title">Save Every Time You Visit</h2>
+                  <span class="sub-title-cardbuy">
+                    Perfect For: Regular clients who want quick, affordable services with solid savings.
+                  </span>
+                </div>
+                <div class="info-price">
+                  <span class="price-per">$79</span>
+                  <span class="text-per text-uppercase">Per 3 Month</span>
+                </div>
+              </div>
+              <div class="policy-card">
+                <div class="item-policy">
+                  <i class="fa-solid fa-star"></i>
+                  <span class="text-policy">
+                    $10 off every visit (No minimum spend required)
+                  </span>
+                </div>
+              </div>
+              <div class="wrap-button-buy">
+                <div class="more-detail">
+                  <button class="btn-more-detail text-uppercase">More detail</button>
+                </div>
+                <div class="buy-now">
+                  <button class="btn-buy-now text-uppercase">Buy now</button>
+                </div>
+              </div>
+            </div>
+            <div class="wrap-card-membership">
+              <div class="attrac">
+                <img src="/assets/images/page-membership/attractBuy.png" alt="image attract" class="image-attrac"/>
+              </div>
+              <div class="card-buy-membership">
+                <div class="wrap-rank">
+                  <h2 class="text-rank text-uppercase">Brone</h2>
+                </div>
+                <div class="title-cardbuy">
+                  <h2 class="title">Save Every Time You Visit</h2>
+                  <span class="sub-title-cardbuy">
+                    Perfect For: Regular clients who want quick, affordable services with solid savings.
+                  </span>
+                </div>
+                <div class="info-price">
+                  <span class="price-per">$79</span>
+                  <span class="text-per text-uppercase">Per 3 Month</span>
+                </div>
+              </div>
+              <div class="policy-card">
+                <div class="item-policy">
+                  <i class="fa-solid fa-star"></i>
+                  <span class="text-policy">
+                    $10 off every visit (No minimum spend required)
+                  </span>
+                </div>
+              </div>
+              <div class="wrap-button-buy">
+                <div class="more-detail">
+                  <button class="btn-more-detail text-uppercase">More detail</button>
+                </div>
+                <div class="buy-now">
+                  <button class="btn-buy-now text-uppercase">Buy now</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button class="slider-btn prev">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+          <button class="slider-btn next">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function initSliderMembership() {
+  const container = document.querySelector('.slider-membership');
+  const track = document.querySelector('.slider-track');
+  const cards = document.querySelectorAll('.wrap-card-membership');
+  const prevBtn = document.querySelector('.slider-btn.prev');
+  const nextBtn = document.querySelector('.slider-btn.next');
+  console.log('card: ', cards);
+  if (!cards.length) return;
+
+  const cardWidth = cards[0].offsetWidth + 16;
+  console.log('cardWidth: ', cardWidth);
+  const visibleWidth = container.offsetWidth;
+  let currentOffset = 0;
+
+  function updateButtons() {
+    const maxOffset = track.scrollWidth - visibleWidth;
+    prevBtn.style.display = currentOffset <= 0 ? 'none' : 'block';
+    nextBtn.style.display = currentOffset >= maxOffset ? 'none' : 'block';
+  }
+
+  function moveSlider(direction) {
+    const maxOffset = track.scrollWidth - visibleWidth;
+    if (direction === 'next') {
+      currentOffset = Math.min(currentOffset + cardWidth, maxOffset);
+    } else {
+      currentOffset = Math.max(currentOffset - cardWidth, 0);
+    }
+    track.style.transform = `translateX(-${currentOffset}px)`;
+    updateButtons();
+  }
+
+  prevBtn.addEventListener('click', () => moveSlider('prev'));
+  nextBtn.addEventListener('click', () => moveSlider('next'));
+  updateButtons();
+}
+
+function renderSettingsPopup() {
+  const $overlay = $('<div class="settings-overlay"></div>');
+  const onlineBookingTabContent = `
+      <div class="online-booking-settings">
+        <div class="toggle-group px-3">
+          <label class="">
+            <span class="bold-medium-16">Active Online Booking</span>
+          </label>
+          <input type="checkbox" class="toggle-switch" checked />
+        </div>
+
+        <div class="setting-block px-3">
+          <label class="custom-checkbox">
+              <input type="checkbox" />
+              <span class="checkmark"></span>
+              Confirm Online Booking
+          </label>
+          <div class="setting-sub">
+            <label>Min.(Hour) <input class="number-input bold-mid-14" type="number" value="1" /></label>
+          </div>
+        </div>
+
+        <div class="setting-block px-3">
+          <label class="custom-checkbox">
+              <input type="checkbox" />
+              <span class="checkmark"></span>
+              Confirm Online Booking
+          </label>
+          <div class="setting-sub">
+            <label class="w-100 d-flex justify-content-between align-items-center">
+              <label class="custom-checkbox">
+                  <input type="checkbox" />
+                  <span class="checkmark"></span>
+                  Online Booking Auto Confirm After (Minutes):
+              </label>
+              <input class="number-input bold-mid-14" type="number" value="1" />
+            </label>
+            <span class="time-frame-distance">
+              <span class="mr-1">- Time Frame Distance (Minutes)</span>
+              <input class="number-input bold-mid-14" type="number" value="15" />
+            </span>
+          </div>
+        </div>
+
+        <div class="setting-block px-3">
+          <label class="custom-checkbox">
+              <input type="checkbox" />
+              <span class="checkmark"></span>
+              Hide Price
+          </label>
+        </div>
+
+        <div class="setting-block px-3">
+          <label class="custom-checkbox">
+              <input type="checkbox" />
+              <span class="checkmark"></span>
+              Show Salon Phone When Don’t See Time
+          </label>
+        </div>
+
+        <div class="setting-block px-3">
+          <label class="custom-checkbox">
+                <input type="checkbox" checked/>
+                <span class="checkmark"></span>
+                Auto Assign No Request Appointment To Tech
+          </label>
+          <div class="setting-sub">
+            <label class="custom-checkbox">
+                <input type="checkbox" />
+                <span class="checkmark"></span>
+                Exclude Salon Appt When Auto Assign
+            </label>
+          </div>
+        </div>
+
+        <div class="setting-block px-3">
+          <label class="custom-checkbox">
+              <input type="checkbox" />
+              <span class="checkmark"></span>
+              Don’t Show Next Available
+          </label>
+        </div>
+
+        <div class="setting-block px-3">
+          <label class="custom-checkbox">
+              <input type="checkbox" />
+              <span class="checkmark"></span>
+              Required Client To Create Account To Book
+          </label>
+        </div>
+        <div class="deposit-section pb-3">
+          <div class="toggle-group pa-3">
+            <label>
+              <span class="bold-medium-16"  >Deposit</span>
+            </label>
+            <input type="checkbox" class="toggle-switch" checked />
+          </div>
+
+          <div class="radio-group px-3">
+            <label class="custom-radio">
+              <input type="radio" name="deposit" />
+              <span class="radio-circle"></span> $
+            </label>
+            <label class="custom-radio">
+              <input type="radio" name="deposit" checked />
+              <span class="radio-circle"></span> $
+            </label>
+            <input class="number-input bold-mid-14" type="number" value="10" />
+          </div>
+
+          <div class="setting-block px-3">
+            <label class="custom-checkbox">
+                <input type="checkbox" />
+                <span class="checkmark"></span>
+                Next Available Online Booking Appointments Allowed Within 1 Hour
+            </label>
+          </div>
+
+          <div class="tickets-sub">
+            <label>#Tickets <input class="number-input bold-mid-14" type="number" value="2" /></label>
+          </div>
+        </div>
+      </div>
+    `;
+
+  const membershipTabContent = `
+      <div class="membership-settings">
+        <div class="toggle-group px-3">
+          <label class="bold-medium-16">Active Membership</label>
+          <input type="checkbox" class="toggle-switch" checked />
+        </div>
+
+        <div class="wrap-link px-3 mt-3">
+          <div class="label-link">
+            <span class="mr-1">Link:</span>
+            <i class="fa-solid fa-eye-slash toggle-visibility"></i>
+          </div>
+
+          <div class="link-container">
+            <input class="membership-link" value="https://manage2.mangoforsalon.com/nextview/membership-settings?salon_id=abc" readonly >
+            </input>
+            <button class="btn-copy" title="Copy">
+              <i class="fa-regular fa-copy"></i>
+            </button>
+          </div>
+          <div class="d-flex justify-content-center align-items-center">
+            <button class="btn-custom-membership mt-3">Custom Membership</button>
+          </div>
+
+        </div>
+      </div>
+    `;
+
+  const giftCardTabContent = `
+      <div class="gift-card-settings">
+        <div class="setting-gift border-thin-bottom px-3 pt-2 pb-3">
+          <label class="bold-medium-16">Use Mango Gift Card System</label>
+          <input type="checkbox" class="toggle-switch" checked />
+        </div>
+
+        <div class="setting-gift border-thin-bottom px-3 pb-3">
+          <label class="bold-medium-14">Min Digit Re  quired For Gift Card</label>
+          <input type="number" class="number-input" value="05" />
+        </div>
+
+        <div class="setting-gift border-thin-bottom px-3 pb-3">
+          <label class="bold-medium-14">Giftcard will have default date before expired at (Month):</label>
+          <input type="number" class="number-input" value="0" />
+        </div>
+
+        <div class="setting-gift px-3 ">
+          <label class="bold-medium-16">Online Gift Card</label>
+          <input type="checkbox" class="toggle-switch" checked />
+        </div>
+        <div class="min-amount px-3">
+            <label class="bold-mid-14">Min Amount <input class="number-input bold-mid-14" type="number" value="2" /></label>
+          </div>
+
+        <div class="setting-block px-3">
+          <div class="d-flex gap-3 justify-content-center align-items-center mb-2">
+            <label class="custom-checkbox w-50">
+              <input type="checkbox" checked />
+              <span class="checkmark"></span>
+              Discount
+            </label>
+            <label class="custom-checkbox w-50">
+              <input type="checkbox" />
+              <span class="checkmark"></span>
+              Coupon
+            </label>
+          </div>
+
+          <div class="gift-card-pricing d-flex">
+            <div class="w-50 d-flex gap-24px pl-4">
+              <div class="pricing-box d-flex">
+                <div class="price-tag active">$</div>
+                <div class="percent-tag">10</div>
+              </div>
+              <div class="pricing-box d-flex">
+                <div class="price-tag">%</div>
+                <div class="percent-tag">0</div>
+              </div>
+            </div>
+            <div class="w-50 d-flex gap-24px pl-4">
+              <div class="pricing-box d-flex">
+                <div class="price-tag active">$</div>
+                <div class="percent-tag">10</div>
+              </div>
+              <div class="pricing-box d-flex">
+                <div class="price-tag">%</div>
+                <div class="percent-tag">15</div>
+              </div>
+            </div>
+          </div>
+
+          <label class="d-flex align-items-center justify-content-between">
+            Duration (day)
+            <input type="number" class="number-input ms-2" value="30" />
+          </label>
+
+          <div class="link-container">
+            <input class="membership-link" value="https://manage2.mangoforsalon.com/nextview/membership-settings?salon_id=abc" readonly ></input>
+            <button class="btn-copy" title="Copy"><i class="fa-regular fa-copy"></i></button>
+          </div>
+
+          <div class="d-flex justify-content-center align-items-center gap-4">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?data=https://manage2.mangoforsalon.com/nextview/membership-settings?salon_id=abc&size=100x100" alt="QR" width="104" height="104"/>
+            <div class="download-gift d-flex flex-column align-items-center">
+                <i class="fa-solid fa-download"></i>
+                <span>Download</span>
+              </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+  const $popup = $(`
+      <div class="popup-settings">
+        <div class="container-popup-settings">
+          <div class="settings-tabs">
+            <div class="btn-closepopup-setting">
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+            <div class="settings-tab thin-bold-18 active" data-tab="tab1">Online booking</div>
+            <div class="settings-tab thin-bold-18" data-tab="tab2">Membership</div>
+            <div class="settings-tab thin-bold-18" data-tab="tab3">Gift card</div>
+          </div>
+          <div class="settings-tab-content active" data-tab="tab1">
+            ${onlineBookingTabContent}
+          </div>
+          <div class="settings-tab-content" data-tab="tab2">
+            ${membershipTabContent}
+          </div>
+          <div class="settings-tab-content" data-tab="tab3">
+            ${giftCardTabContent}
+          </div>
+        </div>
+      </div>
+    `);
+
+  $('body').append($overlay).append($popup);
+
+  $overlay.addClass('active');
+  $popup.addClass('active');
+
+  // Handle tab switching
+  $('.settings-tab').on('click', function () {
+    const tab = $(this).data('tab');
+    $('.settings-tab').removeClass('active');
+    $('.settings-tab-content').removeClass('active');
+    $(this).addClass('active');
+    $(`.settings-tab-content[data-tab="${tab}"]`).addClass('active');
+  });
+  // Close popup when clicking close button
+  $('.btn-closepopup-setting').on('click', function () {
+    $overlay.remove();
+    $popup.remove();
+  });
+
+  // Close popup when clicking overlay
+  $overlay.on('click', function () {
+    $overlay.remove();
+    $popup.remove();
+  });
+
+  // ======== Sự kiện trên tab Online Booking
+  // Sự kiện trên tab Membership
+  $(document).on('click', '.btn-copy', function () {
+    const linkInput = $(this).siblings('.membership-link')[0];
+    linkInput.select();
+    linkInput.setSelectionRange(0, 99999); // For mobile devices
+    document.execCommand('copy');
+
+    // Optional: Show tooltip
+    $(this).attr('title', 'Copied!').tooltip('show');
+
+    // Reset tooltip after 1s
+    setTimeout(() => {
+      $(this).attr('title', 'Copy');
+    }, 1000);
+  });
+  $(document).on('click', '.toggle-visibility', function () {
+    const $icon = $(this);
+    const $input = $icon.closest('.wrap-link').find('.membership-link');
+
+    // Toggle input type: text <-> password
+    const isHidden = $input.attr('type') === 'password';
+    $input.attr('type', isHidden ? 'text' : 'password');
+
+    // Toggle icon class
+    $icon.toggleClass('fa-eye fa-eye-slash').attr('title', isHidden ? 'Hide Link' : 'Show Link');
+  });
+}
 
 // tính chiều cao templates
 function animateHeight($element, toExpand) {
@@ -1215,66 +1797,23 @@ function animateHeight($element, toExpand) {
   if (toExpand) {
     $element.css({ maxHeight: 0 });
     requestAnimationFrame(() => {
-      $element.css({ maxHeight: fullHeight + "px" });
+      $element.css({ maxHeight: fullHeight + 'px' });
     });
   } else {
-    $element.css({ maxHeight: fullHeight + "px" });
+    $element.css({ maxHeight: fullHeight + 'px' });
     requestAnimationFrame(() => {
       $element.css({ maxHeight: 324 });
     });
   }
 }
 
-$(document).ready(function () {
-  let isCollapsed = false;
-  const {
-    dataTemplates,
-    dataTable,
-    configThemeColor,
-    info,
-    sideInfo,
-    banner,
-    giftCard,
-    membership,
-    social,
-    listDataService,
-  } = onlineStore.load();
-  const $wrapList = $(".wrap-list-templates");
-  const $wrapContainerDeploy = $(".container-deploy");
-  $wrapContainerDeploy.empty();
+// ============= *BEGIN function template popup detail
+function showTemplatePopup(id, dataTemplates, listDataService) {
+  // Lấy dữ liệu template từ dataTemplates dựa trên id
+  const template = dataTemplates.find((item) => item.id === id);
 
-  function renderTemplates(limit = null) {
-    $wrapList.empty();
-
-    const listToRender = limit ? dataTemplates.slice(0, limit) : dataTemplates;
-
-    for (let i = 0; i < listToRender.length; i += 4) {
-      const chunk = listToRender.slice(i, i + 4);
-      const $grid = $('<div class="gird-4"></div>');
-
-      chunk.forEach((item) => {
-        $grid.append(renderItemTemplate(item));
-      });
-
-      $wrapList.append($grid);
-    }
-  }
-
-  // POPUP templates detail
-  $(document).on("click", ".image-templates", function () {
-    const id = $(this).closest(".wrap-item-templates").data("id");
-    if (id) {
-      showTemplatePopup(id);
-    }
-  });
-
-  function showTemplatePopup(id) {
-    // Lấy dữ liệu template từ dataTemplates dựa trên id
-    const { dataTemplates } = onlineStore.load();
-    const template = dataTemplates.find((item) => item.id === id);
-
-    // Tạo nội dung popup dựa trên template chi tiết
-    const popupContent = `
+  // Tạo nội dung popup dựa trên template chi tiết
+  const popupContent = `
         <div class="popup-overlay">
             <div class="popup-content">
                 <div class="popup-body">
@@ -1432,12 +1971,12 @@ Please do not hesitate to share your opinions with the salon manager so that you
                                         </div>
                                         <div class="left-nav-web">
                                             <div class="list-option">
-                                                <button class="text-uppercase">Fag</button>
-                                                <button class="text-uppercase">Membership</button>
-                                                <button class="text-uppercase">Services</button>
-                                                <button class="text-uppercase">Gift card</button>
-                                                <button class="text-uppercase option">About <i class="fa-solid fa-chevron-down"></i></button>
-                                                <button class="text-uppercase">Contact us</button>
+                                                <button id="page-fag" class="text-uppercase">Fag</button>
+                                                <button id="page-membership" class="text-uppercase">Membership</button>
+                                                <button id="page-service" class="text-uppercase">Services</button>
+                                                <button id="page-giftcard" class="text-uppercase">Gift card</button>
+                                                <button id="page-about" class="text-uppercase option">About <i class="fa-solid fa-chevron-down"></i></button>
+                                                <button id="page-contact-us" class="text-uppercase">Contact us</button>
                                             </div>
                                             <div class="cart-profile">
                                                 <button class="user">
@@ -1503,104 +2042,7 @@ Please do not hesitate to share your opinions with the salon manager so that you
                                         </div>
                                     </div>
                                     <div class="list-more">
-                                        <div class="more-item">
-                                            <div class="expend-title">
-                                              //iconLeft
-                                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
-                                                  <path fill-rule="evenodd" clip-rule="evenodd" d="M7.16625 11.4688H13.4263V2.46875H1.90625V21.9688H13.4263V12.9688H7.16625V11.4688Z" fill="#E27303" />
-                                                  <path fill-rule="evenodd" clip-rule="evenodd" d="M21.8448 11.4691C19.8328 11.4681 18.0008 9.63605 18.0008 7.62305V6.87305H16.5008V7.62305C16.5008 9.10005 17.1758 10.4801 18.2198 11.4691L13.4219 11.469V12.969L18.2198 12.9691C17.1758 13.9581 16.5008 15.3371 16.5008 16.8141V17.5641H18.0008V16.8141C18.0008 14.8021 19.8338 12.9691 21.8458 12.9691H22.5958V11.4691H21.8448Z" fill="#E27303" />
-                                              </svg>
-                                              //value
-                                              <p class="text-uppercase bold-medium-14 mb-0">Manicure</p>
-                                              //iconRight
-                                              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="19" viewBox="0 0 18 19" fill="none">
-                                                  <path d="M14.9425 6.77344L10.0525 11.6634C9.475 12.2409 8.53 12.2409 7.9525 11.6634L3.0625 6.77344" stroke="black" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
-                                              </svg>
-                                            </div>
-                                            //listItem
-                                            <div class="card-more">
-                                              <div class="top-card">
-                                                <div class="left-card">
-                                                //title
-                                                    <p class="bold-medium-14">Essential Pedicure</p>
-                                                //subTitle
-                                                    <p class="thin-mid-14">Hydrating Pedi Salt Soak</p>
-                                                </div>
-                                                <div class="right-card">
-                                                //priceRental
-                                                    <p class="bold-medium-20">$45</p>
-                                                    //timetext
-                                                    <p class="bold-mid-12">40min</p>
-                                                </div>
-                                              </div>
-                                              <div class="add-more">
-                                                <button class="btn-add-more">
-                                                    <i class="fa-solid fa-plus"></i>
-                                                </button>
-                                                <div class="wrap-select-user">
-                                                  <div class="icon-checked">
-                                                    <i class="fa-solid fa-check"></i>
-                                                  </div>
-                                                  <div class="toggle-select">
-                                                    <span>
-                                                      Tên người dùng đã chọn
-                                                    </span>
-                                                    <i class="fa-solid fa-chevron-down"></i>
-                                                    <div class="option-select-user">
-                                                     <div class="item-user">
-                                                       <div class="avatar-user">
-                                                        <img src="" alt="image user" class="img-user"/>
-                                                      </div>
-                                                      <span>Name user</span>
-                                                     </div>
-                                                    </div>
-                                                  </div>
-                                                </div>
-                                                <button class="btn-delete">
-                                                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
-                                                    <path d="M14 10.0605V17.0605M10 10.0605V17.0605M6 6.06055V17.8605C6 18.9807 6 19.5403 6.21799 19.9681C6.40973 20.3445 6.71547 20.651 7.0918 20.8428C7.5192 21.0605 8.07899 21.0605 9.19691 21.0605H14.8031C15.921 21.0605 16.48 21.0605 16.9074 20.8428C17.2837 20.651 17.5905 20.3445 17.7822 19.9681C18 19.5407 18 18.9816 18 17.8636V6.06055M6 6.06055H8M6 6.06055H4M8 6.06055H16M8 6.06055C8 5.12866 8 4.66295 8.15224 4.29541C8.35523 3.80535 8.74432 3.41578 9.23438 3.21279C9.60192 3.06055 10.0681 3.06055 11 3.06055H13C13.9319 3.06055 14.3978 3.06055 14.7654 3.21279C15.2554 3.41578 15.6447 3.80535 15.8477 4.29541C15.9999 4.66295 16 5.12867 16 6.06055M16 6.06055H18M18 6.06055H20" stroke="#ECB155" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                                  </svg>
-                                                </button>
-                                              </div>
-                                            </div>
-                                            <div class="card-more">
-                                              <div class="top-card">
-                                                <div class="left-card">
-                                                //title
-                                                    <p class="bold-medium-14">Essential Pedicure</p>
-                                                //subTitle
-                                                    <p class="thin-mid-14">Hydrating Pedi Salt Soak</p>
-                                                </div>
-                                                <div class="right-card">
-                                                //priceRental
-                                                    <p class="bold-medium-20">$45</p>
-                                                    //timetext
-                                                    <p class="bold-mid-12">40min</p>
-                                                </div>
-                                              </div>
-                                              <div class="add-more">
-                                                <button class="btn-add-more">
-                                                    <i class="fa-solid fa-plus"></i>
-                                                </button>
-                                                <div class="wrap-select-user">
-                                                  <div>
-                                                    <i class="fa-solid fa-check"></i>
-                                                  </div>
-                                                  <div>
-                                                    <span>
-                                                      Tên người dùng đã chọn
-                                                    </span>
-                                                    <i class="fa-solid fa-chevron-down"></i>
-                                                  </div>
-                                                </div>
-                                                <button class="btn-delete">
-                                                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
-                                                    <path d="M14 10.0605V17.0605M10 10.0605V17.0605M6 6.06055V17.8605C6 18.9807 6 19.5403 6.21799 19.9681C6.40973 20.3445 6.71547 20.651 7.0918 20.8428C7.5192 21.0605 8.07899 21.0605 9.19691 21.0605H14.8031C15.921 21.0605 16.48 21.0605 16.9074 20.8428C17.2837 20.651 17.5905 20.3445 17.7822 19.9681C18 19.5407 18 18.9816 18 17.8636V6.06055M6 6.06055H8M6 6.06055H4M8 6.06055H16M8 6.06055C8 5.12866 8 4.66295 8.15224 4.29541C8.35523 3.80535 8.74432 3.41578 9.23438 3.21279C9.60192 3.06055 10.0681 3.06055 11 3.06055H13C13.9319 3.06055 14.3978 3.06055 14.7654 3.21279C15.2554 3.41578 15.6447 3.80535 15.8477 4.29541C15.9999 4.66295 16 5.12867 16 6.06055M16 6.06055H18M18 6.06055H20" stroke="#ECB155" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                                  </svg>
-                                                </button>
-                                              </div>
-                                            </div>
-                                        </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -1611,403 +2053,347 @@ Please do not hesitate to share your opinions with the salon manager so that you
         </div>
     `;
 
-    // Thêm popup vào body
-    $("body").append(popupContent);
+  // Thêm popup vào body
+  $('body').append(popupContent);
 
-    // Xử lý sự kiện đóng popup
-    $(".icon-left-booking").on("click", function () {
-      $(".popup-overlay").remove();
-    });
-
-    // Đóng popup khi click bên ngoài
-    $(".popup-overlay").on("click", function (e) {
-      if (e.target === this) {
-        $(".popup-overlay").remove();
-      }
-    });
-
-    // Sự kiện bên trái template
-    $(document).on("click", ".item-option-change .btn-option", function () {
-      const $wrapItemOption = $(this).closest(".wrap-item-option");
-      const $optionContent = $wrapItemOption.find(".option-content");
-      const $icon = $(this).find("i");
-      const $itemOptionChange = $(this).parent(".item-option-change");
-      const $btnOption = $(this);
-
-      // Toggle UI
-      $optionContent.toggleClass("expanded");
-      $icon.toggleClass("fa-plus fa-minus");
-      $itemOptionChange.toggleClass("active");
-      $btnOption.toggleClass("active");
-      $btnOption.toggleClass("plus sub");
-
-      const renderMap = {
-        "option-theme-color": () => renderColorTheme(configThemeColor),
-        "option-info": () => renderInfo(info),
-        "option-side-info": () => renderSideInfor(sideInfo),
-        "option-banner": () => renderBanner(banner),
-        "option-gift-card": () => renderGiftCardAndMembership(giftCard),
-        "option-membership": () => renderGiftCardAndMembership(membership),
-        "option-social": () => renderSocial(social),
-      };
-
-      const id = $optionContent.attr("id");
-      const renderFn = renderMap[id];
-      const isEmpty =
-        $optionContent.children().length === 0 &&
-        $optionContent.text().trim() === "";
-      if (renderFn && isEmpty) {
-        const html = renderFn();
-        $optionContent.html(html);
-      }
-    });
-  }
-  // POPUP SETTING
-  // Settings Popup Logic
-  $(document).on("click", ".btn-setting", function () {
-    const $overlay = $('<div class="settings-overlay"></div>');
-    const onlineBookingTabContent = `
-      <div class="online-booking-settings">
-        <div class="toggle-group px-3">
-          <label class="">
-            <span class="bold-medium-16">Active Online Booking</span>
-          </label>
-          <input type="checkbox" class="toggle-switch" checked />
-        </div>
-
-        <div class="setting-block px-3">
-          <label class="custom-checkbox">
-              <input type="checkbox" />
-              <span class="checkmark"></span>
-              Confirm Online Booking
-          </label>
-          <div class="setting-sub">
-            <label>Min.(Hour) <input class="number-input bold-mid-14" type="number" value="1" /></label>
-          </div>
-        </div>
-
-        <div class="setting-block px-3">
-          <label class="custom-checkbox">
-              <input type="checkbox" />
-              <span class="checkmark"></span>
-              Confirm Online Booking
-          </label>
-          <div class="setting-sub">
-            <label class="w-100 d-flex justify-content-between align-items-center">
-              <label class="custom-checkbox">
-                  <input type="checkbox" />
-                  <span class="checkmark"></span>
-                  Online Booking Auto Confirm After (Minutes):
-              </label>
-              <input class="number-input bold-mid-14" type="number" value="1" />
-            </label>
-            <span class="time-frame-distance">
-              <span class="mr-1">- Time Frame Distance (Minutes)</span>
-              <input class="number-input bold-mid-14" type="number" value="15" />
-            </span>
-          </div>
-        </div>
-
-        <div class="setting-block px-3">
-          <label class="custom-checkbox">
-              <input type="checkbox" />
-              <span class="checkmark"></span>
-              Hide Price
-          </label>
-        </div>
-
-        <div class="setting-block px-3">
-          <label class="custom-checkbox">
-              <input type="checkbox" />
-              <span class="checkmark"></span>
-              Show Salon Phone When Don’t See Time
-          </label>
-        </div>
-
-        <div class="setting-block px-3">
-          <label class="custom-checkbox">
-                <input type="checkbox" checked/>
-                <span class="checkmark"></span>
-                Auto Assign No Request Appointment To Tech
-          </label>
-          <div class="setting-sub">
-            <label class="custom-checkbox">
-                <input type="checkbox" />
-                <span class="checkmark"></span>
-                Exclude Salon Appt When Auto Assign
-            </label>
-          </div>
-        </div>
-
-        <div class="setting-block px-3">
-          <label class="custom-checkbox">
-              <input type="checkbox" />
-              <span class="checkmark"></span>
-              Don’t Show Next Available
-          </label>
-        </div>
-
-        <div class="setting-block px-3">
-          <label class="custom-checkbox">
-              <input type="checkbox" />
-              <span class="checkmark"></span>
-              Required Client To Create Account To Book
-          </label>
-        </div>
-        <div class="deposit-section pb-3">
-          <div class="toggle-group pa-3">
-            <label>
-              <span class="bold-medium-16"  >Deposit</span>
-            </label>
-            <input type="checkbox" class="toggle-switch" checked />
-          </div>
-
-          <div class="radio-group px-3">
-            <label class="custom-radio">
-              <input type="radio" name="deposit" />
-              <span class="radio-circle"></span> $
-            </label>
-            <label class="custom-radio">
-              <input type="radio" name="deposit" checked />
-              <span class="radio-circle"></span> $
-            </label>
-            <input class="number-input bold-mid-14" type="number" value="10" />
-          </div>
-
-          <div class="setting-block px-3">
-            <label class="custom-checkbox">
-                <input type="checkbox" />
-                <span class="checkmark"></span>
-                Next Available Online Booking Appointments Allowed Within 1 Hour
-            </label>
-          </div>
-
-          <div class="tickets-sub">
-            <label>#Tickets <input class="number-input bold-mid-14" type="number" value="2" /></label>
-          </div>
-        </div>
-      </div>
-    `;
-
-    const membershipTabContent = `
-      <div class="membership-settings">
-        <div class="toggle-group px-3">
-          <label class="bold-medium-16">Active Membership</label>
-          <input type="checkbox" class="toggle-switch" checked />
-        </div>
-
-        <div class="wrap-link px-3 mt-3">
-          <div class="label-link">
-            <span class="mr-1">Link:</span>
-            <i class="fa-solid fa-eye-slash toggle-visibility"></i>
-          </div>
-
-          <div class="link-container">
-            <input class="membership-link" value="https://manage2.mangoforsalon.com/nextview/membership-settings?salon_id=abc" readonly >
-            </input>
-            <button class="btn-copy" title="Copy">
-              <i class="fa-regular fa-copy"></i>
-            </button>
-          </div>
-          <div class="d-flex justify-content-center align-items-center">
-            <button class="btn-custom-membership mt-3">Custom Membership</button>
-          </div>
-
-        </div>
-      </div>
-    `;
-
-    const giftCardTabContent = `
-      <div class="gift-card-settings">
-        <div class="setting-gift border-thin-bottom px-3 pt-2 pb-3">
-          <label class="bold-medium-16">Use Mango Gift Card System</label>
-          <input type="checkbox" class="toggle-switch" checked />
-        </div>
-
-        <div class="setting-gift border-thin-bottom px-3 pb-3">
-          <label class="bold-medium-14">Min Digit Re  quired For Gift Card</label>
-          <input type="number" class="number-input" value="05" />
-        </div>
-
-        <div class="setting-gift border-thin-bottom px-3 pb-3">
-          <label class="bold-medium-14">Giftcard will have default date before expired at (Month):</label>
-          <input type="number" class="number-input" value="0" />
-        </div>
-
-        <div class="setting-gift px-3 ">
-          <label class="bold-medium-16">Online Gift Card</label>
-          <input type="checkbox" class="toggle-switch" checked />
-        </div>
-        <div class="min-amount px-3">
-            <label class="bold-mid-14">Min Amount <input class="number-input bold-mid-14" type="number" value="2" /></label>
-          </div>
-
-        <div class="setting-block px-3">
-          <div class="d-flex gap-3 justify-content-center align-items-center mb-2">
-            <label class="custom-checkbox w-50">
-              <input type="checkbox" checked />
-              <span class="checkmark"></span>
-              Discount
-            </label>
-            <label class="custom-checkbox w-50">
-              <input type="checkbox" />
-              <span class="checkmark"></span>
-              Coupon
-            </label>
-          </div>
-
-          <div class="gift-card-pricing d-flex">
-            <div class="w-50 d-flex gap-24px pl-4">
-              <div class="pricing-box d-flex">
-                <div class="price-tag active">$</div>
-                <div class="percent-tag">10</div>
-              </div>
-              <div class="pricing-box d-flex">
-                <div class="price-tag">%</div>
-                <div class="percent-tag">0</div>
-              </div>
-            </div>
-            <div class="w-50 d-flex gap-24px pl-4">
-              <div class="pricing-box d-flex">
-                <div class="price-tag active">$</div>
-                <div class="percent-tag">10</div>
-              </div>
-              <div class="pricing-box d-flex">
-                <div class="price-tag">%</div>
-                <div class="percent-tag">15</div>
-              </div>
-            </div>
-          </div>
-
-          <label class="d-flex align-items-center justify-content-between">
-            Duration (day)
-            <input type="number" class="number-input ms-2" value="30" />
-          </label>
-
-          <div class="link-container">
-            <input class="membership-link" value="https://manage2.mangoforsalon.com/nextview/membership-settings?salon_id=abc" readonly ></input>
-            <button class="btn-copy" title="Copy"><i class="fa-regular fa-copy"></i></button>
-          </div>
-
-          <div class="d-flex justify-content-center align-items-center gap-4">
-            <img src="https://api.qrserver.com/v1/create-qr-code/?data=https://manage2.mangoforsalon.com/nextview/membership-settings?salon_id=abc&size=100x100" alt="QR" width="104" height="104"/>
-            <div class="download-gift d-flex flex-column align-items-center">
-                <i class="fa-solid fa-download"></i>
-                <span>Download</span>
-              </div>
-          </div>
-        </div>
-      </div>
-    `;
-
-    const $popup = $(`
-      <div class="popup-settings">
-        <div class="container-popup-settings">
-          <div class="settings-tabs">
-            <div class="btn-closepopup-setting">
-              <i class="fa-solid fa-xmark"></i>
-            </div>
-            <div class="settings-tab thin-bold-18 active" data-tab="tab1">Online booking</div>
-            <div class="settings-tab thin-bold-18" data-tab="tab2">Membership</div>
-            <div class="settings-tab thin-bold-18" data-tab="tab3">Gift card</div>
-          </div>
-          <div class="settings-tab-content active" data-tab="tab1">
-            ${onlineBookingTabContent}
-          </div>
-          <div class="settings-tab-content" data-tab="tab2">
-            ${membershipTabContent}
-          </div>
-          <div class="settings-tab-content" data-tab="tab3">
-            ${giftCardTabContent}
-          </div>
-        </div>
-      </div>
-    `);
-
-    $("body").append($overlay).append($popup);
-
-    $overlay.addClass("active");
-    $popup.addClass("active");
-
-    // Handle tab switching
-    $(".settings-tab").on("click", function () {
-      const tab = $(this).data("tab");
-      $(".settings-tab").removeClass("active");
-      $(".settings-tab-content").removeClass("active");
-      $(this).addClass("active");
-      $(`.settings-tab-content[data-tab="${tab}"]`).addClass("active");
-    });
-    // Close popup when clicking close button
-    $(".btn-closepopup-setting").on("click", function () {
-      $overlay.remove();
-      $popup.remove();
-    });
-
-    // Close popup when clicking overlay
-    $overlay.on("click", function () {
-      $overlay.remove();
-      $popup.remove();
-    });
-
-    // ======== Sự kiện trên tab Online Booking
-    // Sự kiện trên tab Membership
-    $(document).on("click", ".btn-copy", function () {
-      const linkInput = $(this).siblings(".membership-link")[0];
-      linkInput.select();
-      linkInput.setSelectionRange(0, 99999); // For mobile devices
-      document.execCommand("copy");
-
-      // Optional: Show tooltip
-      $(this).attr("title", "Copied!").tooltip("show");
-
-      // Reset tooltip after 1s
-      setTimeout(() => {
-        $(this).attr("title", "Copy");
-      }, 1000);
-    });
-    $(document).on("click", ".toggle-visibility", function () {
-      const $icon = $(this);
-      const $input = $icon.closest(".wrap-link").find(".membership-link");
-
-      // Toggle input type: text <-> password
-      const isHidden = $input.attr("type") === "password";
-      $input.attr("type", isHidden ? "text" : "password");
-
-      // Toggle icon class
-      $icon
-        .toggleClass("fa-eye fa-eye-slash")
-        .attr("title", isHidden ? "Hide Link" : "Show Link");
-    });
+  // Xử lý sự kiện đóng popup
+  $('.icon-left-booking').on('click', function () {
+    $('.popup-overlay').remove();
   });
 
-  // Sự kiện trên page home template
-  $(document).on("click", ".add-more .btn-add-more", function () {
-    console.log("this: ", $(this));
-    const $parentBtn = $(this).closest(".add-more");
-    $(this).hide();
-    const $selectUser = $parentBtn.find(".wrap-select-user");
-    console.log("selected: ", $selectUser);
-    const $btnDelete = $parentBtn.find(".btn-delete");
+  // Đóng popup khi click bên ngoài
+  $('.popup-overlay').on('click', function (e) {
+    if (e.target === this) {
+      $('.popup-overlay').remove();
+    }
+  });
 
-    $selectUser.css("display", "flex").hide().fadeIn();
+  //render service list
+  renderListService(listDataService);
+}
+
+// =============== * BEGIN template servive
+function renderListService(dataList, containerSelector = '.list-more') {
+  const $container = $(containerSelector);
+  $container.empty();
+
+  dataList.forEach(({ item }) => {
+    const $moreItem = $('<div class="more-item"></div>');
+
+    const $expandTitle = renderExpandTitle(item);
+    $moreItem.append($expandTitle);
+
+    const $listCards = item.listItem.map(renderServiceCard);
+    const $wrapper = $(`<div class="wrap-list-more"></div>`).append($listCards);
+    $moreItem.append($wrapper);
+
+    $container.append($moreItem);
+  });
+}
+
+function renderExpandTitle(item) {
+  const $title = $('<div class="expend-title"></div>');
+
+  $title.append(item.iconLeft);
+  $title.append(`<p class="text-uppercase bold-medium-14 mb-0">${item.value}</p>`);
+  $title.append(item.iconRight);
+
+  return $title;
+}
+
+function renderServiceCard(item) {
+  const $card = $('<div class="card-more"></div>');
+
+  const $top = $(`
+    <div class="top-card">
+      <div class="left-card">
+        <p class="bold-medium-14">${item.title}</p>
+        <p class="thin-mid-14">${item.subTitle}</p>
+      </div>
+      <div class="right-card">
+        <p class="bold-medium-20">${item.priceRental}</p>
+        <p class="bold-mid-12">${item.timetext}</p>
+      </div>
+    </div>
+  `);
+
+  const $listUser = $(
+    `
+      <div class="option-select-user">
+        ${renderSelectedUsers(item.userSelected)}
+      </div>
+    `
+  );
+
+  const $actions = renderActionButtons(item);
+  $card.append($top, $actions, $listUser);
+  return $card;
+}
+
+function renderActionButtons(item) {
+  const $wrap = $('<div class="add-more"></div>');
+
+  const $add = $(`
+    <button class="btn-add-more">
+      <i class="fa-solid fa-plus"></i>
+    </button>
+  `);
+
+  const $wrapSelect = $(`
+    <div class="wrap-select-user">
+      <div class="icon-checked">
+        <i class="fa-solid fa-check"></i>
+      </div>
+      <div class="toggle-select">
+        <span id="full-name-selected">Next Available</span>
+        <i class="fa-solid fa-chevron-down"></i>
+      </div>
+    </div>
+  `);
+
+  const $del = $(`
+    <button class="btn-delete">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
+        <path d="M14 10.0605V17.0605M10 10.0605V17.0605M6 6.06055V17.8605C6 18.9807 6 19.5403 6.21799 19.9681C6.40973 20.3445 6.71547 20.651 7.0918 20.8428C7.5192 21.0605 8.07899 21.0605 9.19691 21.0605H14.8031C15.921 21.0605 16.48 21.0605 16.9074 20.8428C17.2837 20.651 17.5905 20.3445 17.7822 19.9681C18 19.5407 18 18.9816 18 17.8636V6.06055M6 6.06055H8M6 6.06055H4M8 6.06055H16M8 6.06055C8 5.12866 8 4.66295 8.15224 4.29541C8.35523 3.80535 8.74432 3.41578 9.23438 3.21279C9.60192 3.06055 10.0681 3.06055 11 3.06055H13C13.9319 3.06055 14.3978 3.06055 14.7654 3.21279C15.2554 3.41578 15.6447 3.80535 15.8477 4.29541C15.9999 4.66295 16 5.12867 16 6.06055M16 6.06055H18M18 6.06055H20" stroke="#ECB155" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  `);
+
+  $wrap.append($add, $wrapSelect, $del);
+  return $wrap;
+}
+
+// Render danh sách user để chọn
+function renderUserOptions(users) {
+  return `
+    <div class="wrap-user">
+      ${users
+        .map(
+          (user) => `
+        <div class="item-user" data-id="${user.id}">
+          <div class="avatar-user">
+            <img src="${user.avatar}" alt="image ${user.name}" class="img-user" />
+          </div>
+          <span class="full-name">${user.name}</span>
+        </div>
+      `
+        )
+        .join('')}
+    </div>
+  `;
+}
+
+function renderSelectedUsers(userSelected) {
+  // Chưa có user thì return rỗng
+  if (!userSelected || Object.keys(userSelected).length === 0) return '';
+
+  const { name = 'Name user', image = '' } = userSelected;
+
+  return `
+    <div class="item-user">
+      <div class="avatar-user">
+        <img src="${image}" alt="image user" class="img-user"/>
+      </div>
+      <span>${name}</span>
+    </div>
+  `;
+}
+
+// =============== * END template servive
+
+$(document).ready(function () {
+  let isCollapsed = false;
+  const {
+    dataTemplates,
+    dataTable,
+    configThemeColor,
+    info,
+    sideInfo,
+    banner,
+    giftCard,
+    membership,
+    social,
+    listDataService,
+    listUser,
+    dataPageMembership,
+  } = onlineStore.load();
+  const $wrapList = $('.wrap-list-templates');
+  const $wrapContainerDeploy = $('.container-deploy');
+  $wrapContainerDeploy.empty();
+
+  // ======= *BEGIN POPUP templates detail
+  $(document).on('click', '.image-templates', function () {
+    const id = $(this).closest('.wrap-item-templates').data('id');
+    if (id) {
+      showTemplatePopup(id, dataTemplates, listDataService);
+    }
+  });
+
+  // **** Sự kiện bên trái template
+  $(document).on('click', '.item-option-change .btn-option', function () {
+    const $wrapItemOption = $(this).closest('.wrap-item-option');
+    const $optionContent = $wrapItemOption.find('.option-content');
+    const $icon = $(this).find('i');
+    const $itemOptionChange = $(this).parent('.item-option-change');
+    const $btnOption = $(this);
+
+    // Toggle UI
+    $optionContent.toggleClass('expanded');
+    $icon.toggleClass('fa-plus fa-minus');
+    $itemOptionChange.toggleClass('active');
+    $btnOption.toggleClass('active');
+    $btnOption.toggleClass('plus sub');
+
+    const renderMap = {
+      'option-theme-color': () => renderColorTheme(configThemeColor),
+      'option-info': () => renderInfo(info),
+      'option-side-info': () => renderSideInfor(sideInfo),
+      'option-banner': () => renderBanner(banner),
+      'option-gift-card': () => renderGiftCardAndMembership(giftCard),
+      'option-membership': () => renderGiftCardAndMembership(membership),
+      'option-social': () => renderSocial(social),
+    };
+
+    const id = $optionContent.attr('id');
+    const renderFn = renderMap[id];
+    const isEmpty = $optionContent.children().length === 0 && $optionContent.text().trim() === '';
+    if (renderFn && isEmpty) {
+      const html = renderFn();
+      $optionContent.html(html);
+    }
+  });
+
+  $(document).on('change', '#toggle-membership', function () {
+    const isChecked = $(this).is(':checked');
+    if (isChecked) {
+      $('.banner, .advertise, .list-more').addClass('hide');
+      const $wrapWeb = $('.wrap-web');
+      // append layout memmbership
+      const $membership = renderPageMembership(dataPageMembership);
+      $wrapWeb.append($membership);
+
+      $('#page-membership').addClass('active');
+
+      // Gọi sau render
+      setTimeout(() => {
+        initSliderMembership();
+      }, 0);
+    } else {
+      $('.banner, .advertise, .list-more').removeClass('hide');
+      $('.page-membership').remove();
+      $('#page-membership').removeClass('active');
+    }
+    console.log('check');
+  });
+
+  // POPUP SETTING
+  //====== *BEGIN Settings Popup Logic
+  $(document).on('click', '.btn-setting', function () {
+    renderSettingsPopup();
+  });
+  // ==== *END POPUP templates detail
+
+  // ===== *BEGIN Sự kiện trên page home template
+  // toggle list service
+  $(document).on('click', '.expend-title', function () {
+    const $wrap = $(this).next('.wrap-list-more');
+    const $iconDown = $(this).find('.fa-chevron-down');
+
+    if ($iconDown.hasClass('rotate-180')) {
+      $iconDown.removeClass('rotate-180');
+    } else {
+      $iconDown.addClass('rotate-180');
+    }
+    $wrap.toggleClass('collapsed');
+  });
+
+  // btn more
+
+  $(document).on('click', '.add-more .btn-add-more', function () {
+    console.log('this: ', $(this));
+    const $parentBtn = $(this).closest('.add-more');
+    $(this).hide();
+    const $selectUser = $parentBtn.find('.wrap-select-user');
+    console.log('selected: ', $selectUser);
+    const $btnDelete = $parentBtn.find('.btn-delete');
+
+    $selectUser.css('display', 'flex').hide().fadeIn();
     $btnDelete.show();
   });
-
-  $(document).on("click", ".add-more .btn-delete", function () {
-    console.log("this: ", $(this));
-    const $parentBtn = $(this).closest(".add-more");
+  // remove option select user
+  $(document).on('click', '.add-more .btn-delete', function () {
+    console.log('this: ', $(this));
+    const $parentBtn = $(this).closest('.add-more');
     $(this).hide();
-    const $selectUser = $parentBtn.find(".wrap-select-user");
-    const $btnAddmore = $parentBtn.find(".btn-add-more");
+    const $selectUser = $parentBtn.find('.wrap-select-user');
+    const $btnAddmore = $parentBtn.find('.btn-add-more');
 
     $selectUser.hide();
     $btnAddmore.show();
   });
-  $(document).on("click", ".wrap-select-user toggle-select", function () {
-    // const $optionSelectUser =
+  // select option user
+  $(document).on('click', '.wrap-select-user .toggle-select', function (e) {
+    e.stopPropagation();
+
+    const $toggle = $(this); // phần tử được click
+    const $parentN = $toggle.closest('.wrap-select-user');
+
+    const $wrap = $toggle.closest('.card-more');
+    const $optionList = $wrap.find('.option-select-user');
+
+    const $iconChecked = $parentN.find('.icon-checked');
+
+    // Nếu chưa render
+    if ($optionList.children().length === 0) {
+      const html = renderUserOptions(listUser);
+      $optionList.html(html);
+    }
+
+    // Xóa dropdown cũ
+    $('.option-select-user').not($optionList).removeClass('show');
+
+    // Lấy kích thước của toggle-select
+    const toggleWidth = $toggle.outerWidth();
+    // Lấy vị trí cho option-select-user
+    const optionUserWidth = $iconChecked.outerWidth();
+    const paddingCardMore = 20;
+    const gapWrapSelectUser = 16;
+    const leftPosOptionList = optionUserWidth + paddingCardMore + gapWrapSelectUser;
+
+    // Gán lại CSS cho dropdown
+    $optionList.css({
+      position: 'absolute',
+      left: leftPosOptionList + 'px',
+      width: toggleWidth + 'px',
+      zIndex: 999,
+    });
+
+    // Toggle hiển thị
+    $optionList.toggleClass('show');
   });
 
-  // TEMPLATE NGOÀI
+  // touch out close option user
+  $(document).on('click', function () {
+    const $optionList = $(this).find('.option-select-user');
+    $optionList.empty();
+    $('.option-select-user').removeClass('show');
+  });
+
+  // gắn user selected
+  $(document).on('click', '.item-user', function (e) {
+    e.stopPropagation();
+    const name = $(this).find('.full-name').text();
+    const $wrap = $(this).closest('.card-more');
+
+    console.log('text-name: ', name, $wrap);
+
+    $wrap.find('#full-name-selected').text(name);
+    $wrap.find('.option-select-user').removeClass('show');
+  });
+
+  // ===== *END Sự kiện trên page home template
+
+  // ===== *BEGIN TEMPLATE NGOÀI
 
   function renderTableDeploy(limit = null) {
     $wrapContainerDeploy.empty();
@@ -2017,57 +2403,57 @@ Please do not hesitate to share your opinions with the salon manager so that you
     );
   }
 
-  renderTemplates();
+  renderTemplates($wrapList, dataTemplates, null);
 
-  const $headerTemplatesRight = $(".header-templates-right");
-  const $iconTemplatesGal = $("#icon-templates-gallery");
+  const $headerTemplatesRight = $('.header-templates-right');
+  const $iconTemplatesGal = $('#icon-templates-gallery');
 
-  $headerTemplatesRight.on("click", function () {
+  $headerTemplatesRight.on('click', function () {
     const numItemRow = 4;
     isCollapsed = !isCollapsed;
-    renderTemplates(isCollapsed ? numItemRow : null);
+    renderTemplates($wrapList, dataTemplates, isCollapsed ? numItemRow : null);
     // tính animation chiều cao templates
     animateHeight($wrapList, !isCollapsed);
 
     // render table
     if (isCollapsed) {
       renderTableDeploy();
-      $iconTemplatesGal.addClass("rotate-180");
+      $iconTemplatesGal.addClass('rotate-180');
     } else {
       $wrapContainerDeploy.empty();
-      $iconTemplatesGal.removeClass("rotate-180");
+      $iconTemplatesGal.removeClass('rotate-180');
     }
   });
 
   // Search & filter
-  $(document).on("click", ".search-recent", function (e) {
+  $(document).on('click', '.search-recent', function (e) {
     e.stopPropagation();
-    $(this).addClass("focus-search");
+    $(this).addClass('focus-search');
   });
   // -- lick ra ngoài ẩn input search
-  $(document).on("click", ".left-search-filter", function (e) {
-    const $searchRecent = $(this).find(".search-recent")[0];
+  $(document).on('click', '.left-search-filter', function (e) {
+    const $searchRecent = $(this).find('.search-recent')[0];
 
     if (!$searchRecent.contains(e.target)) {
-      $(`.search-recent`).removeClass("focus-search");
+      $(`.search-recent`).removeClass('focus-search');
     }
   });
 
   // Toggle khi click vào filter-recent
-  $(document).on("click", ".filter-recent", function (e) {
+  $(document).on('click', '.filter-recent', function (e) {
     e.stopPropagation(); // Ngăn lan ra ngoài document
-    const $itemFilter = $(this).find(".item-filter");
+    const $itemFilter = $(this).find('.item-filter');
     $itemFilter.toggle();
   });
 
   // Ngăn không ẩn nếu click vào chính .item-filter
-  $(document).on("click", ".item-filter", function (e) {
+  $(document).on('click', '.item-filter', function (e) {
     e.stopPropagation(); // Ngăn lan ra ngoài document
   });
 
   // Ẩn nếu click ra ngoài vùng filter-recent hoặc item-filter
-  $(document).on("click", function () {
-    $(".item-filter").hide();
+  $(document).on('click', function () {
+    $('.item-filter').hide();
   });
 
   // Sort table (colum header-date)
@@ -2081,7 +2467,7 @@ Please do not hesitate to share your opinions with the salon manager so that you
     });
   }
 
-  $(document).on("click", ".header-date", function () {
+  $(document).on('click', '.header-date', function () {
     const store = onlineStore.load();
     const dataTable = store.dataTable;
 
@@ -2091,20 +2477,19 @@ Please do not hesitate to share your opinions with the salon manager so that you
 
     const newBodyTableSort = renderBody(dataTable.body);
 
-    $("table.custom-table tbody").replaceWith(newBodyTableSort);
+    $('table.custom-table tbody').replaceWith(newBodyTableSort);
 
     // reset màu icon
-    $(".icon-sort-date path").attr("stroke", "#747474");
+    $('.icon-sort-date path').attr('stroke', '#747474');
     if (isAscending) {
-      $(".icon-sort-date .sort-up-1, .icon-sort-date .sort-up-2").attr(
-        "stroke",
-        "var(--bs-main)"
-      );
+      $('.icon-sort-date .sort-up-1, .icon-sort-date .sort-up-2').attr('stroke', 'var(--bs-main)');
     } else {
-      $(".icon-sort-date .sort-down-1, .icon-sort-date .sort-down-2").attr(
-        "stroke",
-        "var(--bs-main)"
+      $('.icon-sort-date .sort-down-1, .icon-sort-date .sort-down-2').attr(
+        'stroke',
+        'var(--bs-main)'
       );
     }
   });
+
+  // ===== *END TEMPLATE NGOÀI
 });

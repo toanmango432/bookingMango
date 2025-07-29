@@ -30,31 +30,31 @@
   --stagesin-service-fill: rgba(173, 255, 243, 1);
   --stagescheckin-fill: rgba(255, 229, 173, 1);
   --stagesdone-fill: rgba(255, 173, 174, 1);
-  --h3-font-family: "Montserrat", Helvetica;
+  --h3-font-family: 'Montserrat', Helvetica;
   --h3-font-weight: 600;
   --h3-font-size: 14px;
   --h3-letter-spacing: 0px;
   --h3-line-height: normal;
   --h3-font-style: normal;
-  --body-font-family: "Montserrat", Helvetica;
+  --body-font-family: 'Montserrat', Helvetica;
   --body-font-weight: 400;
   --body-font-size: 14px;
   --body-letter-spacing: 0px;
   --body-line-height: normal;
   --body-font-style: normal;
-  --h2-font-family: "Montserrat", Helvetica;
+  --h2-font-family: 'Montserrat', Helvetica;
   --h2-font-weight: 600;
   --h2-font-size: 20px;
   --h2-letter-spacing: 0px;
   --h2-line-height: 120.00000476837158%;
   --h2-font-style: normal;
-  --h1-font-family: "Montserrat", Helvetica;
+  --h1-font-family: 'Montserrat', Helvetica;
   --h1-font-weight: 600;
   --h1-font-size: 30px;
   --h1-letter-spacing: 0px;
   --h1-line-height: 120.00000476837158%;
   --h1-font-style: normal;
-  --extra-font-family: "Montserrat", Helvetica;
+  --extra-font-family: 'Montserrat', Helvetica;
   --extra-font-weight: 400;
   --extra-font-size: 12px;
   --extra-letter-spacing: 0px;
@@ -83,6 +83,7 @@
   --shadow-qs-light: 0px 2px 4px 0px rgba(0, 0, 0, 0.1);
   --red-simpli: rgba(255, 97, 80, 1);
   --backgroud-gray: rgba(224, 224, 224, 1);
+  --text-color-primary: #212529;
 }
 
 :root {
@@ -94,11 +95,13 @@
   --px-12: calc(12px * var(--scale) / 100);
   --px-16: calc(16px * var(--scale) / 100);
   --px-20: calc(20px * var(--scale) / 100);
+  --px-22: calc(22px * var(--scale) / 100);
   --px-24: calc(24px * var(--scale) / 100);
   --px-28: calc(28px * var(--scale) / 100);
   --px-32: calc(32px * var(--scale) / 100);
   --px-36: calc(36px * var(--scale) / 100);
   --px-40: calc(40px * var(--scale) / 100);
+  --px-42: calc(42px * var(--scale) / 100);
   --px-44: calc(44px * var(--scale) / 100);
   --px-48: calc(48px * var(--scale) / 100);
   --px-52: calc(52px * var(--scale) / 100);
@@ -205,6 +208,7 @@
   --px-650: calc(650px * var(--scale) / 100);
   --px-690: calc(690px * var(--scale) / 100);
   --px-700: calc(700px * var(--scale) / 100);
+  --px-706: calc(706px * var(--scale) / 100);
   --px-710: calc(710px * var(--scale) / 100);
   --px-800: calc(800px * var(--scale) / 100);
   --px-820: calc(820px * var(--scale) / 100);
@@ -216,80 +220,31 @@
   --px-1100: calc(1100px * var(--scale) / 100);
   --px-1200: calc(1200px * var(--scale) / 100);
   /**/
-  --s-8: calc(8px * var(--scale) / 100) / calc(11px * var(--scale) / 100)
-      "Montserrat",
-    sans-serif;
-  --s-10: calc(10px * var(--scale) / 100) / calc(13px * var(--scale) / 100)
-      "Montserrat",
-    sans-serif;
-  --s-11: calc(11px * var(--scale) / 100) / calc(14px * var(--scale) / 100)
-      "Montserrat",
-    sans-serif;
-  --s-12: calc(12px * var(--scale) / 100) / calc(15px * var(--scale) / 100)
-      "Montserrat",
-    sans-serif;
-  --s-13: calc(13px * var(--scale) / 100) / calc(16px * var(--scale) / 100)
-      "Montserrat",
-    sans-serif;
-  --s-14: calc(14px * var(--scale) / 100) / calc(15px * var(--scale) / 100)
-      "Montserrat",
-    sans-serif;
-  --s-15: calc(15px * var(--scale) / 100) / calc(19px * var(--scale) / 100)
-      "Montserrat",
-    sans-serif;
-  --s-16: calc(16px * var(--scale) / 100) / calc(19px * var(--scale) / 100)
-      "Montserrat",
-    sans-serif;
-  --s-17: calc(17px * var(--scale) / 100) / calc(20px * var(--scale) / 100)
-      "Montserrat",
-    sans-serif;
-  --s-18: calc(18px * var(--scale) / 100) / calc(22px * var(--scale) / 100)
-      "Montserrat",
-    sans-serif;
-  --s-19: calc(19px * var(--scale) / 100) / calc(23px * var(--scale) / 100)
-      "Montserrat",
-    sans-serif;
-  --s-20: calc(20px * var(--scale) / 100) / calc(24px * var(--scale) / 100)
-      "Montserrat",
-    sans-serif;
-  --s-22: calc(22px * var(--scale) / 100) / calc(27px * var(--scale) / 100)
-      "Montserrat",
-    sans-serif;
-  --s-24: calc(24px * var(--scale) / 100) / calc(37px * var(--scale) / 100)
-      "Montserrat",
-    sans-serif;
-  --s-25: calc(25px * var(--scale) / 100) / calc(30px * var(--scale) / 100)
-      "Montserrat",
-    sans-serif;
-  --s-26: calc(26px * var(--scale) / 100) / calc(32px * var(--scale) / 100)
-      "Montserrat",
-    sans-serif;
-  --s-28: calc(28px * var(--scale) / 100) / calc(34px * var(--scale) / 100)
-      "Montserrat",
-    sans-serif;
-  --s-30: calc(30px * var(--scale) / 100) / calc(37px * var(--scale) / 100)
-      "Montserrat",
-    sans-serif;
-  --s-32: calc(32px * var(--scale) / 100) / calc(39px * var(--scale) / 100)
-      "Montserrat",
-    sans-serif;
-  --s-38: calc(38px * var(--scale) / 100) / calc(42px * var(--scale) / 100)
-      "Montserrat",
-    sans-serif;
-  --s-45: calc(45px * var(--scale) / 100) / calc(55px * var(--scale) / 100)
-      "Montserrat",
-    sans-serif;
-  --s-50: calc(50px * var(--scale) / 100) / calc(61px * var(--scale) / 100)
-      "Montserrat",
-    sans-serif;
-  --s-54: calc(54px * var(--scale) / 100) / calc(66px * var(--scale) / 100)
-      "Montserrat",
-    sans-serif;
-  --s-80: calc(80px * var(--scale) / 100) / calc(98px * var(--scale) / 100)
-      "Montserrat",
-    sans-serif;
-  --shadow: 0px 1px 3px 0px rgba(60, 64, 67, 0.3),
-    0px 4px 8px 3px rgba(60, 64, 67, 0.15);
+  --s-8: calc(8px * var(--scale) / 100) / calc(11px * var(--scale) / 100) 'Montserrat', sans-serif;
+  --s-10: calc(10px * var(--scale) / 100) / calc(13px * var(--scale) / 100) 'Montserrat', sans-serif;
+  --s-11: calc(11px * var(--scale) / 100) / calc(14px * var(--scale) / 100) 'Montserrat', sans-serif;
+  --s-12: calc(12px * var(--scale) / 100) / calc(15px * var(--scale) / 100) 'Montserrat', sans-serif;
+  --s-13: calc(13px * var(--scale) / 100) / calc(16px * var(--scale) / 100) 'Montserrat', sans-serif;
+  --s-14: calc(14px * var(--scale) / 100) / calc(15px * var(--scale) / 100) 'Montserrat', sans-serif;
+  --s-15: calc(15px * var(--scale) / 100) / calc(19px * var(--scale) / 100) 'Montserrat', sans-serif;
+  --s-16: calc(16px * var(--scale) / 100) / calc(19px * var(--scale) / 100) 'Montserrat', sans-serif;
+  --s-17: calc(17px * var(--scale) / 100) / calc(20px * var(--scale) / 100) 'Montserrat', sans-serif;
+  --s-18: calc(18px * var(--scale) / 100) / calc(22px * var(--scale) / 100) 'Montserrat', sans-serif;
+  --s-19: calc(19px * var(--scale) / 100) / calc(23px * var(--scale) / 100) 'Montserrat', sans-serif;
+  --s-20: calc(20px * var(--scale) / 100) / calc(24px * var(--scale) / 100) 'Montserrat', sans-serif;
+  --s-22: calc(22px * var(--scale) / 100) / calc(27px * var(--scale) / 100) 'Montserrat', sans-serif;
+  --s-24: calc(24px * var(--scale) / 100) / calc(37px * var(--scale) / 100) 'Montserrat', sans-serif;
+  --s-25: calc(25px * var(--scale) / 100) / calc(30px * var(--scale) / 100) 'Montserrat', sans-serif;
+  --s-26: calc(26px * var(--scale) / 100) / calc(32px * var(--scale) / 100) 'Montserrat', sans-serif;
+  --s-28: calc(28px * var(--scale) / 100) / calc(34px * var(--scale) / 100) 'Montserrat', sans-serif;
+  --s-30: calc(30px * var(--scale) / 100) / calc(37px * var(--scale) / 100) 'Montserrat', sans-serif;
+  --s-32: calc(32px * var(--scale) / 100) / calc(39px * var(--scale) / 100) 'Montserrat', sans-serif;
+  --s-38: calc(38px * var(--scale) / 100) / calc(42px * var(--scale) / 100) 'Montserrat', sans-serif;
+  --s-45: calc(45px * var(--scale) / 100) / calc(55px * var(--scale) / 100) 'Montserrat', sans-serif;
+  --s-50: calc(50px * var(--scale) / 100) / calc(61px * var(--scale) / 100) 'Montserrat', sans-serif;
+  --s-54: calc(54px * var(--scale) / 100) / calc(66px * var(--scale) / 100) 'Montserrat', sans-serif;
+  --s-80: calc(80px * var(--scale) / 100) / calc(98px * var(--scale) / 100) 'Montserrat', sans-serif;
+  --shadow: 0px 1px 3px 0px rgba(60, 64, 67, 0.3), 0px 4px 8px 3px rgba(60, 64, 67, 0.15);
   --bdr-1: 1px solid rgb(218, 220, 224);
   --bdr-2: 2px solid rgb(218, 220, 224);
   --bs-main: #00bed6;
@@ -308,11 +263,7 @@
   --color-chart: var(--bs-main);
   --color-chart-o: var(--bs-main-o);
   --chart-gray: var(--bs-gray-100);
-  --chart-gradiant: linear-gradient(
-    90deg,
-    var(--bs-main) 0%,
-    var(--bs-main-300) 100%
-  );
+  --chart-gradiant: linear-gradient(90deg, var(--bs-main) 0%, var(--bs-main-300) 100%);
   --bard-color-brand-text-gradient-stop-1: #4285f4;
   --bard-color-brand-text-gradient-stop-1-rgb: 66, 133, 244;
   --bard-color-brand-text-gradient-stop-2: #9b72cb;
@@ -329,7 +280,8 @@
 body,
 html {
   font-family: Montserrat;
-  color: var(--black, #000);
+  /* color: var(--black, #000); */
+  color: var(--text-color-primary);
   margin: 0px;
   padding: 0px;
 }
@@ -394,6 +346,10 @@ p {
 /* gap */
 .gap-24px {
   gap: 24px;
+}
+/* border radius */
+.rounded-lg {
+  border-radius: var(--px-8);
 }
 
 .container-custom-booking {
@@ -894,6 +850,7 @@ td td:last-child {
   display: flex;
   flex-direction: column;
   gap: var(--px-24);
+  margin-bottom: var(--px-80);
 }
 .item-option-change {
   position: relative;
@@ -1000,7 +957,7 @@ td td:last-child {
 }
 .item-option-change.active::after {
   position: absolute;
-  content: "";
+  content: '';
   bottom: 0;
   left: 0;
   width: 100%;
@@ -1107,6 +1064,8 @@ td td:last-child {
   box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.15);
 }
 .right-body-detail .wrap-web {
+  display: flex;
+  flex-direction: column;
   flex-grow: 1;
   overflow-y: scroll;
 }
@@ -1151,20 +1110,14 @@ td td:last-child {
   background: #fff;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.15);
 }
-.right-body-detail
-  .body-header-right
-  .wrap-option-device
-  .device-option.active {
+.right-body-detail .body-header-right .wrap-option-device .device-option.active {
   color: white;
   background-color: var(--bs-main);
 }
 .right-body-detail .body-header-right .wrap-option-device .device-option:hover {
   background-color: var(--bs-main-100);
 }
-.right-body-detail
-  .body-header-right
-  .wrap-option-device
-  .device-option.active:hover {
+.right-body-detail .body-header-right .wrap-option-device .device-option.active:hover {
   background-color: var(--bs-main-600);
 }
 
@@ -1205,7 +1158,7 @@ td td:last-child {
   overflow: hidden;
 }
 .list-option button::after {
-  content: "";
+  content: '';
   position: absolute;
   bottom: 0px;
   left: 50%;
@@ -1221,6 +1174,21 @@ td td:last-child {
 .list-option button:hover::after {
   width: 20px;
 }
+/* active */
+.list-option button.active {
+  color: #04972f;
+}
+.list-option button.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0px;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 1px;
+  background-color: #04972f;
+  width: 20px;
+}
+
 .cart-profile {
   display: flex;
   align-items: center;
@@ -1285,7 +1253,7 @@ td td:last-child {
   background: #b1c9b8;
 }
 .cart-profile .user::after {
-  content: "";
+  content: '';
   position: absolute;
   left: -4px;
   height: var(--px-20);
@@ -1296,14 +1264,22 @@ td td:last-child {
 .banner {
   width: 100%;
 }
+.banner.hide {
+  display: none;
+}
 .advertise {
   width: 100%;
+  height: var(--px-160);
+  flex-shrink: 0;
   position: sticky;
   padding: 40px 0px;
   top: 48px;
   overflow: hidden;
   z-index: 999999;
   background-color: white;
+}
+.advertise.hide {
+  display: none;
 }
 .advertise .advertise-bg-1 {
   display: flex;
@@ -1386,7 +1362,7 @@ td td:last-child {
 }
 .wrap-content-left-banner .hight-text-banner .text-mountains-christmas {
   color: #e28b01;
-  font-family: "Mountains of Christmas" !important;
+  font-family: 'Mountains of Christmas' !important;
   font: normal normal 700 var(--s-32);
   line-height: 29px;
 }
@@ -1451,6 +1427,9 @@ td td:last-child {
   flex-direction: column;
   gap: 12px;
 }
+.list-more.hide {
+  display: none;
+}
 
 .list-more .more-item {
   display: flex;
@@ -1464,12 +1443,36 @@ td td:last-child {
   gap: 6px;
   cursor: pointer;
 }
+.list-more .more-item .expend-title i {
+  font-size: 16px;
+  font-weight: 300;
+}
+.list-more .more-item .expend-title:hover p {
+  color: var(--bs-main);
+}
+.list-more .more-item .wrap-list-more {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 0;
+  overflow: scroll;
+  transition: max-height 0.6s ease;
+  max-height: 1000px;
+  opacity: 1;
+  transform: scaleY(1);
+}
+.list-more .more-item .wrap-list-more.collapsed {
+  max-height: 0;
+  transform: scaleY(0.95);
+  pointer-events: none;
+}
 
 .list-more .more-item .card-more {
   display: flex;
   padding: 20px;
   flex-direction: column;
   align-items: flex-start;
+  position: relative;
   gap: 34px;
   align-self: stretch;
   border-radius: 8px;
@@ -1507,8 +1510,7 @@ td td:last-child {
   border-radius: 100%;
 }
 .wrap-select-user .toggle-select {
-  position: relative;
-  width: fit-content;
+  width: var(--px-204);
   background: #ecb155;
   color: white;
   padding: 8px 24px;
@@ -1517,6 +1519,7 @@ td td:last-child {
   display: flex;
   opacity: 0.9;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
 }
 .wrap-select-user .toggle-select:hover {
@@ -1548,15 +1551,293 @@ td td:last-child {
   opacity: 0.95;
 }
 
-.wrap-select-user .option-select-user {
+.card-more .option-select-user {
   position: absolute;
-  top: calc(100% + 8px);
+  top: calc(100% - 8px);
   left: 0;
   width: 100%;
   background: white;
   border: 1px solid #ddd;
   z-index: 10;
   display: none;
+  border-radius: 8px;
+  border-radius: 8px;
+  padding: 8px;
+  box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.15);
+  transition: box-shadow 0.3s ease;
+}
+.option-select-user:hover {
+  box-shadow: 0 2px 16px 0 rgba(0, 0, 0, 0.15); /* bóng rõ hơn khi hover */
+}
+.card-more .option-select-user.show {
+  display: block;
+}
+.wrap-user .item-user {
+  height: var(--px-48);
+  padding: 12px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  align-self: stretch;
+  cursor: pointer;
+}
+
+.wrap-user .item-user:hover {
+  border: 1px solid #d1d1d1;
+}
+
+.wrap-user .item-user .avatar-user {
+  width: var(--px-36);
+  height: var(--px-36);
+  padding: 4px;
+}
+.wrap-user .item-user .avatar-user .img-user {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 100%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  object-fit: cover;
+}
+.wrap-user .item-user .full-name {
+  font: normal normal 500 var(--s-12);
+  color: #061315;
+}
+
+/* page member ship */
+.page-membership {
+  padding: var(--px-8);
+  display: flex;
+}
+.page-membership.hide {
+  display: none;
+}
+.container-membership {
+  width: 100%;
+}
+.container-membership .step-header .text-step {
+  color: var(--Dark, #000);
+  font: normal normal 500 var(--s-14);
+}
+
+.container-membership .step-header .title-step {
+  color: var(--Dark, #000);
+  font: normal normal 600 var(--s-20);
+  line-height: 28px;
+}
+.container-membership .wrap-card-membership {
+  display: flex;
+  flex-direction: column;
+  height: var(--px-706);
+  width: var(--px-324);
+  padding: 36px 24px 24px 24px;
+  align-items: flex-start;
+  align-self: stretch;
+  border-radius: 48px;
+  border: 1px solid var(--Membership-Bronze, #b64d2f);
+  background: linear-gradient(
+    161deg,
+    rgba(255, 106, 0, 0.04) 0.54%,
+    rgba(255, 106, 0, 0.1) 112.23%
+  );
+  position: relative;
+  flex-shrink: 0;
+}
+.container-membership .card-buy-membership {
+}
+
+.container-membership .attrac {
+  position: absolute;
+  top: calc(-1 * var(--px-22));
+  right: 0px;
+  width: var(--px-124);
+  height: var(--px-42);
+  flex-shrink: 0;
+}
+.container-membership .image-attrac {
+  width: 100%;
+  height: 100%;
+}
+.card-buy-membership .wrap-rank {
+}
+.card-buy-membership .wrap-rank .text-rank {
+  font-family: Montserrat;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: 24px;
+  background: var(
+    --Membership-Bronze,
+    linear-gradient(90deg, #b64d2f 0%, #ffcfbb 50%, #b64d2f 100%)
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.card-buy-membership .title-cardbuy {
+}
+
+.card-buy-membership .title-cardbuy .title {
+  align-self: stretch;
+  color: var(--Membership-Bronze-solid, #b64d2f);
+  font-family: Montserrat;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 28px;
+}
+
+.card-buy-membership .title-cardbuy .sub-title-cardbuy {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  align-self: stretch;
+  overflow: hidden;
+  color: rgba(5, 33, 46, 0.8);
+  text-overflow: ellipsis;
+  font-family: Montserrat;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 18px;
+}
+.card-buy-membership .info-price {
+}
+.card-buy-membership .info-price .price-per {
+  color: var(--Membership-Bronze-solid, #b64d2f);
+  leading-trim: both;
+  text-edge: cap;
+  font-family: Montserrat;
+  font-size: 36px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+.card-buy-membership .info-price .text-per {
+  color: var(--Membership-Bronze-solid, #b64d2f);
+  leading-trim: both;
+  text-edge: cap;
+  font-family: Montserrat;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+.policy-card {
+  border-top: 1px solid rgba(182, 77, 47, 0.5);
+  display: flex;
+  padding-top: 16px;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1 0 0;
+  align-self: stretch;
+}
+.policy-card .item-policy {
+  display: flex;
+  padding: 4px 4px 8px 4px;
+  align-items: flex-start;
+  gap: 8px;
+  align-self: stretch;
+}
+.policy-card .item-policy .text-policy {
+  flex: 1 0 0;
+  color: rgba(5, 33, 46, 0.6);
+  font-family: Montserrat;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px; /* 142.857% */
+}
+
+.wrap-button-buy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  align-self: stretch;
+}
+.wrap-button-buy .more-detail {
+  display: flex;
+  height: 52px;
+  padding: 16px;
+  justify-content: center;
+  align-items: center;
+  align-self: stretch;
+  border-radius: 36px;
+  border: 1px solid var(--Membership-Bronze, #b64d2f);
+}
+.wrap-button-buy .more-detail .btn-more-detail {
+  color: var(--Membership-Bronze-solid, #b64d2f);
+  font: normal normal 600 var(--s-16);
+  line-height: 20px;
+  border: none;
+  background: none;
+}
+.wrap-button-buy .more-detail .btn-more-detail:hover {
+  color: var(--text-color-primary);
+}
+.wrap-button-buy .buy-now {
+  display: flex;
+  width: 195px;
+  height: 52px;
+  padding: 16px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 36px;
+  background: var(
+    --Membership-Bronze,
+    linear-gradient(90deg, #b64d2f 0%, #ffcfbb 50%, #b64d2f 100%)
+  );
+}
+.wrap-button-buy .buy-now .btn-buy-now {
+  color: var(--Gray-Transparent-90, rgba(24, 24, 24, 0.9));
+  font: normal normal 600 var(--s-16);
+  line-height: 20px;
+  border: none;
+  background: none;
+  opacity: 0.86;
+}
+.wrap-button-buy .buy-now .btn-buy-now:hover {
+  opacity: 1;
+  color: var(--text-color-primary);
+}
+
+/* slider item */
+.slider-membership {
+  overflow: hidden;
+  position: relative;
+  /* width: 100%; */
+  margin: 0px 32px;
+}
+.slider-track {
+  display: flex;
+  transition: transform 0.3s ease;
+  will-change: transform;
+  gap: var(--px-16);
+  padding: 16px 0px;
+}
+/* Nút điều hướng */
+.slider-btn {
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  background: rgba(0, 0, 0, 0.2);
+  border: none;
+  border-radius: 100%;
+  padding: 8px 12px;
+  cursor: pointer;
+  color: white;
+}
+
+.slider-btn.prev {
+  left: 0;
+}
+.slider-btn.next {
+  right: 0;
 }
 
 /* ----- CSS Settings Popup ----*/
@@ -1687,7 +1968,7 @@ td td:last-child {
 }
 
 .toggle-switch::before {
-  content: "";
+  content: '';
   position: absolute;
   width: 22px;
   height: 22px;
@@ -1748,7 +2029,7 @@ td td:last-child {
 }
 
 .checkmark::after {
-  content: "";
+  content: '';
   position: absolute;
   display: none;
   left: 6px;
@@ -1832,7 +2113,7 @@ td td:last-child {
 }
 
 /* Ẩn radio mặc định */
-.custom-radio input[type="radio"] {
+.custom-radio input[type='radio'] {
   opacity: 0;
   position: absolute;
   cursor: pointer;
@@ -1852,7 +2133,7 @@ td td:last-child {
 }
 
 /* Khi checked thì đổi màu nền và có border */
-.custom-radio input[type="radio"]:checked ~ .radio-circle {
+.custom-radio input[type='radio']:checked ~ .radio-circle {
   background-color: var(--bs-main);
   border: 3px solid #d9d9d9;
 }
@@ -1981,4 +2262,23 @@ td td:last-child {
 }
 .download-gift:hover {
   color: var(--bs-main);
+}
+
+.popup-container.fit-center {
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%);
+  box-shadow: 0px 0px 26px 0px rgba(60, 64, 67, 0.3), 0px 9px 28px 6px rgba(60, 64, 67, 0.15);
+}
+
+.popup-container {
+  display: flex;
+  z-index: 11111111;
+  overflow: auto;
+  max-height: 98vh;
+  border-radius: 4px;
+  box-shadow: var(--shadow);
+  transform: translate(2px, -2px);
+  background: white;
+  opacity: 1 !important;
 }
