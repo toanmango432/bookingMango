@@ -1426,6 +1426,7 @@ td td:last-child {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  padding: 4px;
 }
 .list-more.hide {
   display: none;
@@ -1435,6 +1436,8 @@ td td:last-child {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.25);
+  padding: 0px 8px;
 }
 
 .list-more .more-item .expend-title {
@@ -1442,6 +1445,7 @@ td td:last-child {
   align-items: center;
   gap: 6px;
   cursor: pointer;
+  padding-top: 8px;
 }
 .list-more .more-item .expend-title i {
   font-size: 16px;
@@ -1477,7 +1481,6 @@ td td:last-child {
   align-self: stretch;
   border-radius: 8px;
   background: #fff;
-  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.25);
 }
 .list-more .more-item .card-more .top-card {
   width: 100%;
