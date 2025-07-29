@@ -1,0 +1,79 @@
+## Build results
+bin/
+obj/
+out/
+Generated_Code/
+
+## User-specific files
+*.user
+*.userosscache
+*.suo
+*.sln.docstates
+.vscode/
+.idea/
+
+## Rider
+*.sln.iml
+.idea/
+
+## Visual Studio Code
+.vscode/
+
+## ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+## Dotnet CLI artifacts
+*.dbmdl
+*.pdb
+*.cache
+*.log
+
+# Watcher temporary files
+**/*.dotnet-watch.json
+
+## Configuration files
+appsettings.*.json
+!appsettings.json   # keep default config
+secrets.json
+
+## Logs
+*.log
+logs/
+*.tlog
+*.pidb
+
+## Dependency caches
+packages/
+.nuget/
+*.nupkg
+
+## Other temp
+*.tmp
+*.bak
+*.swp
+*.orig
+*.rej
+*.sdf
+*.sln.ide
+
+## Publish
+publish/
+wwwroot/dist/
+wwwroot/lib/
+
+## Test Results
+TestResults/
+*.coverage
+*.coveragexml
+
+## Node (if using for frontend)
+node_modules/
+npm-debug.log
+yarn.lock
+pnpm-lock.yaml
+
+## Others
+.DS_Store
+Thumbs.db
+.env
+.env.*

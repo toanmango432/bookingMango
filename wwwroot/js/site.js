@@ -572,7 +572,355 @@ const onlineStore = {
         },
       ],
     };
-    return { dataTemplates, dataTable };
+    const configThemeColor = {
+      config: {
+        width: "36",
+        height: "36",
+        borderRadius: "6",
+      },
+      colorTheme: [
+        {
+          color: "#4D0000",
+          active: false,
+          isFirst: true,
+        },
+        {
+          color: "#520000",
+          active: true,
+        },
+        { color: "#5C0000", active: false },
+        { color: "#D0B0B0", active: false },
+        { color: "#E8D9D9", active: true, isSendcond: true },
+        { color: "#F0E6E6", active: false },
+        { color: "#E2CAC1", active: false },
+        { color: "#565656", active: false },
+        { color: "#6F6F6F", active: false },
+        { color: "#949494", active: false },
+        { color: "#B7AA9B", active: false },
+        { color: "#C3B6A6", active: false },
+        { color: "#DCCCBA", active: false },
+        { color: "#F4E3CF", active: false },
+        { color: "#FEFCFA", active: false },
+      ],
+    };
+
+    const info = [
+      {
+        value: "Nailvibe It is time to relax !",
+        style: [],
+        type: "INPUT",
+      },
+      {
+        value: `We hope that your visit will be a relaxing and wonderful experience.
+                Please do not hesitate to share your opinions with the salon manager
+                so that your next visit at MIA will be an even better experience.`,
+        style: [],
+        type: "TEXTAREA",
+      },
+    ];
+
+    const sideInfo = [
+      {
+        content: "Show All",
+        action: {
+          type: "TOGGLE",
+          defaultValue: "",
+        },
+        // style: {
+        //   justify: "space-between",
+        // },
+      },
+      {
+        content: "Promotion",
+        action: {
+          type: "TOGGLE",
+          defaultValue: "",
+        },
+        style: {
+          justify: "space-between",
+        },
+      },
+    ];
+
+    const banner = [
+      {
+        content: "Flash.png",
+        action: {
+          type: "TOGGLE",
+          defaultValue: "",
+        },
+        style: {
+          justify: "space-between",
+        },
+      },
+      {
+        content: "GiftCard.png",
+        action: {
+          type: "TOGGLE",
+          defaultValue: "",
+        },
+        style: {
+          justify: "space-between",
+        },
+      },
+      {
+        content: "E-Gift.png",
+        action: {
+          type: "TOGGLE",
+          defaultValue: "",
+        },
+        style: {
+          justify: "space-between",
+        },
+      },
+      {
+        content: "Unlock.png",
+        action: {
+          type: "TOGGLE",
+          defaultValue: "",
+        },
+        style: {
+          justify: "space-between",
+        },
+      },
+    ];
+
+    const giftCard = {
+      item: {
+        content: "Active Gift Card",
+        action: {
+          type: "TOGGLE",
+          defaultValue: "",
+        },
+        style: {
+          justify: "space-between",
+        },
+      },
+      body: {
+        title: "Link:",
+        content:
+          "https://manage2.mangoforsalon.com/nextview/membership-settings?salon_id=abc",
+        iconBody: `<i class="fa-solid fa-eye-slash toggle-visibility"></i>`,
+        icon: {
+          value: `<i class="fa-regular fa-copy"></i>`,
+          style: "",
+        },
+        style: "",
+      },
+      button: {
+        content: "Custom Gift Card",
+        style: "",
+      },
+    };
+
+    const membership = {
+      item: {
+        content: "Active Membership",
+        action: {
+          type: "TOGGLE",
+          defaultValue: "",
+        },
+        style: {
+          justify: "space-between",
+        },
+      },
+      body: {
+        title: "Link:",
+        content:
+          "https://manage2.mangoforsalon.com/nextview/membership-settings?salon_id=abc",
+        iconBody: `<i class="fa-solid fa-eye-slash toggle-visibility"></i>`,
+        icon: {
+          value: `<i class="fa-regular fa-copy"></i>`,
+          style: "",
+        },
+        style: "",
+      },
+      button: {
+        content: "Custom Membership",
+        style: "",
+      },
+    };
+
+    const social = [
+      {
+        content: "Google",
+        action: {
+          type: "TOGGLE",
+          defaultValue: "",
+        },
+        style: {
+          justify: "space-between",
+        },
+      },
+      {
+        content: "App Store",
+        action: {
+          type: "TOGGLE",
+          defaultValue: "",
+        },
+        style: {
+          justify: "space-between",
+        },
+      },
+    ];
+
+    let listDataService = [
+      {
+        item: {
+          iconLeft: `
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M7.16625 11.4688H13.4263V2.46875H1.90625V21.9688H13.4263V12.9688H7.16625V11.4688Z" fill="#E27303" />
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M21.8448 11.4691C19.8328 11.4681 18.0008 9.63605 18.0008 7.62305V6.87305H16.5008V7.62305C16.5008 9.10005 17.1758 10.4801 18.2198 11.4691L13.4219 11.469V12.969L18.2198 12.9691C17.1758 13.9581 16.5008 15.3371 16.5008 16.8141V17.5641H18.0008V16.8141C18.0008 14.8021 19.8338 12.9691 21.8458 12.9691H22.5958V11.4691H21.8448Z" fill="#E27303" />
+          </svg>
+          `,
+          value: "Manicure 1",
+          iconRight: `
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="19" viewBox="0 0 18 19" fill="none">
+              <path d="M14.9425 6.77344L10.0525 11.6634C9.475 12.2409 8.53 12.2409 7.9525 11.6634L3.0625 6.77344" stroke="black" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          `,
+          listItem: [
+            {
+              title: "Essential Pedicure 1",
+              subTitle: "Hydrating Pedi Salt Soak 1",
+              priceRental: "$45",
+              timetext: "40min",
+              userSelected: {},
+            },
+            {
+              title: "Essential Pedicure 2",
+              subTitle: "Hydrating Pedi Salt Soak 1",
+              priceRental: "$45",
+              timetext: "40min",
+              userSelected: {},
+            },
+          ],
+        },
+      },
+      {
+        item: {
+          iconLeft: `
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M7.16625 11.4688H13.4263V2.46875H1.90625V21.9688H13.4263V12.9688H7.16625V11.4688Z" fill="#E27303" />
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M21.8448 11.4691C19.8328 11.4681 18.0008 9.63605 18.0008 7.62305V6.87305H16.5008V7.62305C16.5008 9.10005 17.1758 10.4801 18.2198 11.4691L13.4219 11.469V12.969L18.2198 12.9691C17.1758 13.9581 16.5008 15.3371 16.5008 16.8141V17.5641H18.0008V16.8141C18.0008 14.8021 19.8338 12.9691 21.8458 12.9691H22.5958V11.4691H21.8448Z" fill="#E27303" />
+          </svg>
+          `,
+          value: "Manicure 2",
+          iconRight: `
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="19" viewBox="0 0 18 19" fill="none">
+              <path d="M14.9425 6.77344L10.0525 11.6634C9.475 12.2409 8.53 12.2409 7.9525 11.6634L3.0625 6.77344" stroke="black" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          `,
+          listItem: [
+            {
+              title: "Essential Pedicure 1",
+              subTitle: "Hydrating Pedi Salt Soak 1",
+              priceRental: "$45",
+              timetext: "40min",
+              userSelected: {},
+            },
+            {
+              title: "Essential Pedicure 2",
+              subTitle: "Hydrating Pedi Salt Soak 1",
+              priceRental: "$45",
+              timetext: "40min",
+              userSelected: {},
+            },
+          ],
+        },
+      },
+    ];
+    const listUser = [
+      {
+        id: "default",
+        avatar: "",
+        name: "Next Available",
+      },
+      {
+        id: "1",
+        avatar: "",
+        name: "Lily",
+      },
+      {
+        id: "2",
+        avatar: "",
+        name: "Savananah",
+      },
+    ];
+
+    // data fake local storage
+    let dataWeb = {
+      logo: "",
+      color: {
+        bgPrimary: "",
+        bgSecondary: "",
+      },
+      banner: [
+        {
+          img: "",
+        },
+      ],
+      info: {
+        title: "",
+        desc: "",
+      },
+      sideInfo: {
+        promotion: {
+          img: "",
+          title: {
+            content: "",
+            icon: "",
+          },
+          percent: {
+            number: 15,
+            content: "",
+          },
+          datetime: {
+            startTime: "",
+            endTime: "",
+          },
+        },
+        storeInfo: {
+          nameStore: "",
+          addressStore: {
+            icon: "",
+            content: "",
+          },
+          scheduleWork: [
+            {
+              dayOfWeek: "",
+              timeWork: {
+                startTime: "",
+                endTime: "",
+              },
+            },
+          ],
+        },
+        policy: {
+          title: "",
+          listItem: [
+            {
+              content: [{ text: "", style: "" }],
+            },
+          ],
+        },
+        socialLink: "",
+      },
+    };
+
+    return {
+      dataTemplates,
+      dataTable,
+      configThemeColor,
+      sideInfo,
+      info,
+      banner,
+      giftCard,
+      membership,
+      social,
+      listDataService,
+      listUser,
+    };
   },
 };
 // * Function runder
@@ -682,6 +1030,183 @@ const renderItemTable = (header, body) => {
     `;
 };
 
+const renderColorTheme = (configThemeColor) => {
+  const { config, colorTheme } = configThemeColor;
+  return `
+    <div class="grid-8 grid-gap-y-2 grid-gap-x-2">
+      ${
+        colorTheme &&
+        colorTheme
+          .map((item) => {
+            const { color, active } = item;
+            const { width, height, borderRadius } = config;
+
+            return `
+          <div class="item-theme" style="
+              background-color: ${color};
+              height: ${height}px;
+              width: ${width}px;
+              border-radius: ${borderRadius}px
+            ">
+          </div>
+        `;
+          })
+          .join("")
+      }
+    </div>
+  `;
+};
+
+const renderInfo = (info) => {
+  if (!info || !Array.isArray(info)) return "";
+
+  return info
+    .map((item) => {
+      const type = item.type ? item.type : "INPUT";
+      const value = item.value;
+      if (type === "TEXTAREA") {
+        return `
+          <div class="option-item px-0">
+            <textarea id="textarea-info" class="textarea-info">${value}</textarea>
+          </div>
+        `;
+      }
+
+      // Default to input
+      return `
+        <div class="option-item px-0">
+          <input id="input-info" class="input-info" value="${value}" />
+        </div>
+      `;
+    })
+    .join("");
+};
+
+const renderSideInfor = (sideInfo) => {
+  if (!sideInfo || !Array.isArray(sideInfo)) return "";
+
+  return sideInfo
+    .map((item) => {
+      const justify = item.style?.justify || "";
+      const hasToggle = item.action?.type === "TOGGLE";
+      const isChecked =
+        item.action?.defaultValue === true ||
+        item.action?.defaultValue === "true";
+
+      return `
+      <div class="option-item" style="justify-content: ${justify}">
+      <span>${item.content}</span>
+        ${
+          hasToggle
+            ? `<input type='checkbox' class='toggle-switch' ${
+                isChecked ? "checked" : ""
+              }/>`
+            : ""
+        }
+      </div>
+    `;
+    })
+    .join("");
+};
+
+const renderBanner = (banner) => {
+  if (!banner || !Array.isArray(banner)) return "";
+
+  return banner.map((item) => {
+    const justify = item.style.justify || "";
+    const hasToggle = item.action?.type === "TOGGLE";
+
+    const isChecked =
+      item.action?.defaultValue === true ||
+      item.action?.defaultValue === "true";
+
+    return `
+      <div class="option-item" style="justify-content: ${justify}">
+        <span>${item.content}</span>
+        ${
+          hasToggle &&
+          `<input type='checkbox' class='toggle-switch' ${
+            isChecked ? "checked" : ""
+          } />`
+        }
+      </div>
+    `;
+  });
+};
+
+const renderGiftCardAndMembership = (dataCard) => {
+  const item = dataCard.item;
+  const justify = item.style?.justify || "";
+  const hasToggle = item.action?.type === "TOGGLE";
+
+  const isChecked =
+    item.action?.defaultValue === true || item.action?.defaultValue === "true";
+
+  const body = dataCard.body;
+  const button = dataCard.button;
+
+  return `
+      <div class="option-content-item">
+         <div class="option-item" style="justify-content: ${justify}">
+        <span>${item.content || "NAN"}</span>
+          ${
+            hasToggle
+              ? `<input type='checkbox' class='toggle-switch' ${
+                  isChecked ? "checked" : ""
+                }/>`
+              : ""
+          }
+        </div>
+        <div class="wrap-link mt-3">
+          <div class="label-link">
+            <span class="mr-1">${body.title || "NAN"}</span>
+            ${body.iconBody || ""}
+          </div>
+
+          <div class="link-container">
+            <textarea class="item-link" readonly>
+${body.content}
+            </textarea>
+            <button class="btn-copy" title="Copy">
+              ${body.icon.value || ""}
+            </button>
+          </div>
+          <div class="d-flex justify-content-center align-items-center">
+            <button class="btn-custom-membership mt-3">${
+              button.content
+            }</button>
+          </div>
+
+        </div>
+      </div>
+  `;
+};
+
+const renderSocial = (social) => {
+  if (!social || !Array.isArray(social)) return "";
+
+  return social.map((item) => {
+    const justify = item.style.justify || "";
+    const hasToggle = item.action?.type === "TOGGLE";
+
+    const isChecked =
+      item.action?.defaultValue === true ||
+      item.action?.defaultValue === "true";
+
+    return `
+      <div class="option-item" style="justify-content: ${justify}">
+        <span>${item.content}</span>
+        ${
+          hasToggle &&
+          `<input type='checkbox' class='toggle-switch' ${
+            isChecked ? "checked" : ""
+          } />`
+        }
+      </div>
+    `;
+  });
+};
+
 // tính chiều cao templates
 function animateHeight($element, toExpand) {
   const el = $element[0];
@@ -702,7 +1227,18 @@ function animateHeight($element, toExpand) {
 
 $(document).ready(function () {
   let isCollapsed = false;
-  const { dataTemplates, dataTable } = onlineStore.load();
+  const {
+    dataTemplates,
+    dataTable,
+    configThemeColor,
+    info,
+    sideInfo,
+    banner,
+    giftCard,
+    membership,
+    social,
+    listDataService,
+  } = onlineStore.load();
   const $wrapList = $(".wrap-list-templates");
   const $wrapContainerDeploy = $(".container-deploy");
   $wrapContainerDeploy.empty();
@@ -782,21 +1318,12 @@ $(document).ready(function () {
                                     <div class="wrap-item-option">
                                       <div class="item-option-change">
                                           <h4 class="text-option text-uppercase mb-0">Color</h4>
-                                          <button class="btn-option plus">
+                                          <button id="open-option-theme" class="btn-option plus">
                                               <i class="fa-solid fa-plus white"></i>
                                           </button>
                                           </div>
-                                        <div class="option-content">
-                                            <div class="option-item">
-                                              <label class="">
-                                                <span class="bold-mid-18">Show all</span>
-                                              </label>
-                                              <input type="checkbox" class="toggle-switch" />
-                                            </div>
-                                            <div class="option-item">Item 2 for Color</div>
-                                            <div class="option-item">Item 3 for Color</div>
-                                            <div class="option-item">Item 4 for Color</div>
-                                            <div class="option-item">Item 5 for Color</div>
+                                        <div id="option-theme-color" class="option-content">
+
                                         </div>
                                     </div>
                                     <div class="wrap-item-option">
@@ -806,13 +1333,18 @@ $(document).ready(function () {
                                               <i class="fa-solid fa-plus white"></i>
                                           </button>
                                           </div>
-                                        <div class="option-content">
-                                            <div class="option-item">Item 1 for Color</div>
-                                            <div class="option-item">Item 2 for Color</div>
-                                            <div class="option-item">Item 3 for Color</div>
-                                            <div class="option-item">Item 4 for Color</div>
-                                            <div class="option-item">Item 5 for Color</div>
-                                        </div>
+                                          <div id="option-info" class="option-content">
+                                            <div class="option-item px-0">
+                                              <input id="input-info" class="input-info" value="test input"/>
+                                            </div>
+                                            <div class="option-item px-0">
+                                              <textarea id="textarea-info" class="textarea-info">
+We hope that your visit will be a relaxing and wonderful experience.
+Please do not hesitate to share your opinions with the salon manager so that your next visit at MIA will be an even better experience.
+                                              </textarea>
+
+                                            </div>
+                                          </div>
                                     </div>
                                     <div class="wrap-item-option">
                                       <div class="item-option-change">
@@ -821,12 +1353,7 @@ $(document).ready(function () {
                                               <i class="fa-solid fa-plus white"></i>
                                           </button>
                                           </div>
-                                        <div class="option-content">
-                                            <div class="option-item">Item 1 for Color</div>
-                                            <div class="option-item">Item 2 for Color</div>
-                                            <div class="option-item">Item 3 for Color</div>
-                                            <div class="option-item">Item 4 for Color</div>
-                                            <div class="option-item">Item 5 for Color</div>
+                                        <div id="option-side-info" class="option-content">
                                         </div>
                                     </div>
                                     <div class="wrap-item-option">
@@ -836,12 +1363,8 @@ $(document).ready(function () {
                                               <i class="fa-solid fa-plus white"></i>
                                           </button>
                                           </div>
-                                        <div class="option-content">
-                                            <div class="option-item">Item 1 for Color</div>
-                                            <div class="option-item">Item 2 for Color</div>
-                                            <div class="option-item">Item 3 for Color</div>
-                                            <div class="option-item">Item 4 for Color</div>
-                                            <div class="option-item">Item 5 for Color</div>
+                                        <div id="option-banner" class="option-content">
+
                                         </div>
                                     </div>
                                     <div class="wrap-item-option">
@@ -851,12 +1374,27 @@ $(document).ready(function () {
                                             <i class="fa-solid fa-plus white"></i>
                                         </button>
                                       </div>
-                                      <div class="option-content">
-                                          <div class="option-item">Item 1 for Color</div>
-                                          <div class="option-item">Item 2 for Color</div>
-                                          <div class="option-item">Item 3 for Color</div>
-                                          <div class="option-item">Item 4 for Color</div>
-                                          <div class="option-item">Item 5 for Color</div>
+                                      <div id="option-gift-card" class="option-content">
+                                      </div>
+                                    </div>
+                                    <div class="wrap-item-option">
+                                      <div class="item-option-change">
+                                        <h4 class="text-option text-uppercase mb-0">Membership</h4>
+                                        <button class="btn-option plus">
+                                            <i class="fa-solid fa-plus white"></i>
+                                        </button>
+                                      </div>
+                                      <div id="option-membership" class="option-content">
+                                      </div>
+                                    </div>
+                                    <div class="wrap-item-option">
+                                      <div class="item-option-change">
+                                        <h4 class="text-option text-uppercase mb-0">Social</h4>
+                                        <button class="btn-option plus">
+                                            <i class="fa-solid fa-plus white"></i>
+                                        </button>
+                                      </div>
+                                      <div id="option-social" class="option-content">
                                       </div>
                                     </div>
                                 </div>
@@ -967,94 +1505,100 @@ $(document).ready(function () {
                                     <div class="list-more">
                                         <div class="more-item">
                                             <div class="expend-title">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
-                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M7.16625 11.4688H13.4263V2.46875H1.90625V21.9688H13.4263V12.9688H7.16625V11.4688Z" fill="#E27303" />
-                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M21.8448 11.4691C19.8328 11.4681 18.0008 9.63605 18.0008 7.62305V6.87305H16.5008V7.62305C16.5008 9.10005 17.1758 10.4801 18.2198 11.4691L13.4219 11.469V12.969L18.2198 12.9691C17.1758 13.9581 16.5008 15.3371 16.5008 16.8141V17.5641H18.0008V16.8141C18.0008 14.8021 19.8338 12.9691 21.8458 12.9691H22.5958V11.4691H21.8448Z" fill="#E27303" />
-                                                </svg>
-                                                <p class="text-uppercase bold-medium-14 mb-0">Manicure</p>
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="19" viewBox="0 0 18 19" fill="none">
-                                                    <path d="M14.9425 6.77344L10.0525 11.6634C9.475 12.2409 8.53 12.2409 7.9525 11.6634L3.0625 6.77344" stroke="black" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
-                                                </svg>
+                                              //iconLeft
+                                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
+                                                  <path fill-rule="evenodd" clip-rule="evenodd" d="M7.16625 11.4688H13.4263V2.46875H1.90625V21.9688H13.4263V12.9688H7.16625V11.4688Z" fill="#E27303" />
+                                                  <path fill-rule="evenodd" clip-rule="evenodd" d="M21.8448 11.4691C19.8328 11.4681 18.0008 9.63605 18.0008 7.62305V6.87305H16.5008V7.62305C16.5008 9.10005 17.1758 10.4801 18.2198 11.4691L13.4219 11.469V12.969L18.2198 12.9691C17.1758 13.9581 16.5008 15.3371 16.5008 16.8141V17.5641H18.0008V16.8141C18.0008 14.8021 19.8338 12.9691 21.8458 12.9691H22.5958V11.4691H21.8448Z" fill="#E27303" />
+                                              </svg>
+                                              //value
+                                              <p class="text-uppercase bold-medium-14 mb-0">Manicure</p>
+                                              //iconRight
+                                              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="19" viewBox="0 0 18 19" fill="none">
+                                                  <path d="M14.9425 6.77344L10.0525 11.6634C9.475 12.2409 8.53 12.2409 7.9525 11.6634L3.0625 6.77344" stroke="black" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+                                              </svg>
+                                            </div>
+                                            //listItem
+                                            <div class="card-more">
+                                              <div class="top-card">
+                                                <div class="left-card">
+                                                //title
+                                                    <p class="bold-medium-14">Essential Pedicure</p>
+                                                //subTitle
+                                                    <p class="thin-mid-14">Hydrating Pedi Salt Soak</p>
+                                                </div>
+                                                <div class="right-card">
+                                                //priceRental
+                                                    <p class="bold-medium-20">$45</p>
+                                                    //timetext
+                                                    <p class="bold-mid-12">40min</p>
+                                                </div>
+                                              </div>
+                                              <div class="add-more">
+                                                <button class="btn-add-more">
+                                                    <i class="fa-solid fa-plus"></i>
+                                                </button>
+                                                <div class="wrap-select-user">
+                                                  <div class="icon-checked">
+                                                    <i class="fa-solid fa-check"></i>
+                                                  </div>
+                                                  <div class="toggle-select">
+                                                    <span>
+                                                      Tên người dùng đã chọn
+                                                    </span>
+                                                    <i class="fa-solid fa-chevron-down"></i>
+                                                    <div class="option-select-user">
+                                                     <div class="item-user">
+                                                       <div class="avatar-user">
+                                                        <img src="" alt="image user" class="img-user"/>
+                                                      </div>
+                                                      <span>Name user</span>
+                                                     </div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                                <button class="btn-delete">
+                                                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
+                                                    <path d="M14 10.0605V17.0605M10 10.0605V17.0605M6 6.06055V17.8605C6 18.9807 6 19.5403 6.21799 19.9681C6.40973 20.3445 6.71547 20.651 7.0918 20.8428C7.5192 21.0605 8.07899 21.0605 9.19691 21.0605H14.8031C15.921 21.0605 16.48 21.0605 16.9074 20.8428C17.2837 20.651 17.5905 20.3445 17.7822 19.9681C18 19.5407 18 18.9816 18 17.8636V6.06055M6 6.06055H8M6 6.06055H4M8 6.06055H16M8 6.06055C8 5.12866 8 4.66295 8.15224 4.29541C8.35523 3.80535 8.74432 3.41578 9.23438 3.21279C9.60192 3.06055 10.0681 3.06055 11 3.06055H13C13.9319 3.06055 14.3978 3.06055 14.7654 3.21279C15.2554 3.41578 15.6447 3.80535 15.8477 4.29541C15.9999 4.66295 16 5.12867 16 6.06055M16 6.06055H18M18 6.06055H20" stroke="#ECB155" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                  </svg>
+                                                </button>
+                                              </div>
                                             </div>
                                             <div class="card-more">
-                                                <div class="top-card">
-                                                    <div class="left-card">
-                                                        <p class="bold-medium-14">Essential Pedicure</p>
-                                                        <p class="thin-mid-14">Hydrating Pedi Salt Soak</p>
-                                                    </div>
-                                                    <div class="right-card">
-                                                        <p class="bold-medium-20">$45</p>
-                                                        <p class="bold-mid-12">40min</p>
-                                                    </div>
+                                              <div class="top-card">
+                                                <div class="left-card">
+                                                //title
+                                                    <p class="bold-medium-14">Essential Pedicure</p>
+                                                //subTitle
+                                                    <p class="thin-mid-14">Hydrating Pedi Salt Soak</p>
                                                 </div>
-                                                <div class="add-more">
-                                                    <button class="btn-add-more">
-                                                        <i class="fa-solid fa-plus"></i>
-                                                    </button>
+                                                <div class="right-card">
+                                                //priceRental
+                                                    <p class="bold-medium-20">$45</p>
+                                                    //timetext
+                                                    <p class="bold-mid-12">40min</p>
                                                 </div>
-                                            </div>
-                                            <div class="card-more">
-                                                <div class="top-card">
-                                                    <div class="left-card">
-                                                        <p class="bold-medium-14">Essential Pedicure</p>
-                                                        <p class="thin-mid-14">Hydrating Pedi Salt Soak</p>
-                                                    </div>
-                                                    <div class="right-card">
-                                                        <p class="bold-medium-20">$45</p>
-                                                        <p class="bold-mid-12">40min</p>
-                                                    </div>
+                                              </div>
+                                              <div class="add-more">
+                                                <button class="btn-add-more">
+                                                    <i class="fa-solid fa-plus"></i>
+                                                </button>
+                                                <div class="wrap-select-user">
+                                                  <div>
+                                                    <i class="fa-solid fa-check"></i>
+                                                  </div>
+                                                  <div>
+                                                    <span>
+                                                      Tên người dùng đã chọn
+                                                    </span>
+                                                    <i class="fa-solid fa-chevron-down"></i>
+                                                  </div>
                                                 </div>
-                                                <div class="add-more">
-                                                    <button class="btn-add-more">
-                                                        <i class="fa-solid fa-plus"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <div class="card-more">
-                                                <div class="top-card">
-                                                    <div class="left-card">
-                                                        <p class="bold-medium-14">Essential Pedicure</p>
-                                                        <p class="thin-mid-14">Hydrating Pedi Salt Soak</p>
-                                                    </div>
-                                                    <div class="right-card">
-                                                        <p class="bold-medium-20">$45</p>
-                                                        <p class="bold-mid-12">40min</p>
-                                                    </div>
-                                                </div>
-                                                <div class="add-more">
-                                                    <button class="btn-add-more">
-                                                        <i class="fa-solid fa-plus"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="more-item">
-                                            <div class="expend-title">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
-                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M7.16625 11.4688H13.4263V2.46875H1.90625V21.9688H13.4263V12.9688H7.16625V11.4688Z" fill="#E27303" />
-                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M21.8448 11.4691C19.8328 11.4681 18.0008 9.63605 18.0008 7.62305V6.87305H16.5008V7.62305C16.5008 9.10005 17.1758 10.4801 18.2198 11.4691L13.4219 11.469V12.969L18.2198 12.9691C17.1758 13.9581 16.5008 15.3371 16.5008 16.8141V17.5641H18.0008V16.8141C18.0008 14.8021 19.8338 12.9691 21.8458 12.9691H22.5958V11.4691H21.8448Z" fill="#E27303" />
-                                                </svg>
-                                                <p class="text-uppercase bold-medium-14 mb-0">Manicure</p>
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="19" viewBox="0 0 18 19" fill="none">
-                                                    <path d="M14.9425 6.77344L10.0525 11.6634C9.475 12.2409 8.53 12.2409 7.9525 11.6634L3.0625 6.77344" stroke="black" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
-                                                </svg>
-                                            </div>
-                                            <div class="card-more">
-                                                <div class="top-card">
-                                                    <div class="left-card">
-                                                        <p class="bold-medium-14">Essential Pedicure</p>
-                                                        <p class="thin-mid-14">Hydrating Pedi Salt Soak</p>
-                                                    </div>
-                                                    <div class="right-card">
-                                                        <p class="bold-medium-20">$45</p>
-                                                        <p class="bold-mid-12">40min</p>
-                                                    </div>
-                                                </div>
-                                                <div class="add-more">
-                                                    <button class="btn-add-more">
-                                                        <i class="fa-solid fa-plus"></i>
-                                                    </button>
-                                                </div>
+                                                <button class="btn-delete">
+                                                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
+                                                    <path d="M14 10.0605V17.0605M10 10.0605V17.0605M6 6.06055V17.8605C6 18.9807 6 19.5403 6.21799 19.9681C6.40973 20.3445 6.71547 20.651 7.0918 20.8428C7.5192 21.0605 8.07899 21.0605 9.19691 21.0605H14.8031C15.921 21.0605 16.48 21.0605 16.9074 20.8428C17.2837 20.651 17.5905 20.3445 17.7822 19.9681C18 19.5407 18 18.9816 18 17.8636V6.06055M6 6.06055H8M6 6.06055H4M8 6.06055H16M8 6.06055C8 5.12866 8 4.66295 8.15224 4.29541C8.35523 3.80535 8.74432 3.41578 9.23438 3.21279C9.60192 3.06055 10.0681 3.06055 11 3.06055H13C13.9319 3.06055 14.3978 3.06055 14.7654 3.21279C15.2554 3.41578 15.6447 3.80535 15.8477 4.29541C15.9999 4.66295 16 5.12867 16 6.06055M16 6.06055H18M18 6.06055H20" stroke="#ECB155" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                  </svg>
+                                                </button>
+                                              </div>
                                             </div>
                                         </div>
                                     </div>
@@ -1084,19 +1628,38 @@ $(document).ready(function () {
 
     // Sự kiện bên trái template
     $(document).on("click", ".item-option-change .btn-option", function () {
-      const $optionContent = $(this)
-        .closest(".wrap-item-option")
-        .find(".option-content");
+      const $wrapItemOption = $(this).closest(".wrap-item-option");
+      const $optionContent = $wrapItemOption.find(".option-content");
       const $icon = $(this).find("i");
-      const $itemOptionChange = $(this).parent(".item-option-change"); // Lấy phần tử item-option-change
-      const $btnOption = $(this); // Lấy chính nút btn-option
+      const $itemOptionChange = $(this).parent(".item-option-change");
+      const $btnOption = $(this);
 
+      // Toggle UI
       $optionContent.toggleClass("expanded");
       $icon.toggleClass("fa-plus fa-minus");
-
-      // Thêm/xoá class 'active'
       $itemOptionChange.toggleClass("active");
       $btnOption.toggleClass("active");
+      $btnOption.toggleClass("plus sub");
+
+      const renderMap = {
+        "option-theme-color": () => renderColorTheme(configThemeColor),
+        "option-info": () => renderInfo(info),
+        "option-side-info": () => renderSideInfor(sideInfo),
+        "option-banner": () => renderBanner(banner),
+        "option-gift-card": () => renderGiftCardAndMembership(giftCard),
+        "option-membership": () => renderGiftCardAndMembership(membership),
+        "option-social": () => renderSocial(social),
+      };
+
+      const id = $optionContent.attr("id");
+      const renderFn = renderMap[id];
+      const isEmpty =
+        $optionContent.children().length === 0 &&
+        $optionContent.text().trim() === "";
+      if (renderFn && isEmpty) {
+        const html = renderFn();
+        $optionContent.html(html);
+      }
     });
   }
   // POPUP SETTING
@@ -1166,7 +1729,7 @@ $(document).ready(function () {
                 <input type="checkbox" checked/>
                 <span class="checkmark"></span>
                 Auto Assign No Request Appointment To Tech
-            </label>
+          </label>
           <div class="setting-sub">
             <label class="custom-checkbox">
                 <input type="checkbox" />
@@ -1240,9 +1803,8 @@ $(document).ready(function () {
           </div>
 
           <div class="link-container">
-            <div class="membership-link">
-              https://manage2.mangoforsalon.com/nextview/membership-settings?salon_id=abc
-            </div>
+            <input class="membership-link" value="https://manage2.mangoforsalon.com/nextview/membership-settings?salon_id=abc" readonly >
+            </input>
             <button class="btn-copy" title="Copy">
               <i class="fa-regular fa-copy"></i>
             </button>
@@ -1323,7 +1885,7 @@ $(document).ready(function () {
           </label>
 
           <div class="link-container">
-            <div class="membership-link">https://manage2.mangoforsalon.com/nextview/membership-settings?salon_id=abc</div>
+            <input class="membership-link" value="https://manage2.mangoforsalon.com/nextview/membership-settings?salon_id=abc" readonly ></input>
             <button class="btn-copy" title="Copy"><i class="fa-regular fa-copy"></i></button>
           </div>
 
@@ -1387,8 +1949,7 @@ $(document).ready(function () {
       $popup.remove();
     });
 
-    // Sự kiện trên tab Online Booking
-
+    // ======== Sự kiện trên tab Online Booking
     // Sự kiện trên tab Membership
     $(document).on("click", ".btn-copy", function () {
       const linkInput = $(this).siblings(".membership-link")[0];
@@ -1419,7 +1980,32 @@ $(document).ready(function () {
     });
   });
 
-  // Sự kiện bên trái template
+  // Sự kiện trên page home template
+  $(document).on("click", ".add-more .btn-add-more", function () {
+    console.log("this: ", $(this));
+    const $parentBtn = $(this).closest(".add-more");
+    $(this).hide();
+    const $selectUser = $parentBtn.find(".wrap-select-user");
+    console.log("selected: ", $selectUser);
+    const $btnDelete = $parentBtn.find(".btn-delete");
+
+    $selectUser.css("display", "flex").hide().fadeIn();
+    $btnDelete.show();
+  });
+
+  $(document).on("click", ".add-more .btn-delete", function () {
+    console.log("this: ", $(this));
+    const $parentBtn = $(this).closest(".add-more");
+    $(this).hide();
+    const $selectUser = $parentBtn.find(".wrap-select-user");
+    const $btnAddmore = $parentBtn.find(".btn-add-more");
+
+    $selectUser.hide();
+    $btnAddmore.show();
+  });
+  $(document).on("click", ".wrap-select-user toggle-select", function () {
+    // const $optionSelectUser =
+  });
 
   // TEMPLATE NGOÀI
 

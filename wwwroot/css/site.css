@@ -380,6 +380,17 @@ p {
 .border-thin-bottom {
   border-bottom: 1px solid var(--Templates-2-Grey-Normal-500, #e6e6e6);
 }
+/* grid */
+.grid-8 {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+}
+.grid-gap-y-2 {
+  grid-column-gap: 8px;
+}
+.grid-gap-x-2 {
+  grid-row-gap: 8px;
+}
 /* gap */
 .gap-24px {
   gap: 24px;
@@ -899,6 +910,89 @@ td td:last-child {
   transition: border-bottom 0.5s ease-in-out, background-color 0.5s ease-in-out; /* Thêm transition cho border và background */
 }
 
+.input-info {
+  width: 100%;
+  display: flex;
+  padding: 8px 12px;
+  align-items: center;
+  gap: 8px;
+  align-self: stretch;
+  border-radius: 10px;
+  border: 1px solid var(--Gray-Neutral-65, #a0a0a0);
+  background: #fff;
+}
+.input-info:focus-visible {
+  outline: 1px solid var(--bs-main);
+}
+.textarea-info {
+  width: 100%;
+  height: 120px;
+  display: flex;
+  padding: 14px 12px;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: 8px;
+  align-self: stretch;
+  border-radius: 10px;
+  border: 1px solid var(--Gray-Neutral-65, #a0a0a0);
+  background: #fff;
+  resize: none;
+}
+.textarea-info:focus-visible {
+  outline: 1px solid var(--bs-main);
+}
+
+#option-gift-card {
+}
+#option-membership {
+}
+
+#option-gift-card .option-content-item,
+#option-membership .option-content-item {
+  margin-top: 20px;
+  width: 100%;
+}
+
+#option-gift-card .option-content-item .item-toggle,
+#option-membership .option-content-item .item-toggle {
+  display: flex;
+  justify-content: space-between;
+}
+
+#option-gift-card .option-content-item .item-link,
+#option-membership .option-content-item .item-link {
+  padding: 8px 80px 8px 8px;
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  background: #f9f9f9;
+  color: #333;
+  resize: none;
+  overflow: hidden;
+  line-height: 1.4;
+  height: calc(1.4em * 2 + 13px); /* 2 dòng + padding */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; /* Giới hạn 2 dòng */
+  white-space: pre-wrap;
+}
+#option-gift-card .option-content-item .item-link:focus-visible,
+#option-membership .option-content-item .item-link:focus-visible {
+  outline: 1px solid var(--bs-main);
+}
+#option-gift-card .option-content-item .btn-copy,
+#option-membership .option-content-item .btn-copy {
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: #666;
+  padding: 6px;
+  position: absolute;
+  top: 8px;
+  right: 4px;
+}
+
 /* Khi item-option-change được mở (có class active) */
 .item-option-change.active {
   border-radius: none;
@@ -944,6 +1038,10 @@ td td:last-child {
 .item-option-change .btn-option.plus {
   background-color: var(--bs-main);
 }
+
+.item-option-change .btn-option.sub {
+  background-color: #aeaeae;
+}
 .item-option-change .btn-option.subtract {
   background-color: #aeaeae;
 }
@@ -986,8 +1084,11 @@ td td:last-child {
   transition: transform 0.5s ease-in-out;
   transform: rotate(0deg);
 }
+.item-theme:hover {
+  border: 1px solid var(--bs-main);
+}
 
-/*right detail templates*/
+/* ============right detail templates*/
 .right-body-detail {
   width: 69%;
   display: flex;
@@ -1136,6 +1237,7 @@ td td:last-child {
   border: 1px solid #04972f;
   background: var(--Foundation-Green-Normal, #0c7e2d);
   color: white;
+  font-size: 10px;
 }
 .cart-user {
   display: flex;
@@ -1384,6 +1486,50 @@ td td:last-child {
   flex-direction: column;
   gap: 8px;
 }
+.card-more .add-more {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.card-more .add-more .wrap-select-user {
+  display: none;
+  gap: 16px;
+  align-items: center;
+}
+.wrap-select-user .icon-checked {
+  width: 32px;
+  height: 32px;
+  background: #ecb155;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100%;
+}
+.wrap-select-user .toggle-select {
+  position: relative;
+  width: fit-content;
+  background: #ecb155;
+  color: white;
+  padding: 8px 24px;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  opacity: 0.9;
+  align-items: center;
+  gap: 12px;
+}
+.wrap-select-user .toggle-select:hover {
+  opacity: 0.9;
+}
+.card-more .add-more .btn-delete {
+  display: none;
+  border: none;
+  background: none;
+}
+.card-more .add-more .btn-delete:hover {
+  opacity: 0.9;
+}
 .card-more .add-more .btn-add-more {
   display: flex;
   width: 64px;
@@ -1396,6 +1542,21 @@ td td:last-child {
   border: none;
   color: white;
   cursor: pointer;
+}
+
+.card-more .add-more .btn-add-more:hover {
+  opacity: 0.95;
+}
+
+.wrap-select-user .option-select-user {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 100%;
+  background: white;
+  border: 1px solid #ddd;
+  z-index: 10;
+  display: none;
 }
 
 /* ----- CSS Settings Popup ----*/
@@ -1719,6 +1880,9 @@ td td:last-child {
   text-overflow: ellipsis;
   background: #f9f9f9;
   color: #333;
+}
+.membership-link:focus-visible {
+  outline: 1px solid var(--bs-main);
 }
 
 .btn-copy {
