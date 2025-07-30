@@ -642,7 +642,7 @@ const onlineStore = {
         },
       ],
     };
-    const configThemeColor = {
+    let configThemeColor = {
       config: {
         width: '36',
         height: '36',
@@ -652,17 +652,18 @@ const onlineStore = {
         {
           color: '#4D0000',
           active: false,
-          isFirst: true,
         },
         {
           color: '#520000',
-          active: true,
+          active: false,
         },
         { color: '#5C0000', active: false },
+        { color: '#660000', active: true, selected: true, type: 'PRIMARY' },
         { color: '#D0B0B0', active: false },
-        { color: '#E8D9D9', active: true, isSendcond: true },
+        { color: '#E8D9D9', active: false },
         { color: '#F0E6E6', active: false },
         { color: '#E2CAC1', active: false },
+
         { color: '#565656', active: false },
         { color: '#6F6F6F', active: false },
         { color: '#949494', active: false },
@@ -671,7 +672,28 @@ const onlineStore = {
         { color: '#DCCCBA', active: false },
         { color: '#F4E3CF', active: false },
         { color: '#FEFCFA', active: false },
+
+        { color: '#023D13', active: false },
+        { color: '#024114', active: false },
+        { color: '#024917', active: false },
+        { color: '#0C7E2D', active: false },
+        { color: '#B1C9B8', active: false },
+        { color: '#B1C9B8', active: false },
+        { color: '#D9E5DD', active: false },
+        { color: '#E6EEE8', active: false },
+
+        { color: '#AA5602', active: false },
+        { color: '#B55C02', active: false },
+        { color: '#CB6803', active: false },
+        { color: '#E27303', active: true, selected: true, type: 'SECONDARY' },
+        { color: '#F6D4B1', active: false },
+        { color: '#FBEAD9', active: false },
+        { color: '#FCF1E6', active: false },
+        { color: '#FCF1E6', active: false },
       ],
+      iconActive: `<i class="fa-solid fa-check"></i>`,
+      colorPrimary: '#00bed6',
+      colorSecondary: '#061315',
     };
 
     const info = [
@@ -691,6 +713,8 @@ const onlineStore = {
 
     const sideInfo = [
       {
+        id: 'si-show-all',
+        idt: 'sit-show-all',
         content: 'Show All',
         action: {
           type: 'TOGGLE',
@@ -701,7 +725,45 @@ const onlineStore = {
         // },
       },
       {
+        id: 'si-promotion',
+        idt: 'sit-promotion',
         content: 'Promotion',
+        action: {
+          type: 'TOGGLE',
+          defaultValue: '',
+        },
+        style: {
+          justify: 'space-between',
+        },
+      },
+      {
+        id: 'si-store-info',
+        idt: 'sit-store-info',
+        content: 'Store Info',
+        action: {
+          type: 'TOGGLE',
+          defaultValue: '',
+        },
+        style: {
+          justify: 'space-between',
+        },
+      },
+      {
+        id: 'si-policy',
+        idt: 'sit-policy',
+        content: 'Policy',
+        action: {
+          type: 'TOGGLE',
+          defaultValue: '',
+        },
+        style: {
+          justify: 'space-between',
+        },
+      },
+      {
+        id: 'si-social-link',
+        idt: 'sit-social-link',
+        content: 'Social Link',
         action: {
           type: 'TOGGLE',
           defaultValue: '',
@@ -914,6 +976,198 @@ const onlineStore = {
       },
     ];
 
+    let dataHeaderNav = {
+      logo: '/assets/images/templates/logo-template.png',
+      itemNav: [
+        {
+          id: 'page-fag',
+          name: 'Fag',
+        },
+        {
+          id: 'page-membership',
+          name: 'Membership',
+        },
+        {
+          id: 'page-service',
+          name: 'Service',
+        },
+        {
+          id: 'page-giftcard',
+          name: 'Gift Card',
+        },
+        {
+          id: 'page-about',
+          name: 'About',
+          icon: '<i class="fa-solid fa-chevron-down"></i>',
+        },
+        {
+          id: 'page-contact-us',
+          name: 'Contact Us',
+        },
+      ],
+      colorActiveNav: '#04972f',
+      iconUser: `
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="19" viewBox="0 0 18 19" fill="none">
+          <path d="M15 15.8066C15 13.7356 12.3137 12.0566 9 12.0566C5.68629 12.0566 3 13.7356 3 15.8066M9 9.80664C6.92893 9.80664 5.25 8.12771 5.25 6.05664C5.25 3.98557 6.92893 2.30664 9 2.30664C11.0711 2.30664 12.75 3.98557 12.75 6.05664C12.75 8.12771 11.0711 9.80664 9 9.80664Z" stroke="#061315" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      `,
+      buttonBooking: {
+        content: 'Book',
+        bgBtn: '#0c7e2d',
+        color: 'white',
+        border: '1px solid #04972f',
+        bgColorHover: '#b1c9b8',
+      },
+      cart: {
+        icon: `
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="19" viewBox="0 0 18 19" fill="none">
+            <path d="M5.625 5.81269V5.08519C5.625 3.39769 6.9825 1.74019 8.67 1.58269C10.68 1.38769 12.375 2.97019 12.375 4.94269V5.97769" stroke="black" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M6.7506 16.5605H11.2506C14.2656 16.5605 14.8056 15.353 14.9631 13.883L15.5256 9.38305C15.7281 7.55305 15.2031 6.06055 12.0006 6.06055H6.0006C2.7981 6.06055 2.2731 7.55305 2.4756 9.38305L3.0381 13.883C3.1956 15.353 3.7356 16.5605 6.7506 16.5605Z" stroke="black" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M11.6209 9.06055H11.6276" stroke="black" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M6.37088 9.06055H6.37762" stroke="black" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        `,
+        quatity: '1',
+        bgColor: '#ea001e',
+        color: 'white',
+      },
+    };
+
+    let dataAdvertise = {
+      bgAdvertise1: {
+        bgColor: '#0c7e2d',
+        transformRotate: '-4.479deg',
+      },
+      bgAdvertise2: {
+        bgColor: '#e27303',
+        colorContent: 'white',
+        content: [
+          {
+            text: 'Hi Guest! Sign in to access',
+            fontWeight: 400,
+          },
+          {
+            text: 'Past Appointment History',
+            fontWeight: 700,
+          },
+          {
+            text: 'and',
+            fontWeight: 400,
+          },
+          {
+            text: 'view upcoming appointments, or Cancel upcoming appointments',
+            fontWeight: 700,
+          },
+        ],
+      },
+      buttonSignIn: {
+        content: 'Sign In',
+        bgColor: '#0c7e2d',
+        color: 'white',
+        border: '1px solid #04972f',
+        bgColorHover: '#b1c9b8',
+      },
+    };
+
+    let dataBannerPage = {
+      greeting: 'Welcome to !',
+      brand: 'Nailvibe',
+      title: `It is time to relax !`,
+      desc: `We hope that your visit will be a relaxing and wonderful experience.
+Please do not hesitate to share your opinions with the salon manager so that your next visit at MIA will be an even better experience.`,
+      bookFor: 'Book Appointment for',
+      btnOptionBook: {
+        content: 'Just me',
+        icon: `<i class="fa-solid fa-chevron-down rotate-transition"></i>`,
+        color: 'white',
+        bgColor: '#04972f',
+        border: '1px solid #04972f',
+      },
+      image: {
+        imgBooking1: '/assets/images/templates/image-banner-booking.png',
+        imgBooking2: '/assets/images/templates/image-banner-booking-2.png',
+        imgBooking3: '/assets/images/templates/image-cloud.png',
+      },
+    };
+
+    const listPromotion = {
+      title: 'Select Promotion',
+      item: [
+        {
+          id: 'id-promotion-1',
+          img: '/assets/images/promotions/promotion1.png',
+          title: {
+            content: 'Flash Deal Frenzy! 🌟',
+            icon: '',
+          },
+          percent: {
+            number: 15,
+            content: 'All service',
+            bgColor: '#660000',
+            color: 'white',
+          },
+          dateTime: {
+            startTime: '',
+            endTime: 'Jan 25, 11:59 PM',
+          },
+        },
+        {
+          id: 'id-promotion-2',
+          img: '/assets/images/promotions/promotion2.jpg',
+          title: {
+            content: 'Coupon after buy a gift card',
+            icon: '',
+          },
+          percent: {
+            number: 1,
+            content: 'All service',
+            bgColor: '#660000',
+            color: 'white',
+          },
+          dateTime: {
+            startTime: '',
+            endTime: 'Jan 25, 11:59 PM',
+          },
+        },
+        {
+          id: 'id-promotion-3',
+          img: '/assets/images/promotions/promotion3.jpg',
+          title: {
+            content: 'Coupon For Buy E-GIFT',
+            icon: '',
+          },
+          percent: {
+            number: 5,
+            content: 'All service',
+            bgColor: '#660000',
+            color: 'white',
+          },
+          dateTime: {
+            startTime: '',
+            endTime: 'Jan 25, 11:59 PM',
+          },
+        },
+        {
+          id: 'id-promotion-4',
+          img: '/assets/images/promotions/promotion4.jpg',
+          title: {
+            content: 'Unlock Exclusive',
+            icon: '',
+          },
+          percent: {
+            number: 5,
+            content: 'All service',
+            bgColor: '#660000',
+            color: 'white',
+          },
+          dateTime: {
+            startTime: '',
+            endTime: 'Jan 25, 11:59 PM',
+          },
+        },
+      ],
+    };
+
     const dataPageMembership = {
       intro: { stepCur: 1, stepEnd: 3, title: 'Choose the plan that’s right for you' },
       style: {
@@ -1077,6 +1331,8 @@ const onlineStore = {
           percent: {
             number: 15,
             content: '',
+            bgColor: '#660000',
+            color: 'white',
           },
           datetime: {
             startTime: '',
@@ -1121,8 +1377,17 @@ const onlineStore = {
       giftCard,
       membership,
       social,
+
       listDataService,
       listUser,
+
+      dataHeaderNav,
+      dataAdvertise,
+      dataBannerPage,
+
+      //promotion
+      listPromotion,
+
       dataPageMembership,
       dataPageGiftCard,
     };
@@ -1254,23 +1519,37 @@ const renderItemTable = (header, body) => {
 // ===== *END templates home render
 
 const renderColorTheme = (configThemeColor) => {
-  const { config, colorTheme } = configThemeColor;
+  console.log('updated: ');
+  const { config, colorTheme, iconActive, colorPrimary, colorSecondary } = configThemeColor;
   return `
     <div class="grid-8 grid-gap-y-2 grid-gap-x-2">
       ${
         colorTheme &&
         colorTheme
-          .map((item) => {
-            const { color, active } = item;
+          .map((item, i) => {
+            const { color, selected, active } = item;
             const { width, height, borderRadius } = config;
+            const displayChecked = selected ? iconActive : '';
 
             return `
-          <div class="item-theme" style="
+          <div class="item-theme"
+            data-index="${i}"
+            style="
               background-color: ${color};
               height: ${height}px;
               width: ${width}px;
               border-radius: ${borderRadius}px
             ">
+
+            ${
+              active
+                ? `<p class="color-icon-selected"
+                style="
+                  --color-icon-checked: ${item.type === 'PRIMARY' ? colorPrimary : colorSecondary}
+                "
+              >${displayChecked}</p>`
+                : ''
+            }
           </div>
         `;
           })
@@ -1310,20 +1589,26 @@ const renderSideInfor = (sideInfo) => {
 
   return sideInfo
     .map((item) => {
+      const id = item.id;
+      const idt = item.idt;
       const justify = item.style?.justify || '';
       const hasToggle = item.action?.type === 'TOGGLE';
       const isChecked = item.action?.defaultValue === true || item.action?.defaultValue === 'true';
 
       return `
-      <div class="option-item" style="justify-content: ${justify}">
-      <span>${item.content}</span>
-        ${
-          hasToggle
-            ? `<input type='checkbox' class='toggle-switch' ${isChecked ? 'checked' : ''}/>`
-            : ''
-        }
-      </div>
-    `;
+        <div id="${id}">
+          <div class="option-item" style="justify-content: ${justify}">
+          <span>${item.content}</span>
+            ${
+              hasToggle
+                ? `<input id="${idt}" type='checkbox' class='toggle-switch' ${
+                    isChecked ? 'checked' : ''
+                  }/>`
+                : ''
+            }
+          </div>
+        </div>
+      `;
     })
     .join('');
 };
@@ -1958,9 +2243,18 @@ function animateHeight($element, toExpand) {
 }
 
 // ============= *BEGIN function template popup detail
-function showTemplatePopup(id, dataTemplates, listDataService) {
+function showTemplatePopup(
+  id,
+  dataTemplates,
+  dataHeaderNav,
+  dataAdvertise,
+  dataBannerPage,
+  listDataService
+) {
   // Lấy dữ liệu template từ dataTemplates dựa trên id
   const template = dataTemplates.find((item) => item.id === id);
+  const titleBanner = dataBannerPage.title;
+  const descBanner = dataBannerPage.desc;
 
   // Tạo nội dung popup dựa trên template chi tiết
   const popupContent = `
@@ -1969,123 +2263,136 @@ function showTemplatePopup(id, dataTemplates, listDataService) {
                 <div class="popup-body">
                     <div class="container-detail-templates">
                         <div class="header-custom-booking w-100 px-8">
-                            <div class="left-header-detail">
-                                <i class="fa-solid fa-arrow-left icon-left-booking"></i>
-                                <h3 class="text-uppercase title-booking mb-0">Custom online booking</h3>
-                            </div>
-                            <div class="right-header-detail">
-                                <button class="save-bg">
-                                    <h4 class="text-uppercase text-save mb-0">Save</h4>
-                                </button>
-                                <button class="publish-bg">
-                                    <h4 class="text-uppercase text-publish mb-0">Publish</h4>
-                                </button>
-                                <button class="btn-setting">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
-                                        <path d="M3 9.1709V14.9409C3 17.0609 3 17.0609 5 18.4109L10.5 21.5909C11.33 22.0709 12.68 22.0709 13.5 21.5909L19 18.4109C21 17.0609 21 17.0609 21 14.9509V9.1709C21 7.0609 21 7.0609 19 5.7109L13.5 2.5309C12.68 2.0509 11.33 2.0509 10.5 2.5309L5 5.7109C3 7.0609 3 7.0609 3 9.1709Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                                        <path d="M12 15.0605C13.6569 15.0605 15 13.7174 15 12.0605C15 10.4037 13.6569 9.06055 12 9.06055C10.3431 9.06055 9 10.4037 9 12.0605C9 13.7174 10.3431 15.0605 12 15.0605Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                                    </svg>
-                                </button>
-                            </div>
+                          <div class="left-header-detail">
+                            <i class="fa-solid fa-arrow-left icon-left-booking"></i>
+                            <h3 class="text-uppercase title-booking mb-0">Custom online booking</h3>
+                          </div>
+                          <div class="right-header-detail">
+                            <button class="save-bg">
+                                <h4 class="text-uppercase text-save mb-0">Save</h4>
+                            </button>
+                            <button class="publish-bg">
+                                <h4 class="text-uppercase text-publish mb-0">Publish</h4>
+                            </button>
+                            <button class="btn-setting">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
+                                    <path d="M3 9.1709V14.9409C3 17.0609 3 17.0609 5 18.4109L10.5 21.5909C11.33 22.0709 12.68 22.0709 13.5 21.5909L19 18.4109C21 17.0609 21 17.0609 21 14.9509V9.1709C21 7.0609 21 7.0609 19 5.7109L13.5 2.5309C12.68 2.0509 11.33 2.0509 10.5 2.5309L5 5.7109C3 7.0609 3 7.0609 3 9.1709Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                    <path d="M12 15.0605C13.6569 15.0605 15 13.7174 15 12.0605C15 10.4037 13.6569 9.06055 12 9.06055C10.3431 9.06055 9 10.4037 9 12.0605C9 13.7174 10.3431 15.0605 12 15.0605Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </button>
+                          </div>
                         </div>
                         <div class="body-detail-template w-100 px-8">
                             <div class="left-body-detail">
-                                <div class="change-logo">
-                                    <div class="wrap-logo-choosed">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
-                                            <path d="M12 16.0605V10.0605M12 10.0605L9 12.0605M12 10.0605L15 12.0605M23 15.0605C23 12.8514 21.2091 11.0605 19 11.0605C18.9764 11.0605 18.9532 11.0608 18.9297 11.0612C18.4447 7.66857 15.5267 5.06055 12 5.06055C9.20335 5.06055 6.79019 6.70059 5.66895 9.07136C3.06206 9.24199 1 11.4104 1 14.0604C1 16.8218 3.23858 19.0606 6 19.0606L19 19.0605C21.2091 19.0605 23 17.2697 23 15.0605Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                                        </svg>
-                                    </div>
-                                    <div class="title-change-logo">
-                                        <span>Change your logo here</span>
-                                    </div>
-                                    <div class="subtitle-change-logo">
-                                        <span>Supports: PNG</span>
-                                    </div>
+                              <div class="change-logo">
+                                <div class="wrap-logo-choosed">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
+                                    <path d="M12 16.0605V10.0605M12 10.0605L9 12.0605M12 10.0605L15 12.0605M23 15.0605C23 12.8514 21.2091 11.0605 19 11.0605C18.9764 11.0605 18.9532 11.0608 18.9297 11.0612C18.4447 7.66857 15.5267 5.06055 12 5.06055C9.20335 5.06055 6.79019 6.70059 5.66895 9.07136C3.06206 9.24199 1 11.4104 1 14.0604C1 16.8218 3.23858 19.0606 6 19.0606L19 19.0605C21.2091 19.0605 23 17.2697 23 15.0605Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                  </svg>
                                 </div>
+                                <div class="title-change-logo">
+                                  <span>Change your logo here</span>
+                                </div>
+                                <div class="subtitle-change-logo">
+                                  <span>Supports: PNG</span>
+                                </div>
+                              </div>
                                 <div class="list-option-change">
-                                    <div class="wrap-item-option">
-                                      <div class="item-option-change">
-                                          <h4 class="text-option text-uppercase mb-0">Color</h4>
-                                          <button id="open-option-theme" class="btn-option plus">
-                                              <i class="fa-solid fa-plus white"></i>
-                                          </button>
-                                          </div>
-                                        <div id="option-theme-color" class="option-content">
+                                  <div class="wrap-item-option">
+                                    <div class="item-option-change">
+                                      <h4 class="text-option text-uppercase mb-0">Color</h4>
+                                      <button
+                                        id="open-option-theme"
+                                        class="btn-option plus"
+                                      >
+                                        <i class="fa-solid fa-plus white"></i>
+                                      </button>
+                                    </div>
+                                    <div
+                                      id="option-theme-color" class="option-content"
+                                    >
 
+                                    </div>
+                                  </div>
+                                  <div class="wrap-item-option">
+                                    <div class="item-option-change">
+                                      <h4
+                                        class="text-option
+                                        text-uppercase mb-0"
+                                      >
+                                        Info
+                                      </h4>
+                                      <button class="btn-option plus">
+                                        <i class="fa-solid fa-plus white"></i>
+                                      </button>
+                                    </div>
+                                    <div id="option-info" class="option-content">
+                                      <div class="option-item px-0">
+                                        <input
+                                          id="input-info"
+                                          class="input-info"
+                                          value="${titleBanner}"
+                                        />
+                                      </div>
+                                      <div class="option-item px-0">
+                                        <textarea
+                                          id="textarea-info"
+                                          class="textarea-info"
+                                        >${descBanner}</textarea>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="wrap-item-option">
+                                    <div class="item-option-change">
+                                        <h4 class="text-option text-uppercase mb-0">Side info</h4>
+                                        <button #id="side-infor" class="btn-option plus">
+                                            <i class="fa-solid fa-plus white"></i>
+                                        </button>
                                         </div>
-                                    </div>
-                                    <div class="wrap-item-option">
-                                      <div class="item-option-change">
-                                          <h4 class="text-option text-uppercase mb-0">Info</h4>
-                                          <button class="btn-option plus">
-                                              <i class="fa-solid fa-plus white"></i>
-                                          </button>
-                                          </div>
-                                          <div id="option-info" class="option-content">
-                                            <div class="option-item px-0">
-                                              <input id="input-info" class="input-info" value="test input"/>
-                                            </div>
-                                            <div class="option-item px-0">
-                                              <textarea id="textarea-info" class="textarea-info">
-We hope that your visit will be a relaxing and wonderful experience.
-Please do not hesitate to share your opinions with the salon manager so that your next visit at MIA will be an even better experience.
-                                              </textarea>
-
-                                            </div>
-                                          </div>
-                                    </div>
-                                    <div class="wrap-item-option">
-                                      <div class="item-option-change">
-                                          <h4 class="text-option text-uppercase mb-0">Side info</h4>
-                                          <button #id="side-infor" class="btn-option plus">
-                                              <i class="fa-solid fa-plus white"></i>
-                                          </button>
-                                          </div>
-                                        <div id="option-side-info" class="option-content">
-                                        </div>
-                                    </div>
-                                    <div class="wrap-item-option">
-                                      <div class="item-option-change">
-                                          <h4 class="text-option text-uppercase mb-0">Banner</h4>
-                                          <button class="btn-option plus">
-                                              <i class="fa-solid fa-plus white"></i>
-                                          </button>
-                                          </div>
-                                        <div id="option-banner" class="option-content">
-
-                                        </div>
-                                    </div>
-                                    <div class="wrap-item-option">
-                                      <div class="item-option-change">
-                                        <h4 class="text-option text-uppercase mb-0">Gift card</h4>
+                                      <div id="option-side-info" class="option-content">
+                                      </div>
+                                  </div>
+                                  <div class="wrap-item-option">
+                                    <div class="item-option-change">
+                                        <h4 class="text-option text-uppercase mb-0">Banner</h4>
                                         <button class="btn-option plus">
                                             <i class="fa-solid fa-plus white"></i>
                                         </button>
+                                        </div>
+                                      <div id="option-banner" class="option-content">
+
                                       </div>
-                                      <div id="option-gift-card" class="option-content">
-                                      </div>
+                                  </div>
+                                  <div class="wrap-item-option">
+                                    <div class="item-option-change">
+                                      <h4 class="text-option text-uppercase mb-0">Gift card</h4>
+                                      <button class="btn-option plus">
+                                          <i class="fa-solid fa-plus white"></i>
+                                      </button>
                                     </div>
-                                    <div class="wrap-item-option">
-                                      <div class="item-option-change">
-                                        <h4 class="text-option text-uppercase mb-0">Membership</h4>
-                                        <button class="btn-option plus">
-                                            <i class="fa-solid fa-plus white"></i>
-                                        </button>
-                                      </div>
-                                      <div id="option-membership" class="option-content">
-                                      </div>
+                                    <div id="option-gift-card" class="option-content">
                                     </div>
-                                    <div class="wrap-item-option">
-                                      <div class="item-option-change">
-                                        <h4 class="text-option text-uppercase mb-0">Social</h4>
-                                        <button class="btn-option plus">
-                                            <i class="fa-solid fa-plus white"></i>
-                                        </button>
-                                      </div>
-                                      <div id="option-social" class="option-content">
-                                      </div>
+                                  </div>
+                                  <div class="wrap-item-option">
+                                    <div class="item-option-change">
+                                      <h4 class="text-option text-uppercase mb-0">Membership</h4>
+                                      <button class="btn-option plus">
+                                          <i class="fa-solid fa-plus white"></i>
+                                      </button>
                                     </div>
+                                    <div id="option-membership" class="option-content">
+                                    </div>
+                                  </div>
+                                  <div class="wrap-item-option">
+                                    <div class="item-option-change">
+                                      <h4 class="text-option text-uppercase mb-0">Social</h4>
+                                      <button class="btn-option plus">
+                                          <i class="fa-solid fa-plus white"></i>
+                                      </button>
+                                    </div>
+                                    <div id="option-social" class="option-content">
+                                    </div>
+                                  </div>
                                 </div>
                             </div>
                             <div class="right-body-detail">
@@ -2115,85 +2422,10 @@ Please do not hesitate to share your opinions with the salon manager so that you
                                     </div>
                                 </div>
                                 <div class="wrap-web">
-                                    <div class="nav-header-web">
-                                        <div class="wrap-logo-nav-web">
-                                            <img src="/assets/images/templates/logo-template.png" alt="logo" class="img-logo" />
-                                        </div>
-                                        <div class="left-nav-web">
-                                            <div class="list-option">
-                                                <button id="page-fag" class="text-uppercase">Fag</button>
-                                                <button id="page-membership" class="text-uppercase">Membership</button>
-                                                <button id="page-service" class="text-uppercase">Services</button>
-                                                <button id="page-giftcard" class="text-uppercase">Gift card</button>
-                                                <button id="page-about" class="text-uppercase option">About <i class="fa-solid fa-chevron-down"></i></button>
-                                                <button id="page-contact-us" class="text-uppercase">Contact us</button>
-                                            </div>
-                                            <div class="cart-profile">
-                                                <button class="user">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="19" viewBox="0 0 18 19" fill="none">
-                                                        <path d="M15 15.8066C15 13.7356 12.3137 12.0566 9 12.0566C5.68629 12.0566 3 13.7356 3 15.8066M9 9.80664C6.92893 9.80664 5.25 8.12771 5.25 6.05664C5.25 3.98557 6.92893 2.30664 9 2.30664C11.0711 2.30664 12.75 3.98557 12.75 6.05664C12.75 8.12771 11.0711 9.80664 9 9.80664Z" stroke="#061315" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                                                    </svg>
-                                                </button>
-                                                <button class="booking text-uppercase">Book</button>
-                                                <div class="cart-user">
-                                                    <button>
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="19" viewBox="0 0 18 19" fill="none">
-                                                            <path d="M5.625 5.81269V5.08519C5.625 3.39769 6.9825 1.74019 8.67 1.58269C10.68 1.38769 12.375 2.97019 12.375 4.94269V5.97769" stroke="black" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
-                                                            <path d="M6.7506 16.5605H11.2506C14.2656 16.5605 14.8056 15.353 14.9631 13.883L15.5256 9.38305C15.7281 7.55305 15.2031 6.06055 12.0006 6.06055H6.0006C2.7981 6.06055 2.2731 7.55305 2.4756 9.38305L3.0381 13.883C3.1956 15.353 3.7356 16.5605 6.7506 16.5605Z" stroke="black" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
-                                                            <path d="M11.6209 9.06055H11.6276" stroke="black" stroke-linecap="round" stroke-linejoin="round" />
-                                                            <path d="M6.37088 9.06055H6.37762" stroke="black" stroke-linecap="round" stroke-linejoin="round" />
-                                                        </svg>
-                                                    </button>
-                                                    <span class="quantity-prod">1</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="advertise">
-                                        <div class="advertise-bg-1"></div>
-                                        <div class="advertise-bg-2">
-                                            <div class="w-72">
-                                                <p>
-                                                    <span class="thin">Hi Guest! Sign in to access </span>
-                                                    <span class="bold">Past Appointment History </span>
-                                                    <span class="thin">and </span>
-                                                    <span class="bold">view upcoming appointments, or Cancel upcoming appointments</span>
-                                                </p>
-                                            </div>
-                                            <div class="text-uppercase sign-in">Sign in</div>
-                                        </div>
-                                    </div>
-                                    <div class="banner">
-                                        <div class="content-banner">
-                                            <div class="wrap-content-left-banner">
-                                                <div class="hight-text-banner">
-                                                  <div class="welcome-to">Welcome to !</div>
-                                                  <p>
-                                                      <span class="text-mountains-christmas">NAILVIBE</span>
-                                                      <br />
-                                                      <span class="time-relax">It is time to relax !</span>
-                                                  </p>
-                                                  <p class="text-content-banner">
-                                                      We hope that your visit will be a relaxing and wonderful experience.
-                                                      Please do not hesitate to share your opinions with the salon manager
-                                                      so that your next visit at NailVibe Brentwood will be an even better experience.
-                                                  </p>
-                                                </div>
-                                                <div class="book-appoint">
-                                                    <p class="book-for">Book Appointment for</p>
-                                                    <button class="btn-just-me">Just me <i class="fa-solid fa-chevron-down"></i></button>
-                                                </div>
-                                            </div>
-                                            <div class="img-banner-booking">
-                                                <img class="img-booking-2" src="/assets/images/templates/image-banner-booking-2.png">
-                                                <img class="img-booking-1" src="/assets/images/templates/image-banner-booking.png" />
-                                                <img class="img-booking-3" src="/assets/images/templates/image-cloud.png" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="list-more">
-
-                                    </div>
+                                  <div id="list-info" class="show-list-info">
+                                  </div>
+                                  <div class="list-more">
+                                  </div>
                                 </div>
                             </div>
                         </div>
@@ -2218,6 +2450,17 @@ Please do not hesitate to share your opinions with the salon manager so that you
     }
   });
 
+  const $wrapWeb = $('.wrap-web');
+  const htmlHeaderNav = renderNavHeaderTemplates(dataHeaderNav);
+  const htmlAdvertise = renderAdvertisePage(dataAdvertise);
+  const htmlBannerPage = renderBannerPage(dataBannerPage);
+
+  $wrapWeb.prepend(
+    `<div class="wrap-header">${htmlHeaderNav}</div>`,
+    `<div class="wrap-advertise-page">${htmlAdvertise}</div>`,
+    `<div class="wrap-banner-page">${htmlBannerPage}</div>`
+  );
+
   //render service list
   renderListService(listDataService);
 }
@@ -2239,6 +2482,199 @@ function renderListService(dataList, containerSelector = '.list-more') {
 
     $container.append($moreItem);
   });
+}
+function renderNavHeaderTemplates(dataHeaderNav) {
+  const { logo: logoWeb, itemNav, colorActiveNav, iconUser, buttonBooking, cart } = dataHeaderNav;
+
+  return `
+    <div class="nav-header-web" style="--color-active: ${colorActiveNav}">
+      <div class="wrap-logo-nav-web">
+        <img src=${logoWeb} alt="logo" class="img-logo" />
+      </div>
+      <div class="left-nav-web">
+        <div class="list-option">
+          ${itemNav
+            .map((item) => {
+              const iconItemNav = item.icon ? item.icon : '';
+              return `
+              <button id="${item.id}" class="text-uppercase option">
+                ${item.name}
+                ${iconItemNav}
+              </button>
+            `;
+            })
+            .join('')}
+        </div>
+        <div class="cart-profile">
+          <button class="user">
+            ${iconUser}
+          </button>
+          <button class="booking text-uppercase"
+            style="
+              --btn-bg: ${buttonBooking.bgBtn};
+              --btn-color: ${buttonBooking.color};
+              --btn-border: ${buttonBooking.border};
+              --btn-bg-hover: ${buttonBooking.bgColorHover}
+            "
+          >
+            ${buttonBooking.content}
+          </button>
+          <div class="cart-user">
+            <button>
+              ${cart.icon}
+            </button>
+            <span class="quantity-prod"
+              style="
+                --bgColorQa: ${cart.bgColor};
+                --colorQua: ${cart.color};
+              "
+            >
+              ${cart.quatity}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderAdvertisePage(dataAdvertise) {
+  const { bgAdvertise1, bgAdvertise2, buttonSignIn } = dataAdvertise;
+
+  return `
+    <div class="advertise">
+      <div class="advertise-bg-1"
+        style="
+          --bg-advertise1: ${bgAdvertise1.bgColor};
+          --rotate-bg-advertise1: ${bgAdvertise1.transformRotate};
+        "
+      ></div>
+      <div class="advertise-bg-2"
+        style="
+          --bg-adverstise2: ${bgAdvertise2.bgColor};
+          --color-content: ${bgAdvertise2.colorContent};
+        "
+      >
+        <div class="w-72">
+          <p>
+            ${bgAdvertise2.content.map((item) => {
+              return `
+                <span class="text-advertise"
+                  style="
+                    --text-weight-ad: ${item.fontWeight}
+                  "
+                >
+                  ${item.text}
+                </span>
+              `;
+            })}
+          </p>
+        </div>
+        <div class="text-uppercase sign-in"
+            style="
+              --bgColor-signin: ${buttonSignIn.bgColor};
+              --text-color-signin: ${buttonSignIn.color};
+              --bgColor-signin-hover: ${buttonSignIn.bgColorHover};
+              --border-signin: ${buttonSignIn.border};
+            "
+        >
+          ${buttonSignIn.content}
+        </div>
+      </div>
+    </div>
+  `;
+}
+function renderBannerPage(dataBannerPage) {
+  const { greeting, brand, title, desc, bookFor, btnOptionBook, image } = dataBannerPage;
+
+  return `
+    <div class="banner">
+      <div class="content-banner">
+        <div class="wrap-content-left-banner">
+          <div class="hight-text-banner">
+            <div class="welcome-to">${greeting}</div>
+            <p>
+              <span class="text-uppercase text-mountains-christmas">${brand}</span>
+              <br />
+              <span id="banner-title" class="time-relax">${title}</span>
+            </p>
+            <p id="banner-desc" class="text-content-banner">
+              ${desc}
+            </p>
+          </div>
+          <div class="book-appoint">
+            <p class="book-for">${bookFor}</p>
+            <button class="btn-just-me"
+              style="
+                --color-book-for: ${btnOptionBook.color};
+                --bg-book-for: ${btnOptionBook.bgColor};
+                --border-book-for: ${btnOptionBook.border};
+              "
+            >
+              ${btnOptionBook.content}
+              ${btnOptionBook.icon}
+            </button>
+          </div>
+        </div>
+        <div class="img-banner-booking">
+          <img class="img-booking-2" src="${image.imgBooking2} ">
+          <img class="img-booking-1" src="${image.imgBooking1}" />
+          <img class="img-booking-3" src="${image.imgBooking3}" />
+        </div>
+      </div>
+    </div>
+  `;
+}
+function renderPromotion() {}
+function showPopupSelectPromotion(listPromotion) {
+  const titleSelectPromotion = listPromotion.title;
+  const listItem = listPromotion.item;
+
+  return `
+    <div class="over-promotion">
+      <div class="popup-container-promotion">
+        <div class="popup-wrap-promotion">
+          <div class="title-select-promotion">
+            <h2>${titleSelectPromotion}</h2>
+          </div>
+          <div class="wrap-list-promotion">
+            ${listItem
+              .map((item, index) => {
+                const { img, title, percent, dateTime, id } = item;
+
+                return `
+                  <div id="${id}" data-index="${index}" class="item-promotion">
+                    <div class="right-promotion-item">
+                      <img src="${img}" alt="image promotion" class="img-promotion"/>
+                    </div>
+                    <div class="left-promotion-item">
+                      <div class="title-icon">
+                        <h2 class="title mb-0">${title.content}</h2>
+                      </div>
+                      <div class="percent-promotion">
+                        <span class="percent"
+                          style="
+                            --bgColor-percent: ${percent.bgColor};
+                            --textColor-percent: ${percent.color};
+                          "
+                        >
+                          ${percent.number}%
+                        </span>
+                        <h2 class="title-percent mb-0">${percent.content}</h2>
+                      </div>
+                      <div class="date-time">
+                        <p>Valid until ${dateTime.endTime}</p>
+                      </div>
+                    </div>
+                  </div>
+                `;
+              })
+              .join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
 }
 
 function renderExpandTitle(item) {
@@ -2356,6 +2792,7 @@ $(document).ready(function () {
   const {
     dataTemplates,
     dataTable,
+    //data left template detail
     configThemeColor,
     info,
     sideInfo,
@@ -2363,8 +2800,16 @@ $(document).ready(function () {
     giftCard,
     membership,
     social,
+    // == data right template detail
     listDataService,
     listUser,
+    //
+    dataHeaderNav,
+    dataAdvertise,
+    dataBannerPage,
+    //==
+    listPromotion,
+    // ==
     dataPageMembership,
     dataPageGiftCard,
   } = onlineStore.load();
@@ -2376,11 +2821,18 @@ $(document).ready(function () {
   $(document).on('click', '.image-templates', function () {
     const id = $(this).closest('.wrap-item-templates').data('id');
     if (id) {
-      showTemplatePopup(id, dataTemplates, listDataService);
+      showTemplatePopup(
+        id,
+        dataTemplates,
+        dataHeaderNav,
+        dataAdvertise,
+        dataBannerPage,
+        listDataService
+      );
     }
   });
 
-  // **** Sự kiện bên trái template
+  // **** BEGIN Sự kiện bên trái template
   $(document).on('click', '.item-option-change .btn-option', function () {
     const $wrapItemOption = $(this).closest('.wrap-item-option');
     const $optionContent = $wrapItemOption.find('.option-content');
@@ -2413,10 +2865,153 @@ $(document).ready(function () {
       $optionContent.html(html);
     }
   });
+  // -- * CHANGE COLOR * Sử lý chọn màu
+  $(document).on('click', '.item-theme', function () {
+    const index = $(this).data('index');
+    const item = configThemeColor.colorTheme[index];
+
+    if (item.selected) {
+      // Bỏ chọn khi click lại vào item đã chọn
+      delete item.type;
+      item.selected = false;
+    } else if (!item.active) {
+      const removedType = getRemovedType();
+      console.log('check: ', removedType);
+      if (removedType) {
+        // Cập nhật item mới
+        item.selected = true;
+        item.active = true;
+        item.type = removedType;
+
+        // Xử lý đổi màu
+        if (removedType === 'PRIMARY') {
+          //header
+          dataHeaderNav.colorActiveNav = item.color;
+          dataHeaderNav.buttonBooking.bgBtn = item.color;
+          dataHeaderNav.buttonBooking.border = `1px solid ${item.color}`;
+
+          const htmlHeaderNav = renderNavHeaderTemplates(dataHeaderNav);
+          $('.wrap-header').html(htmlHeaderNav);
+          //advertise
+          dataAdvertise.bgAdvertise1.bgColor = item.color;
+          dataAdvertise.buttonSignIn.bgColor = item.color;
+          dataAdvertise.buttonSignIn.border = `1px solid ${item.color}`;
+
+          const htmlAdvertise = renderAdvertisePage(dataAdvertise);
+          $('.wrap-advertise-page').html(htmlAdvertise);
+
+          //banner
+          dataBannerPage.btnOptionBook.bgColor = item.color;
+          dataBannerPage.btnOptionBook.border = `1px solid ${item.color}`;
+
+          const htmlBannerPage = renderBannerPage(dataBannerPage);
+          $('.wrap-banner-page').html(htmlBannerPage);
+        } else if (removedType === 'SECONDARY') {
+          //advertise
+          dataAdvertise.bgAdvertise2.bgColor = item.color;
+
+          const htmlAdvertisePage = renderAdvertisePage(dataAdvertise);
+          $('.wrap-advertise-page').html(htmlAdvertisePage);
+        }
+
+        // Tìm item cũ đang giữ loại đó (PRIMARY hoặc SECONDARY)
+        const oldItem = configThemeColor.colorTheme.find((i) => i !== item && i.selected === false);
+        console.log('old-item: ', oldItem);
+        if (oldItem) {
+          oldItem.active = false;
+          delete oldItem.selected;
+        }
+      }
+    }
+
+    // Render lại
+    $('#option-theme-color').html(renderColorTheme(configThemeColor));
+  });
+  // -- * CHANGE COLOR * Hàm kiểm tra isPrimary hay isSecondary đang thiếu
+  function getRemovedType() {
+    const currentPrimary = configThemeColor.colorTheme.find((i) => i.type === 'PRIMARY');
+    const currentSecondary = configThemeColor.colorTheme.find((i) => i.type === 'SECONDARY');
+
+    if (!currentPrimary) return 'PRIMARY';
+    if (!currentSecondary) return 'SECONDARY';
+
+    return null;
+  }
+  // -- * INPUT, TEXTAREA: title, desc banner;
+  $(document).on('input', '#input-info', function () {
+    const value = $(this).val();
+    dataBannerPage.title = value;
+    $('#banner-title').text(value);
+  });
+  $(document).on('input', '#textarea-info', function () {
+    const value = $(this).val();
+    dataBannerPage.desc = value;
+    $('#banner-desc').text(value);
+  });
+  // -- * SIDE INFO *
+  // ---- show all
+  $(document).on('change', '#si-show-all', function () {});
+  // ---- show promotion
+  $(document).on('change', '#sit-promotion', function () {
+    console.log('check');
+    const isChecked = $(this).is(':checked');
+    const $moreInfo = $('#list-info');
+    if (isChecked) {
+      console.log('checked');
+      const htmlPromotion = showPopupSelectPromotion(listPromotion);
+      $('.wrap-web').append(htmlPromotion);
+      requestAnimationFrame(() => {
+        $('.popup-container-promotion').addClass('move-right');
+      });
+    } else {
+      $('.over-promotion').removeClass();
+    }
+  });
+  // ------- Select promotion
+  $(document).on('click', '.item-promotion', function () {
+    const idPromSelected = $(this).attr('id');
+    const $loPromoAdd = $('#si-show-all');
+    const dataPromSelected = listPromotion.item.find((i) => i.id === idPromSelected);
+
+    console.log('check');
+
+    const htmlItemProm = `
+      <div class="item-promotion-selected">
+        <div class="right-promotion-item">
+          <img src="${dataPromSelected.img}" alt="image promotion" class="img-promotion"/>
+        </div>
+        <div class="left-promotion-item">
+          <div class="title-icon">
+            <h2 class="title">${dataPromSelected.title.content}</h2>
+          </div>
+          <div class="percent-promotion">
+            <span class="percent"
+              style="
+                --bgColor-percent: ${dataPromSelected.percent.bgColor};
+                --textColor-percent: ${dataPromSelected.percent.color};
+              "
+            >
+              ${dataPromSelected.percent.number}%
+            </span>
+            <h2 class="title-percent mb-0">${dataPromSelected.percent.content}</h2>
+          </div>
+          <div class="date-time">
+            <p>Valid until ${dataPromSelected.dateTime.endTime}</p>
+          </div>
+        </div>
+        <div class="change-promotion">
+          <h2 class="text-change-promotion mb-0">Change</h2>
+        </div>
+      </div>
+      `;
+
+    $loPromoAdd.html(htmlItemProm);
+
+    $('.over-promotion').hide();
+  });
 
   $(document).on('change', '#toggle-membership', function () {
     const isChecked = $(this).is(':checked');
-    console.log('memer');
 
     if (isChecked) {
       // Tắt gift card
@@ -2505,6 +3100,7 @@ $(document).ready(function () {
       });
     }
   });
+  // **** END Sự kiện bên trái template popup
 
   // POPUP SETTING
   //====== *BEGIN Settings Popup Logic
