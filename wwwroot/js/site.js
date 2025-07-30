@@ -915,7 +915,20 @@ const onlineStore = {
     ];
 
     const dataPageMembership = {
-      intro: { stepCur: 1, stepEnd: 3 },
+      intro: { stepCur: 1, stepEnd: 3, title: 'Choose the plan that’s right for you' },
+      style: {
+        background:
+          'linear-gradient(161deg, rgba(255, 106, 0, 0.04) 0.54%, rgba(255, 106, 0, 0.10) 112.23%);',
+        border: '1px solid var(--Membership-Bronze, #B64D2F);',
+        textColorRank: 'linear-gradient(90deg, #B64D2F 0%, #FFCFBB 50%, #B64D2F 100%)',
+        textColorTitle: '#B64D2F',
+        textPrice: '#B64D2F',
+        bgColorBtnMore: '',
+        borderBtnMore: '1px solid var(--Membership-Bronze, #B64D2F);',
+        colorBtnMore: '#B64D2F',
+        bgColorBtnBuyNow: 'linear-gradient(90deg, #B64D2F 0%, #FFCFBB 50%, #B64D2F 100%)',
+        colorBtnBuyNow: '#181818E5',
+      },
       itemPlan: {
         id: 1,
         rank: 'Bronze',
