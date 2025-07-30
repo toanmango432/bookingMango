@@ -757,6 +757,7 @@ const onlineStore = {
 
     const giftCard = {
       item: {
+        id: 'toggle-gift-card',
         content: 'Active Gift Card',
         action: {
           type: 'TOGGLE',
@@ -784,6 +785,7 @@ const onlineStore = {
 
     const membership = {
       item: {
+        id: 'toggle-membership',
         content: 'Active Membership',
         action: {
           type: 'TOGGLE',
@@ -913,7 +915,20 @@ const onlineStore = {
     ];
 
     const dataPageMembership = {
-      intro: { stepCur: 1, stepEnd: 3 },
+      intro: { stepCur: 1, stepEnd: 3, title: 'Choose the plan that’s right for you' },
+      style: {
+        background:
+          'linear-gradient(161deg, rgba(255, 106, 0, 0.04) 0.54%, rgba(255, 106, 0, 0.10) 112.23%);',
+        border: '1px solid var(--Membership-Bronze, #B64D2F);',
+        textColorRank: 'linear-gradient(90deg, #B64D2F 0%, #FFCFBB 50%, #B64D2F 100%)',
+        textColorTitle: '#B64D2F',
+        textPrice: '#B64D2F',
+        bgColorBtnMore: '',
+        borderBtnMore: '1px solid var(--Membership-Bronze, #B64D2F);',
+        colorBtnMore: '#B64D2F',
+        bgColorBtnBuyNow: 'linear-gradient(90deg, #B64D2F 0%, #FFCFBB 50%, #B64D2F 100%)',
+        colorBtnBuyNow: '#181818E5',
+      },
       itemPlan: {
         id: 1,
         rank: 'Bronze',
@@ -943,6 +958,98 @@ const onlineStore = {
         subEnd: 'Requires Treatment Package ($99/year)',
       },
     };
+    const dataPageGiftCard = [
+      {
+        id: 'birthday',
+        title: 'Birthday',
+        buttonAll: 'See All',
+        listCard: Array.from({ length: 8 }, (_, i) => ({
+          id: (i + 1).toString(),
+          image: '/assets/images/templates/image-banner-booking-2.png',
+          title: `Arlene McCoy ${i + 1}`,
+        })),
+      },
+      {
+        id: 'birthday-1',
+        title: 'Birthday-1',
+        buttonAll: 'See All',
+        listCard: Array.from({ length: 8 }, (_, i) => ({
+          id: (i + 1).toString(),
+          image: '/assets/images/templates/image-banner-booking-2.png',
+          title: `Arlene McCoy ${i + 1}`,
+        })),
+      },
+      {
+        id: 'birthday-2',
+        title: 'Birthday-2',
+        buttonAll: 'See All',
+        listCard: Array.from({ length: 8 }, (_, i) => ({
+          id: (i + 1).toString(),
+          image: '/assets/images/templates/image-banner-booking-2.png',
+          title: `Arlene McCoy ${i + 1}`,
+        })),
+      },
+      {
+        id: 'birthday-3',
+        title: 'Birthday-3',
+        buttonAll: 'See All',
+        listCard: Array.from({ length: 8 }, (_, i) => ({
+          id: (i + 1).toString(),
+          image: '/assets/images/templates/image-banner-booking-2.png',
+          title: `Arlene McCoy ${i + 1}`,
+        })),
+      },
+      {
+        id: 'birthday-4',
+        title: 'Birthday-4',
+        buttonAll: 'See All',
+        listCard: Array.from({ length: 8 }, (_, i) => ({
+          id: (i + 1).toString(),
+          image: '/assets/images/templates/image-banner-booking-2.png',
+          title: `Arlene McCoy ${i + 1}`,
+        })),
+      },
+      {
+        id: 'birthday-5',
+        title: 'Birthday-5',
+        buttonAll: 'See All',
+        listCard: Array.from({ length: 8 }, (_, i) => ({
+          id: (i + 1).toString(),
+          image: '/assets/images/templates/image-banner-booking-2.png',
+          title: `Arlene McCoy ${i + 1}`,
+        })),
+      },
+      {
+        id: 'birthday-6',
+        title: 'Birthday-6',
+        buttonAll: 'See All',
+        listCard: Array.from({ length: 8 }, (_, i) => ({
+          id: (i + 1).toString(),
+          image: '/assets/images/templates/image-banner-booking-2.png',
+          title: `Arlene McCoy ${i + 1}`,
+        })),
+      },
+      {
+        id: 'birthday-7',
+        title: 'Birthday-7',
+        buttonAll: 'See All',
+        listCard: Array.from({ length: 8 }, (_, i) => ({
+          id: (i + 1).toString(),
+          image: '/assets/images/templates/image-banner-booking-2.png',
+          title: `Arlene McCoy ${i + 1}`,
+        })),
+      },
+      {
+        id: 'birthday-8',
+        title: 'Birthday-8',
+        buttonAll: 'See All',
+        listCard: Array.from({ length: 8 }, (_, i) => ({
+          id: (i + 1).toString(),
+          image: '/assets/images/templates/image-banner-booking-2.png',
+          title: `Arlene McCoy ${i + 1}`,
+        })),
+      },
+    ];
 
     // data fake local storage
     let dataWeb = {
@@ -1017,6 +1124,7 @@ const onlineStore = {
       listDataService,
       listUser,
       dataPageMembership,
+      dataPageGiftCard,
     };
   },
 };
@@ -1257,7 +1365,7 @@ const renderGiftCardAndMembership = (dataCard) => {
         <span>${item.content || 'NAN'}</span>
           ${
             hasToggle
-              ? `<input id="toggle-membership" type='checkbox' class='toggle-switch' ${
+              ? `<input id=${item.id} type='checkbox' class='toggle-switch' ${
                   isChecked ? 'checked' : ''
                 }/>`
               : ''
@@ -1439,19 +1547,61 @@ function renderPageMembership(dataPageMembership) {
   `;
 }
 
-function initSliderMembership() {
-  const container = document.querySelector('.slider-membership');
-  const track = document.querySelector('.slider-track');
-  const cards = document.querySelectorAll('.wrap-card-membership');
-  const prevBtn = document.querySelector('.slider-btn.prev');
-  const nextBtn = document.querySelector('.slider-btn.next');
-  console.log('card: ', cards);
-  if (!cards.length) return;
+function renderPageGiftCard(dataPageGiftCard) {
+  return `
+    <div class="page-giftcard">
+      ${dataPageGiftCard
+        .map(
+          (section) => `
+        <div class="row-giftcard">
+          <div class="top-row-giftcard">
+            <h2 class="title-giftcard text-uppercase mb-0">${section.title}</h2>
+            <span class="see-all">${section.buttonAll}</span>
+          </div>
+          <div class="slider-giftcard">
+            <div class="slider-track">
+              ${section.listCard
+                .map(
+                  (card) => `
+                <div class="wrap-card-gift">
+                  <div class="wrap-card-image">
+                    <img src="${card.image}" alt="image-card" class="img-cardgift"/>
+                  </div>
+                  <div class="title-gift-card">
+                    <h2 class="text-title">${card.title}</h2>
+                  </div>
+                </div>
+              `
+                )
+                .join('')}
+            </div>
+            <button class="slider-btn prev"><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="slider-btn next"><i class="fa-solid fa-chevron-right"></i></button>
+          </div>
+        </div>
+      `
+        )
+        .join('')}
+    </div>
+  `;
+}
+
+function initSliderFromElement(containerEl, cardSelector) {
+  const track = containerEl.querySelector('.slider-track');
+  const cards = containerEl.querySelectorAll(cardSelector);
+  const prevBtn = containerEl.querySelector('.slider-btn.prev');
+  const nextBtn = containerEl.querySelector('.slider-btn.next');
+
+  if (!cards.length || !track) return;
 
   const cardWidth = cards[0].offsetWidth + 16;
-  console.log('cardWidth: ', cardWidth);
-  const visibleWidth = container.offsetWidth;
+  const visibleWidth = containerEl.offsetWidth;
   let currentOffset = 0;
+
+  console.log('Container width:', visibleWidth);
+  console.log('Track scrollWidth:', track.scrollWidth);
+  console.log('Card width:', cardWidth);
+  console.log('Max offset:', track.scrollWidth - visibleWidth);
 
   function updateButtons() {
     const maxOffset = track.scrollWidth - visibleWidth;
@@ -2216,6 +2366,7 @@ $(document).ready(function () {
     listDataService,
     listUser,
     dataPageMembership,
+    dataPageGiftCard,
   } = onlineStore.load();
   const $wrapList = $('.wrap-list-templates');
   const $wrapContainerDeploy = $('.container-deploy');
@@ -2265,25 +2416,94 @@ $(document).ready(function () {
 
   $(document).on('change', '#toggle-membership', function () {
     const isChecked = $(this).is(':checked');
+    console.log('memer');
+
     if (isChecked) {
+      // Tắt gift card
+      $('#toggle-gift-card').prop('checked', false).trigger('change');
       $('.banner, .advertise, .list-more').addClass('hide');
       const $wrapWeb = $('.wrap-web');
       // append layout memmbership
       const $membership = renderPageMembership(dataPageMembership);
+      const $giftCard = $('#toggle-gift-card');
       $wrapWeb.append($membership);
 
       $('#page-membership').addClass('active');
 
-      // Gọi sau render
       setTimeout(() => {
-        initSliderMembership();
+        const sliderEl = document.querySelector('.page-membership .slider-membership');
+        if (sliderEl) {
+          initSliderFromElement(sliderEl, '.wrap-card-membership');
+        }
       }, 0);
     } else {
       $('.banner, .advertise, .list-more').removeClass('hide');
       $('.page-membership').remove();
       $('#page-membership').removeClass('active');
     }
-    console.log('check');
+  });
+  // toggle gift card
+  $(document).on('change', '#toggle-gift-card', function () {
+    const isChecked = $(this).is(':checked');
+
+    console.log('cart');
+    if (isChecked) {
+      // Tắt Membership
+      $('#toggle-membership').prop('checked', false).trigger('change');
+
+      $('.banner, .advertise, .list-more').addClass('hide');
+      const $wrapWeb = $('.wrap-web');
+      const $giftCard = renderPageGiftCard(dataPageGiftCard);
+      $wrapWeb.append($giftCard);
+      $('#page-giftcard').addClass('active');
+      // Gọi sau render
+      setTimeout(() => {
+        document.querySelectorAll('.row-giftcard .slider-giftcard').forEach((sliderEl) => {
+          initSliderFromElement(sliderEl, '.wrap-card-gift');
+        });
+      }, 0);
+    } else {
+      $('.banner, .advertise, .list-more').removeClass('hide');
+      $('.page-giftcard').remove();
+      $('#page-giftcard').removeClass('active');
+    }
+  });
+  // ===== expend see more
+  $(document).on('click', '.see-all', function () {
+    const $btn = $(this);
+    const $row = $btn.closest('.row-giftcard');
+
+    const isExpanded = $row.hasClass('see-all-mode');
+
+    if (isExpanded) {
+      // Đang là "xem tất cả" → thu gọn về slider
+      $row.removeClass('see-all-mode');
+      $btn.text('See All');
+
+      // Hiện nút slider
+      $row.find('.slider-btn').show();
+
+      // Reset transform nếu cần
+      const $track = $row.find('.slider-track');
+      $track.css({
+        transform: '',
+        transition: '',
+      });
+
+      // Gọi lại slider nếu cần (nếu initSliderFromElement cần chạy lại)
+      initSliderFromElement($row.find('.slider-giftcard')[0], '.wrap-card-gift');
+    } else {
+      // Chuyển sang xem tất cả
+      $row.addClass('see-all-mode');
+      $btn.text('Collapse');
+
+      $row.find('.slider-btn').hide();
+      const $track = $row.find('.slider-track');
+      $track.css({
+        transform: 'none',
+        transition: 'none',
+      });
+    }
   });
 
   // POPUP SETTING

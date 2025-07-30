@@ -119,6 +119,7 @@
   --px-100: calc(100px * var(--scale) / 100);
   --px-104: calc(104px * var(--scale) / 100);
   --px-108: calc(108px * var(--scale) / 100);
+  --px-110: calc(110px * var(--scale) / 100);
   --px-112: calc(112px * var(--scale) / 100);
   --px-116: calc(116px * var(--scale) / 100);
   --px-120: calc(120px * var(--scale) / 100);
@@ -239,6 +240,7 @@
   --s-28: calc(28px * var(--scale) / 100) / calc(34px * var(--scale) / 100) 'Montserrat', sans-serif;
   --s-30: calc(30px * var(--scale) / 100) / calc(37px * var(--scale) / 100) 'Montserrat', sans-serif;
   --s-32: calc(32px * var(--scale) / 100) / calc(39px * var(--scale) / 100) 'Montserrat', sans-serif;
+  --s-36: calc(36px * var(--scale) / 100) / calc(41px * var(--scale) / 100) 'Montserrat', sans-serif;
   --s-38: calc(38px * var(--scale) / 100) / calc(42px * var(--scale) / 100) 'Montserrat', sans-serif;
   --s-45: calc(45px * var(--scale) / 100) / calc(55px * var(--scale) / 100) 'Montserrat', sans-serif;
   --s-50: calc(50px * var(--scale) / 100) / calc(61px * var(--scale) / 100) 'Montserrat', sans-serif;
@@ -1664,10 +1666,7 @@ td td:last-child {
 .card-buy-membership .wrap-rank {
 }
 .card-buy-membership .wrap-rank .text-rank {
-  font-family: Montserrat;
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 800;
+  font: normal normal 800 var(--s-16);
   line-height: 24px;
   background: var(
     --Membership-Bronze,
@@ -1683,10 +1682,8 @@ td td:last-child {
 .card-buy-membership .title-cardbuy .title {
   align-self: stretch;
   color: var(--Membership-Bronze-solid, #b64d2f);
+  font: normal normal 600 var(--s-20);
   font-family: Montserrat;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 600;
   line-height: 28px;
 }
 
@@ -1698,10 +1695,7 @@ td td:last-child {
   overflow: hidden;
   color: rgba(5, 33, 46, 0.8);
   text-overflow: ellipsis;
-  font-family: Montserrat;
-  font-size: 12px;
-  font-style: normal;
-  font-weight: 400;
+  font: normal normal 400 var(--s-12);
   line-height: 18px;
 }
 .card-buy-membership .info-price {
@@ -1710,6 +1704,7 @@ td td:last-child {
   color: var(--Membership-Bronze-solid, #b64d2f);
   leading-trim: both;
   text-edge: cap;
+  font: normal normal 700 var(--s-36);
   font-family: Montserrat;
   font-size: 36px;
   font-style: normal;
@@ -1805,13 +1800,95 @@ td td:last-child {
   opacity: 1;
   color: var(--text-color-primary);
 }
+/* page gift card */
+.page-giftcard {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.page-giftcard .row-giftcard {
+  display: flex;
+  flex-direction: column;
+  padding: 0 24px;
+  align-items: stretch;
+  /* gap: 12px; */
+  width: 100%;
+}
 
+.page-giftcard .row-giftcard .top-row-giftcard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-self: stretch;
+}
+.page-giftcard .row-giftcard .top-row-giftcard .title-giftcard {
+  color: var(--text-color-primary);
+  text-align: center;
+  font: normal normal 400 var(--s-14);
+  line-height: 20px;
+}
+.page-giftcard .row-giftcard .top-row-giftcard .see-all {
+  cursor: pointer;
+  padding: 4px 24px;
+  border-radius: 16px;
+  color: var(--text-color-primary);
+  text-align: center;
+  font: normal normal 400 var(--s-14);
+  line-height: 20px;
+}
+.page-giftcard .row-giftcard .top-row-giftcard .see-all:hover {
+  color: var(--bs-main);
+  background: #ececec;
+}
+.row-giftcard .wrap-card-gift {
+  display: flex;
+  width: var(--px-208);
+  height: var(--px-152);
+  padding: 6px;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--Templates-3-Black-black-50, #e9e9e9);
+  background: var(--White, #fff);
+  box-shadow: -2px 0 4px 0 rgba(0, 0, 0, 0.1), 0 4px 4px 0 rgba(0, 0, 0, 0.15);
+}
+.row-giftcard .wrap-card-gift .wrap-card-image {
+  height: var(--px-110);
+  flex-shrink: 0;
+  align-self: stretch;
+  aspect-ratio: 196 / 108.89;
+  border-radius: 6px;
+}
+.row-giftcard .wrap-card-gift .wrap-card-image .img-cardgift {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.row-giftcard .wrap-card-gift .title-gift-card {
+  align-self: stretch;
+}
+.row-giftcard .wrap-card-gift .title-gift-card .text-title {
+  color: var(--text-color-primary);
+  text-align: center;
+  font: normal normal 400 var(--s-14);
+  line-height: 20px;
+  align-self: stretch;
+}
+/* css slider */
 /* slider item */
 .slider-membership {
   overflow: hidden;
   position: relative;
   /* width: 100%; */
   margin: 0px 32px;
+}
+.slider-giftcard {
+  overflow: hidden;
+  position: relative;
+  /* width: 100%; */
+  margin: 0px;
 }
 .slider-track {
   display: flex;
@@ -1820,10 +1897,24 @@ td td:last-child {
   gap: var(--px-16);
   padding: 16px 0px;
 }
+/* Khi bật chế độ See All */
+.row-giftcard.see-all-mode .slider-track {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  transform: none !important;
+  transition: none !important;
+}
+
+/* Card chiếm 33.33% width (3 card / hàng) */
+.row-giftcard.see-all-mode .wrap-card-gift {
+  flex: 0 0 calc(33.333% - 12px); /* trừ khoảng gap nếu có */
+  margin-bottom: 16px;
+}
+
 /* Nút điều hướng */
 .slider-btn {
-  width: 40px;
-  height: 40px;
+  width: var(--px-40);
+  height: var(--px-40);
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
