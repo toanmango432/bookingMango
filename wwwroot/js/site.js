@@ -1168,6 +1168,86 @@ Please do not hesitate to share your opinions with the salon manager so that you
       ],
     };
 
+    const dataStoreInfo = {
+      brand: 'Nailvibe',
+      iconLocation: '<i class="fa-solid fa-location-dot"></i>',
+      phoneNumber: '(615) 326-6652',
+      address: '15537 Old Hickory Blvd, Nashvile, TN 37211',
+      timeWork: [
+        {
+          weekday: 'Monday',
+          time: '10:00AM-7:30PM',
+        },
+        {
+          weekday: 'Tuesday',
+          time: '10:00AM-7:30PM',
+        },
+        {
+          weekday: 'Wednesday',
+          time: '10:00AM-7:30PM',
+        },
+        {
+          weekday: 'Thursday',
+          time: '10:00AM-7:30PM',
+        },
+        {
+          weekday: 'Friday',
+          time: '10:00AM-7:30PM',
+        },
+        {
+          weekday: 'Saturday',
+          time: '9:30AM-7:00PM',
+        },
+        {
+          weekday: 'Sunday',
+          time: '11:00AM-6:00PM',
+        },
+      ],
+    };
+
+    const dataPolicyPage = {
+      title: 'Need to knows:',
+      styleTitle: {
+        color: '#660000',
+      },
+      listItem: [
+        {
+          content: [
+            {
+              text: '- Changes and reschedules must be made at least 1 hour prior to your scheduled visit.',
+            },
+          ],
+        },
+        {
+          content: [
+            {
+              text: '- Late cancellations, late reschedules, and no-shows will be subject to a $25 fee.',
+            },
+          ],
+        },
+        {
+          content: [{ text: '- We do not offer or remove dip powder, acrylics, or UV hard gels.' }],
+        },
+        {
+          content: [
+            { text: '- See our full' },
+            {
+              text: 'erms Of Use Here',
+              style: {
+                color: '#660000',
+              },
+            },
+          ],
+        },
+      ],
+    };
+
+    const dataSocialLink = {
+      mapLocation: {
+        address: '15537 Old Hickory Blvd, Nashville, TN 37211',
+      },
+    };
+
     const dataPageMembership = {
       intro: { stepCur: 1, stepEnd: 3, title: 'Choose the plan that’s right for you' },
       style: {
@@ -1387,6 +1467,9 @@ Please do not hesitate to share your opinions with the salon manager so that you
 
       //promotion
       listPromotion,
+      dataStoreInfo,
+      dataPolicyPage,
+      dataSocialLink,
 
       dataPageMembership,
       dataPageGiftCard,
@@ -2423,6 +2506,10 @@ function showTemplatePopup(
                                 </div>
                                 <div class="wrap-web">
                                   <div id="list-info" class="show-list-info">
+                                    <div id="item-promotion-page"></div>
+                                    <div id="store-info-page"></div>
+                                    <div id="policy-page"></div>
+                                    <div id="social-link-page"></div>
                                   </div>
                                   <div class="list-more">
                                   </div>
@@ -2677,6 +2764,140 @@ function showPopupSelectPromotion(listPromotion) {
   `;
 }
 
+function renderStoreInfo(dataStoreInfo) {
+  const $container = $('<div class="store-info"></div>');
+
+  const $left = $(`
+    <div class="store-left">
+      <h3 style="color: #960c0c;">${dataStoreInfo.brand.toUpperCase()}</h3>
+      <p>${dataStoreInfo.iconLocation} ${dataStoreInfo.phoneNumber}</p>
+      <p>${dataStoreInfo.address}</p>
+    </div>
+  `);
+
+  const $right = $('<div class="store-right"></div>');
+  $right.append('<h4>HOURS</h4>');
+
+  dataStoreInfo.timeWork.forEach((item) => {
+    const $row = $(`
+      <div class="store-hour-row">
+        <span class="weekday">${item.weekday}</span>
+        <span class="time">${item.time}</span>
+      </div>
+    `);
+    $right.append($row);
+  });
+
+  $container.append($left).append($right);
+  return $container;
+}
+
+function renderPolicyPage(dataPolicyPage) {
+  const { title, styleTitle, listItem } = dataPolicyPage;
+
+  const titleHtml = `<h3 class="title-policy" style="color: ${
+    styleTitle.color
+  }">${title.toUpperCase()}</h3>`;
+
+  const itemsHtml = listItem
+    .map((item) => {
+      const contentHtml = item.content
+        .map((part) => {
+          if (part.style) {
+            // Nếu có style riêng
+            return `<span style="color: ${part.style.color}">${part.text}</span>`;
+          } else {
+            return `<span>${part.text}</span>`;
+          }
+        })
+        .join(' ');
+
+      return `<p class="item-policy">${contentHtml}</p>`;
+    })
+    .join('');
+
+  // Trả về HTML hoàn chỉnh
+  return `
+    <div class="policy-page">
+      ${titleHtml}
+      <div class="policy-list">
+        ${itemsHtml}
+      </div>
+    </div>
+  `;
+}
+
+function renderSocialLink(data) {
+  const address = encodeURIComponent(data.mapLocation.address);
+  return `
+    <div class="map-wrapper">
+      <iframe
+        width="100%"
+        height="300"
+        style="border:0; border-radius: 8px;"
+        loading="lazy"
+        allowfullscreen
+        referrerpolicy="no-referrer-when-downgrade"
+        src="https://maps.google.com/maps?q=${address}&t=&z=13&ie=UTF8&iwloc=&output=embed">
+      </iframe>
+    </div>
+  `;
+}
+
+function renderPromotionItemSide(dataProm) {
+  return `
+    <div class="item-promotion-selected">
+      <div class="right-promotion-item">
+        <img src="${dataProm.img}" alt="image promotion" class="img-promotion"/>
+      </div>
+      <div class="left-promotion-item">
+        <div class="title-icon">
+          <h2 class="title">${dataProm.title.content}</h2>
+        </div>
+        <div class="percent-promotion">
+          <span class="percent"
+            style="--bgColor-percent: ${dataProm.percent.bgColor}; --textColor-percent: ${dataProm.percent.color};"
+          >
+            ${dataProm.percent.number}%
+          </span>
+          <h2 class="title-percent mb-0">${dataProm.percent.content}</h2>
+        </div>
+        <div class="date-time">
+          <p>Valid until ${dataProm.dateTime.endTime}</p>
+        </div>
+      </div>
+      <div class="change-promotion">
+        <h2 class="text-change-promotion mb-0">Change</h2>
+      </div>
+    </div>`;
+}
+function renderPromotionItemPage(dataProm) {
+  return `
+    <div class="wrap-item-promotion-page">
+      <div class="item-promotion-page">
+        <div class="right-promotion-item">
+          <img src="${dataProm.img}" alt="image promotion" class="img-promotion"/>
+        </div>
+        <div class="left-promotion-item">
+          <div class="title-icon">
+            <h2 class="title">${dataProm.title.content}</h2>
+          </div>
+          <div class="percent-promotion">
+            <span class="percent"
+              style="--bgColor-percent: ${dataProm.percent.bgColor}; --textColor-percent: ${dataProm.percent.color};"
+            >
+              ${dataProm.percent.number}%
+            </span>
+            <h2 class="title-percent mb-0">${dataProm.percent.content}</h2>
+          </div>
+          <div class="date-time">
+            <p>Valid until ${dataProm.dateTime.endTime}</p>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
 function renderExpandTitle(item) {
   const $title = $('<div class="expend-title"></div>');
 
@@ -2749,6 +2970,14 @@ function renderActionButtons(item) {
   return $wrap;
 }
 
+function renderBtnMoreInfo() {
+  return `
+    <div class="wrap-btn-more-sideinfo">
+      <button class="btn-show-more-sideinfo">Show More Info</button>
+    </div>
+  `;
+}
+
 // Render danh sách user để chọn
 function renderUserOptions(users) {
   return `
@@ -2809,6 +3038,9 @@ $(document).ready(function () {
     dataBannerPage,
     //==
     listPromotion,
+    dataStoreInfo,
+    dataPolicyPage,
+    dataSocialLink,
     // ==
     dataPageMembership,
     dataPageGiftCard,
@@ -2950,64 +3182,111 @@ $(document).ready(function () {
   });
   // -- * SIDE INFO *
   // ---- show all
-  $(document).on('change', '#si-show-all', function () {});
-  // ---- show promotion
+  // === Helpers chung ===
+
+  function updateToggleState() {
+    const sections = ['#sit-promotion', '#sit-store-info', '#sit-policy', '#sit-social-link'];
+    const anyChecked = sections.some((id) => $(id).is(':checked'));
+    const allChecked = sections.every((id) => $(id).is(':checked'));
+
+    $('#si-show-all').prop('checked', allChecked);
+    $('.wrap-btn-more-sideinfo').toggle(anyChecked);
+  }
+  function toggleAllSideInfo(enable) {
+    $('#sit-promotion, #sit-store-info, #sit-policy, #sit-social-link')
+      .prop('checked', enable)
+      .trigger('change');
+  }
+  // Show all
+  $(document).on('change', '#si-show-all', function () {
+    toggleAllSideInfo($(this).is(':checked'));
+  });
+  // Promotion
   $(document).on('change', '#sit-promotion', function () {
-    console.log('check');
     const isChecked = $(this).is(':checked');
-    const $moreInfo = $('#list-info');
+    const $sideWrap = $('#si-promotion');
+    const $pageWrap = $('#item-promotion-page');
+    const $itemPromotionSelected = $('#si-promotion .item-promotion-selected');
+    console.log('check: ', $itemPromotionSelected.length);
+
     if (isChecked) {
-      console.log('checked');
-      const htmlPromotion = showPopupSelectPromotion(listPromotion);
-      $('.wrap-web').append(htmlPromotion);
-      requestAnimationFrame(() => {
-        $('.popup-container-promotion').addClass('move-right');
-      });
+      if ($('#si-show-all').is(':checked')) {
+        // Chế độ Show-All: chọn luôn item đầu tiên
+        const dataProm = listPromotion.item[0];
+        if ($itemPromotionSelected.length !== 0) {
+          $sideWrap.html(renderPromotionItemSide(dataProm)).show();
+        } else {
+          $sideWrap.append(renderPromotionItemSide(dataProm)).show();
+        }
+        $pageWrap.html(renderPromotionItemPage(dataProm)).show();
+      } else {
+        // Bật riêng: mở popup để chọn
+        const html = showPopupSelectPromotion(listPromotion);
+        $('.wrap-web').append(html);
+        requestAnimationFrame(() => $('.popup-container-promotion').addClass('move-right'));
+      }
     } else {
-      $('.over-promotion').removeClass();
+      $sideWrap.empty().hide();
+      $pageWrap.empty().hide();
     }
+
+    updateToggleState();
+  });
+
+  // Store Info
+  $(document).on('change', '#sit-store-info', function () {
+    const $container = $('#store-info-page');
+    if ($(this).is(':checked')) {
+      $container.html(renderStoreInfo(dataStoreInfo)).show();
+    } else {
+      $container.empty().hide();
+    }
+    updateToggleState();
+  });
+
+  // Policy
+  $(document).on('change', '#sit-policy', function () {
+    const $container = $('#policy-page');
+    if ($(this).is(':checked')) {
+      $container.html(renderPolicyPage(dataPolicyPage)).show();
+    } else {
+      $container.empty().hide();
+    }
+    updateToggleState();
+  });
+
+  // Social Link (Map)
+  $(document).on('change', '#sit-social-link', function () {
+    const $container = $('#social-link-page');
+    if ($(this).is(':checked')) {
+      $container.html(renderSocialLink(dataSocialLink)).show();
+    } else {
+      $container.empty().hide();
+    }
+    updateToggleState();
+  });
+
+  // ------- change promotion
+  $(document).on('click', '.text-change-promotion', function () {
+    const html = showPopupSelectPromotion(listPromotion);
+    $('.wrap-web').append(html);
+    requestAnimationFrame(() => $('.popup-container-promotion').addClass('move-right'));
   });
   // ------- Select promotion
   $(document).on('click', '.item-promotion', function () {
-    const idPromSelected = $(this).attr('id');
-    const $loPromoAdd = $('#si-show-all');
-    const dataPromSelected = listPromotion.item.find((i) => i.id === idPromSelected);
+    const id = $(this).attr('id');
+    const dataProm = listPromotion.item.find((i) => i.id === id);
+    const $sideWrap = $('#si-promotion');
+    const $itemPromotionSelected = $('#si-promotion .item-promotion-selected');
+    if ($itemPromotionSelected.length !== 0) {
+      $sideWrap.html(renderPromotionItemSide(dataProm)).show();
+    } else {
+      $sideWrap.append(renderPromotionItemSide(dataProm)).show();
+    }
 
-    console.log('check');
-
-    const htmlItemProm = `
-      <div class="item-promotion-selected">
-        <div class="right-promotion-item">
-          <img src="${dataPromSelected.img}" alt="image promotion" class="img-promotion"/>
-        </div>
-        <div class="left-promotion-item">
-          <div class="title-icon">
-            <h2 class="title">${dataPromSelected.title.content}</h2>
-          </div>
-          <div class="percent-promotion">
-            <span class="percent"
-              style="
-                --bgColor-percent: ${dataPromSelected.percent.bgColor};
-                --textColor-percent: ${dataPromSelected.percent.color};
-              "
-            >
-              ${dataPromSelected.percent.number}%
-            </span>
-            <h2 class="title-percent mb-0">${dataPromSelected.percent.content}</h2>
-          </div>
-          <div class="date-time">
-            <p>Valid until ${dataPromSelected.dateTime.endTime}</p>
-          </div>
-        </div>
-        <div class="change-promotion">
-          <h2 class="text-change-promotion mb-0">Change</h2>
-        </div>
-      </div>
-      `;
-
-    $loPromoAdd.html(htmlItemProm);
-
+    $('#item-promotion-page').html(renderPromotionItemPage(dataProm)).show();
     $('.over-promotion').hide();
+    updateToggleState();
   });
 
   $(document).on('change', '#toggle-membership', function () {
