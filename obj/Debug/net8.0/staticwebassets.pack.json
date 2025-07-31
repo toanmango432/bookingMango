@@ -5,6 +5,22 @@
       "PackagePath": "staticwebassets/OnlineStore.bundle.scp.css"
     },
     {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/assets/images/bannerPromotion/banner-promotion-1.jpg",
+      "PackagePath": "staticwebassets/assets/images/bannerPromotion/banner-promotion-1.jpg"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/assets/images/bannerPromotion/banner-promotion-2.jpg",
+      "PackagePath": "staticwebassets/assets/images/bannerPromotion/banner-promotion-2.jpg"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/assets/images/bannerPromotion/banner-promotion-3.jpg",
+      "PackagePath": "staticwebassets/assets/images/bannerPromotion/banner-promotion-3.jpg"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/assets/images/bannerPromotion/banner-promotion-4.jpg",
+      "PackagePath": "staticwebassets/assets/images/bannerPromotion/banner-promotion-4.jpg"
+    },
+    {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/assets/images/listUser/avatar1.png",
       "PackagePath": "staticwebassets/assets/images/listUser/avatar1.png"
     },
@@ -43,6 +59,14 @@
     {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/assets/images/retro.png",
       "PackagePath": "staticwebassets/assets/images/retro.png"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/assets/images/social-icon/Facebook.png",
+      "PackagePath": "staticwebassets/assets/images/social-icon/Facebook.png"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/assets/images/social-icon/google.png",
+      "PackagePath": "staticwebassets/assets/images/social-icon/google.png"
     },
     {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/assets/images/templates/image-banner-booking-2.png",

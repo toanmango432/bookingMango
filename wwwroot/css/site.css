@@ -970,6 +970,10 @@ td td:last-child {
   top: 8px;
   right: 4px;
 }
+#option-membership .option-content-item .btn-copy:hover,
+#option-gift-card .option-content-item .btn-copy:hover {
+  color: var(--bs-main);
+}
 
 /* Khi item-option-change được mở (có class active) */
 .item-option-change.active {
@@ -1574,7 +1578,7 @@ td td:last-child {
   padding: 40px 0px;
   overflow: hidden;
 }
-.advertise.hide {
+.wrap-advertise-page.hide {
   display: none;
 }
 .advertise .advertise-bg-1 {
@@ -2539,7 +2543,6 @@ td td:last-child {
   margin-top: 8px;
   max-width: 100%;
 }
-
 .membership-link {
   width: 100%;
   padding: 8px 148px 8px 8px;
@@ -2840,4 +2843,33 @@ td td:last-child {
   color: var(--text-color-primary);
   font: normal normal 400 var(--s-12);
   letter-spacing: 0.07px;
+}
+
+
+/* css tooltip */
+.option-content-item [data-tooltip] {
+  position: relative;
+  cursor: pointer;
+}
+
+.option-content-item [data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: black;
+  color: white;
+  font-size: 12px;
+  padding: 4px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 10;
+}
+
+.option-content-item [data-tooltip].show-tooltip::after {
+  opacity: 1;
 }

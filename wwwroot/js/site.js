@@ -1828,7 +1828,7 @@ const renderGiftCardAndMembership = (dataCard) => {
             <textarea class="item-link" readonly>
 ${body.content}
             </textarea>
-            <button class="btn-copy" title="Copy">
+            <button class="btn-copy" title="Copy here" data-tooltip="Copy">
               ${body.icon.value || ''}
             </button>
           </div>
@@ -2210,7 +2210,7 @@ function renderSettingsPopup() {
           <div class="link-container">
             <input class="membership-link" value="https://manage2.mangoforsalon.com/nextview/membership-settings?salon_id=abc" readonly >
             </input>
-            <button class="btn-copy" title="Copy">
+            <button class="btn-copy" title="Copy here" data-tooltip="Copy">
               <i class="fa-regular fa-copy"></i>
             </button>
           </div>
@@ -2291,7 +2291,7 @@ function renderSettingsPopup() {
 
           <div class="link-container">
             <input class="membership-link" value="https://manage2.mangoforsalon.com/nextview/membership-settings?salon_id=abc" readonly ></input>
-            <button class="btn-copy" title="Copy"><i class="fa-regular fa-copy"></i></button>
+            <button class="btn-copy" title="Copy here" data-tooltip="Copy"><i class="fa-regular fa-copy"></i></button>
           </div>
 
           <div class="d-flex justify-content-center align-items-center gap-4">
@@ -2356,7 +2356,24 @@ function renderSettingsPopup() {
 
   // ======== Sự kiện trên tab Online Booking
   // Sự kiện trên tab Membership
-  $(document).on('click', '.btn-copy', function () {
+  // copy trên popup setting
+  // --- membership
+  $(document).on('click', '.membership-settings .btn-copy', function () {
+    const linkInput = $(this).siblings('.membership-link')[0];
+    linkInput.select();
+    linkInput.setSelectionRange(0, 99999); // For mobile devices
+    document.execCommand('copy');
+
+    // Optional: Show tooltip
+    $(this).attr('title', 'Copied!').tooltip('show');
+
+    // Reset tooltip after 1s
+    setTimeout(() => {
+      $(this).attr('title', 'Copy');
+    }, 1000);
+  });
+  // --- gift card
+  $(document).on('click', '.setting-block .btn-copy', function () {
     const linkInput = $(this).siblings('.membership-link')[0];
     linkInput.select();
     linkInput.setSelectionRange(0, 99999); // For mobile devices
@@ -3167,32 +3184,47 @@ $(document).ready(function () {
 
   // **** BEGIN Sự kiện bên trái template
   $(document).on('click', '.item-option-change .btn-option', function () {
-    // Remove class active current to active class will open
-    if(!$(this).hasClass('.active.sub')) {
-      console.log("check")
-      const $listOptionChange = $('.list-option-change');
-      const $optionActive = $listOptionChange.find('.wrap-item-option .item-option-change.active');
-      const $optionContentExpended = $listOptionChange.find('.wrap-item-option .option-content.expanded');
-      const $btnOptionOld = $listOptionChange.find('.btn-option.active.plus');
-      $btnOptionOld.toggleClass('active');
-      $btnOptionOld.toggleClass('plus sub');
-      $optionActive.removeClass('active');
-      $optionContentExpended.removeClass('expanded')
+  const $clickedBtn = $(this);
+  const $wrapItemOption = $clickedBtn.closest('.wrap-item-option');
+  const $optionContent = $wrapItemOption.find('.option-content');
+  const $icon = $clickedBtn.find('i');
+  const $itemOptionChange = $clickedBtn.parent('.item-option-change');
+
+  const isSelfOpen = $clickedBtn.hasClass('active');
+
+  const clickedId = $optionContent.attr('id');
+
+  // ⚠️ Check nếu option đang mở là gift-card hoặc membership
+  const currentlyOpened = $('.option-content.expanded');
+  const currentlyOpenedId = currentlyOpened.attr('id');
+
+  const commonOptionIds = ['option-theme-color', 'option-info', 'option-side-info', 'option-banner', 'option-social'];
+  const isClickedCommonOption = commonOptionIds.includes(clickedId);
+  const isCurrentlyMembershipOrGiftCard = ['option-gift-card', 'option-membership'].includes(currentlyOpenedId);
+
+  if (isClickedCommonOption && isCurrentlyMembershipOrGiftCard) {
+    if (currentlyOpenedId === 'option-gift-card') {
+      $('#toggle-gift-card').prop('checked', false)
+      .trigger('change');;
+    } else if (currentlyOpenedId === 'option-membership') {
+      $('#toggle-membership').prop('checked', false)
+      .trigger('change');;
     }
+  }
 
-    const $wrapItemOption = $(this).closest('.wrap-item-option');
-    const $optionContent = $wrapItemOption.find('.option-content');
-    const $icon = $(this).find('i');
-    const $itemOptionChange = $(this).parent('.item-option-change');
-    const $btnOption = $(this);
+  // Đóng tất cả trước
+  $('.item-option-change.active').removeClass('active');
+  $('.option-content.expanded').removeClass('expanded');
+  $('.btn-option.active').removeClass('active sub').addClass('plus').find('i').removeClass('fa-minus').addClass('fa-plus');
 
-    // Toggle UI
-    $optionContent.toggleClass('expanded');
-    $icon.toggleClass('fa-plus fa-minus');
-    $itemOptionChange.toggleClass('active');
-    $btnOption.toggleClass('active');
-    $btnOption.toggleClass('plus sub');
+  if (!isSelfOpen) {
+    // Nếu click vào button khác, mở cái mới
+    $optionContent.addClass('expanded');
+    $icon.removeClass('fa-plus').addClass('fa-minus');
+    $itemOptionChange.addClass('active');
+    $clickedBtn.removeClass('plus').addClass('active sub');
 
+    // Render nếu content rỗng
     const renderMap = {
       'option-theme-color': () => renderColorTheme(configThemeColor),
       'option-info': () => renderInfo(info),
@@ -3203,14 +3235,17 @@ $(document).ready(function () {
       'option-social': () => renderSocial(dataSocialPage),
     };
 
-    const id = $optionContent.attr('id');
-    const renderFn = renderMap[id];
+    const renderFn = renderMap[clickedId];
     const isEmpty = $optionContent.children().length === 0 && $optionContent.text().trim() === '';
     if (renderFn && isEmpty) {
       const html = renderFn();
       $optionContent.html(html);
     }
-  });
+  }
+});
+
+
+
   // -- CHANGE LOGO * xử lý chọn logo
   // Gán sự kiện khi bấm nút upload
   $(document).on('click', '.btn-upload-logo', function () {
@@ -3257,10 +3292,10 @@ $(document).ready(function () {
     const index = $(this).data('index');
     const item = configThemeColor.colorTheme[index];
 
-    if (item.selected) {
+    if (item.selected || item.active) {
       // Bỏ chọn khi click lại vào item đã chọn
       delete item.type;
-      item.selected = false;
+      item.selected = !item.selected;
     } else if (!item.active) {
       const removedType = getRemovedType();
       if (removedType) {
@@ -3616,7 +3651,7 @@ $(document).on('blur', '.input-info, .textarea-info', function () {
     if (isChecked) {
       // Tắt gift card
       $('#toggle-gift-card').prop('checked', false).trigger('change');
-      $('.banner, .advertise, .list-more, .show-list-info').addClass('hide');
+      $('.banner, .wrap-advertise-page, .list-more, .show-list-info').addClass('hide');
       const $wrapWeb = $('.wrap-web');
       // append layout memmbership
       const $membership = renderPageMembership(dataPageMembership);
@@ -3632,11 +3667,33 @@ $(document).on('blur', '.input-info, .textarea-info', function () {
         }
       }, 0);
     } else {
-      $('.banner, .advertise, .list-more, .show-list-info').removeClass('hide');
+      $('.banner, .wrap-advertise-page, .list-more, .show-list-info').removeClass('hide');
       $('.page-membership').remove();
       $('#page-membership').removeClass('active');
     }
   });
+  // copy trên active membership và active gift card
+  $(document).on('click', '.option-content-item .btn-copy', function () {
+  const $button = $(this);
+  const $textarea = $button.siblings('textarea.item-link');
+
+  $textarea[0].select();
+  $textarea[0].setSelectionRange(0, 99999);
+
+  const successful = document.execCommand('copy');
+
+  if (successful) {
+    // Đổi tooltip
+    $button.attr('data-tooltip', 'Copied!')
+           .addClass('show-tooltip');
+
+    setTimeout(() => {
+      $button.attr('data-tooltip', 'Copy')
+             .removeClass('show-tooltip');
+    }, 1000);
+  }
+});
+
   // toggle gift card
   $(document).on('change', '#toggle-gift-card', function () {
     const isChecked = $(this).is(':checked');
@@ -3645,7 +3702,7 @@ $(document).on('blur', '.input-info, .textarea-info', function () {
       // Tắt Membership
       $('#toggle-membership').prop('checked', false).trigger('change');
 
-      $('.banner, .advertise, .list-more, .show-list-info').addClass('hide');
+      $('.banner, .wrap-advertise-page, .list-more, .show-list-info').addClass('hide');
       const $wrapWeb = $('.wrap-web');
       const $giftCard = renderPageGiftCard(dataPageGiftCard);
       $wrapWeb.append($giftCard);
@@ -3657,7 +3714,7 @@ $(document).on('blur', '.input-info, .textarea-info', function () {
         });
       }, 0);
     } else {
-      $('.banner, .advertise, .list-more, .show-list-info').removeClass('hide');
+      $('.banner, .wrap-advertise-page, .list-more, .show-list-info').removeClass('hide');
       $('.page-giftcard').remove();
       $('#page-giftcard').removeClass('active');
     }
