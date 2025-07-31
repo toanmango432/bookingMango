@@ -25,6 +25,22 @@
       "PackagePath": "staticwebassets/assets/images/pastel.png"
     },
     {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/assets/images/promotions/promotion1.png",
+      "PackagePath": "staticwebassets/assets/images/promotions/promotion1.png"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/assets/images/promotions/promotion2.jpg",
+      "PackagePath": "staticwebassets/assets/images/promotions/promotion2.jpg"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/assets/images/promotions/promotion3.jpg",
+      "PackagePath": "staticwebassets/assets/images/promotions/promotion3.jpg"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/assets/images/promotions/promotion4.jpg",
+      "PackagePath": "staticwebassets/assets/images/promotions/promotion4.jpg"
+    },
+    {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/assets/images/retro.png",
       "PackagePath": "staticwebassets/assets/images/retro.png"
     },
