@@ -423,9 +423,8 @@ p {
 
 .wrap-list-templates {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   gap: 24px;
-  overflow: hidden;
   transition: max-height 0.4s ease;
 }
 
@@ -437,9 +436,15 @@ p {
 }
 
 .wrap-item-templates {
+  width: 272px;
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
   gap: 24px;
+}
+
+.wrap-item-templates.collapsed {
+  height: 284px;
 }
 
 .image-templates {
@@ -833,6 +838,12 @@ td td:last-child {
   border: 2px dashed #444;
   cursor: pointer;
 }
+.wrap-logo-choosed {
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
 .wrap-logo-choosed svg {
   color: #181818;
 }
@@ -867,6 +878,14 @@ td td:last-child {
   border: 1px solid #aeaeae;
   background: #fff;
   transition: border-bottom 0.5s ease-in-out, background-color 0.5s ease-in-out; /* Thêm transition cho border và background */
+}
+#option-info .option-item {
+  position: relative;
+  margin-top: 10px;
+}
+#option-info .option-item .char-count-message {
+  position: absolute;
+  top: -10px;
 }
 
 .input-info {
@@ -1113,13 +1132,14 @@ td td:last-child {
 }
 .show-list-info .wrap-btn-more-sideinfo .btn-show-more-sideinfo {
   display: flex;
-  width: 299px;
+  width: var(--px-300);
   padding: 12px;
   justify-content: center;
   align-items: center;
   gap: 8px;
   border-radius: 8px;
-  background: var(--Foundation-reddo-Normal, #600);
+  border: none;
+  background: var(--bgColorBtnMoreSI, #600);
   color: var(--Gray-Neutral-100, #fff);
   font: normal normal 600 var(--s-24);
   line-height: 24px;
@@ -1128,6 +1148,11 @@ td td:last-child {
 .wrap-item-promotion-page {
   display: flex;
   justify-content: center;
+  position: relative;
+  z-index: 2;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .wrap-item-promotion-page .item-promotion-page {
@@ -1140,6 +1165,7 @@ td td:last-child {
   background: var(--Gray-Neutral-100, #fff);
   border: 0.2px solid #d3d3d3;
   cursor: pointer;
+  z-index: 2;
 }
 
 .wrap-item-promotion-page .item-promotion-page .right-promotion-item {
@@ -1201,6 +1227,36 @@ td td:last-child {
   font: normal normal 400 var(--s-12);
   letter-spacing: 0.07px;
 }
+/* add transparent */
+.overlay-dark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4); /* màu đen mờ */
+  z-index: 1;
+}
+.wrap-item-promotion-page .item-promotion-page.transparent {
+  background: transparent;
+  border: none;
+}
+.wrap-item-promotion-page .item-promotion-page.transparent .left-promotion-item .title-icon .title {
+  color: white;
+}
+
+.wrap-item-promotion-page
+  .item-promotion-page.transparent
+  .left-promotion-item
+  .percent-promotion
+  .title-percent {
+  color: white;
+}
+
+.wrap-item-promotion-page .item-promotion-page.transparent .left-promotion-item .date-time p {
+  color: white;
+}
+
 /* end css promotion page */
 
 /* start css store info */
@@ -1215,10 +1271,22 @@ td td:last-child {
 .store-left {
   flex: 1;
 }
+.store-left h3 {
+  color: var(--colorTextStoreInfo, var(--text-color-primary));
+  font: normal normal 600 var(--s-16);
+}
+.store-left p {
+  color: var(--text-color-primary);
+  font: normal normal 500 var(--s-14);
+}
 
 .store-right {
   flex: 1;
   border-bottom: 1px solid #d3d3d3;
+}
+.store-right h4 {
+  color: var(--text-color-primary);
+  font: normal normal 600 var(--s-14);
 }
 
 .store-hour-row {
@@ -1227,19 +1295,23 @@ td td:last-child {
   margin-bottom: 5px;
 }
 
-.weekday {
-  font-weight: 400;
+.store-righ .weekday {
+  color: var(--text-color-primary);
+  font: normal normal 300 var(--s-14);
 }
 
 .time {
   font-weight: bold;
+  color: var(--text-color-primary);
+  text-align: center;
+  font: normal normal 600 var(--s-14);
 }
 /* end css store info */
 
 /* start css social link page */
 .map-wrapper {
   width: 100%;
-  border: 1px solid #ddd;
+  border: 2px solid var(--colorBorderMap, #d3d3d3);
   border-radius: 8px;
   overflow: hidden;
 }
@@ -1253,9 +1325,8 @@ td td:last-child {
 }
 
 .title-policy {
-  font-weight: bold;
-  font-size: 18px;
-  margin-bottom: 10px;
+  color: var(--colorTextTitlePolicy, var(--text-color-primary));
+  font: normal normal 600 var(--s-16);
   text-transform: uppercase;
 }
 
@@ -1267,9 +1338,20 @@ td td:last-child {
 
 .item-policy span {
   font-weight: normal;
+  color: var(--text-color-primary);
+  leading-trim: both;
+  text-edge: cap;
+  font: normal normal 300 var(--s-14);
 }
 
 /* end css policy page */
+
+/* start css social page */
+#social-icon-page .wrap-list-social .list-social {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
 
 .right-body-detail .body-header-right .view-device button {
   display: flex;
@@ -1325,15 +1407,17 @@ td td:last-child {
 }
 
 /*      nav header web    */
+.wrap-header {
+  position: sticky;
+  top: 0px;
+  z-index: 999999;
+  background: white;
+}
 .nav-header-web {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--px-16);
-  position: sticky;
-  top: 0px;
-  z-index: 999999;
-  background: white;
 }
 .wrap-logo-nav-web {
   height: var(--px-48);
@@ -1472,16 +1556,23 @@ td td:last-child {
 .banner.hide {
   display: none;
 }
-.advertise {
+.wrap-advertise-page {
   width: 100%;
+  min-height: var(--px-160);
+  max-height: var(--px-160);
   height: var(--px-160);
-  flex-shrink: 0;
   position: sticky;
-  padding: 40px 0px;
-  top: 48px;
-  overflow: hidden;
+  top: var(--px-48);
   z-index: 999999;
   background-color: white;
+  overflow: hidden;
+}
+.advertise {
+  width: 100%;
+  height: 100%;
+  flex-shrink: 0;
+  padding: 40px 0px;
+  overflow: hidden;
 }
 .advertise.hide {
   display: none;
@@ -1621,6 +1712,10 @@ td td:last-child {
   position: absolute;
   bottom: -20px;
   left: -76px;
+}
+/* show list info */
+.show-list-info.hide {
+  display: none;
 }
 
 /* list more */
@@ -1839,7 +1934,7 @@ td td:last-child {
   padding: 36px 24px 24px 24px;
   align-items: flex-start;
   align-self: stretch;
-  border-radius: 48px;
+  border-radius: var(--px-48);
   border: 1px solid var(--Membership-Bronze, #b64d2f);
   background: linear-gradient(
     161deg,
@@ -2217,8 +2312,8 @@ td td:last-child {
   right: -24px;
   top: -14px;
   display: flex;
-  width: 48px;
-  height: 48px;
+  width: var(--px-48);
+  height: var(--px-48);
   padding: 12px;
   justify-content: center;
   align-items: center;
@@ -2248,10 +2343,10 @@ td td:last-child {
 
 .toggle-switch {
   appearance: none;
-  width: 48px;
-  height: 24px;
+  width: var(--px-48);
+  height: var(--px-24);
   background: #ccc;
-  border-radius: 20px;
+  border-radius: var(--px-20);
   position: relative;
   outline: none;
   cursor: pointer;
@@ -2590,25 +2685,52 @@ td td:last-child {
   position: absolute;
   top: 20%;
   right: 0%;
-  background-color: white;
+  background-color: transparent;
   transition: right 0.4s ease;
-  display: inline-flex;
-  padding: 12px;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 13px;
-  border-radius: 12px;
-  background: #fff;
-  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
-  width: var(--px-500);
-  max-height: var(--px-560);
+  padding: 32px;
+  width: var(--px-560);
+  max-height: var(--px-620);
   overflow-y: scroll;
 }
+.btn-closepopup-promotion {
+  position: absolute;
+  right: 8px;
+  top: 12px;
+  display: flex;
+  width: var(--px-48);
+  height: var(--px-48);
+  padding: 12px;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 1/1;
+  background-color: white;
+  border: 1px solid var(--Gray-Neutral-95, #f3f3f3);
+  border-radius: 26px;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+}
+.btn-closepopup-promotion i {
+  font-size: 24px;
+  font-weight: 300;
+  color: #181818;
+}
+.btn-closepopup-promotion i:hover {
+  color: var(--bs-main);
+}
+
 .popup-container-promotion.move-right {
   right: 48%;
 }
 .popup-wrap-promotion {
   width: 100%;
+  padding: 12px;
+  background-color: white;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 13px;
+  border-radius: var(--px-12);
 }
 .popup-wrap-promotion .title-select-promotion {
   align-self: stretch;

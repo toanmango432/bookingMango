@@ -658,7 +658,7 @@ const onlineStore = {
           active: false,
         },
         { color: '#5C0000', active: false },
-        { color: '#660000', active: true, selected: true, type: 'PRIMARY' },
+        { color: '#660000', active: false },
         { color: '#D0B0B0', active: false },
         { color: '#E8D9D9', active: false },
         { color: '#F0E6E6', active: false },
@@ -676,7 +676,7 @@ const onlineStore = {
         { color: '#023D13', active: false },
         { color: '#024114', active: false },
         { color: '#024917', active: false },
-        { color: '#0C7E2D', active: false },
+        { color: '#0C7E2D', active: true, selected: true, type: 'PRIMARY' },
         { color: '#B1C9B8', active: false },
         { color: '#B1C9B8', active: false },
         { color: '#D9E5DD', active: false },
@@ -692,8 +692,8 @@ const onlineStore = {
         { color: '#FCF1E6', active: false },
       ],
       iconActive: `<i class="fa-solid fa-check"></i>`,
-      colorPrimary: '#00bed6',
-      colorSecondary: '#061315',
+      colorIconPrimary: '#00bed6',
+      colorIconSecondary: '#061315',
     };
 
     const info = [
@@ -703,9 +703,7 @@ const onlineStore = {
         type: 'INPUT',
       },
       {
-        value: `We hope that your visit will be a relaxing and wonderful experience.
-                Please do not hesitate to share your opinions with the salon manager
-                so that your next visit at MIA will be an even better experience.`,
+        value: `We hope that your visit will be a relaxing and wonderful experience. Please do not hesitate to share your opinions with the salon manager so that your next visit at MIA will be an even better experience.`,
         style: [],
         type: 'TEXTAREA',
       },
@@ -774,9 +772,11 @@ const onlineStore = {
       },
     ];
 
-    const banner = [
+    const bannerPromotion = [
       {
+        id: 'bp-flash',
         content: 'Flash.png',
+        img: '/assets/images/bannerPromotion/banner-promotion-1.jpg',
         action: {
           type: 'TOGGLE',
           defaultValue: '',
@@ -786,7 +786,10 @@ const onlineStore = {
         },
       },
       {
+        id: 'bp-giftcard',
         content: 'GiftCard.png',
+        img: '/assets/images/bannerPromotion/banner-promotion-2.jpg',
+
         action: {
           type: 'TOGGLE',
           defaultValue: '',
@@ -796,7 +799,10 @@ const onlineStore = {
         },
       },
       {
+        id: 'bp-egift',
         content: 'E-Gift.png',
+        img: '/assets/images/bannerPromotion/banner-promotion-3.jpg',
+
         action: {
           type: 'TOGGLE',
           defaultValue: '',
@@ -806,7 +812,10 @@ const onlineStore = {
         },
       },
       {
+        id: 'bp-unllock',
         content: 'Unlock.png',
+        img: '/assets/images/bannerPromotion/banner-promotion-4.jpg',
+
         action: {
           type: 'TOGGLE',
           defaultValue: '',
@@ -873,9 +882,11 @@ const onlineStore = {
       },
     };
 
-    const social = [
+    const dataSocialPage = [
       {
-        content: 'Google',
+        id: 'so-facebook',
+        img: '/assets/images/social-icon/Facebook.png',
+        content: 'Facebook',
         action: {
           type: 'TOGGLE',
           defaultValue: '',
@@ -885,7 +896,9 @@ const onlineStore = {
         },
       },
       {
-        content: 'App Store',
+        id: 'so-google',
+        img: '/assets/images/social-icon/google.png',
+        content: 'Google',
         action: {
           type: 'TOGGLE',
           defaultValue: '',
@@ -1103,7 +1116,7 @@ Please do not hesitate to share your opinions with the salon manager so that you
           percent: {
             number: 15,
             content: 'All service',
-            bgColor: '#660000',
+            bgColor: '#00bed6',
             color: 'white',
           },
           dateTime: {
@@ -1121,7 +1134,7 @@ Please do not hesitate to share your opinions with the salon manager so that you
           percent: {
             number: 1,
             content: 'All service',
-            bgColor: '#660000',
+            bgColor: '#00bed6',
             color: 'white',
           },
           dateTime: {
@@ -1139,7 +1152,7 @@ Please do not hesitate to share your opinions with the salon manager so that you
           percent: {
             number: 5,
             content: 'All service',
-            bgColor: '#660000',
+            bgColor: '#00bed6',
             color: 'white',
           },
           dateTime: {
@@ -1157,7 +1170,7 @@ Please do not hesitate to share your opinions with the salon manager so that you
           percent: {
             number: 5,
             content: 'All service',
-            bgColor: '#660000',
+            bgColor: '#00bed6',
             color: 'white',
           },
           dateTime: {
@@ -1205,7 +1218,7 @@ Please do not hesitate to share your opinions with the salon manager so that you
       ],
     };
 
-    const dataPolicyPage = {
+    let dataPolicyPage = {
       title: 'Need to knows:',
       styleTitle: {
         color: '#660000',
@@ -1232,7 +1245,7 @@ Please do not hesitate to share your opinions with the salon manager so that you
           content: [
             { text: '- See our full' },
             {
-              text: 'erms Of Use Here',
+              text: 'Terms Of Use Here',
               style: {
                 color: '#660000',
               },
@@ -1387,64 +1400,128 @@ Please do not hesitate to share your opinions with the salon manager so that you
 
     // data fake local storage
     let dataWeb = {
-      logo: '',
-      color: {
-        bgPrimary: '',
-        bgSecondary: '',
-      },
-      banner: [
-        {
-          img: '',
+      dataHeaderNav: {
+        logo: '/assets/images/templates/logo-template.png',
+        itemNav: [
+          {
+            id: 'page-fag',
+            name: 'Fag',
+          },
+          {
+            id: 'page-membership',
+            name: 'Membership',
+          },
+          {
+            id: 'page-service',
+            name: 'Service',
+          },
+          {
+            id: 'page-giftcard',
+            name: 'Gift Card',
+          },
+          {
+            id: 'page-about',
+            name: 'About',
+            icon: '<i class="fa-solid fa-chevron-down"></i>',
+          },
+          {
+            id: 'page-contact-us',
+            name: 'Contact Us',
+          },
+        ],
+        colorActiveNav: '#04972f',
+        iconUser: `
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="19" viewBox="0 0 18 19" fill="none">
+          <path d="M15 15.8066C15 13.7356 12.3137 12.0566 9 12.0566C5.68629 12.0566 3 13.7356 3 15.8066M9 9.80664C6.92893 9.80664 5.25 8.12771 5.25 6.05664C5.25 3.98557 6.92893 2.30664 9 2.30664C11.0711 2.30664 12.75 3.98557 12.75 6.05664C12.75 8.12771 11.0711 9.80664 9 9.80664Z" stroke="#061315" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      `,
+        buttonBooking: {
+          content: 'Book',
+          bgBtn: '#0c7e2d',
+          color: 'white',
+          border: '1px solid #04972f',
+          bgColorHover: '#b1c9b8',
         },
-      ],
-      info: {
-        title: '',
-        desc: '',
+        cart: {
+          icon: `
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="19" viewBox="0 0 18 19" fill="none">
+            <path d="M5.625 5.81269V5.08519C5.625 3.39769 6.9825 1.74019 8.67 1.58269C10.68 1.38769 12.375 2.97019 12.375 4.94269V5.97769" stroke="black" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M6.7506 16.5605H11.2506C14.2656 16.5605 14.8056 15.353 14.9631 13.883L15.5256 9.38305C15.7281 7.55305 15.2031 6.06055 12.0006 6.06055H6.0006C2.7981 6.06055 2.2731 7.55305 2.4756 9.38305L3.0381 13.883C3.1956 15.353 3.7356 16.5605 6.7506 16.5605Z" stroke="black" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M11.6209 9.06055H11.6276" stroke="black" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M6.37088 9.06055H6.37762" stroke="black" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        `,
+          quatity: '1',
+          bgColor: '#ea001e',
+          color: 'white',
+        },
+      },
+      color: {
+        bgPrimary: '#0C7E2D',
+        bgSecondary: '#E27303',
+      },
+      advertises: {
+        bgAdvertise1: {
+          bgColor: '#0c7e2d',
+          transformRotate: '-4.479deg',
+        },
+        bgAdvertise2: {
+          bgColor: '#e27303',
+          colorContent: 'white',
+          content: [
+            {
+              text: 'Hi Guest! Sign in to access',
+              fontWeight: 400,
+            },
+            {
+              text: 'Past Appointment History',
+              fontWeight: 700,
+            },
+            {
+              text: 'and',
+              fontWeight: 400,
+            },
+            {
+              text: 'view upcoming appointments, or Cancel upcoming appointments',
+              fontWeight: 700,
+            },
+          ],
+        },
+        buttonSignIn: {
+          content: 'Sign In',
+          bgColor: '#0c7e2d',
+          color: 'white',
+          border: '1px solid #04972f',
+          bgColorHover: '#b1c9b8',
+        },
+      },
+      banner: {
+        greeting: 'Welcome to !',
+        brand: 'Nailvibe',
+        title: `It is time to relax !`,
+        desc: `We hope that your visit will be a relaxing and wonderful experience.
+Please do not hesitate to share your opinions with the salon manager so that your next visit at MIA will be an even better experience.`,
+        bookFor: 'Book Appointment for',
+        btnOptionBook: {
+          content: 'Just me',
+          icon: `<i class="fa-solid fa-chevron-down rotate-transition"></i>`,
+          color: 'white',
+          bgColor: '#04972f',
+          border: '1px solid #04972f',
+        },
+        image: {
+          imgBooking1: '/assets/images/templates/image-banner-booking.png',
+          imgBooking2: '/assets/images/templates/image-banner-booking-2.png',
+          imgBooking3: '/assets/images/templates/image-cloud.png',
+        },
       },
       sideInfo: {
-        promotion: {
-          img: '',
-          title: {
-            content: '',
-            icon: '',
-          },
-          percent: {
-            number: 15,
-            content: '',
-            bgColor: '#660000',
-            color: 'white',
-          },
-          datetime: {
-            startTime: '',
-            endTime: '',
-          },
-        },
-        storeInfo: {
-          nameStore: '',
-          addressStore: {
-            icon: '',
-            content: '',
-          },
-          scheduleWork: [
-            {
-              dayOfWeek: '',
-              timeWork: {
-                startTime: '',
-                endTime: '',
-              },
-            },
-          ],
-        },
-        policy: {
-          title: '',
-          listItem: [
-            {
-              content: [{ text: '', style: '' }],
-            },
-          ],
-        },
-        socialLink: '',
+        promotion: {},
+        storeInfo: {},
+        policy: {},
+        socialLink: {},
       },
+      socialIcon: [],
     };
 
     return {
@@ -1453,10 +1530,10 @@ Please do not hesitate to share your opinions with the salon manager so that you
       configThemeColor,
       sideInfo,
       info,
-      banner,
+      bannerPromotion,
       giftCard,
       membership,
-      social,
+      dataSocialPage,
 
       listDataService,
       listUser,
@@ -1473,6 +1550,8 @@ Please do not hesitate to share your opinions with the salon manager so that you
 
       dataPageMembership,
       dataPageGiftCard,
+      // data web
+      dataWeb,
     };
   },
 };
@@ -1483,16 +1562,9 @@ function renderTemplates($wrapList, dataTemplates, limit = null) {
 
   const listToRender = limit ? dataTemplates.slice(0, limit) : dataTemplates;
 
-  for (let i = 0; i < listToRender.length; i += 4) {
-    const chunk = listToRender.slice(i, i + 4);
-    const $grid = $('<div class="gird-4"></div>');
-
-    chunk.forEach((item) => {
-      $grid.append(renderItemTemplate(item));
-    });
-
-    $wrapList.append($grid);
-  }
+  listToRender.forEach((item)=> {
+    $wrapList.append(renderItemTemplate(item));
+  })
 }
 function renderItemTemplate(item) {
   return `
@@ -1602,8 +1674,7 @@ const renderItemTable = (header, body) => {
 // ===== *END templates home render
 
 const renderColorTheme = (configThemeColor) => {
-  console.log('updated: ');
-  const { config, colorTheme, iconActive, colorPrimary, colorSecondary } = configThemeColor;
+  const { config, colorTheme, iconActive, colorIconPrimary, colorIconSecondary } = configThemeColor;
   return `
     <div class="grid-8 grid-gap-y-2 grid-gap-x-2">
       ${
@@ -1628,7 +1699,9 @@ const renderColorTheme = (configThemeColor) => {
               active
                 ? `<p class="color-icon-selected"
                 style="
-                  --color-icon-checked: ${item.type === 'PRIMARY' ? colorPrimary : colorSecondary}
+                  --color-icon-checked: ${
+                    item.type === 'PRIMARY' ? colorIconPrimary : colorIconSecondary
+                  }
                 "
               >${displayChecked}</p>`
                 : ''
@@ -1646,26 +1719,29 @@ const renderInfo = (info) => {
   if (!info || !Array.isArray(info)) return '';
 
   return info
-    .map((item) => {
-      const type = item.type ? item.type : 'INPUT';
-      const value = item.value;
-      if (type === 'TEXTAREA') {
-        return `
-          <div class="option-item px-0">
-            <textarea id="textarea-info" class="textarea-info">${value}</textarea>
-          </div>
-        `;
-      }
+    .map((item, index) => {
+      const type = item.type || 'INPUT';
+      const value = item.value || '';
+      const maxLengthInput = 52;
+      const maxLengthText = 1000;
 
-      // Default to input
+      const id = type === 'TEXTAREA' ? `textarea-info-${index}` : `input-info-${index}`;
+      const maxLength = type === 'TEXTAREA' ? maxLengthText : maxLengthInput;
+
       return `
         <div class="option-item px-0">
-          <input id="input-info" class="input-info" value="${value}" />
+          <div class="char-count-message text-danger mb-1" id="char-msg-${index}" style="display:none; font-size: 13px;"></div>
+          ${
+            type === 'TEXTAREA'
+              ? `<textarea id="${id}" class="textarea-info" maxlength="${maxLength}">${value}</textarea>`
+              : `<input id="${id}" class="input-info" value="${value}" maxlength="${maxLength}" />`
+          }
         </div>
       `;
     })
     .join('');
 };
+
 
 const renderSideInfor = (sideInfo) => {
   if (!sideInfo || !Array.isArray(sideInfo)) return '';
@@ -1696,12 +1772,13 @@ const renderSideInfor = (sideInfo) => {
     .join('');
 };
 
-const renderBanner = (banner) => {
-  if (!banner || !Array.isArray(banner)) return '';
+const renderBanner = (bannerPromotion) => {
+  if (!bannerPromotion || !Array.isArray(bannerPromotion)) return '';
 
-  return banner.map((item) => {
+  return bannerPromotion.map((item) => {
     const justify = item.style.justify || '';
     const hasToggle = item.action?.type === 'TOGGLE';
+    const id = item.id;
 
     const isChecked = item.action?.defaultValue === true || item.action?.defaultValue === 'true';
 
@@ -1710,7 +1787,9 @@ const renderBanner = (banner) => {
         <span>${item.content}</span>
         ${
           hasToggle &&
-          `<input type='checkbox' class='toggle-switch' ${isChecked ? 'checked' : ''} />`
+          `<input id="select-banner-pm" data-index="${id}" type='checkbox' class='toggle-switch' ${
+            isChecked ? 'checked' : ''
+          } />`
         }
       </div>
     `;
@@ -1762,10 +1841,10 @@ ${body.content}
   `;
 };
 
-function renderSocial(social) {
-  if (!social || !Array.isArray(social)) return '';
+function renderSocial(dataSocialPage) {
+  if (!dataSocialPage || !Array.isArray(dataSocialPage)) return '';
 
-  return social.map((item) => {
+  return dataSocialPage.map((item) => {
     const justify = item.style.justify || '';
     const hasToggle = item.action?.type === 'TOGGLE';
 
@@ -1776,7 +1855,9 @@ function renderSocial(social) {
         <span>${item.content}</span>
         ${
           hasToggle &&
-          `<input type='checkbox' class='toggle-switch' ${isChecked ? 'checked' : ''} />`
+          `<input id="toggle-social" data-index="${
+            item.id
+          }" type='checkbox' class='toggle-switch' ${isChecked ? 'checked' : ''} />`
         }
       </div>
     `;
@@ -1965,11 +2046,6 @@ function initSliderFromElement(containerEl, cardSelector) {
   const cardWidth = cards[0].offsetWidth + 16;
   const visibleWidth = containerEl.offsetWidth;
   let currentOffset = 0;
-
-  console.log('Container width:', visibleWidth);
-  console.log('Track scrollWidth:', track.scrollWidth);
-  console.log('Card width:', cardWidth);
-  console.log('Max offset:', track.scrollWidth - visibleWidth);
 
   function updateButtons() {
     const maxOffset = track.scrollWidth - visibleWidth;
@@ -2308,22 +2384,15 @@ function renderSettingsPopup() {
 }
 
 // tính chiều cao templates
-function animateHeight($element, toExpand) {
-  const el = $element[0];
-  const fullHeight = el.scrollHeight;
-
-  if (toExpand) {
-    $element.css({ maxHeight: 0 });
-    requestAnimationFrame(() => {
-      $element.css({ maxHeight: fullHeight + 'px' });
-    });
+function animateHeight($el, isExpand) {
+  if (!isExpand) {
+    const $firstRowHeight = $el.children().first().outerHeight(true);
+    $el.css('height', $firstRowHeight + 'px');
   } else {
-    $element.css({ maxHeight: fullHeight + 'px' });
-    requestAnimationFrame(() => {
-      $element.css({ maxHeight: 324 });
-    });
+    $el.css('height', 'auto');
   }
 }
+
 
 // ============= *BEGIN function template popup detail
 function showTemplatePopup(
@@ -2351,7 +2420,7 @@ function showTemplatePopup(
                             <h3 class="text-uppercase title-booking mb-0">Custom online booking</h3>
                           </div>
                           <div class="right-header-detail">
-                            <button class="save-bg">
+                            <button id="save-template" class="save-bg">
                                 <h4 class="text-uppercase text-save mb-0">Save</h4>
                             </button>
                             <button class="publish-bg">
@@ -2374,7 +2443,8 @@ function showTemplatePopup(
                                   </svg>
                                 </div>
                                 <div class="title-change-logo">
-                                  <span>Change your logo here</span>
+                                  <span class="btn-upload-logo">Change your logo here</span>
+                                  <input type="file" id="input-change-logo" accept="image/*" hidden />
                                 </div>
                                 <div class="subtitle-change-logo">
                                   <span>Supports: PNG</span>
@@ -2410,19 +2480,6 @@ function showTemplatePopup(
                                       </button>
                                     </div>
                                     <div id="option-info" class="option-content">
-                                      <div class="option-item px-0">
-                                        <input
-                                          id="input-info"
-                                          class="input-info"
-                                          value="${titleBanner}"
-                                        />
-                                      </div>
-                                      <div class="option-item px-0">
-                                        <textarea
-                                          id="textarea-info"
-                                          class="textarea-info"
-                                        >${descBanner}</textarea>
-                                      </div>
                                     </div>
                                   </div>
                                   <div class="wrap-item-option">
@@ -2442,8 +2499,10 @@ function showTemplatePopup(
                                             <i class="fa-solid fa-plus white"></i>
                                         </button>
                                         </div>
-                                      <div id="option-banner" class="option-content">
-
+                                      <div
+                                        id="option-banner"
+                                        class="option-content"
+                                      >
                                       </div>
                                   </div>
                                   <div class="wrap-item-option">
@@ -2509,7 +2568,13 @@ function showTemplatePopup(
                                     <div id="item-promotion-page"></div>
                                     <div id="store-info-page"></div>
                                     <div id="policy-page"></div>
-                                    <div id="social-link-page"></div>
+                                    <div id="social-link-page">
+                                    </div>
+                                    <div id="social-icon-page">
+                                      <div class="wrap-list-social">
+                                        <div class="list-social"></div>
+                                      </div>
+                                    </div>
                                   </div>
                                   <div class="list-more">
                                   </div>
@@ -2759,17 +2824,24 @@ function showPopupSelectPromotion(listPromotion) {
               .join('')}
           </div>
         </div>
+        <div class="btn-closepopup-promotion">
+          <i class="fa-solid fa-xmark"></i>
+        </div>
       </div>
     </div>
   `;
 }
 
-function renderStoreInfo(dataStoreInfo) {
+const renderStoreInfo = (dataStoreInfo, color = '') => {
   const $container = $('<div class="store-info"></div>');
 
   const $left = $(`
     <div class="store-left">
-      <h3 style="color: #960c0c;">${dataStoreInfo.brand.toUpperCase()}</h3>
+      <h3 style="
+        --colorTextStoreInfo: ${color};"
+      >
+        ${dataStoreInfo.brand.toUpperCase()}
+      </h3>
       <p>${dataStoreInfo.iconLocation} ${dataStoreInfo.phoneNumber}</p>
       <p>${dataStoreInfo.address}</p>
     </div>
@@ -2790,14 +2862,21 @@ function renderStoreInfo(dataStoreInfo) {
 
   $container.append($left).append($right);
   return $container;
-}
+};
 
-function renderPolicyPage(dataPolicyPage) {
+const renderPolicyPage = (dataPolicyPage, color = '') => {
   const { title, styleTitle, listItem } = dataPolicyPage;
 
-  const titleHtml = `<h3 class="title-policy" style="color: ${
-    styleTitle.color
-  }">${title.toUpperCase()}</h3>`;
+  const titleHtml = `
+    <h3
+      class="title-policy"
+      style="
+        --colorTextTitlePolicy: ${color}
+      "
+    >
+      ${title.toUpperCase()}
+    </h3>
+  `;
 
   const itemsHtml = listItem
     .map((item) => {
@@ -2816,7 +2895,6 @@ function renderPolicyPage(dataPolicyPage) {
     })
     .join('');
 
-  // Trả về HTML hoàn chỉnh
   return `
     <div class="policy-page">
       ${titleHtml}
@@ -2825,12 +2903,16 @@ function renderPolicyPage(dataPolicyPage) {
       </div>
     </div>
   `;
-}
+};
 
-function renderSocialLink(data) {
+const renderSocialLink = (data, color = '') => {
   const address = encodeURIComponent(data.mapLocation.address);
   return `
-    <div class="map-wrapper">
+    <div class="map-wrapper"
+      style="
+        --colorBorderMap: ${color}
+      "
+    >
       <iframe
         width="100%"
         height="300"
@@ -2842,7 +2924,7 @@ function renderSocialLink(data) {
       </iframe>
     </div>
   `;
-}
+};
 
 function renderPromotionItemSide(dataProm) {
   return `
@@ -2852,7 +2934,7 @@ function renderPromotionItemSide(dataProm) {
       </div>
       <div class="left-promotion-item">
         <div class="title-icon">
-          <h2 class="title">${dataProm.title.content}</h2>
+          <h2 class="title mb-0">${dataProm.title.content}</h2>
         </div>
         <div class="percent-promotion">
           <span class="percent"
@@ -2871,31 +2953,38 @@ function renderPromotionItemSide(dataProm) {
       </div>
     </div>`;
 }
-function renderPromotionItemPage(dataProm) {
+const renderPromotionItemPage = (dataProm, extraClass = '') => {
   return `
-    <div class="wrap-item-promotion-page">
-      <div class="item-promotion-page">
-        <div class="right-promotion-item">
-          <img src="${dataProm.img}" alt="image promotion" class="img-promotion"/>
+    <div class="item-promotion-page ${extraClass}">
+      <div class="right-promotion-item">
+        <img src="${dataProm.img}" alt="image promotion" class="img-promotion"/>
+      </div>
+      <div class="left-promotion-item">
+        <div class="title-icon">
+          <h2 class="title mb-0">${dataProm.title.content}</h2>
         </div>
-        <div class="left-promotion-item">
-          <div class="title-icon">
-            <h2 class="title">${dataProm.title.content}</h2>
-          </div>
-          <div class="percent-promotion">
-            <span class="percent"
-              style="--bgColor-percent: ${dataProm.percent.bgColor}; --textColor-percent: ${dataProm.percent.color};"
-            >
-              ${dataProm.percent.number}%
-            </span>
-            <h2 class="title-percent mb-0">${dataProm.percent.content}</h2>
-          </div>
-          <div class="date-time">
-            <p>Valid until ${dataProm.dateTime.endTime}</p>
-          </div>
+        <div class="percent-promotion">
+          <span class="percent"
+            style="--bgColor-percent: ${dataProm.percent.bgColor}; --textColor-percent: ${dataProm.percent.color};"
+          >
+            ${dataProm.percent.number}%
+          </span>
+          <h2 class="title-percent mb-0">${dataProm.percent.content}</h2>
+        </div>
+        <div class="date-time">
+          <p>Valid until ${dataProm.dateTime.endTime}</p>
         </div>
       </div>
-    </div>`;
+    </div>
+  `;
+};
+
+function renderSocialItemPage(item) {
+  return `
+    <div class="wrap-image-social" data-id="${item.id}">
+      <img src="${item.img}" alt="image social" class="img-social"/>
+    </div>
+  `;
 }
 
 function renderExpandTitle(item) {
@@ -2970,10 +3059,16 @@ function renderActionButtons(item) {
   return $wrap;
 }
 
-function renderBtnMoreInfo() {
+function renderBtnMoreInfo(bgColor) {
   return `
     <div class="wrap-btn-more-sideinfo">
-      <button class="btn-show-more-sideinfo">Show More Info</button>
+      <button
+        style="
+          --bgColorBtnMoreSI: ${bgColor}
+        "
+        class="btn-show-more-sideinfo">
+          Show More Info
+        </button>
     </div>
   `;
 }
@@ -3025,10 +3120,10 @@ $(document).ready(function () {
     configThemeColor,
     info,
     sideInfo,
-    banner,
+    bannerPromotion,
     giftCard,
     membership,
-    social,
+    dataSocialPage,
     // == data right template detail
     listDataService,
     listUser,
@@ -3044,7 +3139,13 @@ $(document).ready(function () {
     // ==
     dataPageMembership,
     dataPageGiftCard,
+
+    dataWeb,
   } = onlineStore.load();
+  // variable local
+  let colorPrimary = configThemeColor.colorTheme.find((item) => item.type === 'PRIMARY');
+  let colorSecondary = configThemeColor.colorTheme.find((item) => item.type === 'SECONDARY');
+
   const $wrapList = $('.wrap-list-templates');
   const $wrapContainerDeploy = $('.container-deploy');
   $wrapContainerDeploy.empty();
@@ -3066,6 +3167,19 @@ $(document).ready(function () {
 
   // **** BEGIN Sự kiện bên trái template
   $(document).on('click', '.item-option-change .btn-option', function () {
+    // Remove class active current to active class will open
+    if(!$(this).hasClass('.active.sub')) {
+      console.log("check")
+      const $listOptionChange = $('.list-option-change');
+      const $optionActive = $listOptionChange.find('.wrap-item-option .item-option-change.active');
+      const $optionContentExpended = $listOptionChange.find('.wrap-item-option .option-content.expanded');
+      const $btnOptionOld = $listOptionChange.find('.btn-option.active.plus');
+      $btnOptionOld.toggleClass('active');
+      $btnOptionOld.toggleClass('plus sub');
+      $optionActive.removeClass('active');
+      $optionContentExpended.removeClass('expanded')
+    }
+
     const $wrapItemOption = $(this).closest('.wrap-item-option');
     const $optionContent = $wrapItemOption.find('.option-content');
     const $icon = $(this).find('i');
@@ -3083,10 +3197,10 @@ $(document).ready(function () {
       'option-theme-color': () => renderColorTheme(configThemeColor),
       'option-info': () => renderInfo(info),
       'option-side-info': () => renderSideInfor(sideInfo),
-      'option-banner': () => renderBanner(banner),
+      'option-banner': () => renderBanner(bannerPromotion),
       'option-gift-card': () => renderGiftCardAndMembership(giftCard),
       'option-membership': () => renderGiftCardAndMembership(membership),
-      'option-social': () => renderSocial(social),
+      'option-social': () => renderSocial(dataSocialPage),
     };
 
     const id = $optionContent.attr('id');
@@ -3096,6 +3210,47 @@ $(document).ready(function () {
       const html = renderFn();
       $optionContent.html(html);
     }
+  });
+  // -- CHANGE LOGO * xử lý chọn logo
+  // Gán sự kiện khi bấm nút upload
+  $(document).on('click', '.btn-upload-logo', function () {
+    $('#input-change-logo').click();
+  });
+  // Xử lý khi người dùng chọn logo
+  $(document).on('change', '#input-change-logo', function (e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Chỉ cho phép PNG
+    if (!file.type.startsWith('image/')) {
+      alert('Chỉ hỗ trợ ảnh PNG!');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function (event) {
+      const imgUrl = event.target.result;
+
+      // Hiển thị background logo
+      $('.wrap-logo-choosed')
+        .css({
+          'background-image': `url(${imgUrl})`,
+          width: '100px',
+          height: '48px',
+        })
+        .find('svg')
+        .remove();
+      // Gán tên ảnh vào subtitle
+      $('.subtitle-change-logo span').text(`Selected: ${file.name}`);
+
+      // Cập nhật logo trong data và render lại header
+      dataHeaderNav.logo = imgUrl;
+
+      const htmlHeader = renderNavHeaderTemplates(dataHeaderNav);
+      $('.wrap-header').html(htmlHeader);
+    };
+
+    reader.readAsDataURL(file); // đọc file thành base64 URL
   });
   // -- * CHANGE COLOR * Sử lý chọn màu
   $(document).on('click', '.item-theme', function () {
@@ -3108,7 +3263,6 @@ $(document).ready(function () {
       item.selected = false;
     } else if (!item.active) {
       const removedType = getRemovedType();
-      console.log('check: ', removedType);
       if (removedType) {
         // Cập nhật item mới
         item.selected = true;
@@ -3117,11 +3271,13 @@ $(document).ready(function () {
 
         // Xử lý đổi màu
         if (removedType === 'PRIMARY') {
+          // CẬP NHẬT MÀU
+          colorPrimary = configThemeColor.colorTheme.find((item) => item.type === 'PRIMARY');
+
           //header
           dataHeaderNav.colorActiveNav = item.color;
           dataHeaderNav.buttonBooking.bgBtn = item.color;
           dataHeaderNav.buttonBooking.border = `1px solid ${item.color}`;
-
           const htmlHeaderNav = renderNavHeaderTemplates(dataHeaderNav);
           $('.wrap-header').html(htmlHeaderNav);
           //advertise
@@ -3138,7 +3294,49 @@ $(document).ready(function () {
 
           const htmlBannerPage = renderBannerPage(dataBannerPage);
           $('.wrap-banner-page').html(htmlBannerPage);
+
+          //btn more info
+          const $wrapBtnMore = $('.wrap-btn-more-sideinfo');
+          if ($wrapBtnMore.length > 0) {
+            const htmlBtnMoreInfo = renderBtnMoreInfo(colorPrimary.color);
+            $wrapBtnMore.replaceWith(htmlBtnMoreInfo);
+          }
+
+          //store info
+          const $storeInfo = $('.store-info');
+          if ($storeInfo.length > 0) {
+            const htmlStoreInfoPage = renderStoreInfo(dataStoreInfo, colorPrimary.color);
+
+            $storeInfo.replaceWith(htmlStoreInfoPage);
+          }
+
+          //policy
+          const $policy = $('.policy-page');
+          if ($policy.length > 0) {
+            //xử lý màu trong dataPolicy
+            dataPolicyPage.listItem.forEach((item) => {
+              item.content.forEach((child) => {
+                if (child.style && child.style.color) {
+                  child.style.color = colorPrimary.color;
+                }
+              });
+            });
+            const htmlSPolicyPage = renderPolicyPage(dataPolicyPage, colorPrimary.color);
+
+            $policy.replaceWith(htmlSPolicyPage);
+          }
+
+          //social link
+          const $socialLink = $('.map-wrapper');
+          if ($socialLink.length > 0) {
+            const htmlSocialLinkPage = renderSocialLink(dataSocialLink, colorPrimary.color);
+
+            $socialLink.replaceWith(htmlSocialLinkPage);
+          }
         } else if (removedType === 'SECONDARY') {
+          // CẬP NHẬT MÀU
+          colorSecondary = configThemeColor.colorTheme.find((item) => item.type === 'SECONDARY');
+
           //advertise
           dataAdvertise.bgAdvertise2.bgColor = item.color;
 
@@ -3148,7 +3346,6 @@ $(document).ready(function () {
 
         // Tìm item cũ đang giữ loại đó (PRIMARY hoặc SECONDARY)
         const oldItem = configThemeColor.colorTheme.find((i) => i !== item && i.selected === false);
-        console.log('old-item: ', oldItem);
         if (oldItem) {
           oldItem.active = false;
           delete oldItem.selected;
@@ -3180,17 +3377,58 @@ $(document).ready(function () {
     dataBannerPage.desc = value;
     $('#banner-desc').text(value);
   });
+
+  // --- START xử lý focus hiển thị ký tự còn lại
+$(document).on('focus', '.input-info, .textarea-info', function () {
+  const id = $(this).attr('id');
+  const index = id.split('-').pop();
+  const $msg = $(`#char-msg-${index}`);
+  const maxLength = $(this).attr('maxlength');
+  const currentLength = $(this).val().length;
+
+  $msg.text(`Bạn còn có thể nhập ${maxLength - currentLength} ký tự`);
+  $msg.show();
+});
+
+$(document).on('input', '.input-info, .textarea-info', function () {
+  const id = $(this).attr('id');
+  const index = id.split('-').pop();
+  const $msg = $(`#char-msg-${index}`);
+  const maxLength = $(this).attr('maxlength');
+  const currentLength = $(this).val().length;
+
+  $msg.text(`Bạn còn có thể nhập ${maxLength - currentLength} ký tự`);
+});
+
+$(document).on('blur', '.input-info, .textarea-info', function () {
+  const index = $(this).attr('id').split('-').pop();
+  $(`#char-msg-${index}`).hide();
+});
+  // ---END xử lý focus hiển thị ký tự còn lại
+
   // -- * SIDE INFO *
   // ---- show all
   // === Helpers chung ===
 
   function updateToggleState() {
     const sections = ['#sit-promotion', '#sit-store-info', '#sit-policy', '#sit-social-link'];
-    const anyChecked = sections.some((id) => $(id).is(':checked'));
+
+    const anyChecked = sections.some((id) => {
+      return $(id).is(':checked');
+    });
     const allChecked = sections.every((id) => $(id).is(':checked'));
 
-    $('#si-show-all').prop('checked', allChecked);
-    $('.wrap-btn-more-sideinfo').toggle(anyChecked);
+    $('#sit-show-all').prop('checked', allChecked);
+
+    // show btn more info
+    const $wrapBtnMoreSideinfo = $('.wrap-btn-more-sideinfo');
+    if (anyChecked && $wrapBtnMoreSideinfo.length === 0) {
+      const $listInfo = $('#list-info');
+      const htmlBtnMoreInfo = renderBtnMoreInfo(colorPrimary.color);
+      $listInfo.prepend(htmlBtnMoreInfo);
+    } else if (!anyChecked) {
+      $wrapBtnMoreSideinfo.remove();
+    }
   }
   function toggleAllSideInfo(enable) {
     $('#sit-promotion, #sit-store-info, #sit-policy, #sit-social-link')
@@ -3198,7 +3436,7 @@ $(document).ready(function () {
       .trigger('change');
   }
   // Show all
-  $(document).on('change', '#si-show-all', function () {
+  $(document).on('change', '#sit-show-all', function () {
     toggleAllSideInfo($(this).is(':checked'));
   });
   // Promotion
@@ -3207,29 +3445,21 @@ $(document).ready(function () {
     const $sideWrap = $('#si-promotion');
     const $pageWrap = $('#item-promotion-page');
     const $itemPromotionSelected = $('#si-promotion .item-promotion-selected');
-    console.log('check: ', $itemPromotionSelected.length);
+    const $overPromotion = $('.over-promotion');
 
     if (isChecked) {
-      if ($('#si-show-all').is(':checked')) {
-        // Chế độ Show-All: chọn luôn item đầu tiên
-        const dataProm = listPromotion.item[0];
-        if ($itemPromotionSelected.length !== 0) {
-          $sideWrap.html(renderPromotionItemSide(dataProm)).show();
-        } else {
-          $sideWrap.append(renderPromotionItemSide(dataProm)).show();
-        }
-        $pageWrap.html(renderPromotionItemPage(dataProm)).show();
-      } else {
-        // Bật riêng: mở popup để chọn
-        const html = showPopupSelectPromotion(listPromotion);
-        $('.wrap-web').append(html);
-        requestAnimationFrame(() => $('.popup-container-promotion').addClass('move-right'));
-      }
+      // mở popup để chọn
+      const html = showPopupSelectPromotion(listPromotion);
+      $('.wrap-web').append(html);
+      requestAnimationFrame(() => $('.popup-container-promotion').addClass('move-right'));
     } else {
-      $sideWrap.empty().hide();
-      $pageWrap.empty().hide();
-    }
+      // delete dataWeb
+      dataWeb.promotion = {};
 
+      $pageWrap.empty().hide();
+      $overPromotion.empty().hide();
+      $itemPromotionSelected.empty().hide();
+    }
     updateToggleState();
   });
 
@@ -3237,8 +3467,14 @@ $(document).ready(function () {
   $(document).on('change', '#sit-store-info', function () {
     const $container = $('#store-info-page');
     if ($(this).is(':checked')) {
-      $container.html(renderStoreInfo(dataStoreInfo)).show();
+      // save dataWeb
+      dataWeb.storeInfo = dataStoreInfo;
+
+      $container.html(renderStoreInfo(dataStoreInfo, colorPrimary.color)).show();
     } else {
+      // Delete dataWeb
+      dataWeb.storeInfo = {};
+
       $container.empty().hide();
     }
     updateToggleState();
@@ -3246,10 +3482,23 @@ $(document).ready(function () {
 
   // Policy
   $(document).on('change', '#sit-policy', function () {
+    //xử lý màu trong dataPolicy
+    dataPolicyPage.listItem.forEach((item) => {
+      item.content.forEach((child) => {
+        if (child.style && child.style.color) {
+          child.style.color = colorPrimary.color;
+        }
+      });
+    });
     const $container = $('#policy-page');
     if ($(this).is(':checked')) {
-      $container.html(renderPolicyPage(dataPolicyPage)).show();
+      // save dataWeb
+      dataWeb.policy = dataPolicyPage;
+
+      $container.html(renderPolicyPage(dataPolicyPage, colorPrimary.color)).show();
     } else {
+      // delete dataWeb
+      dataWeb.policy = {};
       $container.empty().hide();
     }
     updateToggleState();
@@ -3259,8 +3508,13 @@ $(document).ready(function () {
   $(document).on('change', '#sit-social-link', function () {
     const $container = $('#social-link-page');
     if ($(this).is(':checked')) {
-      $container.html(renderSocialLink(dataSocialLink)).show();
+      // save dataWeb
+      dataWeb.socialLink = dataSocialLink;
+
+      $container.html(renderSocialLink(dataSocialLink, colorPrimary.color)).show();
     } else {
+      // delete dataWeb
+      dataWeb.socialLink = {};
       $container.empty().hide();
     }
     updateToggleState();
@@ -3275,18 +3529,85 @@ $(document).ready(function () {
   // ------- Select promotion
   $(document).on('click', '.item-promotion', function () {
     const id = $(this).attr('id');
-    const dataProm = listPromotion.item.find((i) => i.id === id);
+    const dataPromSelected = listPromotion.item.find((i) => i.id === id);
+
+    // save dataWeb
+    dataWeb.promotion = dataPromSelected;
+
     const $sideWrap = $('#si-promotion');
     const $itemPromotionSelected = $('#si-promotion .item-promotion-selected');
+
     if ($itemPromotionSelected.length !== 0) {
-      $sideWrap.html(renderPromotionItemSide(dataProm)).show();
+      $itemPromotionSelected.remove();
+      $sideWrap.append(renderPromotionItemSide(dataPromSelected));
     } else {
-      $sideWrap.append(renderPromotionItemSide(dataProm)).show();
+      $sideWrap.append(renderPromotionItemSide(dataPromSelected)).show();
     }
 
-    $('#item-promotion-page').html(renderPromotionItemPage(dataProm)).show();
-    $('.over-promotion').hide();
-    updateToggleState();
+    if ($('.item-promotion-page').length > 0) {
+      $('.item-promotion-page').remove();
+      let classEx = '';
+      if ($('#item-promotion-page').find('.overlay-dark').length > 0) {
+        classEx = 'transparent';
+      }
+
+      const htmlProPage = renderPromotionItemPage(dataPromSelected, classEx);
+      $('.wrap-item-promotion-page').append(htmlProPage);
+    } else {
+      $('#item-promotion-page')
+        .html(
+          `
+            <div class="wrap-item-promotion-page">
+              ${renderPromotionItemPage(dataPromSelected)}
+            </div>
+          `
+        )
+        .show();
+    }
+    $('.over-promotion').remove();
+  });
+  // close promotion
+  $(document).on('click', '.btn-closepopup-promotion', function() {
+    // nếu có item-promotion-selected thì khi tắt popup toggle promotion vẫn on
+    const $itemPromotionSelected = $('.item-promotion-selected');
+    if($itemPromotionSelected.length >0) {
+      $('.over-promotion').remove();
+    }else {
+      $('#sit-promotion').prop('checked', false).trigger('change')
+      $('.over-promotion').remove();
+    }
+    // ngược lại nếu chưa có item-promotion-selected thì toggle promotion off
+  })
+  // Cập nhật banner background cho wrap-item-promotion-page
+  $(document).on('change', '#select-banner-pm', function () {
+    const isChecked = $(this).is(':checked');
+    const idItemSelect = $(this).data('index');
+    const bgImgBp = bannerPromotion.find((item) => item.id === idItemSelect)?.img;
+    const $loShowbg = $('.wrap-item-promotion-page');
+    const $itemPromotionPage = $loShowbg.find('.item-promotion-page');
+
+    // bỏ chọn các toggle on khác
+    $('input#select-banner-pm').not($(this)).prop('checked', false);
+    if (isChecked) {
+      // add overlay + backround + css + class
+      if ($('.overlay-dark').length === 0) {
+        $loShowbg.append(`<div class="overlay-dark"></div>`);
+      }
+      $itemPromotionPage.addClass('transparent');
+      $loShowbg.css({
+        'background-image': `url("${bgImgBp}")`,
+        'justify-content': 'flex-start',
+        padding: '24px 12px',
+      });
+    } else {
+      $('.overlay-dark').remove();
+      $itemPromotionPage.removeClass('transparent');
+      $loShowbg.css({
+        'background-image': '',
+        'justify-content': 'center',
+        padding: '',
+      });
+    }
   });
 
   $(document).on('change', '#toggle-membership', function () {
@@ -3295,7 +3616,7 @@ $(document).ready(function () {
     if (isChecked) {
       // Tắt gift card
       $('#toggle-gift-card').prop('checked', false).trigger('change');
-      $('.banner, .advertise, .list-more').addClass('hide');
+      $('.banner, .advertise, .list-more, .show-list-info').addClass('hide');
       const $wrapWeb = $('.wrap-web');
       // append layout memmbership
       const $membership = renderPageMembership(dataPageMembership);
@@ -3311,7 +3632,7 @@ $(document).ready(function () {
         }
       }, 0);
     } else {
-      $('.banner, .advertise, .list-more').removeClass('hide');
+      $('.banner, .advertise, .list-more, .show-list-info').removeClass('hide');
       $('.page-membership').remove();
       $('#page-membership').removeClass('active');
     }
@@ -3320,12 +3641,11 @@ $(document).ready(function () {
   $(document).on('change', '#toggle-gift-card', function () {
     const isChecked = $(this).is(':checked');
 
-    console.log('cart');
     if (isChecked) {
       // Tắt Membership
       $('#toggle-membership').prop('checked', false).trigger('change');
 
-      $('.banner, .advertise, .list-more').addClass('hide');
+      $('.banner, .advertise, .list-more, .show-list-info').addClass('hide');
       const $wrapWeb = $('.wrap-web');
       const $giftCard = renderPageGiftCard(dataPageGiftCard);
       $wrapWeb.append($giftCard);
@@ -3337,9 +3657,37 @@ $(document).ready(function () {
         });
       }, 0);
     } else {
-      $('.banner, .advertise, .list-more').removeClass('hide');
+      $('.banner, .advertise, .list-more, .show-list-info').removeClass('hide');
       $('.page-giftcard').remove();
       $('#page-giftcard').removeClass('active');
+    }
+  });
+  // toggle select social
+  let dataSocialPageSelected = [];
+  $(document).on('change', '#toggle-social', function () {
+    const $this = $(this);
+    const isChecked = $this.is(':checked');
+    const idSelected = $this.data('index');
+    const $loShowSo = $('#social-icon-page');
+
+    const itemSelected = dataSocialPage.find((item) => item.id === idSelected);
+    if (!itemSelected) return;
+
+    const indexInSelected = dataSocialPageSelected.findIndex((item) => item.id === idSelected);
+
+    if (isChecked && indexInSelected === -1) {
+      // save dataWeb
+      dataWeb.socialIcon.push(itemSelected);
+
+      dataSocialPageSelected.push(itemSelected);
+      const htmlSocialItem = renderSocialItemPage(itemSelected);
+      $loShowSo.find('.list-social').append(htmlSocialItem);
+    } else if (!isChecked && indexInSelected !== -1) {
+      // delete dataWeb
+      dataWeb.socialIcon.splice(indexInSelected, 1);
+
+      dataSocialPageSelected.splice(indexInSelected, 1);
+      $loShowSo.find(`.wrap-image-social[data-id="${idSelected}"`).remove();
     }
   });
   // ===== expend see more
@@ -3405,11 +3753,9 @@ $(document).ready(function () {
   // btn more
 
   $(document).on('click', '.add-more .btn-add-more', function () {
-    console.log('this: ', $(this));
     const $parentBtn = $(this).closest('.add-more');
     $(this).hide();
     const $selectUser = $parentBtn.find('.wrap-select-user');
-    console.log('selected: ', $selectUser);
     const $btnDelete = $parentBtn.find('.btn-delete');
 
     $selectUser.css('display', 'flex').hide().fadeIn();
@@ -3417,7 +3763,6 @@ $(document).ready(function () {
   });
   // remove option select user
   $(document).on('click', '.add-more .btn-delete', function () {
-    console.log('this: ', $(this));
     const $parentBtn = $(this).closest('.add-more');
     $(this).hide();
     const $selectUser = $parentBtn.find('.wrap-select-user');
@@ -3480,8 +3825,6 @@ $(document).ready(function () {
     const name = $(this).find('.full-name').text();
     const $wrap = $(this).closest('.card-more');
 
-    console.log('text-name: ', name, $wrap);
-
     $wrap.find('#full-name-selected').text(name);
     $wrap.find('.option-select-user').removeClass('show');
   });
@@ -3504,9 +3847,9 @@ $(document).ready(function () {
   const $iconTemplatesGal = $('#icon-templates-gallery');
 
   $headerTemplatesRight.on('click', function () {
-    const numItemRow = 4;
     isCollapsed = !isCollapsed;
-    renderTemplates($wrapList, dataTemplates, isCollapsed ? numItemRow : null);
+    renderTemplates($wrapList, dataTemplates, null);
+    $wrapList.toggleClass('collapsed', isCollapsed);
     // tính animation chiều cao templates
     animateHeight($wrapList, !isCollapsed);
 
@@ -3587,4 +3930,20 @@ $(document).ready(function () {
   });
 
   // ===== *END TEMPLATE NGOÀI
+
+  // Sử lý lưu dữ liệu templates
+  $(document).on('click', '#save-template', function () {
+    // header
+    dataWeb.dataHeaderNav = dataHeaderNav;
+
+    // color web
+    dataWeb.color.bgPrimary = colorPrimary.color;
+    dataWeb.color.bgSecondary = colorSecondary.color;
+    //advertise
+    dataWeb.advertises = dataAdvertise;
+    //banner
+    dataWeb.banner = dataBannerPage;
+
+    console.log('dataWeb: ', dataWeb);
+  });
 });
