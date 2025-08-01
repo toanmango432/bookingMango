@@ -994,7 +994,7 @@ const onlineStore = {
       itemNav: [
         {
           id: 'page-fag',
-          name: 'Fag',
+          name: 'Fag 1',
         },
         {
           id: 'page-membership',
@@ -2639,14 +2639,16 @@ function renderListService(dataList, containerSelector = '.list-more') {
   const $container = $(containerSelector);
   $container.empty();
 
-  dataList.forEach(({ item }) => {
-    const $moreItem = $('<div class="more-item"></div>');
+  dataList.forEach(({ item}, i) => {
+      const $moreItem = $(`<div class="more-item" style="z-index: ${100 + item.listItem.length - i}"></div>`);
 
     const $expandTitle = renderExpandTitle(item);
     $moreItem.append($expandTitle);
 
-    const $listCards = item.listItem.map(renderServiceCard);
-    const $wrapper = $(`<div class="wrap-list-more"></div>`).append($listCards);
+      const $listCards = item.listItem.map(renderServiceCard);
+      console.log("i: ", i)
+      console.log(item.listItem.length)
+      const $wrapper = $(`<div class="wrap-list-more"></div>`).append($listCards);
     $moreItem.append($wrapper);
 
     $container.append($moreItem);
@@ -4001,6 +4003,7 @@ $(document).on('blur', '.input-info, .textarea-info', function () {
     //banner
     dataWeb.banner = dataBannerPage;
 
-    console.log('dataWeb: ', dataWeb);
+      console.log('dataWeb: ', dataWeb);
+      localStorage.setItem('dataTemplate', JSON.stringify(dataWeb));
   });
 });

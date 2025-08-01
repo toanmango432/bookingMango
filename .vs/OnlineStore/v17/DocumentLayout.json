@@ -1,29 +1,29 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Dev-Pos\\Desktop\\POS_FE\\OnlineStore\\OnlineStore\\",
+  "WorkspaceRootPath": "C:\\Users\\Dev-Pos\\Desktop\\Templates\\bookingMango\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{963577BB-9B4B-4193-B1A0-6BD9A8BA5229}|OnlineStore.csproj|c:\\users\\dev-pos\\desktop\\pos_fe\\onlinestore\\onlinestore\\pages\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{963577BB-9B4B-4193-B1A0-6BD9A8BA5229}|OnlineStore.csproj|solutionrelative:pages\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{963577BB-9B4B-4193-B1A0-6BD9A8BA5229}|OnlineStore.csproj|c:\\users\\dev-pos\\desktop\\pos_fe\\onlinestore\\onlinestore\\wwwroot\\js\\templatedetail.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "AbsoluteMoniker": "D:0:0:{963577BB-9B4B-4193-B1A0-6BD9A8BA5229}|OnlineStore.csproj|c:\\users\\dev-pos\\desktop\\templates\\bookingmango\\wwwroot\\js\\templatedetail.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
       "RelativeMoniker": "D:0:0:{963577BB-9B4B-4193-B1A0-6BD9A8BA5229}|OnlineStore.csproj|solutionrelative:wwwroot\\js\\templatedetail.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{963577BB-9B4B-4193-B1A0-6BD9A8BA5229}|OnlineStore.csproj|c:\\users\\dev-pos\\desktop\\pos_fe\\onlinestore\\onlinestore\\pages\\templates.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{963577BB-9B4B-4193-B1A0-6BD9A8BA5229}|OnlineStore.csproj|solutionrelative:pages\\templates.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{963577BB-9B4B-4193-B1A0-6BD9A8BA5229}|OnlineStore.csproj|c:\\users\\dev-pos\\desktop\\pos_fe\\onlinestore\\onlinestore\\wwwroot\\css\\templatedetail.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "AbsoluteMoniker": "D:0:0:{963577BB-9B4B-4193-B1A0-6BD9A8BA5229}|OnlineStore.csproj|c:\\users\\dev-pos\\desktop\\templates\\bookingmango\\wwwroot\\css\\templatedetail.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
       "RelativeMoniker": "D:0:0:{963577BB-9B4B-4193-B1A0-6BD9A8BA5229}|OnlineStore.csproj|solutionrelative:wwwroot\\css\\templatedetail.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{963577BB-9B4B-4193-B1A0-6BD9A8BA5229}|OnlineStore.csproj|c:\\users\\dev-pos\\desktop\\pos_fe\\onlinestore\\onlinestore\\wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "AbsoluteMoniker": "D:0:0:{963577BB-9B4B-4193-B1A0-6BD9A8BA5229}|OnlineStore.csproj|c:\\users\\dev-pos\\desktop\\templates\\bookingmango\\pages\\templates.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{963577BB-9B4B-4193-B1A0-6BD9A8BA5229}|OnlineStore.csproj|solutionrelative:pages\\templates.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{963577BB-9B4B-4193-B1A0-6BD9A8BA5229}|OnlineStore.csproj|c:\\users\\dev-pos\\desktop\\templates\\bookingmango\\wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
       "RelativeMoniker": "D:0:0:{963577BB-9B4B-4193-B1A0-6BD9A8BA5229}|OnlineStore.csproj|solutionrelative:wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{963577BB-9B4B-4193-B1A0-6BD9A8BA5229}|OnlineStore.csproj|c:\\users\\dev-pos\\desktop\\pos_fe\\onlinestore\\onlinestore\\wwwroot\\js\\site.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "AbsoluteMoniker": "D:0:0:{963577BB-9B4B-4193-B1A0-6BD9A8BA5229}|OnlineStore.csproj|c:\\users\\dev-pos\\desktop\\templates\\bookingmango\\pages\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{963577BB-9B4B-4193-B1A0-6BD9A8BA5229}|OnlineStore.csproj|solutionrelative:pages\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{963577BB-9B4B-4193-B1A0-6BD9A8BA5229}|OnlineStore.csproj|c:\\users\\dev-pos\\desktop\\templates\\bookingmango\\wwwroot\\js\\site.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
       "RelativeMoniker": "D:0:0:{963577BB-9B4B-4193-B1A0-6BD9A8BA5229}|OnlineStore.csproj|solutionrelative:wwwroot\\js\\site.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     }
   ],
@@ -34,17 +34,17 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Document",
               "DocumentIndex": 5,
               "Title": "site.js",
-              "DocumentMoniker": "C:\\Users\\Dev-Pos\\Desktop\\POS_FE\\OnlineStore\\OnlineStore\\wwwroot\\js\\site.js",
+              "DocumentMoniker": "C:\\Users\\Dev-Pos\\Desktop\\Templates\\bookingMango\\wwwroot\\js\\site.js",
               "RelativeDocumentMoniker": "wwwroot\\js\\site.js",
-              "ToolTip": "C:\\Users\\Dev-Pos\\Desktop\\POS_FE\\OnlineStore\\OnlineStore\\wwwroot\\js\\site.js",
+              "ToolTip": "C:\\Users\\Dev-Pos\\Desktop\\Templates\\bookingMango\\wwwroot\\js\\site.js",
               "RelativeToolTip": "wwwroot\\js\\site.js",
-              "ViewState": "AgIAAL0AAAAAAAAAAAAcwNIAAAArAAAAAAAAAA==",
+              "ViewState": "AgIAANMBAAAAAAAAAADwv90BAAAmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
               "WhenOpened": "2025-07-23T09:49:21.859Z",
               "IsPinned": true,
@@ -52,52 +52,52 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 3,
               "Title": "site.css",
-              "DocumentMoniker": "C:\\Users\\Dev-Pos\\Desktop\\POS_FE\\OnlineStore\\OnlineStore\\wwwroot\\css\\site.css",
+              "DocumentMoniker": "C:\\Users\\Dev-Pos\\Desktop\\Templates\\bookingMango\\wwwroot\\css\\site.css",
               "RelativeDocumentMoniker": "wwwroot\\css\\site.css",
-              "ToolTip": "C:\\Users\\Dev-Pos\\Desktop\\POS_FE\\OnlineStore\\OnlineStore\\wwwroot\\css\\site.css",
+              "ToolTip": "C:\\Users\\Dev-Pos\\Desktop\\Templates\\bookingMango\\wwwroot\\css\\site.css",
               "RelativeToolTip": "wwwroot\\css\\site.css",
-              "ViewState": "AgIAAHQBAAAAAAAAAAAAACwBAAAPAAAAAAAAAA==",
+              "ViewState": "AgIAAKkAAAAAAAAAAAAYwMIAAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
               "WhenOpened": "2025-07-24T09:16:53.877Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 4,
               "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\Dev-Pos\\Desktop\\POS_FE\\OnlineStore\\OnlineStore\\Pages\\Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\Dev-Pos\\Desktop\\Templates\\bookingMango\\Pages\\Index.cshtml",
               "RelativeDocumentMoniker": "Pages\\Index.cshtml",
-              "ToolTip": "C:\\Users\\Dev-Pos\\Desktop\\POS_FE\\OnlineStore\\OnlineStore\\Pages\\Index.cshtml",
+              "ToolTip": "C:\\Users\\Dev-Pos\\Desktop\\Templates\\bookingMango\\Pages\\Index.cshtml",
               "RelativeToolTip": "Pages\\Index.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAgAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-07-24T09:13:29.382Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "templateDetail.js",
-              "DocumentMoniker": "C:\\Users\\Dev-Pos\\Desktop\\POS_FE\\OnlineStore\\OnlineStore\\wwwroot\\js\\templateDetail.js",
-              "RelativeDocumentMoniker": "wwwroot\\js\\templateDetail.js",
-              "ToolTip": "C:\\Users\\Dev-Pos\\Desktop\\POS_FE\\OnlineStore\\OnlineStore\\wwwroot\\js\\templateDetail.js",
-              "RelativeToolTip": "wwwroot\\js\\templateDetail.js",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAACAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2025-07-24T08:58:54.294Z",
+              "DocumentIndex": 2,
+              "Title": "Templates.cshtml",
+              "DocumentMoniker": "C:\\Users\\Dev-Pos\\Desktop\\Templates\\bookingMango\\Pages\\Templates.cshtml",
+              "RelativeDocumentMoniker": "Pages\\Templates.cshtml",
+              "ToolTip": "C:\\Users\\Dev-Pos\\Desktop\\Templates\\bookingMango\\Pages\\Templates.cshtml",
+              "RelativeToolTip": "Pages\\Templates.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-24T08:44:45.333Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 1,
               "Title": "templateDetail.css",
-              "DocumentMoniker": "C:\\Users\\Dev-Pos\\Desktop\\POS_FE\\OnlineStore\\OnlineStore\\wwwroot\\css\\templateDetail.css",
+              "DocumentMoniker": "C:\\Users\\Dev-Pos\\Desktop\\Templates\\bookingMango\\wwwroot\\css\\templateDetail.css",
               "RelativeDocumentMoniker": "wwwroot\\css\\templateDetail.css",
-              "ToolTip": "C:\\Users\\Dev-Pos\\Desktop\\POS_FE\\OnlineStore\\OnlineStore\\wwwroot\\css\\templateDetail.css",
+              "ToolTip": "C:\\Users\\Dev-Pos\\Desktop\\Templates\\bookingMango\\wwwroot\\css\\templateDetail.css",
               "RelativeToolTip": "wwwroot\\css\\templateDetail.css",
-              "ViewState": "AgIAANgBAAAAAAAAAAAwwPUBAAAYAAAAAAAAAA==",
+              "ViewState": "AgIAAFgBAAAAAAAAAAAUwGoBAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
               "WhenOpened": "2025-07-24T08:57:38.015Z",
               "EditorCaption": ""
@@ -110,15 +110,15 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Templates.cshtml",
-              "DocumentMoniker": "C:\\Users\\Dev-Pos\\Desktop\\POS_FE\\OnlineStore\\OnlineStore\\Pages\\Templates.cshtml",
-              "RelativeDocumentMoniker": "Pages\\Templates.cshtml",
-              "ToolTip": "C:\\Users\\Dev-Pos\\Desktop\\POS_FE\\OnlineStore\\OnlineStore\\Pages\\Templates.cshtml",
-              "RelativeToolTip": "Pages\\Templates.cshtml",
-              "ViewState": "AgIAAIUAAAAAAAAAAAAlwJwAAAAqAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-07-24T08:44:45.333Z",
+              "DocumentIndex": 0,
+              "Title": "templateDetail.js",
+              "DocumentMoniker": "C:\\Users\\Dev-Pos\\Desktop\\Templates\\bookingMango\\wwwroot\\js\\templateDetail.js",
+              "RelativeDocumentMoniker": "wwwroot\\js\\templateDetail.js",
+              "ToolTip": "C:\\Users\\Dev-Pos\\Desktop\\Templates\\bookingMango\\wwwroot\\js\\templateDetail.js",
+              "RelativeToolTip": "wwwroot\\js\\templateDetail.js",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-07-24T08:58:54.294Z",
               "EditorCaption": ""
             }
           ]
