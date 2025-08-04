@@ -5,10 +5,22 @@
     var id = Model.TemplateId;
 }
 
+
 <link rel="stylesheet" href="~/css/templateDetail.css" />
+<link rel="stylesheet" href="~/css/all.min.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+<link rel="stylesheet" href="~/css/paddingmargin.css" asp-append-version="true"/>
 <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&display=swap" rel="stylesheet">
 
 <div class="container-home-template">
     <div class="wrap-home-templates">
     </div>
 </div>
+@section Styles {
+    <link rel="stylesheet" href="~/css/templateDetail.css" />
+}
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+@section Scripts {
+    <script src="~/js/templateDetail.js"></script>
+}
+
