@@ -6,69 +6,69 @@ const originalMoment = moment;
 // List of formats to handle different cases, including 'MM/DD/YYYY', 'MM-DD-YYYY', etc.
 // List of formats to handle different cases, including ISO-like strings and various custom formats
 const validFormats = [
-  'MM-DD-YYYY hh:mm A',
-  'MM/DD/YYYY HH:mm:ss',
-  'MM-DD-YYYY HH:mm:ss',
-  'YYYY-MM-DDTHH:mm:ss',
-  'YYYY-MM-DDTHH:mm:ss.SSS', // Added case for ISO-like string with milliseconds
-  'YYYY-MM-DD HH:mm:ss',
-  'YYYY/MM/DD HH:mm:ss',
-  'MM-DD-YYYY',
-  'YYYY-MM-DD',
+  "MM-DD-YYYY hh:mm A",
+  "MM/DD/YYYY HH:mm:ss",
+  "MM-DD-YYYY HH:mm:ss",
+  "YYYY-MM-DDTHH:mm:ss",
+  "YYYY-MM-DDTHH:mm:ss.SSS", // Added case for ISO-like string with milliseconds
+  "YYYY-MM-DD HH:mm:ss",
+  "YYYY/MM/DD HH:mm:ss",
+  "MM-DD-YYYY",
+  "YYYY-MM-DD",
 ];
 
 const methodsToPreserve = [
-  'utc',
-  'add',
-  'diff',
-  'format',
-  'isValid',
-  'startOf',
-  'endOf',
-  'subtract',
-  'toDate',
-  'toISOString',
-  'year',
-  'month',
-  'date',
-  'hour',
-  'minute',
-  'second',
-  'millisecond',
-  'day',
-  'dayOfYear',
-  'week',
-  'weekYear',
-  'isoWeek',
-  'isoWeekYear',
-  'quarter',
-  'isLeapYear',
-  'isSame',
-  'isBefore',
-  'isAfter',
-  'isBetween',
-  'isSameOrAfter',
-  'isSameOrBefore',
-  'toObject',
-  'toJSON',
-  'fromNow',
-  'toNow',
-  'calendar',
-  'from',
-  'to',
-  'locale',
-  'set',
-  'clone',
+  "utc",
+  "add",
+  "diff",
+  "format",
+  "isValid",
+  "startOf",
+  "endOf",
+  "subtract",
+  "toDate",
+  "toISOString",
+  "year",
+  "month",
+  "date",
+  "hour",
+  "minute",
+  "second",
+  "millisecond",
+  "day",
+  "dayOfYear",
+  "week",
+  "weekYear",
+  "isoWeek",
+  "isoWeekYear",
+  "quarter",
+  "isLeapYear",
+  "isSame",
+  "isBefore",
+  "isAfter",
+  "isBetween",
+  "isSameOrAfter",
+  "isSameOrBefore",
+  "toObject",
+  "toJSON",
+  "fromNow",
+  "toNow",
+  "calendar",
+  "from",
+  "to",
+  "locale",
+  "set",
+  "clone",
 ];
 
 // Create a wrapper function around the original moment function
 function customMoment(date, format) {
   // Check for null or undefined date and return today's date in default format
   if (date === null || date === undefined) {
-    date = originalMoment().format('MM-DD-YYYY hh:mm A'); // Return today's date as a moment instance
+    date = originalMoment().format("MM-DD-YYYY hh:mm A"); // Return today's date as a moment instance
   }
   // Handle string date input
-  if (typeof date === 'string') {
+  if (typeof date === "string") {
     // If a format is not provided, try parsing the date with valid formats
     if (!format) {
       for (let fmt of validFormats) {
@@ -83,10 +83,14 @@ function customMoment(date, format) {
   }
 
   // Use originalMoment to parse the date with or without format
-  const parsedDate = format ? originalMoment(date, format) : originalMoment(date);
+  const parsedDate = format
+    ? originalMoment(date, format)
+    : originalMoment(date);
 
   // Return a moment instance directly if it's valid; otherwise, return today's date
-  return wrapMomentInstance(parsedDate.isValid() ? parsedDate : originalMoment());
+  return wrapMomentInstance(
+    parsedDate.isValid() ? parsedDate : originalMoment()
+  );
 }
 
 // Helper function to wrap the moment instance and preserve methods
@@ -96,7 +100,7 @@ function wrapMomentInstance(validDate) {
 
   // Attach all Moment.js methods to the wrapped instance
   methodsToPreserve.forEach((method) => {
-    if (typeof validDate[method] === 'function') {
+    if (typeof validDate[method] === "function") {
       wrappedInstance[method] = function (...args) {
         return validDate[method](...args);
       };
@@ -112,31 +116,32 @@ moment = customMoment;
 // Call api
 const fetchAPI = {
   get: (url, data) => {
-    return fetchAPI.request('GET', url, data);
+    return fetchAPI.request("GET", url, data);
   },
 
   post: (url, data, queryParams) => {
-    return fetchAPI.request('POST', url, data, queryParams);
+    return fetchAPI.request("POST", url, data, queryParams);
   },
 
   put: (url, data, queryParams) => {
-    return fetchAPI.request('PUT', url, data, queryParams);
+    return fetchAPI.request("PUT", url, data, queryParams);
   },
 
   delete: (url, data, queryParams) => {
-    return fetchAPI.request('DELETE', url, data, queryParams);
+    return fetchAPI.request("DELETE", url, data, queryParams);
   },
 
   patch: (url, data, queryParams) => {
-    return fetchAPI.request('PATCH', url, data, queryParams);
+    return fetchAPI.request("PATCH", url, data, queryParams);
   },
 
   request: async (method, url, data, queryParams) => {
     try {
       let headers = {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-type, X-Auth-Token, Origin, Authorization',
-        'Content-Type': 'application/json; charset=utf-8',
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers":
+          "Content-type, X-Auth-Token, Origin, Authorization",
+        "Content-Type": "application/json; charset=utf-8",
       };
 
       let fullUrl = url;
@@ -145,20 +150,27 @@ const fetchAPI = {
         fullUrl += `?${query.toString()}`;
       }
 
-      if (method === 'GET' && data) {
+      if (method === "GET" && data) {
         const query = new URLSearchParams(data);
         fullUrl += `?${query.toString()}`;
       }
 
       let bodyData;
 
-      if (method === 'POST' || method === 'PUT' || method === 'PATCH' || method === 'DELETE') {
+      if (
+        method === "POST" ||
+        method === "PUT" ||
+        method === "PATCH" ||
+        method === "DELETE"
+      ) {
         if (data instanceof FormData) {
           bodyData = data;
           headers = {
-            'Access-Control-Allow-Origin': '*',
+            "Access-Control-Allow-Origin": "*",
           };
-        } else if (headers['Content-Type'] === 'application/x-www-form-urlencoded') {
+        } else if (
+          headers["Content-Type"] === "application/x-www-form-urlencoded"
+        ) {
           const formData = new URLSearchParams();
           Object.entries(data).forEach(([key, value]) => {
             formData.append(key, value);
@@ -185,7 +197,7 @@ const fetchAPI = {
         }
       } catch (error) {
         // Handle other errors (e.g., network issues)
-        console.error('Error occurred:', error);
+        console.error("Error occurred:", error);
 
         // Make sure to rethrow the error to propagate it further if needed
         throw error;
@@ -207,9 +219,9 @@ const imgTrack = {
   error: (e) => {
     let $this = $(e);
 
-    $this.parent().find('i').removeClass('dis-none');
+    $this.parent().find("i").removeClass("dis-none");
 
-    $this.addClass('dis-none');
+    $this.addClass("dis-none");
   },
 };
 
@@ -219,44 +231,44 @@ const alertCustom = (options = {}, callback) => {
   const defaultOptions = {
     isNoti: true,
     notify: {
-      icon: 'success',
+      icon: "success",
       toast: true,
       timer: 3000,
-      position: 'top-right',
+      position: "top-right",
       showConfirmButton: false,
-      customClass: { container: 'is-notify' },
+      customClass: { container: "is-notify" },
     },
     action: {
-      title: '',
-      text: '',
-      icon: '',
+      title: "",
+      text: "",
+      icon: "",
       showCloseButton: true,
-      confirmButtonText: 'Confirm',
-      confirmButtonColor: 'var(--bs-main)',
-      cancelButtonText: 'Cancel',
-      cancelButtonColor: 'unset',
-      onBeforeOpen: () => console.log('Dialog is about to open'),
-      onOpen: () => console.log('Dialog is now open'),
-      onClose: () => console.log('Dialog is closed'),
+      confirmButtonText: "Confirm",
+      confirmButtonColor: "var(--bs-main)",
+      cancelButtonText: "Cancel",
+      cancelButtonColor: "unset",
+      onBeforeOpen: () => console.log("Dialog is about to open"),
+      onOpen: () => console.log("Dialog is now open"),
+      onClose: () => console.log("Dialog is closed"),
     },
     classCustom: {},
   };
 
   // Check if the type is success or error, and adjust the configuration
-  const alertType = options.type || 'success'; // Default is success
-  const isSuccess = alertType === 'success';
+  const alertType = options.type || "success"; // Default is success
+  const isSuccess = alertType === "success";
 
   // Dynamically build the title with icon and text based on success/error
   const dynamicTitle = `
-        <div class="alert-custom-icon-text ${isSuccess ? 'success' : 'error'}">
+        <div class="alert-custom-icon-text ${isSuccess ? "success" : "error"}">
             <i class="fa-duotone fa-solid ${
-              isSuccess ? 'fa-circle-check' : 'fa-circle-xmark'
+              isSuccess ? "fa-circle-check" : "fa-circle-xmark"
             }" style="--fa-primary-color: ${
-    isSuccess ? '#45c65a' : '#e74c3c'
-  }; --fa-secondary-color: ${isSuccess ? '#45c65a' : '#e74c3c'};"></i>
+    isSuccess ? "#45c65a" : "#e74c3c"
+  }; --fa-secondary-color: ${isSuccess ? "#45c65a" : "#e74c3c"};"></i>
             <span>${
               options.notify.title ||
-              (isSuccess ? 'Save changes successfully' : 'An error occurred')
+              (isSuccess ? "Save changes successfully" : "An error occurred")
             }</span>
         </div>
     `;
@@ -267,7 +279,7 @@ const alertCustom = (options = {}, callback) => {
         ...defaultOptions.notify,
         ...options.notify,
         title: dynamicTitle, // Use the dynamically created title
-        icon: isSuccess ? 'success' : 'error', // Set the icon based on type
+        icon: isSuccess ? "success" : "error", // Set the icon based on type
         customClass: { ...defaultOptions.classCustom, ...options.classCustom },
       }
     : {
@@ -278,7 +290,7 @@ const alertCustom = (options = {}, callback) => {
 
   // Display the alert
   Swal.fire(mergedOptions).then((result) => {
-    if (callback && typeof callback === 'function') {
+    if (callback && typeof callback === "function") {
       callback(result);
     }
   });
@@ -289,11 +301,11 @@ const formatJS = {
   phone: (phoneNumber, replace = false, hiddenPhone = false) => {
     if (phoneNumber !== null) {
       // Remove any non-numeric characters from the phone number
-      phoneNumber = phoneNumber.replace(/[^\d]/g, '');
+      phoneNumber = phoneNumber.replace(/[^\d]/g, "");
 
       if (replace) return phoneNumber;
 
-      if (!hiddenPhone && (isNaN(phoneNumber) || phoneNumber == '')) return '';
+      if (!hiddenPhone && (isNaN(phoneNumber) || phoneNumber == "")) return "";
 
       const zip = phoneNumber.substring(0, 3);
       const middle = phoneNumber.substring(3, 6);
@@ -307,15 +319,15 @@ const formatJS = {
         } else if (phoneNumber.length > 0) {
           phoneNumber = `(${zip})`;
         }
-      } else phoneNumber = `(XXX) XXX - ${last || 'XXXX'}`;
+      } else phoneNumber = `(XXX) XXX - ${last || "XXXX"}`;
 
       return phoneNumber;
-    } else phoneNumber = 'Phone number is not available';
+    } else phoneNumber = "Phone number is not available";
     return phoneNumber;
   },
 
   phoneHidden: (phoneNumber) => {
-    const cleanedPhoneNumber = phoneNumber.replace(/\D/g, '');
+    const cleanedPhoneNumber = phoneNumber.replace(/\D/g, "");
     const remainingDigits = cleanedPhoneNumber.slice(3);
     const formattedPhoneNumber = `(XXX) XXX - ${remainingDigits.slice(3)}`;
     return formattedPhoneNumber;
@@ -323,46 +335,46 @@ const formatJS = {
 
   currency: (amount) => {
     // Format the amount as currency
-    const localeName = 'vi-VN';
-    const currencyCode = 'VND';
+    const localeName = "vi-VN";
+    const currencyCode = "VND";
 
-    amount = amount == '' ? 0 : amount;
+    amount = amount == "" ? 0 : amount;
 
     return new Intl.NumberFormat(localeName, {
-      style: 'currency',
+      style: "currency",
       currency: currencyCode,
     }).format(amount);
   },
 
   currencyReplace: (amount) => {
-    return amount.replace('₫', '').replaceAll('.', '').trim();
+    return amount.replace("₫", "").replaceAll(".", "").trim();
   },
 
   currencyFloat: (amount) => {
-    return parseFloat(amount.replace('.', ''));
+    return parseFloat(amount.replace(".", ""));
   },
 
   formatNameAvt: (name) => {
-    if (name && name.trim() !== '') {
-      const nameParts = name.trim().split(' ');
-      const firstNameInitial = nameParts[0]?.[0] || ' ';
-      const lastNameInitial = nameParts[1]?.[0] || ' ';
+    if (name && name.trim() !== "") {
+      const nameParts = name.trim().split(" ");
+      const firstNameInitial = nameParts[0]?.[0] || " ";
+      const lastNameInitial = nameParts[1]?.[0] || " ";
       return `${firstNameInitial}${lastNameInitial}`;
     }
-    return 'NA'; // or any other default value you prefer
+    return "NA"; // or any other default value you prefer
   },
 
   ticketNo: (apptId) => {
     apptId = apptId.toString();
 
-    const lastIndex = apptId.lastIndexOf('000');
+    const lastIndex = apptId.lastIndexOf("000");
 
     if (lastIndex === -1) {
       // Pattern not found
-      return '#' + apptId;
+      return "#" + apptId;
     }
 
-    return '#' + apptId.substring(lastIndex + 3);
+    return "#" + apptId.substring(lastIndex + 3);
   },
 
   isValidUrl: (url) => {
@@ -372,13 +384,13 @@ const formatJS = {
 
     // Regular expression pattern to validate URL
     const urlPattern = new RegExp(
-      '^(https?:\\/\\/)?' + // Protocol
-        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // Domain name
-        '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR IP address
-        '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // Port and path
-        '(\\?[;&a-z\\d%_.~+=-]*)?' + // Query string
-        '(\\#[-a-z\\d_]*)?$',
-      'i'
+      "^(https?:\\/\\/)?" + // Protocol
+        "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // Domain name
+        "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR IP address
+        "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // Port and path
+        "(\\?[;&a-z\\d%_.~+=-]*)?" + // Query string
+        "(\\#[-a-z\\d_]*)?$",
+      "i"
     ); // Fragment locator
 
     return urlPattern.test(url);
@@ -392,9 +404,9 @@ const formatJS = {
     $this.val(phone);
 
     if (value.length >= 16) {
-      $this.parent().find('button.send').removeClass('disable');
+      $this.parent().find("button.send").removeClass("disable");
     } else {
-      $this.parent().find('button.send').addClass('disable');
+      $this.parent().find("button.send").addClass("disable");
     }
   },
 };
@@ -405,14 +417,14 @@ var popupCustom = (
   contentHtml,
   quantity = 1,
   callback = null,
-  addClass = '',
-  position = 'right', // or 'bottom'
+  addClass = "",
+  position = "right", // or 'bottom'
   spaceX = 0,
   spaceY = 0,
   widthRatio = 1 // độ rộng popup so với đối tượng click
 ) => {
   if (quantity === 1) {
-    $('.popup-container').remove();
+    $(".popup-container").remove();
   }
 
   var $popupContainer = $(
@@ -421,13 +433,13 @@ var popupCustom = (
 
   var $popupContent = $('<div class="popup-content"></div>').html(contentHtml);
   $popupContainer.append($popupContent);
-  $('body').append($popupContainer);
+  $("body").append($popupContainer);
 
   $popupContainer.css({
-    top: '-9999px',
-    left: '-9999px',
-    display: 'block',
-    position: 'absolute',
+    top: "-9999px",
+    left: "-9999px",
+    display: "block",
+    position: "absolute",
     width: $element.outerWidth() * widthRatio, // ✅ set width theo tỷ lệ
   });
 
@@ -441,10 +453,10 @@ var popupCustom = (
   let popupLeft = 0;
   let popupTop = 0;
 
-  if (position === 'right') {
+  if (position === "right") {
     popupLeft = elementOffset.left + elementWidth + spaceX;
     popupTop = elementOffset.top + spaceY;
-  } else if (position === 'bottom') {
+  } else if (position === "bottom") {
     popupLeft = elementOffset.left + spaceX;
     popupTop = elementOffset.top + elementHeight + spaceY;
   }
@@ -462,21 +474,21 @@ var popupCustom = (
   $popupContainer.css({
     left: popupLeft,
     top: popupTop,
-    position: 'absolute',
-    display: 'none',
+    position: "absolute",
+    display: "none",
     opacity: 1,
   });
 
   $popupContainer.fadeIn();
 
-  $(document).on('click.popupCustom', function (event) {
+  $(document).on("click.popupCustom", function (event) {
     if (
-      !$(event.target).closest('.popup-container').length &&
-      !$(event.target).closest('.toggle-select').length
+      !$(event.target).closest(".popup-container").length &&
+      !$(event.target).closest(".toggle-select").length
     ) {
       $popupContainer.remove();
-      if (typeof callback === 'function') callback('hidden');
-      $(document).off('click.popupCustom');
+      if (typeof callback === "function") callback("hidden");
+      $(document).off("click.popupCustom");
     }
   });
 };
@@ -487,60 +499,60 @@ const onlineStore = {
     const dataTemplates = [
       {
         id: 1,
-        imageLink: '/assets/images/retro.png',
-        titleItem: 'Restro',
-        subTitleItem: 'Classic and modern style',
+        imageLink: "/assets/images/retro.png",
+        titleItem: "Restro",
+        subTitleItem: "Classic and modern style",
       },
       {
         id: 2,
-        imageLink: '/assets/images/pastel.png',
-        titleItem: 'Pastel',
-        subTitleItem: 'Popular style',
+        imageLink: "/assets/images/pastel.png",
+        titleItem: "Pastel",
+        subTitleItem: "Popular style",
       },
       {
         id: 1,
-        imageLink: '/assets/images/neon.jpg',
-        titleItem: 'Neon',
-        subTitleItem: 'Classic and modern style',
+        imageLink: "/assets/images/neon.jpg",
+        titleItem: "Neon",
+        subTitleItem: "Classic and modern style",
       },
       {
         id: 1,
-        imageLink: '/assets/images/vintage.png',
-        titleItem: 'Vintage',
-        subTitleItem: 'Classic and modern style',
+        imageLink: "/assets/images/vintage.png",
+        titleItem: "Vintage",
+        subTitleItem: "Classic and modern style",
       },
       {
         id: 5,
-        imageLink: '/assets/images/retro.png',
-        titleItem: 'Restro',
-        subTitleItem: 'Classic and modern style',
+        imageLink: "/assets/images/retro.png",
+        titleItem: "Restro",
+        subTitleItem: "Classic and modern style",
       },
       {
         id: 6,
-        imageLink: '/assets/images/pastel.png',
-        titleItem: 'Pastel',
-        subTitleItem: 'Popular style',
+        imageLink: "/assets/images/pastel.png",
+        titleItem: "Pastel",
+        subTitleItem: "Popular style",
       },
       {
         id: 7,
-        imageLink: '/assets/images/neon.jpg',
-        titleItem: 'Neon',
-        subTitleItem: 'Classic and modern style',
+        imageLink: "/assets/images/neon.jpg",
+        titleItem: "Neon",
+        subTitleItem: "Classic and modern style",
       },
       {
         id: 8,
-        imageLink: '/assets/images/vintage.png',
-        titleItem: 'Vintage',
-        subTitleItem: 'Classic and modern style',
+        imageLink: "/assets/images/vintage.png",
+        titleItem: "Vintage",
+        subTitleItem: "Classic and modern style",
       },
     ];
     const dataTable = {
       header: [
         {
-          label: 'Name',
-          key: 'name',
+          label: "Name",
+          key: "name",
           sort: false,
-          type: 'STRING',
+          type: "STRING",
           icon: null,
           style: {
             color: null,
@@ -548,22 +560,22 @@ const onlineStore = {
           },
         },
         {
-          label: 'Domain',
-          key: 'domain',
+          label: "Domain",
+          key: "domain",
           sort: false,
-          type: 'LINK',
+          type: "LINK",
           color: null,
           style: {
             color: null,
             background: null,
           },
-          class: '',
+          class: "",
         },
         {
-          label: 'Create date',
-          key: 'createDate',
+          label: "Create date",
+          key: "createDate",
           sort: true,
-          type: 'DATE',
+          type: "DATE",
           icon: `
                             <svg class="icon-sort-date" xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21" fill="none" >
                                 <path class="sort-up-1" d="M9.37188 5.66052L6.27185 2.56055L3.17188 5.66052" stroke="#747474" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
@@ -576,66 +588,66 @@ const onlineStore = {
             color: null,
             background: null,
           },
-          class: 'header-date',
+          class: "header-date",
         },
         {
-          label: 'Status',
-          key: 'status',
+          label: "Status",
+          key: "status",
           sort: false,
-          type: 'STATUS',
+          type: "STATUS",
           icon: null,
           style: {
             color: null,
             background: null,
           },
-          class: '',
+          class: "",
         },
       ],
       body: [
         {
-          id: '1',
+          id: "1",
           name: {
-            text: 'Retro',
-            class: 'name-item',
+            text: "Retro",
+            class: "name-item",
           },
           domain: {
-            text: 'http://www.websiteretro.com',
-            class: 'domain-item',
+            text: "http://www.websiteretro.com",
+            class: "domain-item",
           },
           createDate: {
-            text: 'May 15, 2025',
-            class: 'date-item',
+            text: "May 15, 2025",
+            class: "date-item",
           },
           status: {
-            text: 'Public',
-            class: 'status-item public',
+            text: "Public",
+            class: "status-item public",
             style: {
-              color: 'white',
-              background: '#45C65A',
+              color: "white",
+              background: "#45C65A",
             },
             icon: `<i class="fa-solid fa-ellipsis-vertical"></i>`,
           },
         },
         {
-          id: '2',
+          id: "2",
           name: {
-            text: 'Pastel',
-            class: 'name-item',
+            text: "Pastel",
+            class: "name-item",
           },
           domain: {
-            text: 'http://www.websiteretro.com',
-            class: 'domain-item',
+            text: "http://www.websiteretro.com",
+            class: "domain-item",
           },
           createDate: {
-            text: 'May 20, 2025',
-            class: 'date-item',
+            text: "May 20, 2025",
+            class: "date-item",
           },
           status: {
-            text: 'Draft',
-            class: 'status-item draft',
+            text: "Draft",
+            class: "status-item draft",
             style: {
-              color: 'white',
-              background: '#45C65A',
+              color: "white",
+              background: "#45C65A",
             },
             icon: `<i class="fa-solid fa-ellipsis-vertical"></i>`,
           },
@@ -644,267 +656,269 @@ const onlineStore = {
     };
     let configThemeColor = {
       config: {
-        width: '36',
-        height: '36',
-        borderRadius: '6',
+        width: "36",
+        height: "36",
+        borderRadius: "6",
       },
       colorTheme: [
         {
-          color: '#4D0000',
+          color: "#4D0000",
           active: false,
         },
         {
-          color: '#520000',
+          color: "#520000",
           active: false,
         },
-        { color: '#5C0000', active: false },
-        { color: '#660000', active: false },
-        { color: '#D0B0B0', active: false },
-        { color: '#E8D9D9', active: false },
-        { color: '#F0E6E6', active: false },
-        { color: '#E2CAC1', active: false },
+        { color: "#5C0000", active: false },
+        { color: "#660000", active: false },
+        { color: "#D0B0B0", active: false },
+        { color: "#E8D9D9", active: false },
+        { color: "#F0E6E6", active: false },
+        { color: "#E2CAC1", active: false },
 
-        { color: '#565656', active: false },
-        { color: '#6F6F6F', active: false },
-        { color: '#949494', active: false },
-        { color: '#B7AA9B', active: false },
-        { color: '#C3B6A6', active: false },
-        { color: '#DCCCBA', active: false },
-        { color: '#F4E3CF', active: false },
-        { color: '#FEFCFA', active: false },
+        { color: "#565656", active: false },
+        { color: "#6F6F6F", active: false },
+        { color: "#949494", active: false },
+        { color: "#B7AA9B", active: false },
+        { color: "#C3B6A6", active: false },
+        { color: "#DCCCBA", active: false },
+        { color: "#F4E3CF", active: false },
+        { color: "#FEFCFA", active: false },
 
-        { color: '#023D13', active: false },
-        { color: '#024114', active: false },
-        { color: '#024917', active: false },
-        { color: '#0C7E2D', active: true, selected: true, type: 'PRIMARY' },
-        { color: '#B1C9B8', active: false },
-        { color: '#B1C9B8', active: false },
-        { color: '#D9E5DD', active: false },
-        { color: '#E6EEE8', active: false },
+        { color: "#023D13", active: false },
+        { color: "#024114", active: false },
+        { color: "#024917", active: false },
+        { color: "#0C7E2D", active: true, selected: true, type: "PRIMARY" },
+        { color: "#B1C9B8", active: false },
+        { color: "#B1C9B8", active: false },
+        { color: "#D9E5DD", active: false },
+        { color: "#E6EEE8", active: false },
 
-        { color: '#AA5602', active: false },
-        { color: '#B55C02', active: false },
-        { color: '#CB6803', active: false },
-        { color: '#E27303', active: true, selected: true, type: 'SECONDARY' },
-        { color: '#F6D4B1', active: false },
-        { color: '#FBEAD9', active: false },
-        { color: '#FCF1E6', active: false },
-        { color: '#FCF1E6', active: false },
+        { color: "#AA5602", active: false },
+        { color: "#B55C02", active: false },
+        { color: "#CB6803", active: false },
+        { color: "#E27303", active: true, selected: true, type: "SECONDARY" },
+        { color: "#F6D4B1", active: false },
+        { color: "#FBEAD9", active: false },
+        { color: "#FCF1E6", active: false },
+        { color: "#FCF1E6", active: false },
       ],
       iconActive: `<i class="fa-solid fa-check"></i>`,
-      colorIconPrimary: '#00bed6',
-      colorIconSecondary: '#061315',
+      colorIconPrimary: "#00bed6",
+      colorIconSecondary: "#061315",
     };
 
     const info = [
       {
-        value: 'Nailvibe It is time to relax !',
+        value: "Nailvibe It is time to relax !",
         style: [],
-        type: 'INPUT',
+        type: "INPUT",
       },
       {
         value: `We hope that your visit will be a relaxing and wonderful experience. Please do not hesitate to share your opinions with the salon manager so that your next visit at MIA will be an even better experience.`,
         style: [],
-        type: 'TEXTAREA',
+        type: "TEXTAREA",
       },
     ];
 
     const sideInfo = [
       {
-        id: 'si-show-all',
-        idt: 'sit-show-all',
-        content: 'Show All',
+        id: "si-show-all",
+        idt: "sit-show-all",
+        content: "Show All",
         action: {
-          type: 'TOGGLE',
-          defaultValue: '',
+          type: "TOGGLE",
+          defaultValue: "",
         },
         // style: {
         //   justify: "space-between",
         // },
       },
       {
-        id: 'si-promotion',
-        idt: 'sit-promotion',
-        content: 'Promotion',
+        id: "si-promotion",
+        idt: "sit-promotion",
+        content: "Promotion",
         action: {
-          type: 'TOGGLE',
-          defaultValue: '',
+          type: "TOGGLE",
+          defaultValue: "",
         },
         style: {
-          justify: 'space-between',
+          justify: "space-between",
         },
       },
       {
-        id: 'si-store-info',
-        idt: 'sit-store-info',
-        content: 'Store Info',
+        id: "si-store-info",
+        idt: "sit-store-info",
+        content: "Store Info",
         action: {
-          type: 'TOGGLE',
-          defaultValue: '',
+          type: "TOGGLE",
+          defaultValue: "",
         },
         style: {
-          justify: 'space-between',
+          justify: "space-between",
         },
       },
       {
-        id: 'si-policy',
-        idt: 'sit-policy',
-        content: 'Policy',
+        id: "si-policy",
+        idt: "sit-policy",
+        content: "Policy",
         action: {
-          type: 'TOGGLE',
-          defaultValue: '',
+          type: "TOGGLE",
+          defaultValue: "",
         },
         style: {
-          justify: 'space-between',
+          justify: "space-between",
         },
       },
       {
-        id: 'si-social-link',
-        idt: 'sit-social-link',
-        content: 'Social Link',
+        id: "si-social-link",
+        idt: "sit-social-link",
+        content: "Social Link",
         action: {
-          type: 'TOGGLE',
-          defaultValue: '',
+          type: "TOGGLE",
+          defaultValue: "",
         },
         style: {
-          justify: 'space-between',
+          justify: "space-between",
         },
       },
     ];
 
     const bannerPromotion = [
       {
-        id: 'bp-flash',
-        content: 'Flash.png',
-        img: '/assets/images/bannerPromotion/banner-promotion-1.jpg',
+        id: "bp-flash",
+        content: "Flash.png",
+        img: "/assets/images/bannerPromotion/banner-promotion-1.jpg",
         action: {
-          type: 'TOGGLE',
-          defaultValue: '',
+          type: "TOGGLE",
+          defaultValue: "",
         },
         style: {
-          justify: 'space-between',
+          justify: "space-between",
         },
       },
       {
-        id: 'bp-giftcard',
-        content: 'GiftCard.png',
-        img: '/assets/images/bannerPromotion/banner-promotion-2.jpg',
+        id: "bp-giftcard",
+        content: "GiftCard.png",
+        img: "/assets/images/bannerPromotion/banner-promotion-2.jpg",
 
         action: {
-          type: 'TOGGLE',
-          defaultValue: '',
+          type: "TOGGLE",
+          defaultValue: "",
         },
         style: {
-          justify: 'space-between',
+          justify: "space-between",
         },
       },
       {
-        id: 'bp-egift',
-        content: 'E-Gift.png',
-        img: '/assets/images/bannerPromotion/banner-promotion-3.jpg',
+        id: "bp-egift",
+        content: "E-Gift.png",
+        img: "/assets/images/bannerPromotion/banner-promotion-3.jpg",
 
         action: {
-          type: 'TOGGLE',
-          defaultValue: '',
+          type: "TOGGLE",
+          defaultValue: "",
         },
         style: {
-          justify: 'space-between',
+          justify: "space-between",
         },
       },
       {
-        id: 'bp-unllock',
-        content: 'Unlock.png',
-        img: '/assets/images/bannerPromotion/banner-promotion-4.jpg',
+        id: "bp-unllock",
+        content: "Unlock.png",
+        img: "/assets/images/bannerPromotion/banner-promotion-4.jpg",
 
         action: {
-          type: 'TOGGLE',
-          defaultValue: '',
+          type: "TOGGLE",
+          defaultValue: "",
         },
         style: {
-          justify: 'space-between',
+          justify: "space-between",
         },
       },
     ];
 
     const giftCard = {
       item: {
-        id: 'toggle-gift-card',
-        content: 'Active Gift Card',
+        id: "toggle-gift-card",
+        content: "Active Gift Card",
         action: {
-          type: 'TOGGLE',
-          defaultValue: '',
+          type: "TOGGLE",
+          defaultValue: "",
         },
         style: {
-          justify: 'space-between',
+          justify: "space-between",
         },
       },
       body: {
-        title: 'Link:',
-        content: 'https://manage2.mangoforsalon.com/nextview/membership-settings?salon_id=abc',
+        title: "Link:",
+        content:
+          "https://manage2.mangoforsalon.com/nextview/membership-settings?salon_id=abc",
         iconBody: `<i class="fa-solid fa-eye-slash toggle-visibility"></i>`,
         icon: {
           value: `<i class="fa-regular fa-copy"></i>`,
-          style: '',
+          style: "",
         },
-        style: '',
+        style: "",
       },
       button: {
-        content: 'Custom Gift Card',
-        style: '',
+        content: "Custom Gift Card",
+        style: "",
       },
     };
 
     const membership = {
       item: {
-        id: 'toggle-membership',
-        content: 'Active Membership',
+        id: "toggle-membership",
+        content: "Active Membership",
         action: {
-          type: 'TOGGLE',
-          defaultValue: '',
+          type: "TOGGLE",
+          defaultValue: "",
         },
         style: {
-          justify: 'space-between',
+          justify: "space-between",
         },
       },
       body: {
-        title: 'Link:',
-        content: 'https://manage2.mangoforsalon.com/nextview/membership-settings?salon_id=abc',
+        title: "Link:",
+        content:
+          "https://manage2.mangoforsalon.com/nextview/membership-settings?salon_id=abc",
         iconBody: `<i class="fa-solid fa-eye-slash toggle-visibility"></i>`,
         icon: {
           value: `<i class="fa-regular fa-copy"></i>`,
-          style: '',
+          style: "",
         },
-        style: '',
+        style: "",
       },
       button: {
-        content: 'Custom Membership',
-        style: '',
+        content: "Custom Membership",
+        style: "",
       },
     };
 
     const dataSocialPage = [
       {
-        id: 'so-facebook',
-        img: '/assets/images/social-icon/Facebook.png',
-        content: 'Facebook',
+        id: "so-facebook",
+        img: "/assets/images/social-icon/Facebook.png",
+        content: "Facebook",
         action: {
-          type: 'TOGGLE',
-          defaultValue: '',
+          type: "TOGGLE",
+          defaultValue: "",
         },
         style: {
-          justify: 'space-between',
+          justify: "space-between",
         },
       },
       {
-        id: 'so-google',
-        img: '/assets/images/social-icon/google.png',
-        content: 'Google',
+        id: "so-google",
+        img: "/assets/images/social-icon/google.png",
+        content: "Google",
         action: {
-          type: 'TOGGLE',
-          defaultValue: '',
+          type: "TOGGLE",
+          defaultValue: "",
         },
         style: {
-          justify: 'space-between',
+          justify: "space-between",
         },
       },
     ];
@@ -918,23 +932,23 @@ const onlineStore = {
               <path fill-rule="evenodd" clip-rule="evenodd" d="M21.8448 11.4691C19.8328 11.4681 18.0008 9.63605 18.0008 7.62305V6.87305H16.5008V7.62305C16.5008 9.10005 17.1758 10.4801 18.2198 11.4691L13.4219 11.469V12.969L18.2198 12.9691C17.1758 13.9581 16.5008 15.3371 16.5008 16.8141V17.5641H18.0008V16.8141C18.0008 14.8021 19.8338 12.9691 21.8458 12.9691H22.5958V11.4691H21.8448Z" fill="#E27303" />
           </svg>
           `,
-          value: 'Manicure 1',
+          value: "Manicure 1",
           iconRight: `
             <i class="fa-solid fa-chevron-down rotate-transition"></i>
           `,
           listItem: [
             {
-              title: 'Essential Pedicure 1',
-              subTitle: 'Hydrating Pedi Salt Soak 1',
-              priceRental: '$45',
-              timetext: '40min',
+              title: "Essential Pedicure 1",
+              subTitle: "Hydrating Pedi Salt Soak 1",
+              priceRental: "$45",
+              timetext: "40min",
               userSelected: {},
             },
             {
-              title: 'Essential Pedicure 2',
-              subTitle: 'Hydrating Pedi Salt Soak 1',
-              priceRental: '$45',
-              timetext: '40min',
+              title: "Essential Pedicure 2",
+              subTitle: "Hydrating Pedi Salt Soak 1",
+              priceRental: "$45",
+              timetext: "40min",
               userSelected: {},
             },
           ],
@@ -948,23 +962,23 @@ const onlineStore = {
               <path fill-rule="evenodd" clip-rule="evenodd" d="M21.8448 11.4691C19.8328 11.4681 18.0008 9.63605 18.0008 7.62305V6.87305H16.5008V7.62305C16.5008 9.10005 17.1758 10.4801 18.2198 11.4691L13.4219 11.469V12.969L18.2198 12.9691C17.1758 13.9581 16.5008 15.3371 16.5008 16.8141V17.5641H18.0008V16.8141C18.0008 14.8021 19.8338 12.9691 21.8458 12.9691H22.5958V11.4691H21.8448Z" fill="#E27303" />
           </svg>
           `,
-          value: 'Manicure 2',
+          value: "Manicure 2",
           iconRight: `
           <i class="fa-solid fa-chevron-down rotate-transition"></i>
           `,
           listItem: [
             {
-              title: 'Essential Pedicure 1',
-              subTitle: 'Hydrating Pedi Salt Soak 1',
-              priceRental: '$45',
-              timetext: '40min',
+              title: "Essential Pedicure 1",
+              subTitle: "Hydrating Pedi Salt Soak 1",
+              priceRental: "$45",
+              timetext: "40min",
               userSelected: {},
             },
             {
-              title: 'Essential Pedicure 2',
-              subTitle: 'Hydrating Pedi Salt Soak 1',
-              priceRental: '$45',
-              timetext: '40min',
+              title: "Essential Pedicure 2",
+              subTitle: "Hydrating Pedi Salt Soak 1",
+              priceRental: "$45",
+              timetext: "40min",
               userSelected: {},
             },
           ],
@@ -973,63 +987,63 @@ const onlineStore = {
     ];
     const listUser = [
       {
-        id: 'default',
-        avatar: '/assets/images/listUser/userAvailable.png',
-        name: 'Next Available',
+        id: "default",
+        avatar: "/assets/images/listUser/userAvailable.png",
+        name: "Next Available",
       },
       {
-        id: '1',
-        avatar: '/assets/images/listUser/avatar1.png',
-        name: 'Lily',
+        id: "1",
+        avatar: "/assets/images/listUser/avatar1.png",
+        name: "Lily",
       },
       {
-        id: '2',
-        avatar: '/assets/images/listUser/avatar1.png',
-        name: 'Savananah',
+        id: "2",
+        avatar: "/assets/images/listUser/avatar1.png",
+        name: "Savananah",
       },
     ];
 
     let dataHeaderNav = {
-      logo: '/assets/images/templates/logo-template.png',
+      logo: "/assets/images/templates/logo-template.png",
       itemNav: [
         {
-          id: 'page-fag',
-          name: 'Fag 1',
+          id: "page-fag",
+          name: "Fag 1",
         },
         {
-          id: 'page-membership',
-          name: 'Membership',
+          id: "page-membership",
+          name: "Membership",
         },
         {
-          id: 'page-service',
-          name: 'Service',
+          id: "page-service",
+          name: "Service",
         },
         {
-          id: 'page-giftcard',
-          name: 'Gift Card',
+          id: "page-giftcard",
+          name: "Gift Card",
         },
         {
-          id: 'page-about',
-          name: 'About',
+          id: "page-about",
+          name: "About",
           icon: '<i class="fa-solid fa-chevron-down"></i>',
         },
         {
-          id: 'page-contact-us',
-          name: 'Contact Us',
+          id: "page-contact-us",
+          name: "Contact Us",
         },
       ],
-      colorActiveNav: '#04972f',
+      colorActiveNav: "#04972f",
       iconUser: `
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="19" viewBox="0 0 18 19" fill="none">
           <path d="M15 15.8066C15 13.7356 12.3137 12.0566 9 12.0566C5.68629 12.0566 3 13.7356 3 15.8066M9 9.80664C6.92893 9.80664 5.25 8.12771 5.25 6.05664C5.25 3.98557 6.92893 2.30664 9 2.30664C11.0711 2.30664 12.75 3.98557 12.75 6.05664C12.75 8.12771 11.0711 9.80664 9 9.80664Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
       `,
       buttonBooking: {
-        content: 'Book',
-        bgBtn: '#0c7e2d',
-        color: 'white',
-        border: '1px solid #04972f',
-        bgColorHover: '#b1c9b8',
+        content: "Book",
+        bgBtn: "#0c7e2d",
+        color: "white",
+        border: "1px solid #04972f",
+        bgColorHover: "#b1c9b8",
       },
       cart: {
         icon: `
@@ -1040,219 +1054,223 @@ const onlineStore = {
             <path d="M6.37088 9.06055H6.37762" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
         `,
-        quatity: '0',
-        bgColor: '#ea001e',
-        color: 'white',
+        quatity: "0",
+        bgColor: "#ea001e",
+        color: "white",
       },
     };
 
     let dataAdvertise = {
       bgAdvertise1: {
-        bgColor: '#0c7e2d',
-        transformRotate: '-4.479deg',
+        bgColor: "#0c7e2d",
+        transformRotate: "-4.479deg",
       },
       bgAdvertise2: {
-        bgColor: '#e27303',
-        colorContent: 'white',
+        bgColor: "#e27303",
+        colorContent: "white",
         content: [
           {
-            text: 'Hi Guest! Sign in to access',
+            text: "Hi Guest! Sign in to access",
             fontWeight: 400,
           },
           {
-            text: 'Past Appointment History',
+            text: "Past Appointment History",
             fontWeight: 700,
           },
           {
-            text: 'and',
+            text: "and",
             fontWeight: 400,
           },
           {
-            text: 'view upcoming appointments, or Cancel upcoming appointments',
+            text: "view upcoming appointments, or Cancel upcoming appointments",
             fontWeight: 700,
           },
         ],
       },
       buttonSignIn: {
-        content: 'Sign In',
-        bgColor: '#0c7e2d',
-        color: 'white',
-        border: '1px solid #04972f',
-        bgColorHover: '#b1c9b8',
+        content: "Sign In",
+        bgColor: "#0c7e2d",
+        color: "white",
+        border: "1px solid #04972f",
+        bgColorHover: "#b1c9b8",
       },
     };
 
     let dataBannerPage = {
-      greeting: 'Welcome to !',
-      brand: 'Nailvibe',
+      greeting: "Welcome to !",
+      brand: "Nailvibe",
       title: `It is time to relax !`,
       desc: `We hope that your visit will be a relaxing and wonderful experience.
 Please do not hesitate to share your opinions with the salon manager so that your next visit at MIA will be an even better experience.`,
-      bookFor: 'Book Appointment for',
-      optionBooked: 'ME',
+      bookFor: "Book Appointment for",
+      optionBooked: "ME",
       btnOptionBook: {
         content: [
-          {text: 'Just me', type: 'ME'},
-          {text: '2 - 6 Guests', type: 'GUESTS'},
-          {text: 'Family', type: 'FAMILY'}
+          { text: "Just me", type: "ME" },
+          { text: "2 - 6 Guests", type: "GUESTS" },
+          { text: "Family", type: "FAMILY" },
         ],
         icon: `<i class="fa-solid fa-chevron-down rotate-transition"></i>`,
-        color: 'white',
-        bgColor: '#04972f',
-        border: '1px solid #04972f',
+        color: "white",
+        bgColor: "#04972f",
+        border: "1px solid #04972f",
       },
       image: {
-        imgBooking1: '/assets/images/templates/image-banner-booking.png',
-        imgBooking2: '/assets/images/templates/image-banner-booking-2.png',
-        imgBooking3: '/assets/images/templates/image-cloud.png',
+        imgBooking1: "/assets/images/templates/image-banner-booking.png",
+        imgBooking2: "/assets/images/templates/image-banner-booking-2.png",
+        imgBooking3: "/assets/images/templates/image-cloud.png",
       },
     };
 
     const listPromotion = {
-      title: 'Select Promotion',
+      title: "Select Promotion",
       item: [
         {
-          id: 'id-promotion-1',
-          img: '/assets/images/promotions/promotion1.png',
+          id: "id-promotion-1",
+          img: "/assets/images/promotions/promotion1.png",
           title: {
-            content: 'Flash Deal Frenzy! 🌟',
-            icon: '',
+            content: "Flash Deal Frenzy! 🌟",
+            icon: "",
           },
           percent: {
             number: 15,
-            content: 'All service',
-            bgColor: '#00bed6',
-            color: 'white',
+            content: "All service",
+            bgColor: "#00bed6",
+            color: "white",
           },
           dateTime: {
-            startTime: '',
-            endTime: 'Jan 25, 11:59 PM',
+            startTime: "",
+            endTime: "Jan 25, 11:59 PM",
           },
         },
         {
-          id: 'id-promotion-2',
-          img: '/assets/images/promotions/promotion2.jpg',
+          id: "id-promotion-2",
+          img: "/assets/images/promotions/promotion2.jpg",
           title: {
-            content: 'Coupon after buy a gift card',
-            icon: '',
+            content: "Coupon after buy a gift card",
+            icon: "",
           },
           percent: {
             number: 1,
-            content: 'All service',
-            bgColor: '#00bed6',
-            color: 'white',
+            content: "All service",
+            bgColor: "#00bed6",
+            color: "white",
           },
           dateTime: {
-            startTime: '',
-            endTime: 'Jan 25, 11:59 PM',
+            startTime: "",
+            endTime: "Jan 25, 11:59 PM",
           },
         },
         {
-          id: 'id-promotion-3',
-          img: '/assets/images/promotions/promotion3.jpg',
+          id: "id-promotion-3",
+          img: "/assets/images/promotions/promotion3.jpg",
           title: {
-            content: 'Coupon For Buy E-GIFT',
-            icon: '',
+            content: "Coupon For Buy E-GIFT",
+            icon: "",
           },
           percent: {
             number: 5,
-            content: 'All service',
-            bgColor: '#00bed6',
-            color: 'white',
+            content: "All service",
+            bgColor: "#00bed6",
+            color: "white",
           },
           dateTime: {
-            startTime: '',
-            endTime: 'Jan 25, 11:59 PM',
+            startTime: "",
+            endTime: "Jan 25, 11:59 PM",
           },
         },
         {
-          id: 'id-promotion-4',
-          img: '/assets/images/promotions/promotion4.jpg',
+          id: "id-promotion-4",
+          img: "/assets/images/promotions/promotion4.jpg",
           title: {
-            content: 'Unlock Exclusive',
-            icon: '',
+            content: "Unlock Exclusive",
+            icon: "",
           },
           percent: {
             number: 5,
-            content: 'All service',
-            bgColor: '#00bed6',
-            color: 'white',
+            content: "All service",
+            bgColor: "#00bed6",
+            color: "white",
           },
           dateTime: {
-            startTime: '',
-            endTime: 'Jan 25, 11:59 PM',
+            startTime: "",
+            endTime: "Jan 25, 11:59 PM",
           },
         },
       ],
     };
 
     const dataStoreInfo = {
-      brand: 'Nailvibe',
+      brand: "Nailvibe",
       iconLocation: '<i class="fa-solid fa-location-dot"></i>',
-      phoneNumber: '(615) 326-6652',
-      address: '15537 Old Hickory Blvd, Nashvile, TN 37211',
+      phoneNumber: "(615) 326-6652",
+      address: "15537 Old Hickory Blvd, Nashvile, TN 37211",
       timeWork: [
         {
-          weekday: 'Monday',
-          time: '10:00AM-7:30PM',
+          weekday: "Monday",
+          time: "10:00AM-7:30PM",
         },
         {
-          weekday: 'Tuesday',
-          time: '10:00AM-7:30PM',
+          weekday: "Tuesday",
+          time: "10:00AM-7:30PM",
         },
         {
-          weekday: 'Wednesday',
-          time: '10:00AM-7:30PM',
+          weekday: "Wednesday",
+          time: "10:00AM-7:30PM",
         },
         {
-          weekday: 'Thursday',
-          time: '10:00AM-7:30PM',
+          weekday: "Thursday",
+          time: "10:00AM-7:30PM",
         },
         {
-          weekday: 'Friday',
-          time: '10:00AM-7:30PM',
+          weekday: "Friday",
+          time: "10:00AM-7:30PM",
         },
         {
-          weekday: 'Saturday',
-          time: '9:30AM-7:00PM',
+          weekday: "Saturday",
+          time: "9:30AM-7:00PM",
         },
         {
-          weekday: 'Sunday',
-          time: '11:00AM-6:00PM',
+          weekday: "Sunday",
+          time: "11:00AM-6:00PM",
         },
       ],
     };
 
     let dataPolicyPage = {
-      title: 'Need to knows:',
+      title: "Need to knows:",
       styleTitle: {
-        color: '#660000',
+        color: "#660000",
       },
       listItem: [
         {
           content: [
             {
-              text: '- Changes and reschedules must be made at least 1 hour prior to your scheduled visit.',
+              text: "- Changes and reschedules must be made at least 1 hour prior to your scheduled visit.",
             },
           ],
         },
         {
           content: [
             {
-              text: '- Late cancellations, late reschedules, and no-shows will be subject to a $25 fee.',
+              text: "- Late cancellations, late reschedules, and no-shows will be subject to a $25 fee.",
             },
           ],
         },
         {
-          content: [{ text: '- We do not offer or remove dip powder, acrylics, or UV hard gels.' }],
+          content: [
+            {
+              text: "- We do not offer or remove dip powder, acrylics, or UV hard gels.",
+            },
+          ],
         },
         {
           content: [
-            { text: '- See our full' },
+            { text: "- See our full" },
             {
-              text: 'Terms Of Use Here',
+              text: "Terms Of Use Here",
               style: {
-                color: '#660000',
+                color: "#660000",
               },
             },
           ],
@@ -1262,33 +1280,39 @@ Please do not hesitate to share your opinions with the salon manager so that you
 
     const dataSocialLink = {
       mapLocation: {
-        address: '15537 Old Hickory Blvd, Nashville, TN 37211',
+        address: "15537 Old Hickory Blvd, Nashville, TN 37211",
       },
     };
 
     const dataPageMembership = {
-      intro: { stepCur: 1, stepEnd: 3, title: 'Choose the plan that’s right for you' },
+      intro: {
+        stepCur: 1,
+        stepEnd: 3,
+        title: "Choose the plan that’s right for you",
+      },
       style: {
         background:
-          'linear-gradient(161deg, rgba(255, 106, 0, 0.04) 0.54%, rgba(255, 106, 0, 0.10) 112.23%);',
-        border: '1px solid var(--Membership-Bronze, #B64D2F);',
-        textColorRank: 'linear-gradient(90deg, #B64D2F 0%, #FFCFBB 50%, #B64D2F 100%)',
-        textColorTitle: '#B64D2F',
-        textPrice: '#B64D2F',
-        bgColorBtnMore: '',
-        borderBtnMore: '1px solid var(--Membership-Bronze, #B64D2F);',
-        colorBtnMore: '#B64D2F',
-        bgColorBtnBuyNow: 'linear-gradient(90deg, #B64D2F 0%, #FFCFBB 50%, #B64D2F 100%)',
-        colorBtnBuyNow: '#181818E5',
+          "linear-gradient(161deg, rgba(255, 106, 0, 0.04) 0.54%, rgba(255, 106, 0, 0.10) 112.23%);",
+        border: "1px solid var(--Membership-Bronze, #B64D2F);",
+        textColorRank:
+          "linear-gradient(90deg, #B64D2F 0%, #FFCFBB 50%, #B64D2F 100%)",
+        textColorTitle: "#B64D2F",
+        textPrice: "#B64D2F",
+        bgColorBtnMore: "",
+        borderBtnMore: "1px solid var(--Membership-Bronze, #B64D2F);",
+        colorBtnMore: "#B64D2F",
+        bgColorBtnBuyNow:
+          "linear-gradient(90deg, #B64D2F 0%, #FFCFBB 50%, #B64D2F 100%)",
+        colorBtnBuyNow: "#181818E5",
       },
       itemPlan: {
         id: 1,
-        rank: 'Bronze',
-        title: 'Save Every Time You Visit',
+        rank: "Bronze",
+        title: "Save Every Time You Visit",
         subtitle:
-          'Perfect For: Regular clients who want quick, affordable services with solid savings.',
-        price: '$79',
-        timeDura: '3 Month',
+          "Perfect For: Regular clients who want quick, affordable services with solid savings.",
+        price: "$79",
+        timeDura: "3 Month",
         iconPolicy: `
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
           <path d="M11.4382 2.92495L12.9048 5.85828C13.1048 6.26662 13.6382 6.65828 14.0882 6.73328L16.7465 7.17495C18.4465 7.45828 18.8465 8.69162 17.6215 9.90828L15.5548 11.975C15.2048 12.325 15.0132 13 15.1215 13.4833L15.7132 16.0416C16.1798 18.0666 15.1048 18.85 13.3132 17.7916L10.8215 16.3166C10.3715 16.05 9.62984 16.05 9.17151 16.3166L6.67984 17.7916C4.89651 18.85 3.81317 18.0583 4.27984 16.0416L4.87151 13.4833C4.97984 13 4.78817 12.325 4.43817 11.975L2.37151 9.90828C1.15484 8.69162 1.54651 7.45828 3.24651 7.17495L5.90484 6.73328C6.34651 6.65828 6.87984 6.26662 7.07984 5.85828L8.54651 2.92495C9.34651 1.33328 10.6465 1.33328 11.4382 2.92495Z" fill="url(#paint0_linear_1973_42991)"/>
@@ -1301,103 +1325,109 @@ Please do not hesitate to share your opinions with the salon manager so that you
         </svg>
         `,
         itemPolicy: [
-          { content: '$10 off every visit (No minimum spend required)' },
-          { content: 'Unlimited free soak-offs with every nail service' },
-          { content: '$10 gel add-on (regular price: $20) for every visit' },
-          { content: 'Free Essential Pedi after every 5th visit (No restrictions)' },
-          { content: 'Referral Bonus: Get $20 credit for every friend who signs up (No limits)' },
+          { content: "$10 off every visit (No minimum spend required)" },
+          { content: "Unlimited free soak-offs with every nail service" },
+          { content: "$10 gel add-on (regular price: $20) for every visit" },
+          {
+            content:
+              "Free Essential Pedi after every 5th visit (No restrictions)",
+          },
+          {
+            content:
+              "Referral Bonus: Get $20 credit for every friend who signs up (No limits)",
+          },
         ],
-        subEnd: 'Requires Treatment Package ($99/year)',
+        subEnd: "Requires Treatment Package ($99/year)",
       },
     };
     const dataPageGiftCard = [
       {
-        id: 'birthday',
-        title: 'Birthday',
-        buttonAll: 'See All',
+        id: "birthday",
+        title: "Birthday",
+        buttonAll: "See All",
         listCard: Array.from({ length: 8 }, (_, i) => ({
           id: (i + 1).toString(),
-          image: '/assets/images/templates/image-banner-booking-2.png',
+          image: "/assets/images/templates/image-banner-booking-2.png",
           title: `Arlene McCoy ${i + 1}`,
         })),
       },
       {
-        id: 'birthday-1',
-        title: 'Birthday-1',
-        buttonAll: 'See All',
+        id: "birthday-1",
+        title: "Birthday-1",
+        buttonAll: "See All",
         listCard: Array.from({ length: 8 }, (_, i) => ({
           id: (i + 1).toString(),
-          image: '/assets/images/templates/image-banner-booking-2.png',
+          image: "/assets/images/templates/image-banner-booking-2.png",
           title: `Arlene McCoy ${i + 1}`,
         })),
       },
       {
-        id: 'birthday-2',
-        title: 'Birthday-2',
-        buttonAll: 'See All',
+        id: "birthday-2",
+        title: "Birthday-2",
+        buttonAll: "See All",
         listCard: Array.from({ length: 8 }, (_, i) => ({
           id: (i + 1).toString(),
-          image: '/assets/images/templates/image-banner-booking-2.png',
+          image: "/assets/images/templates/image-banner-booking-2.png",
           title: `Arlene McCoy ${i + 1}`,
         })),
       },
       {
-        id: 'birthday-3',
-        title: 'Birthday-3',
-        buttonAll: 'See All',
+        id: "birthday-3",
+        title: "Birthday-3",
+        buttonAll: "See All",
         listCard: Array.from({ length: 8 }, (_, i) => ({
           id: (i + 1).toString(),
-          image: '/assets/images/templates/image-banner-booking-2.png',
+          image: "/assets/images/templates/image-banner-booking-2.png",
           title: `Arlene McCoy ${i + 1}`,
         })),
       },
       {
-        id: 'birthday-4',
-        title: 'Birthday-4',
-        buttonAll: 'See All',
+        id: "birthday-4",
+        title: "Birthday-4",
+        buttonAll: "See All",
         listCard: Array.from({ length: 8 }, (_, i) => ({
           id: (i + 1).toString(),
-          image: '/assets/images/templates/image-banner-booking-2.png',
+          image: "/assets/images/templates/image-banner-booking-2.png",
           title: `Arlene McCoy ${i + 1}`,
         })),
       },
       {
-        id: 'birthday-5',
-        title: 'Birthday-5',
-        buttonAll: 'See All',
+        id: "birthday-5",
+        title: "Birthday-5",
+        buttonAll: "See All",
         listCard: Array.from({ length: 8 }, (_, i) => ({
           id: (i + 1).toString(),
-          image: '/assets/images/templates/image-banner-booking-2.png',
+          image: "/assets/images/templates/image-banner-booking-2.png",
           title: `Arlene McCoy ${i + 1}`,
         })),
       },
       {
-        id: 'birthday-6',
-        title: 'Birthday-6',
-        buttonAll: 'See All',
+        id: "birthday-6",
+        title: "Birthday-6",
+        buttonAll: "See All",
         listCard: Array.from({ length: 8 }, (_, i) => ({
           id: (i + 1).toString(),
-          image: '/assets/images/templates/image-banner-booking-2.png',
+          image: "/assets/images/templates/image-banner-booking-2.png",
           title: `Arlene McCoy ${i + 1}`,
         })),
       },
       {
-        id: 'birthday-7',
-        title: 'Birthday-7',
-        buttonAll: 'See All',
+        id: "birthday-7",
+        title: "Birthday-7",
+        buttonAll: "See All",
         listCard: Array.from({ length: 8 }, (_, i) => ({
           id: (i + 1).toString(),
-          image: '/assets/images/templates/image-banner-booking-2.png',
+          image: "/assets/images/templates/image-banner-booking-2.png",
           title: `Arlene McCoy ${i + 1}`,
         })),
       },
       {
-        id: 'birthday-8',
-        title: 'Birthday-8',
-        buttonAll: 'See All',
+        id: "birthday-8",
+        title: "Birthday-8",
+        buttonAll: "See All",
         listCard: Array.from({ length: 8 }, (_, i) => ({
           id: (i + 1).toString(),
-          image: '/assets/images/templates/image-banner-booking-2.png',
+          image: "/assets/images/templates/image-banner-booking-2.png",
           title: `Arlene McCoy ${i + 1}`,
         })),
       },
@@ -1406,46 +1436,46 @@ Please do not hesitate to share your opinions with the salon manager so that you
     // data fake local storage
     let dataWeb = {
       dataHeaderNav: {
-        logo: '/assets/images/templates/logo-template.png',
+        logo: "/assets/images/templates/logo-template.png",
         itemNav: [
           {
-            id: 'page-fag',
-            name: 'Fag',
+            id: "page-fag",
+            name: "Fag",
           },
           {
-            id: 'page-membership',
-            name: 'Membership',
+            id: "page-membership",
+            name: "Membership",
           },
           {
-            id: 'page-service',
-            name: 'Service',
+            id: "page-service",
+            name: "Service",
           },
           {
-            id: 'page-giftcard',
-            name: 'Gift Card',
+            id: "page-giftcard",
+            name: "Gift Card",
           },
           {
-            id: 'page-about',
-            name: 'About',
+            id: "page-about",
+            name: "About",
             icon: '<i class="fa-solid fa-chevron-down"></i>',
           },
           {
-            id: 'page-contact-us',
-            name: 'Contact Us',
+            id: "page-contact-us",
+            name: "Contact Us",
           },
         ],
-        colorActiveNav: '#04972f',
+        colorActiveNav: "#04972f",
         iconUser: `
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="19" viewBox="0 0 18 19" fill="none">
           <path d="M15 15.8066C15 13.7356 12.3137 12.0566 9 12.0566C5.68629 12.0566 3 13.7356 3 15.8066M9 9.80664C6.92893 9.80664 5.25 8.12771 5.25 6.05664C5.25 3.98557 6.92893 2.30664 9 2.30664C11.0711 2.30664 12.75 3.98557 12.75 6.05664C12.75 8.12771 11.0711 9.80664 9 9.80664Z" stroke="#061315" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
       `,
         buttonBooking: {
-          content: 'Book',
-          bgBtn: '#0c7e2d',
-          color: 'white',
-          border: '1px solid #04972f',
-          bgColorHover: '#b1c9b8',
+          content: "Book",
+          bgBtn: "#0c7e2d",
+          color: "white",
+          border: "1px solid #04972f",
+          bgColorHover: "#b1c9b8",
         },
         cart: {
           icon: `
@@ -1456,73 +1486,73 @@ Please do not hesitate to share your opinions with the salon manager so that you
             <path d="M6.37088 9.06055H6.37762" stroke="black" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
         `,
-          quatity: '1',
-          bgColor: '#ea001e',
-          color: 'white',
+          quatity: "1",
+          bgColor: "#ea001e",
+          color: "white",
         },
       },
       color: {
-        bgPrimary: '#0C7E2D',
-        bgSecondary: '#E27303',
+        bgPrimary: "#0C7E2D",
+        bgSecondary: "#E27303",
       },
       advertises: {
         bgAdvertise1: {
-          bgColor: '#0c7e2d',
-          transformRotate: '-4.479deg',
+          bgColor: "#0c7e2d",
+          transformRotate: "-4.479deg",
         },
         bgAdvertise2: {
-          bgColor: '#e27303',
-          colorContent: 'white',
+          bgColor: "#e27303",
+          colorContent: "white",
           content: [
             {
-              text: 'Hi Guest! Sign in to access',
+              text: "Hi Guest! Sign in to access",
               fontWeight: 400,
             },
             {
-              text: 'Past Appointment History',
+              text: "Past Appointment History",
               fontWeight: 700,
             },
             {
-              text: 'and',
+              text: "and",
               fontWeight: 400,
             },
             {
-              text: 'view upcoming appointments, or Cancel upcoming appointments',
+              text: "view upcoming appointments, or Cancel upcoming appointments",
               fontWeight: 700,
             },
           ],
         },
         buttonSignIn: {
-          content: 'Sign In',
-          bgColor: '#0c7e2d',
-          color: 'white',
-          border: '1px solid #04972f',
-          bgColorHover: '#b1c9b8',
+          content: "Sign In",
+          bgColor: "#0c7e2d",
+          color: "white",
+          border: "1px solid #04972f",
+          bgColorHover: "#b1c9b8",
         },
       },
       banner: {
-        greeting: 'Welcome to !',
-        brand: 'Nailvibe',
+        greeting: "Welcome to !",
+        brand: "Nailvibe",
         title: `It is time to relax !`,
         desc: `We hope that your visit will be a relaxing and wonderful experience.
 Please do not hesitate to share your opinions with the salon manager so that your next visit at MIA will be an even better experience.`,
-        bookFor: 'Book Appointment for',
-        optionBooked: 'ME',
+        bookFor: "Book Appointment for",
+        optionBooked: "ME",
         btnOptionBook: {
           content: [
-          {id:'option-me', text: 'Just me', type: 'ME'},
-          {id:'option-guests', text: '2 - 6 Guests', type: 'GUESTS'},
-          {id:'option-family', text: 'Family', type: 'FAMILY'}
-        ],
+            { id: "option-me", text: "Just me", type: "ME" },
+            { id: "option-guests", text: "2 - 6 Guests", type: "GUESTS" },
+            { id: "option-family", text: "Family", type: "FAMILY" },
+          ],
           icon: `<i class="fa-solid fa-chevron-down rotate-transition"></i>`,
-          color: 'white',
-          bgColor: '#04972f',
-          border: '1px solid #04972f',
+          color: "white",
+          bgColor: "#04972f",
+          border: "1px solid #04972f",
         },
         image: {
-          imgBooking1: '/assets/images/templates/image-banner-booking.png',
-          imgBooking2: '/assets/images/templates/image-banner-booking-2.png',
-          imgBooking3: '/assets/images/templates/image-cloud.png',
+          imgBooking1: "/assets/images/templates/image-banner-booking.png",
+          imgBooking2: "/assets/images/templates/image-banner-booking-2.png",
+          imgBooking3: "/assets/images/templates/image-cloud.png",
         },
       },
       sideInfo: {
@@ -1532,7 +1562,7 @@ Please do not hesitate to share your opinions with the salon manager so that you
         socialLink: {},
         socialIcon: [],
       },
-      bannerProSelected: {}
+      bannerProSelected: {},
     };
 
     return {
@@ -1596,19 +1626,21 @@ const renderHeader = (header) => {
                     <tr>
                         ${header
                           .map((col) => {
-                            const icon = col.icon ? `<span class="mr-2">${col.icon}</span>` : '';
+                            const icon = col.icon
+                              ? `<span class="mr-2">${col.icon}</span>`
+                              : "";
                             return `
                                                     <th class="${
-                                                      col.class ? col.class : ''
+                                                      col.class ? col.class : ""
                                                     } text-uppercase px-4 py-3 ${
-                              col.type === 'STATUS' ? 'col-small' : 'col-large'
+                              col.type === "STATUS" ? "col-small" : "col-large"
                             }">
                                     <span>${col.label}</span>
                                     ${icon}
                                 </th>
                             `;
                           })
-                          .join('')}
+                          .join("")}
                     </tr>
                 </thead>
         `;
@@ -1638,7 +1670,7 @@ const renderBody = (body) => {
                             </tr>
                         `;
                       })
-                      .join('')}
+                      .join("")}
            </tbody>
         `;
 };
@@ -1685,7 +1717,13 @@ const renderItemTable = (header, body) => {
 // ===== *END templates home render
 
 const renderColorTheme = (configThemeColor) => {
-  const { config, colorTheme, iconActive, colorIconPrimary, colorIconSecondary } = configThemeColor;
+  const {
+    config,
+    colorTheme,
+    iconActive,
+    colorIconPrimary,
+    colorIconSecondary,
+  } = configThemeColor;
   return `
     <div class="grid-8 grid-gap-y-2 grid-gap-x-2">
       ${
@@ -1694,7 +1732,7 @@ const renderColorTheme = (configThemeColor) => {
           .map((item, i) => {
             const { color, selected, active } = item;
             const { width, height, borderRadius } = config;
-            const displayChecked = selected ? iconActive : '';
+            const displayChecked = selected ? iconActive : "";
 
             return `
           <div class="item-theme"
@@ -1711,58 +1749,63 @@ const renderColorTheme = (configThemeColor) => {
                 ? `<p class="color-icon-selected"
                 style="
                   --color-icon-checked: ${
-                    item.type === 'PRIMARY' ? colorIconPrimary : colorIconSecondary
+                    item.type === "PRIMARY"
+                      ? colorIconPrimary
+                      : colorIconSecondary
                   }
                 "
               >${displayChecked}</p>`
-                : ''
+                : ""
             }
           </div>
         `;
           })
-          .join('')
+          .join("")
       }
     </div>
   `;
 };
 
 const renderInfo = (info) => {
-  if (!info || !Array.isArray(info)) return '';
+  if (!info || !Array.isArray(info)) return "";
 
   return info
     .map((item, index) => {
-      const type = item.type || 'INPUT';
-      const value = item.value || '';
+      const type = item.type || "INPUT";
+      const value = item.value || "";
       const maxLengthInput = 52;
       const maxLengthText = 1000;
 
-      const id = type === 'TEXTAREA' ? `textarea-info-${index}` : `input-info-${index}`;
-      const maxLength = type === 'TEXTAREA' ? maxLengthText : maxLengthInput;
+      const id =
+        type === "TEXTAREA" ? `textarea-info-${index}` : `input-info-${index}`;
+      const maxLength = type === "TEXTAREA" ? maxLengthText : maxLengthInput;
 
       return `
         <div class="option-item px-0">
           <div class="char-count-message text-danger mb-1" id="char-msg-${index}" style="display:none; font-size: 13px;"></div>
           ${
-            type === 'TEXTAREA'
+            type === "TEXTAREA"
               ? `<textarea id="${id}" class="textarea-info" maxlength="${maxLength}">${value}</textarea>`
               : `<input id="${id}" class="input-info" value="${value}" maxlength="${maxLength}" />`
           }
         </div>
       `;
     })
-    .join('');
+    .join("");
 };
 
 const renderSideInfor = (sideInfo) => {
-  if (!sideInfo || !Array.isArray(sideInfo)) return '';
+  if (!sideInfo || !Array.isArray(sideInfo)) return "";
 
   return sideInfo
     .map((item) => {
       const id = item.id;
       const idt = item.idt;
-      const justify = item.style?.justify || '';
-      const hasToggle = item.action?.type === 'TOGGLE';
-      const isChecked = item.action?.defaultValue === true || item.action?.defaultValue === 'true';
+      const justify = item.style?.justify || "";
+      const hasToggle = item.action?.type === "TOGGLE";
+      const isChecked =
+        item.action?.defaultValue === true ||
+        item.action?.defaultValue === "true";
 
       return `
         <div id="${id}">
@@ -1771,26 +1814,28 @@ const renderSideInfor = (sideInfo) => {
             ${
               hasToggle
                 ? `<input id="${idt}" type='checkbox' class='toggle-switch' ${
-                    isChecked ? 'checked' : ''
+                    isChecked ? "checked" : ""
                   }/>`
-                : ''
+                : ""
             }
           </div>
         </div>
       `;
     })
-    .join('');
+    .join("");
 };
 
 const renderBanner = (bannerPromotion) => {
-  if (!bannerPromotion || !Array.isArray(bannerPromotion)) return '';
+  if (!bannerPromotion || !Array.isArray(bannerPromotion)) return "";
 
   return bannerPromotion.map((item) => {
-    const justify = item.style.justify || '';
-    const hasToggle = item.action?.type === 'TOGGLE';
+    const justify = item.style.justify || "";
+    const hasToggle = item.action?.type === "TOGGLE";
     const id = item.id;
 
-    const isChecked = item.action?.defaultValue === true || item.action?.defaultValue === 'true';
+    const isChecked =
+      item.action?.defaultValue === true ||
+      item.action?.defaultValue === "true";
 
     return `
       <div class="option-item" style="justify-content: ${justify}">
@@ -1798,7 +1843,7 @@ const renderBanner = (bannerPromotion) => {
         ${
           hasToggle &&
           `<input id="select-banner-pm" data-index="${id}" type='checkbox' class='toggle-switch' ${
-            isChecked ? 'checked' : ''
+            isChecked ? "checked" : ""
           } />`
         }
       </div>
@@ -1808,10 +1853,11 @@ const renderBanner = (bannerPromotion) => {
 
 const renderGiftCardAndMembership = (dataCard) => {
   const item = dataCard.item;
-  const justify = item.style?.justify || '';
-  const hasToggle = item.action?.type === 'TOGGLE';
+  const justify = item.style?.justify || "";
+  const hasToggle = item.action?.type === "TOGGLE";
 
-  const isChecked = item.action?.defaultValue === true || item.action?.defaultValue === 'true';
+  const isChecked =
+    item.action?.defaultValue === true || item.action?.defaultValue === "true";
 
   const body = dataCard.body;
   const button = dataCard.button;
@@ -1819,19 +1865,19 @@ const renderGiftCardAndMembership = (dataCard) => {
   return `
       <div class="option-content-item">
          <div class="option-item" style="justify-content: ${justify}">
-        <span>${item.content || 'NAN'}</span>
+        <span>${item.content || "NAN"}</span>
           ${
             hasToggle
               ? `<input id=${item.id} type='checkbox' class='toggle-switch' ${
-                  isChecked ? 'checked' : ''
+                  isChecked ? "checked" : ""
                 }/>`
-              : ''
+              : ""
           }
         </div>
         <div class="wrap-link mt-3">
           <div class="label-link">
-            <span class="mr-1">${body.title || 'NAN'}</span>
-            ${body.iconBody || ''}
+            <span class="mr-1">${body.title || "NAN"}</span>
+            ${body.iconBody || ""}
           </div>
 
           <div class="link-container">
@@ -1839,11 +1885,13 @@ const renderGiftCardAndMembership = (dataCard) => {
 ${body.content}
             </textarea>
             <button class="btn-copy" title="Copy here" data-tooltip="Copy">
-              ${body.icon.value || ''}
+              ${body.icon.value || ""}
             </button>
           </div>
           <div class="d-flex justify-content-center align-items-center">
-            <button class="btn-custom-membership mt-3">${button.content}</button>
+            <button class="btn-custom-membership mt-3">${
+              button.content
+            }</button>
           </div>
 
         </div>
@@ -1852,13 +1900,15 @@ ${body.content}
 };
 
 function renderSocial(dataSocialPage) {
-  if (!dataSocialPage || !Array.isArray(dataSocialPage)) return '';
+  if (!dataSocialPage || !Array.isArray(dataSocialPage)) return "";
 
   return dataSocialPage.map((item) => {
-    const justify = item.style.justify || '';
-    const hasToggle = item.action?.type === 'TOGGLE';
+    const justify = item.style.justify || "";
+    const hasToggle = item.action?.type === "TOGGLE";
 
-    const isChecked = item.action?.defaultValue === true || item.action?.defaultValue === 'true';
+    const isChecked =
+      item.action?.defaultValue === true ||
+      item.action?.defaultValue === "true";
 
     return `
       <div class="option-item" style="justify-content: ${justify}">
@@ -1867,7 +1917,9 @@ function renderSocial(dataSocialPage) {
           hasToggle &&
           `<input id="toggle-social" data-index="${
             item.id
-          }" type='checkbox' class='toggle-switch' ${isChecked ? 'checked' : ''} />`
+          }" type='checkbox' class='toggle-switch' ${
+            isChecked ? "checked" : ""
+          } />`
         }
       </div>
     `;
@@ -2032,7 +2084,7 @@ function renderPageGiftCard(dataPageGiftCard) {
                 </div>
               `
                 )
-                .join('')}
+                .join("")}
             </div>
             <button class="slider-btn prev"><i class="fa-solid fa-chevron-left"></i></button>
             <button class="slider-btn next"><i class="fa-solid fa-chevron-right"></i></button>
@@ -2040,16 +2092,16 @@ function renderPageGiftCard(dataPageGiftCard) {
         </div>
       `
         )
-        .join('')}
+        .join("")}
     </div>
   `;
 }
 
 function initSliderFromElement(containerEl, cardSelector) {
-  const track = containerEl.querySelector('.slider-track');
+  const track = containerEl.querySelector(".slider-track");
   const cards = containerEl.querySelectorAll(cardSelector);
-  const prevBtn = containerEl.querySelector('.slider-btn.prev');
-  const nextBtn = containerEl.querySelector('.slider-btn.next');
+  const prevBtn = containerEl.querySelector(".slider-btn.prev");
+  const nextBtn = containerEl.querySelector(".slider-btn.next");
 
   if (!cards.length || !track) return;
 
@@ -2059,13 +2111,13 @@ function initSliderFromElement(containerEl, cardSelector) {
 
   function updateButtons() {
     const maxOffset = track.scrollWidth - visibleWidth;
-    prevBtn.style.display = currentOffset <= 0 ? 'none' : 'block';
-    nextBtn.style.display = currentOffset >= maxOffset ? 'none' : 'block';
+    prevBtn.style.display = currentOffset <= 0 ? "none" : "block";
+    nextBtn.style.display = currentOffset >= maxOffset ? "none" : "block";
   }
 
   function moveSlider(direction) {
     const maxOffset = track.scrollWidth - visibleWidth;
-    if (direction === 'next') {
+    if (direction === "next") {
       currentOffset = Math.min(currentOffset + cardWidth, maxOffset);
     } else {
       currentOffset = Math.max(currentOffset - cardWidth, 0);
@@ -2074,8 +2126,8 @@ function initSliderFromElement(containerEl, cardSelector) {
     updateButtons();
   }
 
-  prevBtn.addEventListener('click', () => moveSlider('prev'));
-  nextBtn.addEventListener('click', () => moveSlider('next'));
+  prevBtn.addEventListener("click", () => moveSlider("prev"));
+  nextBtn.addEventListener("click", () => moveSlider("next"));
   updateButtons();
 }
 
@@ -2339,27 +2391,27 @@ function renderSettingsPopup() {
       </div>
     `);
 
-  $('body').append($overlay).append($popup);
+  $("body").append($overlay).append($popup);
 
-  $overlay.addClass('active');
-  $popup.addClass('active');
+  $overlay.addClass("active");
+  $popup.addClass("active");
 
   // Handle tab switching
-  $('.settings-tab').on('click', function () {
-    const tab = $(this).data('tab');
-    $('.settings-tab').removeClass('active');
-    $('.settings-tab-content').removeClass('active');
-    $(this).addClass('active');
-    $(`.settings-tab-content[data-tab="${tab}"]`).addClass('active');
+  $(".settings-tab").on("click", function () {
+    const tab = $(this).data("tab");
+    $(".settings-tab").removeClass("active");
+    $(".settings-tab-content").removeClass("active");
+    $(this).addClass("active");
+    $(`.settings-tab-content[data-tab="${tab}"]`).addClass("active");
   });
   // Close popup when clicking close button
-  $('.btn-closepopup-setting').on('click', function () {
+  $(".btn-closepopup-setting").on("click", function () {
     $overlay.remove();
     $popup.remove();
   });
 
   // Close popup when clicking overlay
-  $overlay.on('click', function () {
+  $overlay.on("click", function () {
     $overlay.remove();
     $popup.remove();
   });
@@ -2368,45 +2420,47 @@ function renderSettingsPopup() {
   // Sự kiện trên tab Membership
   // copy trên popup setting
   // --- membership
-  $(document).on('click', '.membership-settings .btn-copy', function () {
-    const linkInput = $(this).siblings('.membership-link')[0];
+  $(document).on("click", ".membership-settings .btn-copy", function () {
+    const linkInput = $(this).siblings(".membership-link")[0];
     linkInput.select();
     linkInput.setSelectionRange(0, 99999); // For mobile devices
-    document.execCommand('copy');
+    document.execCommand("copy");
 
     // Optional: Show tooltip
-    $(this).attr('title', 'Copied!').tooltip('show');
+    $(this).attr("title", "Copied!").tooltip("show");
 
     // Reset tooltip after 1s
     setTimeout(() => {
-      $(this).attr('title', 'Copy');
+      $(this).attr("title", "Copy");
     }, 1000);
   });
   // --- gift card
-  $(document).on('click', '.setting-block .btn-copy', function () {
-    const linkInput = $(this).siblings('.membership-link')[0];
+  $(document).on("click", ".setting-block .btn-copy", function () {
+    const linkInput = $(this).siblings(".membership-link")[0];
     linkInput.select();
     linkInput.setSelectionRange(0, 99999); // For mobile devices
-    document.execCommand('copy');
+    document.execCommand("copy");
 
     // Optional: Show tooltip
-    $(this).attr('title', 'Copied!').tooltip('show');
+    $(this).attr("title", "Copied!").tooltip("show");
 
     // Reset tooltip after 1s
     setTimeout(() => {
-      $(this).attr('title', 'Copy');
+      $(this).attr("title", "Copy");
     }, 1000);
   });
-  $(document).on('click', '.toggle-visibility', function () {
+  $(document).on("click", ".toggle-visibility", function () {
     const $icon = $(this);
-    const $input = $icon.closest('.wrap-link').find('.membership-link');
+    const $input = $icon.closest(".wrap-link").find(".membership-link");
 
     // Toggle input type: text <-> password
-    const isHidden = $input.attr('type') === 'password';
-    $input.attr('type', isHidden ? 'text' : 'password');
+    const isHidden = $input.attr("type") === "password";
+    $input.attr("type", isHidden ? "text" : "password");
 
     // Toggle icon class
-    $icon.toggleClass('fa-eye fa-eye-slash').attr('title', isHidden ? 'Hide Link' : 'Show Link');
+    $icon
+      .toggleClass("fa-eye fa-eye-slash")
+      .attr("title", isHidden ? "Hide Link" : "Show Link");
   });
 }
 
@@ -2414,9 +2468,9 @@ function renderSettingsPopup() {
 function animateHeight($el, isExpand) {
   if (!isExpand) {
     const $firstRowHeight = $el.children().first().outerHeight(true);
-    $el.css('height', $firstRowHeight + 'px');
+    $el.css("height", $firstRowHeight + "px");
   } else {
-    $el.css('height', 'auto');
+    $el.css("height", "auto");
   }
 }
 
@@ -2614,21 +2668,21 @@ function showTemplatePopup(
     `;
 
   // Thêm popup vào body
-  $('body').append(popupContent);
+  $("body").append(popupContent);
 
   // Xử lý sự kiện đóng popup
-  $('.icon-left-booking').on('click', function () {
-    $('.popup-overlay').remove();
+  $(".icon-left-booking").on("click", function () {
+    $(".popup-overlay").remove();
   });
 
   // Đóng popup khi click bên ngoài
-  $('.popup-overlay').on('click', function (e) {
+  $(".popup-overlay").on("click", function (e) {
     if (e.target === this) {
-      $('.popup-overlay').remove();
+      $(".popup-overlay").remove();
     }
   });
 
-  const $wrapWeb = $('.wrap-web');
+  const $wrapWeb = $(".wrap-web");
   const htmlHeaderNav = renderNavHeaderTemplates(dataHeaderNav);
   const htmlAdvertise = renderAdvertisePage(dataAdvertise);
   const htmlBannerPage = renderBannerPage(dataBannerPage);
@@ -2644,13 +2698,15 @@ function showTemplatePopup(
 }
 
 // =============== * BEGIN template servive
-function renderListService(dataList, containerSelector = '.list-more') {
+function renderListService(dataList, containerSelector = ".list-more") {
   const $container = $(containerSelector);
   $container.empty();
 
   dataList.forEach(({ item }, i) => {
     const $moreItem = $(
-      `<div class="more-item" style="z-index: ${100 + item.listItem.length - i}"></div>`
+      `<div class="more-item" style="z-index: ${
+        100 + item.listItem.length - i
+      }"></div>`
     );
 
     const $expandTitle = renderExpandTitle(item);
@@ -2665,7 +2721,14 @@ function renderListService(dataList, containerSelector = '.list-more') {
   });
 }
 function renderNavHeaderTemplates(dataHeaderNav) {
-  const { logo: logoWeb, itemNav, colorActiveNav, iconUser, buttonBooking, cart } = dataHeaderNav;
+  const {
+    logo: logoWeb,
+    itemNav,
+    colorActiveNav,
+    iconUser,
+    buttonBooking,
+    cart,
+  } = dataHeaderNav;
 
   return `
     <div class="nav-header-web" style="--color-active: ${colorActiveNav}">
@@ -2676,7 +2739,7 @@ function renderNavHeaderTemplates(dataHeaderNav) {
         <div class="list-option">
           ${itemNav
             .map((item) => {
-              const iconItemNav = item.icon ? item.icon : '';
+              const iconItemNav = item.icon ? item.icon : "";
               return `
               <button id="${item.id}" class="text-uppercase option">
                 ${item.name}
@@ -2684,7 +2747,7 @@ function renderNavHeaderTemplates(dataHeaderNav) {
               </button>
             `;
             })
-            .join('')}
+            .join("")}
         </div>
         <div class="cart-profile">
           <button class="user">
@@ -2768,8 +2831,9 @@ function renderAdvertisePage(dataAdvertise) {
   `;
 }
 function renderBannerPage(dataBannerPage) {
-  const { greeting, brand, title, desc, bookFor, btnOptionBook, image } = dataBannerPage;
-  console.log('banner 2');
+  const { greeting, brand, title, desc, bookFor, btnOptionBook, image } =
+    dataBannerPage;
+  console.log("banner 2");
   return `
     <div class="banner">
       <div class="content-banner">
@@ -2852,7 +2916,7 @@ function showPopupSelectPromotion(listPromotion) {
                   </div>
                 `;
               })
-              .join('')}
+              .join("")}
           </div>
         </div>
         <div class="btn-closepopup-promotion">
@@ -2863,7 +2927,7 @@ function showPopupSelectPromotion(listPromotion) {
   `;
 }
 
-const renderStoreInfo = (dataStoreInfo, color = '') => {
+const renderStoreInfo = (dataStoreInfo, color = "") => {
   const $container = $('<div class="store-info"></div>');
 
   const $left = $(`
@@ -2879,7 +2943,7 @@ const renderStoreInfo = (dataStoreInfo, color = '') => {
   `);
 
   const $right = $('<div class="store-right"></div>');
-  $right.append('<h4>HOURS</h4>');
+  $right.append("<h4>HOURS</h4>");
 
   dataStoreInfo.timeWork.forEach((item) => {
     const $row = $(`
@@ -2895,7 +2959,7 @@ const renderStoreInfo = (dataStoreInfo, color = '') => {
   return $container;
 };
 
-const renderPolicyPage = (dataPolicyPage, color = '') => {
+const renderPolicyPage = (dataPolicyPage, color = "") => {
   const { title, styleTitle, listItem } = dataPolicyPage;
 
   const titleHtml = `
@@ -2920,11 +2984,11 @@ const renderPolicyPage = (dataPolicyPage, color = '') => {
             return `<span>${part.text}</span>`;
           }
         })
-        .join(' ');
+        .join(" ");
 
       return `<p class="item-policy">${contentHtml}</p>`;
     })
-    .join('');
+    .join("");
 
   return `
     <div class="policy-page">
@@ -2936,7 +3000,7 @@ const renderPolicyPage = (dataPolicyPage, color = '') => {
   `;
 };
 
-const renderSocialLink = (data, color = '') => {
+const renderSocialLink = (data, color = "") => {
   const address = encodeURIComponent(data.mapLocation.address);
   return `
     <div class="map-wrapper"
@@ -2984,7 +3048,7 @@ function renderPromotionItemSide(dataProm) {
       </div>
     </div>`;
 }
-const renderPromotionItemPage = (dataProm, extraClass = '') => {
+const renderPromotionItemPage = (dataProm, extraClass = "") => {
   return `
     <div class="item-promotion-page ${extraClass}">
       <div class="right-promotion-item">
@@ -3022,7 +3086,9 @@ function renderExpandTitle(item) {
   const $title = $('<div class="expend-title"></div>');
 
   $title.append(item.iconLeft);
-  $title.append(`<p class="text-uppercase bold-medium-14 mb-0">${item.value}</p>`);
+  $title.append(
+    `<p class="text-uppercase bold-medium-14 mb-0">${item.value}</p>`
+  );
   $title.append(item.iconRight);
 
   return $title;
@@ -3119,16 +3185,16 @@ function renderUserOptions(users) {
         </div>
       `
         )
-        .join('')}
+        .join("")}
     </div>
   `;
 }
 
 function renderSelectedUsers(userSelected) {
   // Chưa có user thì return rỗng
-  if (!userSelected || Object.keys(userSelected).length === 0) return '';
+  if (!userSelected || Object.keys(userSelected).length === 0) return "";
 
-  const { name = 'Name user', image = '' } = userSelected;
+  const { name = "Name user", image = "" } = userSelected;
 
   return `
     <div class="item-user">
@@ -3174,16 +3240,20 @@ $(document).ready(function () {
     dataWeb,
   } = onlineStore.load();
   // variable local
-  let colorPrimary = configThemeColor.colorTheme.find((item) => item.type === 'PRIMARY');
-  let colorSecondary = configThemeColor.colorTheme.find((item) => item.type === 'SECONDARY');
+  let colorPrimary = configThemeColor.colorTheme.find(
+    (item) => item.type === "PRIMARY"
+  );
+  let colorSecondary = configThemeColor.colorTheme.find(
+    (item) => item.type === "SECONDARY"
+  );
 
-  const $wrapList = $('.wrap-list-templates');
-  const $wrapContainerDeploy = $('.container-deploy');
+  const $wrapList = $(".wrap-list-templates");
+  const $wrapContainerDeploy = $(".container-deploy");
   $wrapContainerDeploy.empty();
 
   // ======= *BEGIN POPUP templates detail
-  $(document).on('click', '.image-templates', function () {
-    const id = $(this).closest('.wrap-item-templates').data('id');
+  $(document).on("click", ".image-templates", function () {
+    const id = $(this).closest(".wrap-item-templates").data("id");
     if (id) {
       showTemplatePopup(
         id,
@@ -3197,71 +3267,74 @@ $(document).ready(function () {
   });
 
   // **** BEGIN Sự kiện bên trái template
-  $(document).on('click', '.item-option-change .btn-option', function () {
+  $(document).on("click", ".item-option-change .btn-option", function () {
     const $clickedBtn = $(this);
-    const $wrapItemOption = $clickedBtn.closest('.wrap-item-option');
-    const $optionContent = $wrapItemOption.find('.option-content');
-    const $icon = $clickedBtn.find('i');
-    const $itemOptionChange = $clickedBtn.parent('.item-option-change');
+    const $wrapItemOption = $clickedBtn.closest(".wrap-item-option");
+    const $optionContent = $wrapItemOption.find(".option-content");
+    const $icon = $clickedBtn.find("i");
+    const $itemOptionChange = $clickedBtn.parent(".item-option-change");
 
-    const isSelfOpen = $clickedBtn.hasClass('active');
+    const isSelfOpen = $clickedBtn.hasClass("active");
 
-    const clickedId = $optionContent.attr('id');
+    const clickedId = $optionContent.attr("id");
 
     // ⚠️ Check nếu option đang mở là gift-card hoặc membership
-    const currentlyOpened = $('.option-content.expanded');
-    const currentlyOpenedId = currentlyOpened.attr('id');
+    const currentlyOpened = $(".option-content.expanded");
+    const currentlyOpenedId = currentlyOpened.attr("id");
 
     const commonOptionIds = [
-      'option-theme-color',
-      'option-info',
-      'option-side-info',
-      'option-banner',
-      'option-social',
+      "option-theme-color",
+      "option-info",
+      "option-side-info",
+      "option-banner",
+      "option-social",
     ];
     const isClickedCommonOption = commonOptionIds.includes(clickedId);
-    const isCurrentlyMembershipOrGiftCard = ['option-gift-card', 'option-membership'].includes(
-      currentlyOpenedId
-    );
+    const isCurrentlyMembershipOrGiftCard = [
+      "option-gift-card",
+      "option-membership",
+    ].includes(currentlyOpenedId);
 
     if (isClickedCommonOption && isCurrentlyMembershipOrGiftCard) {
-      if (currentlyOpenedId === 'option-gift-card') {
-        $('#toggle-gift-card').prop('checked', false).trigger('change');
-      } else if (currentlyOpenedId === 'option-membership') {
-        $('#toggle-membership').prop('checked', false).trigger('change');
+      if (currentlyOpenedId === "option-gift-card") {
+        $("#toggle-gift-card").prop("checked", false).trigger("change");
+      } else if (currentlyOpenedId === "option-membership") {
+        $("#toggle-membership").prop("checked", false).trigger("change");
       }
     }
 
     // Đóng tất cả trước
-    $('.item-option-change.active').removeClass('active');
-    $('.option-content.expanded').removeClass('expanded');
-    $('.btn-option.active')
-      .removeClass('active sub')
-      .addClass('plus')
-      .find('i')
-      .removeClass('fa-minus')
-      .addClass('fa-plus');
+    $(".item-option-change.active").removeClass("active");
+    $(".option-content.expanded").removeClass("expanded");
+    $(".btn-option.active")
+      .removeClass("active sub")
+      .addClass("plus")
+      .find("i")
+      .removeClass("fa-minus")
+      .addClass("fa-plus");
 
     if (!isSelfOpen) {
       // Nếu click vào button khác, mở cái mới
-      $optionContent.addClass('expanded');
-      $icon.removeClass('fa-plus').addClass('fa-minus');
-      $itemOptionChange.addClass('active');
-      $clickedBtn.removeClass('plus').addClass('active sub');
+      $optionContent.addClass("expanded");
+      $icon.removeClass("fa-plus").addClass("fa-minus");
+      $itemOptionChange.addClass("active");
+      $clickedBtn.removeClass("plus").addClass("active sub");
 
       // Render nếu content rỗng
       const renderMap = {
-        'option-theme-color': () => renderColorTheme(configThemeColor),
-        'option-info': () => renderInfo(info),
-        'option-side-info': () => renderSideInfor(sideInfo),
-        'option-banner': () => renderBanner(bannerPromotion),
-        'option-gift-card': () => renderGiftCardAndMembership(giftCard),
-        'option-membership': () => renderGiftCardAndMembership(membership),
-        'option-social': () => renderSocial(dataSocialPage),
+        "option-theme-color": () => renderColorTheme(configThemeColor),
+        "option-info": () => renderInfo(info),
+        "option-side-info": () => renderSideInfor(sideInfo),
+        "option-banner": () => renderBanner(bannerPromotion),
+        "option-gift-card": () => renderGiftCardAndMembership(giftCard),
+        "option-membership": () => renderGiftCardAndMembership(membership),
+        "option-social": () => renderSocial(dataSocialPage),
       };
 
       const renderFn = renderMap[clickedId];
-      const isEmpty = $optionContent.children().length === 0 && $optionContent.text().trim() === '';
+      const isEmpty =
+        $optionContent.children().length === 0 &&
+        $optionContent.text().trim() === "";
       if (renderFn && isEmpty) {
         const html = renderFn();
         $optionContent.html(html);
@@ -3271,17 +3344,17 @@ $(document).ready(function () {
 
   // -- CHANGE LOGO * xử lý chọn logo
   // Gán sự kiện khi bấm nút upload
-  $(document).on('click', '.btn-upload-logo', function () {
-    $('#input-change-logo').click();
+  $(document).on("click", ".btn-upload-logo", function () {
+    $("#input-change-logo").click();
   });
   // Xử lý khi người dùng chọn logo
-  $(document).on('change', '#input-change-logo', function (e) {
+  $(document).on("change", "#input-change-logo", function (e) {
     const file = e.target.files[0];
     if (!file) return;
 
     // Chỉ cho phép PNG
-    if (!file.type.startsWith('image/')) {
-      alert('Chỉ hỗ trợ ảnh PNG!');
+    if (!file.type.startsWith("image/")) {
+      alert("Chỉ hỗ trợ ảnh PNG!");
       return;
     }
 
@@ -3290,29 +3363,29 @@ $(document).ready(function () {
       const imgUrl = event.target.result;
 
       // Hiển thị background logo
-      $('.wrap-logo-choosed')
+      $(".wrap-logo-choosed")
         .css({
-          'background-image': `url(${imgUrl})`,
-          width: '100px',
-          height: '48px',
+          "background-image": `url(${imgUrl})`,
+          width: "100px",
+          height: "48px",
         })
-        .find('svg')
+        .find("svg")
         .remove();
       // Gán tên ảnh vào subtitle
-      $('.subtitle-change-logo span').text(`Selected: ${file.name}`);
+      $(".subtitle-change-logo span").text(`Selected: ${file.name}`);
 
       // Cập nhật logo trong data và render lại header
       dataHeaderNav.logo = imgUrl;
 
       const htmlHeader = renderNavHeaderTemplates(dataHeaderNav);
-      $('.wrap-header').html(htmlHeader);
+      $(".wrap-header").html(htmlHeader);
     };
 
     reader.readAsDataURL(file); // đọc file thành base64 URL
   });
   // -- * CHANGE COLOR * Sử lý chọn màu
-  $(document).on('click', '.item-theme', function () {
-    const index = $(this).data('index');
+  $(document).on("click", ".item-theme", function () {
+    const index = $(this).data("index");
     const item = configThemeColor.colorTheme[index];
 
     if (item.selected || item.active) {
@@ -3328,48 +3401,53 @@ $(document).ready(function () {
         item.type = removedType;
 
         // Xử lý đổi màu
-        if (removedType === 'PRIMARY') {
+        if (removedType === "PRIMARY") {
           // CẬP NHẬT MÀU
-          colorPrimary = configThemeColor.colorTheme.find((item) => item.type === 'PRIMARY');
+          colorPrimary = configThemeColor.colorTheme.find(
+            (item) => item.type === "PRIMARY"
+          );
 
           //header
           dataHeaderNav.colorActiveNav = item.color;
           dataHeaderNav.buttonBooking.bgBtn = item.color;
           dataHeaderNav.buttonBooking.border = `1px solid ${item.color}`;
           const htmlHeaderNav = renderNavHeaderTemplates(dataHeaderNav);
-          $('.wrap-header').html(htmlHeaderNav);
+          $(".wrap-header").html(htmlHeaderNav);
           //advertise
           dataAdvertise.bgAdvertise1.bgColor = item.color;
           dataAdvertise.buttonSignIn.bgColor = item.color;
           dataAdvertise.buttonSignIn.border = `1px solid ${item.color}`;
 
           const htmlAdvertise = renderAdvertisePage(dataAdvertise);
-          $('.wrap-advertise-page').html(htmlAdvertise);
+          $(".wrap-advertise-page").html(htmlAdvertise);
 
           //banner
           dataBannerPage.btnOptionBook.bgColor = item.color;
           dataBannerPage.btnOptionBook.border = `1px solid ${item.color}`;
 
           const htmlBannerPage = renderBannerPage(dataBannerPage);
-          $('.wrap-banner-page').html(htmlBannerPage);
+          $(".wrap-banner-page").html(htmlBannerPage);
 
           //btn more info
-          const $wrapBtnMore = $('.wrap-btn-more-sideinfo');
+          const $wrapBtnMore = $(".wrap-btn-more-sideinfo");
           if ($wrapBtnMore.length > 0) {
             const htmlBtnMoreInfo = renderBtnMoreInfo(colorPrimary.color);
             $wrapBtnMore.replaceWith(htmlBtnMoreInfo);
           }
 
           //store info
-          const $storeInfo = $('.store-info');
+          const $storeInfo = $(".store-info");
           if ($storeInfo.length > 0) {
-            const htmlStoreInfoPage = renderStoreInfo(dataStoreInfo, colorPrimary.color);
+            const htmlStoreInfoPage = renderStoreInfo(
+              dataStoreInfo,
+              colorPrimary.color
+            );
 
             $storeInfo.replaceWith(htmlStoreInfoPage);
           }
 
           //policy
-          const $policy = $('.policy-page');
+          const $policy = $(".policy-page");
           if ($policy.length > 0) {
             //xử lý màu trong dataPolicy
             dataPolicyPage.listItem.forEach((item) => {
@@ -3379,31 +3457,41 @@ $(document).ready(function () {
                 }
               });
             });
-            const htmlSPolicyPage = renderPolicyPage(dataPolicyPage, colorPrimary.color);
+            const htmlSPolicyPage = renderPolicyPage(
+              dataPolicyPage,
+              colorPrimary.color
+            );
 
             $policy.replaceWith(htmlSPolicyPage);
           }
 
           //social link
-          const $socialLink = $('.map-wrapper');
+          const $socialLink = $(".map-wrapper");
           if ($socialLink.length > 0) {
-            const htmlSocialLinkPage = renderSocialLink(dataSocialLink, colorPrimary.color);
+            const htmlSocialLinkPage = renderSocialLink(
+              dataSocialLink,
+              colorPrimary.color
+            );
 
             $socialLink.replaceWith(htmlSocialLinkPage);
           }
-        } else if (removedType === 'SECONDARY') {
+        } else if (removedType === "SECONDARY") {
           // CẬP NHẬT MÀU
-          colorSecondary = configThemeColor.colorTheme.find((item) => item.type === 'SECONDARY');
+          colorSecondary = configThemeColor.colorTheme.find(
+            (item) => item.type === "SECONDARY"
+          );
 
           //advertise
           dataAdvertise.bgAdvertise2.bgColor = item.color;
 
           const htmlAdvertisePage = renderAdvertisePage(dataAdvertise);
-          $('.wrap-advertise-page').html(htmlAdvertisePage);
+          $(".wrap-advertise-page").html(htmlAdvertisePage);
         }
 
         // Tìm item cũ đang giữ loại đó (PRIMARY hoặc SECONDARY)
-        const oldItem = configThemeColor.colorTheme.find((i) => i !== item && i.selected === false);
+        const oldItem = configThemeColor.colorTheme.find(
+          (i) => i !== item && i.selected === false
+        );
         if (oldItem) {
           oldItem.active = false;
           delete oldItem.selected;
@@ -3412,54 +3500,58 @@ $(document).ready(function () {
     }
 
     // Render lại
-    $('#option-theme-color').html(renderColorTheme(configThemeColor));
+    $("#option-theme-color").html(renderColorTheme(configThemeColor));
   });
   // -- * CHANGE COLOR * Hàm kiểm tra isPrimary hay isSecondary đang thiếu
   function getRemovedType() {
-    const currentPrimary = configThemeColor.colorTheme.find((i) => i.type === 'PRIMARY');
-    const currentSecondary = configThemeColor.colorTheme.find((i) => i.type === 'SECONDARY');
+    const currentPrimary = configThemeColor.colorTheme.find(
+      (i) => i.type === "PRIMARY"
+    );
+    const currentSecondary = configThemeColor.colorTheme.find(
+      (i) => i.type === "SECONDARY"
+    );
 
-    if (!currentPrimary) return 'PRIMARY';
-    if (!currentSecondary) return 'SECONDARY';
+    if (!currentPrimary) return "PRIMARY";
+    if (!currentSecondary) return "SECONDARY";
 
     return null;
   }
   // -- * INPUT, TEXTAREA: title, desc banner;
-  $(document).on('input', '#input-info', function () {
+  $(document).on("input", "#input-info", function () {
     const value = $(this).val();
     dataBannerPage.title = value;
-    $('#banner-title').text(value);
+    $("#banner-title").text(value);
   });
-  $(document).on('input', '#textarea-info', function () {
+  $(document).on("input", "#textarea-info", function () {
     const value = $(this).val();
     dataBannerPage.desc = value;
-    $('#banner-desc').text(value);
+    $("#banner-desc").text(value);
   });
 
   // --- START xử lý focus hiển thị ký tự còn lại
-  $(document).on('focus', '.input-info, .textarea-info', function () {
-    const id = $(this).attr('id');
-    const index = id.split('-').pop();
+  $(document).on("focus", ".input-info, .textarea-info", function () {
+    const id = $(this).attr("id");
+    const index = id.split("-").pop();
     const $msg = $(`#char-msg-${index}`);
-    const maxLength = $(this).attr('maxlength');
+    const maxLength = $(this).attr("maxlength");
     const currentLength = $(this).val().length;
 
     $msg.text(`Bạn còn có thể nhập ${maxLength - currentLength} ký tự`);
     $msg.show();
   });
 
-  $(document).on('input', '.input-info, .textarea-info', function () {
-    const id = $(this).attr('id');
-    const index = id.split('-').pop();
+  $(document).on("input", ".input-info, .textarea-info", function () {
+    const id = $(this).attr("id");
+    const index = id.split("-").pop();
     const $msg = $(`#char-msg-${index}`);
-    const maxLength = $(this).attr('maxlength');
+    const maxLength = $(this).attr("maxlength");
     const currentLength = $(this).val().length;
 
     $msg.text(`Bạn còn có thể nhập ${maxLength - currentLength} ký tự`);
   });
 
-  $(document).on('blur', '.input-info, .textarea-info', function () {
-    const index = $(this).attr('id').split('-').pop();
+  $(document).on("blur", ".input-info, .textarea-info", function () {
+    const index = $(this).attr("id").split("-").pop();
     $(`#char-msg-${index}`).hide();
   });
   // ---END xử lý focus hiển thị ký tự còn lại
@@ -3469,19 +3561,24 @@ $(document).ready(function () {
   // === Helpers chung ===
 
   function updateToggleState() {
-    const sections = ['#sit-promotion', '#sit-store-info', '#sit-policy', '#sit-social-link'];
+    const sections = [
+      "#sit-promotion",
+      "#sit-store-info",
+      "#sit-policy",
+      "#sit-social-link",
+    ];
 
     const anyChecked = sections.some((id) => {
-      return $(id).is(':checked');
+      return $(id).is(":checked");
     });
-    const allChecked = sections.every((id) => $(id).is(':checked'));
+    const allChecked = sections.every((id) => $(id).is(":checked"));
 
-    $('#sit-show-all').prop('checked', allChecked);
+    $("#sit-show-all").prop("checked", allChecked);
 
     // show btn more info
-    const $wrapBtnMoreSideinfo = $('.wrap-btn-more-sideinfo');
+    const $wrapBtnMoreSideinfo = $(".wrap-btn-more-sideinfo");
     if (anyChecked && $wrapBtnMoreSideinfo.length === 0) {
-      const $listInfo = $('#list-info');
+      const $listInfo = $("#list-info");
       const htmlBtnMoreInfo = renderBtnMoreInfo(colorPrimary.color);
       $listInfo.prepend(htmlBtnMoreInfo);
     } else if (!anyChecked) {
@@ -3489,27 +3586,29 @@ $(document).ready(function () {
     }
   }
   function toggleAllSideInfo(enable) {
-    $('#sit-promotion, #sit-store-info, #sit-policy, #sit-social-link')
-      .prop('checked', enable)
-      .trigger('change');
+    $("#sit-promotion, #sit-store-info, #sit-policy, #sit-social-link")
+      .prop("checked", enable)
+      .trigger("change");
   }
   // Show all
-  $(document).on('change', '#sit-show-all', function () {
-    toggleAllSideInfo($(this).is(':checked'));
+  $(document).on("change", "#sit-show-all", function () {
+    toggleAllSideInfo($(this).is(":checked"));
   });
   // Promotion
-  $(document).on('change', '#sit-promotion', function () {
-    const isChecked = $(this).is(':checked');
-    const $sideWrap = $('#si-promotion');
-    const $pageWrap = $('#item-promotion-page');
-    const $itemPromotionSelected = $('#si-promotion .item-promotion-selected');
-    const $overPromotion = $('.over-promotion');
+  $(document).on("change", "#sit-promotion", function () {
+    const isChecked = $(this).is(":checked");
+    const $sideWrap = $("#si-promotion");
+    const $pageWrap = $("#item-promotion-page");
+    const $itemPromotionSelected = $("#si-promotion .item-promotion-selected");
+    const $overPromotion = $(".over-promotion");
 
     if (isChecked) {
       // mở popup để chọn
       const html = showPopupSelectPromotion(listPromotion);
-      $('.wrap-web').append(html);
-      requestAnimationFrame(() => $('.popup-container-promotion').addClass('move-right'));
+      $(".wrap-web").append(html);
+      requestAnimationFrame(() =>
+        $(".popup-container-promotion").addClass("move-right")
+      );
     } else {
       // delete dataWeb
       dataWeb.sideInfo.promotion = {};
@@ -3522,13 +3621,15 @@ $(document).ready(function () {
   });
 
   // Store Info
-  $(document).on('change', '#sit-store-info', function () {
-    const $container = $('#store-info-page');
-    if ($(this).is(':checked')) {
+  $(document).on("change", "#sit-store-info", function () {
+    const $container = $("#store-info-page");
+    if ($(this).is(":checked")) {
       // save dataWeb
       dataWeb.sideInfo.storeInfo = dataStoreInfo;
 
-      $container.html(renderStoreInfo(dataStoreInfo, colorPrimary.color)).show();
+      $container
+        .html(renderStoreInfo(dataStoreInfo, colorPrimary.color))
+        .show();
     } else {
       // Delete dataWeb
       dataWeb.sideInfo.storeInfo = {};
@@ -3539,7 +3640,7 @@ $(document).ready(function () {
   });
 
   // Policy
-  $(document).on('change', '#sit-policy', function () {
+  $(document).on("change", "#sit-policy", function () {
     //xử lý màu trong dataPolicy
     dataPolicyPage.listItem.forEach((item) => {
       item.content.forEach((child) => {
@@ -3548,12 +3649,14 @@ $(document).ready(function () {
         }
       });
     });
-    const $container = $('#policy-page');
-    if ($(this).is(':checked')) {
+    const $container = $("#policy-page");
+    if ($(this).is(":checked")) {
       // save dataWeb
       dataWeb.sideInfo.policy = dataPolicyPage;
 
-      $container.html(renderPolicyPage(dataPolicyPage, colorPrimary.color)).show();
+      $container
+        .html(renderPolicyPage(dataPolicyPage, colorPrimary.color))
+        .show();
     } else {
       // delete dataWeb
       dataWeb.sideInfo.policy = {};
@@ -3563,13 +3666,15 @@ $(document).ready(function () {
   });
 
   // Social Link (Map)
-  $(document).on('change', '#sit-social-link', function () {
-    const $container = $('#social-link-page');
-    if ($(this).is(':checked')) {
+  $(document).on("change", "#sit-social-link", function () {
+    const $container = $("#social-link-page");
+    if ($(this).is(":checked")) {
       // save dataWeb
       dataWeb.sideInfo.socialLink = dataSocialLink;
 
-      $container.html(renderSocialLink(dataSocialLink, colorPrimary.color)).show();
+      $container
+        .html(renderSocialLink(dataSocialLink, colorPrimary.color))
+        .show();
     } else {
       // delete dataWeb
       dataWeb.sideInfo.socialLink = {};
@@ -3579,21 +3684,23 @@ $(document).ready(function () {
   });
 
   // ------- change promotion
-  $(document).on('click', '.text-change-promotion', function () {
+  $(document).on("click", ".text-change-promotion", function () {
     const html = showPopupSelectPromotion(listPromotion);
-    $('.wrap-web').append(html);
-    requestAnimationFrame(() => $('.popup-container-promotion').addClass('move-right'));
+    $(".wrap-web").append(html);
+    requestAnimationFrame(() =>
+      $(".popup-container-promotion").addClass("move-right")
+    );
   });
   // ------- Select promotion
-  $(document).on('click', '.item-promotion', function () {
-    const id = $(this).attr('id');
+  $(document).on("click", ".item-promotion", function () {
+    const id = $(this).attr("id");
     const dataPromSelected = listPromotion.item.find((i) => i.id === id);
 
     // save dataWeb
     dataWeb.sideInfo.promotion = dataPromSelected;
 
-    const $sideWrap = $('#si-promotion');
-    const $itemPromotionSelected = $('#si-promotion .item-promotion-selected');
+    const $sideWrap = $("#si-promotion");
+    const $itemPromotionSelected = $("#si-promotion .item-promotion-selected");
 
     if ($itemPromotionSelected.length !== 0) {
       $itemPromotionSelected.remove();
@@ -3602,17 +3709,17 @@ $(document).ready(function () {
       $sideWrap.append(renderPromotionItemSide(dataPromSelected)).show();
     }
 
-    if ($('.item-promotion-page').length > 0) {
-      $('.item-promotion-page').remove();
-      let classEx = '';
-      if ($('#item-promotion-page').find('.overlay-dark').length > 0) {
-        classEx = 'transparent';
+    if ($(".item-promotion-page").length > 0) {
+      $(".item-promotion-page").remove();
+      let classEx = "";
+      if ($("#item-promotion-page").find(".overlay-dark").length > 0) {
+        classEx = "transparent";
       }
 
       const htmlProPage = renderPromotionItemPage(dataPromSelected, classEx);
-      $('.wrap-item-promotion-page').append(htmlProPage);
+      $(".wrap-item-promotion-page").append(htmlProPage);
     } else {
-      $('#item-promotion-page')
+      $("#item-promotion-page")
         .html(
           `
             <div class="wrap-item-promotion-page">
@@ -3622,141 +3729,155 @@ $(document).ready(function () {
         )
         .show();
     }
-    $('.over-promotion').remove();
+    $(".over-promotion").remove();
   });
   // close promotion
-  $(document).on('click', '.btn-closepopup-promotion', function () {
+  $(document).on("click", ".btn-closepopup-promotion", function () {
     // nếu có item-promotion-selected thì khi tắt popup toggle promotion vẫn on
-    const $itemPromotionSelected = $('.item-promotion-selected');
+    const $itemPromotionSelected = $(".item-promotion-selected");
     if ($itemPromotionSelected.length > 0) {
-      $('.over-promotion').remove();
+      $(".over-promotion").remove();
     } else {
-      $('#sit-promotion').prop('checked', false).trigger('change');
-      $('.over-promotion').remove();
+      $("#sit-promotion").prop("checked", false).trigger("change");
+      $(".over-promotion").remove();
     }
     // ngược lại nếu chưa có item-promotion-selected thì toggle promotion off
   });
   // Cập nhật banner background cho wrap-item-promotion-page
-  $(document).on('change', '#select-banner-pm', function () {
-    const isChecked = $(this).is(':checked');
-    const idItemSelect = $(this).data('index');
-    const bgImgBp = bannerPromotion.find((item) => item.id === idItemSelect)?.img;
-    const $loShowbg = $('.wrap-item-promotion-page');
-    const $itemPromotionPage = $loShowbg.find('.item-promotion-page');
-
+  $(document).on("change", "#select-banner-pm", function () {
+    const isChecked = $(this).is(":checked");
+    const idItemSelect = $(this).data("index");
+    const bgImgBp = bannerPromotion.find(
+      (item) => item.id === idItemSelect
+    )?.img;
+    const $loShowbg = $(".wrap-item-promotion-page");
+    const $itemPromotionPage = $loShowbg.find(".item-promotion-page");
 
     // bỏ chọn các toggle on khác
-    $('input#select-banner-pm').not($(this)).prop('checked', false);
+    $("input#select-banner-pm").not($(this)).prop("checked", false);
     if (isChecked) {
       // add overlay + backround + css + class
-      if ($('.overlay-dark').length === 0) {
+      if ($(".overlay-dark").length === 0) {
         $loShowbg.append(`<div class="overlay-dark"></div>`);
       }
-      $itemPromotionPage.addClass('transparent');
+      $itemPromotionPage.addClass("transparent");
       $loShowbg.css({
-        'background-image': `url("${bgImgBp}")`,
-        'justify-content': 'flex-start',
-        padding: '24px 12px',
+        "background-image": `url("${bgImgBp}")`,
+        "justify-content": "flex-start",
+        padding: "24px 12px",
       });
       // Thêm vào dataWeb
       dataWeb.bannerProSelected.image = bgImgBp;
     } else {
-      $('.overlay-dark').remove();
-      $itemPromotionPage.removeClass('transparent');
+      $(".overlay-dark").remove();
+      $itemPromotionPage.removeClass("transparent");
       $loShowbg.css({
-        'background-image': '',
-        'justify-content': 'center',
-        padding: '',
+        "background-image": "",
+        "justify-content": "center",
+        padding: "",
       });
       dataWeb.bannerProSelected = {};
-
     }
   });
 
-  $(document).on('change', '#toggle-membership', function () {
-    const isChecked = $(this).is(':checked');
+  $(document).on("change", "#toggle-membership", function () {
+    const isChecked = $(this).is(":checked");
 
     if (isChecked) {
       // Tắt gift card
-      $('#toggle-gift-card').prop('checked', false).trigger('change');
-      $('.banner, .wrap-advertise-page, .list-more, .show-list-info').addClass('hide');
-      const $wrapWeb = $('.wrap-web');
+      $("#toggle-gift-card").prop("checked", false).trigger("change");
+      $(".banner, .wrap-advertise-page, .list-more, .show-list-info").addClass(
+        "hide"
+      );
+      const $wrapWeb = $(".wrap-web");
       // append layout memmbership
       const $membership = renderPageMembership(dataPageMembership);
-      const $giftCard = $('#toggle-gift-card');
+      const $giftCard = $("#toggle-gift-card");
       $wrapWeb.append($membership);
 
-      $('#page-membership').addClass('active');
+      $("#page-membership").addClass("active");
 
       setTimeout(() => {
-        const sliderEl = document.querySelector('.page-membership .slider-membership');
+        const sliderEl = document.querySelector(
+          ".page-membership .slider-membership"
+        );
         if (sliderEl) {
-          initSliderFromElement(sliderEl, '.wrap-card-membership');
+          initSliderFromElement(sliderEl, ".wrap-card-membership");
         }
       }, 0);
     } else {
-      $('.banner, .wrap-advertise-page, .list-more, .show-list-info').removeClass('hide');
-      $('.page-membership').remove();
-      $('#page-membership').removeClass('active');
+      $(
+        ".banner, .wrap-advertise-page, .list-more, .show-list-info"
+      ).removeClass("hide");
+      $(".page-membership").remove();
+      $("#page-membership").removeClass("active");
     }
   });
   // copy trên active membership và active gift card
-  $(document).on('click', '.option-content-item .btn-copy', function () {
+  $(document).on("click", ".option-content-item .btn-copy", function () {
     const $button = $(this);
-    const $textarea = $button.siblings('textarea.item-link');
+    const $textarea = $button.siblings("textarea.item-link");
 
     $textarea[0].select();
     $textarea[0].setSelectionRange(0, 99999);
 
-    const successful = document.execCommand('copy');
+    const successful = document.execCommand("copy");
 
     if (successful) {
       // Đổi tooltip
-      $button.attr('data-tooltip', 'Copied!').addClass('show-tooltip');
+      $button.attr("data-tooltip", "Copied!").addClass("show-tooltip");
 
       setTimeout(() => {
-        $button.attr('data-tooltip', 'Copy').removeClass('show-tooltip');
+        $button.attr("data-tooltip", "Copy").removeClass("show-tooltip");
       }, 1000);
     }
   });
 
   // toggle gift card
-  $(document).on('change', '#toggle-gift-card', function () {
-    const isChecked = $(this).is(':checked');
+  $(document).on("change", "#toggle-gift-card", function () {
+    const isChecked = $(this).is(":checked");
 
     if (isChecked) {
       // Tắt Membership
-      $('#toggle-membership').prop('checked', false).trigger('change');
+      $("#toggle-membership").prop("checked", false).trigger("change");
 
-      $('.banner, .wrap-advertise-page, .list-more, .show-list-info').addClass('hide');
-      const $wrapWeb = $('.wrap-web');
+      $(".banner, .wrap-advertise-page, .list-more, .show-list-info").addClass(
+        "hide"
+      );
+      const $wrapWeb = $(".wrap-web");
       const $giftCard = renderPageGiftCard(dataPageGiftCard);
       $wrapWeb.append($giftCard);
-      $('#page-giftcard').addClass('active');
+      $("#page-giftcard").addClass("active");
       // Gọi sau render
       setTimeout(() => {
-        document.querySelectorAll('.row-giftcard .slider-giftcard').forEach((sliderEl) => {
-          initSliderFromElement(sliderEl, '.wrap-card-gift');
-        });
+        document
+          .querySelectorAll(".row-giftcard .slider-giftcard")
+          .forEach((sliderEl) => {
+            initSliderFromElement(sliderEl, ".wrap-card-gift");
+          });
       }, 0);
     } else {
-      $('.banner, .wrap-advertise-page, .list-more, .show-list-info').removeClass('hide');
-      $('.page-giftcard').remove();
-      $('#page-giftcard').removeClass('active');
+      $(
+        ".banner, .wrap-advertise-page, .list-more, .show-list-info"
+      ).removeClass("hide");
+      $(".page-giftcard").remove();
+      $("#page-giftcard").removeClass("active");
     }
   });
   // toggle select social
   let dataSocialPageSelected = [];
-  $(document).on('change', '#toggle-social', function () {
+  $(document).on("change", "#toggle-social", function () {
     const $this = $(this);
-    const isChecked = $this.is(':checked');
-    const idSelected = $this.data('index');
-    const $loShowSo = $('#social-icon-page');
+    const isChecked = $this.is(":checked");
+    const idSelected = $this.data("index");
+    const $loShowSo = $("#social-icon-page");
 
     const itemSelected = dataSocialPage.find((item) => item.id === idSelected);
     if (!itemSelected) return;
 
-    const indexInSelected = dataSocialPageSelected.findIndex((item) => item.id === idSelected);
+    const indexInSelected = dataSocialPageSelected.findIndex(
+      (item) => item.id === idSelected
+    );
 
     if (isChecked && indexInSelected === -1) {
       // save dataWeb
@@ -3764,7 +3885,7 @@ $(document).ready(function () {
 
       dataSocialPageSelected.push(itemSelected);
       const htmlSocialItem = renderSocialItemPage(itemSelected);
-      $loShowSo.find('.list-social').append(htmlSocialItem);
+      $loShowSo.find(".list-social").append(htmlSocialItem);
     } else if (!isChecked && indexInSelected !== -1) {
       // delete dataWeb
       dataWeb.sideInfo.socialIcon.splice(indexInSelected, 1);
@@ -3774,39 +3895,42 @@ $(document).ready(function () {
     }
   });
   // ===== expend see more
-  $(document).on('click', '.see-all', function () {
+  $(document).on("click", ".see-all", function () {
     const $btn = $(this);
-    const $row = $btn.closest('.row-giftcard');
+    const $row = $btn.closest(".row-giftcard");
 
-    const isExpanded = $row.hasClass('see-all-mode');
+    const isExpanded = $row.hasClass("see-all-mode");
 
     if (isExpanded) {
       // Đang là "xem tất cả" → thu gọn về slider
-      $row.removeClass('see-all-mode');
-      $btn.text('See All');
+      $row.removeClass("see-all-mode");
+      $btn.text("See All");
 
       // Hiện nút slider
-      $row.find('.slider-btn').show();
+      $row.find(".slider-btn").show();
 
       // Reset transform nếu cần
-      const $track = $row.find('.slider-track');
+      const $track = $row.find(".slider-track");
       $track.css({
-        transform: '',
-        transition: '',
+        transform: "",
+        transition: "",
       });
 
       // Gọi lại slider nếu cần (nếu initSliderFromElement cần chạy lại)
-      initSliderFromElement($row.find('.slider-giftcard')[0], '.wrap-card-gift');
+      initSliderFromElement(
+        $row.find(".slider-giftcard")[0],
+        ".wrap-card-gift"
+      );
     } else {
       // Chuyển sang xem tất cả
-      $row.addClass('see-all-mode');
-      $btn.text('Collapse');
+      $row.addClass("see-all-mode");
+      $btn.text("Collapse");
 
-      $row.find('.slider-btn').hide();
-      const $track = $row.find('.slider-track');
+      $row.find(".slider-btn").hide();
+      const $track = $row.find(".slider-track");
       $track.css({
-        transform: 'none',
-        transition: 'none',
+        transform: "none",
+        transition: "none",
       });
     }
   });
@@ -3814,57 +3938,57 @@ $(document).ready(function () {
 
   // POPUP SETTING
   //====== *BEGIN Settings Popup Logic
-  $(document).on('click', '.btn-setting', function () {
+  $(document).on("click", ".btn-setting", function () {
     renderSettingsPopup();
   });
   // ==== *END POPUP templates detail
 
   // ===== *BEGIN Sự kiện trên page home template
   // toggle list service
-  $(document).on('click', '.expend-title', function () {
-    const $wrap = $(this).next('.wrap-list-more');
-    const $iconDown = $(this).find('.fa-chevron-down');
+  $(document).on("click", ".expend-title", function () {
+    const $wrap = $(this).next(".wrap-list-more");
+    const $iconDown = $(this).find(".fa-chevron-down");
 
-    if ($iconDown.hasClass('rotate-180')) {
-      $iconDown.removeClass('rotate-180');
+    if ($iconDown.hasClass("rotate-180")) {
+      $iconDown.removeClass("rotate-180");
     } else {
-      $iconDown.addClass('rotate-180');
+      $iconDown.addClass("rotate-180");
     }
-    $wrap.toggleClass('collapsed');
+    $wrap.toggleClass("collapsed");
   });
 
   // btn more
 
-  $(document).on('click', '.add-more .btn-add-more', function () {
-    const $parentBtn = $(this).closest('.add-more');
+  $(document).on("click", ".add-more .btn-add-more", function () {
+    const $parentBtn = $(this).closest(".add-more");
     $(this).hide();
-    const $selectUser = $parentBtn.find('.wrap-select-user');
-    const $btnDelete = $parentBtn.find('.btn-delete');
+    const $selectUser = $parentBtn.find(".wrap-select-user");
+    const $btnDelete = $parentBtn.find(".btn-delete");
 
-    $selectUser.css('display', 'flex').hide().fadeIn();
+    $selectUser.css("display", "flex").hide().fadeIn();
     $btnDelete.show();
   });
   // remove option select user
-  $(document).on('click', '.add-more .btn-delete', function () {
-    const $parentBtn = $(this).closest('.add-more');
+  $(document).on("click", ".add-more .btn-delete", function () {
+    const $parentBtn = $(this).closest(".add-more");
     $(this).hide();
-    const $selectUser = $parentBtn.find('.wrap-select-user');
-    const $btnAddmore = $parentBtn.find('.btn-add-more');
+    const $selectUser = $parentBtn.find(".wrap-select-user");
+    const $btnAddmore = $parentBtn.find(".btn-add-more");
 
     $selectUser.hide();
     $btnAddmore.show();
   });
   // select option user
-  $(document).on('click', '.wrap-select-user .toggle-select', function (e) {
+  $(document).on("click", ".wrap-select-user .toggle-select", function (e) {
     e.stopPropagation();
 
     const $toggle = $(this); // phần tử được click
-    const $parentN = $toggle.closest('.wrap-select-user');
+    const $parentN = $toggle.closest(".wrap-select-user");
 
-    const $wrap = $toggle.closest('.card-more');
-    const $optionList = $wrap.find('.option-select-user');
+    const $wrap = $toggle.closest(".card-more");
+    const $optionList = $wrap.find(".option-select-user");
 
-    const $iconChecked = $parentN.find('.icon-checked');
+    const $iconChecked = $parentN.find(".icon-checked");
 
     // Nếu chưa render
     if ($optionList.children().length === 0) {
@@ -3873,7 +3997,7 @@ $(document).ready(function () {
     }
 
     // Xóa dropdown cũ
-    $('.option-select-user').not($optionList).removeClass('show');
+    $(".option-select-user").not($optionList).removeClass("show");
 
     // Lấy kích thước của toggle-select
     const toggleWidth = $toggle.outerWidth();
@@ -3881,35 +4005,36 @@ $(document).ready(function () {
     const optionUserWidth = $iconChecked.outerWidth();
     const paddingCardMore = 20;
     const gapWrapSelectUser = 16;
-    const leftPosOptionList = optionUserWidth + paddingCardMore + gapWrapSelectUser;
+    const leftPosOptionList =
+      optionUserWidth + paddingCardMore + gapWrapSelectUser;
 
     // Gán lại CSS cho dropdown
     $optionList.css({
-      position: 'absolute',
-      left: leftPosOptionList + 'px',
-      width: toggleWidth + 'px',
+      position: "absolute",
+      left: leftPosOptionList + "px",
+      width: toggleWidth + "px",
       zIndex: 999,
     });
 
     // Toggle hiển thị
-    $optionList.toggleClass('show');
+    $optionList.toggleClass("show");
   });
 
   // touch out close option user
-  $(document).on('click', function () {
-    const $optionList = $(this).find('.option-select-user');
+  $(document).on("click", function () {
+    const $optionList = $(this).find(".option-select-user");
     $optionList.empty();
-    $('.option-select-user').removeClass('show');
+    $(".option-select-user").removeClass("show");
   });
 
   // gắn user selected
-  $(document).on('click', '.item-user', function (e) {
+  $(document).on("click", ".item-user", function (e) {
     e.stopPropagation();
-    const name = $(this).find('.full-name').text();
-    const $wrap = $(this).closest('.card-more');
+    const name = $(this).find(".full-name").text();
+    const $wrap = $(this).closest(".card-more");
 
-    $wrap.find('#full-name-selected').text(name);
-    $wrap.find('.option-select-user').removeClass('show');
+    $wrap.find("#full-name-selected").text(name);
+    $wrap.find(".option-select-user").removeClass("show");
   });
 
   // ===== *END Sự kiện trên page home template
@@ -3926,55 +4051,55 @@ $(document).ready(function () {
 
   renderTemplates($wrapList, dataTemplates, null);
 
-  const $headerTemplatesRight = $('.header-templates-right');
-  const $iconTemplatesGal = $('#icon-templates-gallery');
+  const $headerTemplatesRight = $(".header-templates-right");
+  const $iconTemplatesGal = $("#icon-templates-gallery");
 
-  $headerTemplatesRight.on('click', function () {
+  $headerTemplatesRight.on("click", function () {
     isCollapsed = !isCollapsed;
     renderTemplates($wrapList, dataTemplates, null);
-    $wrapList.toggleClass('collapsed', isCollapsed);
+    $wrapList.toggleClass("collapsed", isCollapsed);
     // tính animation chiều cao templates
     animateHeight($wrapList, !isCollapsed);
 
     // render table
     if (isCollapsed) {
       renderTableDeploy();
-      $iconTemplatesGal.addClass('rotate-180');
+      $iconTemplatesGal.addClass("rotate-180");
     } else {
       $wrapContainerDeploy.empty();
-      $iconTemplatesGal.removeClass('rotate-180');
+      $iconTemplatesGal.removeClass("rotate-180");
     }
   });
 
   // Search & filter
-  $(document).on('click', '.search-recent', function (e) {
+  $(document).on("click", ".search-recent", function (e) {
     e.stopPropagation();
-    $(this).addClass('focus-search');
+    $(this).addClass("focus-search");
   });
   // -- lick ra ngoài ẩn input search
-  $(document).on('click', '.left-search-filter', function (e) {
-    const $searchRecent = $(this).find('.search-recent')[0];
+  $(document).on("click", ".left-search-filter", function (e) {
+    const $searchRecent = $(this).find(".search-recent")[0];
 
     if (!$searchRecent.contains(e.target)) {
-      $(`.search-recent`).removeClass('focus-search');
+      $(`.search-recent`).removeClass("focus-search");
     }
   });
 
   // Toggle khi click vào filter-recent
-  $(document).on('click', '.filter-recent', function (e) {
+  $(document).on("click", ".filter-recent", function (e) {
     e.stopPropagation(); // Ngăn lan ra ngoài document
-    const $itemFilter = $(this).find('.item-filter');
+    const $itemFilter = $(this).find(".item-filter");
     $itemFilter.toggle();
   });
 
   // Ngăn không ẩn nếu click vào chính .item-filter
-  $(document).on('click', '.item-filter', function (e) {
+  $(document).on("click", ".item-filter", function (e) {
     e.stopPropagation(); // Ngăn lan ra ngoài document
   });
 
   // Ẩn nếu click ra ngoài vùng filter-recent hoặc item-filter
-  $(document).on('click', function () {
-    $('.item-filter').hide();
+  $(document).on("click", function () {
+    $(".item-filter").hide();
   });
 
   // Sort table (colum header-date)
@@ -3988,7 +4113,7 @@ $(document).ready(function () {
     });
   }
 
-  $(document).on('click', '.header-date', function () {
+  $(document).on("click", ".header-date", function () {
     const store = onlineStore.load();
     const dataTable = store.dataTable;
 
@@ -3998,16 +4123,19 @@ $(document).ready(function () {
 
     const newBodyTableSort = renderBody(dataTable.body);
 
-    $('table.custom-table tbody').replaceWith(newBodyTableSort);
+    $("table.custom-table tbody").replaceWith(newBodyTableSort);
 
     // reset màu icon
-    $('.icon-sort-date path').attr('stroke', '#747474');
+    $(".icon-sort-date path").attr("stroke", "#747474");
     if (isAscending) {
-      $('.icon-sort-date .sort-up-1, .icon-sort-date .sort-up-2').attr('stroke', 'var(--bs-main)');
+      $(".icon-sort-date .sort-up-1, .icon-sort-date .sort-up-2").attr(
+        "stroke",
+        "var(--bs-main)"
+      );
     } else {
-      $('.icon-sort-date .sort-down-1, .icon-sort-date .sort-down-2').attr(
-        'stroke',
-        'var(--bs-main)'
+      $(".icon-sort-date .sort-down-1, .icon-sort-date .sort-down-2").attr(
+        "stroke",
+        "var(--bs-main)"
       );
     }
   });
@@ -4015,7 +4143,7 @@ $(document).ready(function () {
   // ===== *END TEMPLATE NGOÀI
 
   // Sử lý lưu dữ liệu templates
-  $(document).on('click', '#save-template', function () {
+  $(document).on("click", "#save-template", function () {
     // header
     dataWeb.dataHeaderNav = dataHeaderNav;
 
@@ -4027,7 +4155,7 @@ $(document).ready(function () {
     //banner
     dataWeb.banner = dataBannerPage;
 
-    console.log('dataWeb: ', dataWeb);
-    localStorage.setItem('dataTemplate', JSON.stringify(dataWeb));
+    console.log("dataWeb: ", dataWeb);
+    localStorage.setItem("dataTemplate", JSON.stringify(dataWeb));
   });
 });

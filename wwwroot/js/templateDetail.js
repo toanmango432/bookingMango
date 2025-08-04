@@ -9,7 +9,7 @@
   if(findAbout) {
     findAbout.optionItems = optionItems;
   }
-  // Thêm option chọn trong banner
+  // Thêm service add on cho item service trong service
 
 
   const typeBookingEnum = {
@@ -47,6 +47,7 @@
       let listDataService = [
         {
           item: {
+            id: 1,
             iconLeft: `
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M7.16625 11.4688H13.4263V2.46875H1.90625V21.9688H13.4263V12.9688H7.16625V11.4688Z" fill="#E27303" />
@@ -59,24 +60,90 @@
             `,
             listItem: [
               {
+                id: 1,
                 title: 'Essential Pedicure 1',
                 subTitle: 'Hydrating Pedi Salt Soak 1',
                 priceRental: '$45',
                 timetext: '40min',
                 userSelected: {},
+                listOptionAddOn: [
+                  {
+                    id: 1,
+                    title: 'Gel Extensions',
+                    price: '$40.00',
+                    timedura: '40min',
+                  },
+                  {
+                    id: 2,
+                    title: 'Gel Extensions Removal',
+                    price: '$40.00',
+                    timedura: '40min',
+                  },
+                  {
+                    id: 3,
+                    title: 'Gel Removal',
+                    price: '$40.00',
+                    timedura: '40min',
+                  },
+                  {
+                    id: 4,
+                    title: 'Basic Design (All Nails)',
+                    price: '$40.00',
+                    timedura: '40min',
+                  },
+                  {
+                    id: 5,
+                    title: 'Set up Design (All Nails)',
+                    price: '$40.00',
+                    timedura: '40min',
+                  },
+                  {
+                    id: 6,
+                    title: 'Basic Design (Per Nail)',
+                    price: '$40.00',
+                    timedura: '40min',
+                  },
+                  {
+                    id: 7,
+                    title: 'Foil Design (Per Nail)',
+                    price: '$40.00',
+                    timedura: '40min',
+                  },
+                  {
+                    id: 8,
+                    title: 'Step up Design (Per Nail)',
+                    price: '$40.00',
+                    timedura: '40min',
+                  },
+                  {
+                    id: 9,
+                    title: 'Back Massage',
+                    price: '$40.00',
+                    timedura: '40min',
+                  },
+                  {
+                    id: 10,
+                    title: 'Hand Massage',
+                    price: '$40.00',
+                    timedura: '40min',
+                  }
+                ]
               },
               {
+                id: 2,
                 title: 'Essential Pedicure 2',
                 subTitle: 'Hydrating Pedi Salt Soak 1',
                 priceRental: '$45',
                 timetext: '40min',
                 userSelected: {},
+                listOptionAddOn:[],
               },
             ],
           },
         },
         {
           item: {
+            id: 2,
             iconLeft: `
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M7.16625 11.4688H13.4263V2.46875H1.90625V21.9688H13.4263V12.9688H7.16625V11.4688Z" fill="#E27303" />
@@ -89,18 +156,22 @@
             `,
             listItem: [
               {
+                id: 1,
                 title: 'Essential Pedicure 1',
                 subTitle: 'Hydrating Pedi Salt Soak 1',
                 priceRental: '$45',
                 timetext: '40min',
                 userSelected: {},
+                listOptionAddOn:[],
               },
               {
+                id: 2,
                 title: 'Essential Pedicure 2',
                 subTitle: 'Hydrating Pedi Salt Soak 1',
                 priceRental: '$45',
                 timetext: '40min',
                 userSelected: {},
+                listOptionAddOn:[],
               },
             ],
           },
@@ -283,7 +354,7 @@
                     ${item.text}
                   </span>
                 `;
-              })}
+              }).join('')}
             </p>
           </div>
           <div class="wrap-signin">
@@ -323,7 +394,6 @@
       <div class="list-option-booking hidden">
         ${content.map(item => {
           if (item.type === optionBooked) return '';
-          console.log("item.type: ", item.type);
           return `
             <button class="option-item-booking" data-type="${item.type}"
               style="
@@ -417,7 +487,7 @@
     const { greeting, brand, title, desc, bookFor,optionBooked, btnOptionBook, image } = dataBannerPage;
     const imgBannerLeft1 = '/assets/images/banner-template/image-banner-left-1.png';
     const imgBannerLeft2 = '/assets/images/banner-template/cloud-left.png';
-    console.log("btn option: ", btnOptionBook.content.find(x => x.type === optionBooked));
+
     return `
       <div class="banner">
         <div class="content-banner">
@@ -433,7 +503,7 @@
                 ${desc}
               </p>
             </div>
-            <div class="book-appoint">
+            <div id="targetBlock" class="book-appoint">
               <div class="text-book-for">
                   <span class="book-for">${bookFor}</span>
                   <i class="fa-solid fa-arrow-right"></i>
@@ -458,29 +528,31 @@
   }
 
   // list services page
-  function renderListService(dataList, containerSelector = '.list-more', dataBooking, currentUserId) {
-    const $container = $(containerSelector);
-    $container.empty();
+    function renderListService(dataList, containerSelector = '.list-more', dataBooking, currentUserId) {
+      const $container = $(containerSelector);
+      $container.empty();
 
-    dataList.forEach(({ item }, i) => {
-      const $moreItem = $(
-        `<div class="more-item" style="z-index: ${100 + item.listItem.length - i}"></div>`
-      );
+      dataList.forEach(({ item }, i) => {
+        const $moreItem = $(
+          `<div class="more-item" data-id=${item.id} style="z-index: ${100 + item.listItem.length - i}"></div>`
+        );
 
-      const $expandTitle = renderExpandTitle(item);
-      $moreItem.append($expandTitle);
-      console.log("dataBooking: ", dataBooking)
+        const $expandTitle = renderExpandTitle(item);
+        $moreItem.append($expandTitle);
 
-      const $listCards = item.listItem.map(cardItem => renderServiceCard(cardItem, dataBooking, currentUserId));
-      const $wrapper = $(`<div class="wrap-list-more"></div>`).append($listCards);
-      $moreItem.append($wrapper);
+        const $listCards = item.listItem.map(cardItem => renderServiceCard(cardItem, dataBooking, currentUserId));
+        const $wrapper = $(`<div class="wrap-list-more"></div>`).append($listCards);
+        console.log("item.listItem: ", item.listItem);
+        const $ListAddOn = item.listItem.map(cardItem =>renderListAddOn(item, cardItem.id));
+        $wrapper.append($ListAddOn);
+        $moreItem.append($wrapper);
 
-      $container.append($moreItem);
-    });
-  }
+        $container.append($moreItem);
+      });
+    }
     // title card service
     function renderExpandTitle(item) {
-      const $title = $('<div class="expend-title"></div>');
+      const $title = $('<div class="expand-title"></div>');
 
       $title.append(item.iconLeft);
       $title.append(`<p class="text-uppercase bold-medium-14 mb-0">${item.value}</p>`);
@@ -489,24 +561,26 @@
       return $title;
     }
     // item card service
-    function renderServiceCard(item, dataBooking, currentUserId) {
-      const $card = $('<div class="card-more"></div>');
+    function renderServiceCard(cardItem, dataBooking, currentUserId) {
+      const $cardMore = $(`
+          <div class="card-more">
+          </div>
+        `);
 
       const $top = $(`
         <div class="top-card">
           <div class="left-card">
-            <p class="bold-medium-14">${item.title}</p>
-            <p class="thin-mid-14">${item.subTitle}</p>
+            <p class="bold-medium-14">${cardItem.title}</p>
+            <p class="thin-mid-14">${cardItem.subTitle}</p>
           </div>
           <div class="right-card">
-            <p class="bold-medium-20">${item.priceRental}</p>
-            <p class="bold-mid-12">${item.timetext}</p>
+            <p class="bold-medium-20">${cardItem.priceRental}</p>
+            <p class="bold-mid-12">${cardItem.timetext}</p>
           </div>
         </div>
       `);
-        console.log("dataBooking: ", dataBooking);
       const user = dataBooking.users.find(u => u.id === currentUserId);
-      const isSelected = user && user.services.some(s => s.title === item.title);
+      const isSelected = user && user.services.some(s => s.title === cardItem.title);
 
       const $listUser = $(`
         <div class="option-select-user">
@@ -514,9 +588,10 @@
         </div>
       `);
 
-      const $actions = renderActionButtons(item, dataBooking, currentUserId, isSelected);
-      $card.append($top, $actions, $listUser);
-      return $card;
+      const $actions = renderActionButtons(cardItem, dataBooking, currentUserId, isSelected);
+
+      $cardMore.append($top, $actions, $listUser);
+      return $cardMore;
     }
     // Render danh sách user để chọn
     function renderUserOptions(users) {
@@ -557,13 +632,13 @@
       const $wrap = $('<div class="add-more"></div>');
 
       const $add = $(`
-        <button class="btn-add-more" style="display: ${isSelected ? 'none' : 'block'}">
+        <button class="btn-add-more">
           <i class="fa-solid fa-plus"></i>
         </button>
       `);
 
       const $wrapSelect = $(`
-        <div class="wrap-select-user" style="display: ${isSelected ? 'flex' : 'none'}">
+        <div class="wrap-select-user" >
           <div class="icon-checked">
             <i class="fa-solid fa-check"></i>
           </div>
@@ -575,7 +650,7 @@
       `);
 
       const $del = $(`
-        <button class="btn-delete" style="display: ${isSelected ? 'block' : 'none'}">
+        <button class="btn-delete">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
             <path d="M14 10.0605V17.0605M10 10.0605V17.0605M6 6.06055V17.8605C6 18.9807 6 19.5403 6.21799 19.9681C6.40973 20.3445 6.71547 20.651 7.0918 20.8428C7.5192 21.0605 8.07899 21.0605 9.19691 21.0605H14.8031C15.921 21.0605 16.48 21.0605 16.9074 20.8428C17.2837 20.651 17.5905 20.3445 17.7822 19.9681C18 19.5407 18 18.9816 18 17.8636V6.06055M6 6.06055H8M6 6.06055H4M8 6.06055H16M8 6.06055C8 5.12866 8 4.66295 8.15224 4.29541C8.35523 3.80535 8.74432 3.41578 9.23438 3.21279C9.60192 3.06055 10.0681 3.06055 11 3.06055H13C13.9319 3.06055 14.3978 3.06055 14.7654 3.21279C15.2554 3.41578 15.6447 3.80535 15.8477 4.29541C15.9999 4.66295 16 5.12867 16 6.06055M16 6.06055H18M18 6.06055H20" stroke="#ECB155" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
@@ -584,6 +659,61 @@
 
       $wrap.append($add, $wrapSelect, $del);
       return $wrap;
+    }
+    // render list add on
+    function renderListAddOn (dataItem, idItemChild, isFull=false) {
+
+      const titleAddOnSelected = dataItem.value;
+      const findItemChild = dataItem.listItem.find((i) => i.id === idItemChild);
+      const listOptionAddOn = findItemChild.listOptionAddOn;
+      if(!findItemChild || listOptionAddOn.length ===0 ) return '';
+
+      const limitList = isFull ? listOptionAddOn : listOptionAddOn.slice(0, 4);
+
+      console.log("limit: ", limitList)
+
+      return `
+        <div class="wrap-addOn" data-id=${dataItem.id}>
+          <div class="container-addOn">
+            <div class="expand-addOn">
+              <i class="fa-solid fa-chevron-up"></i>
+              <h2>Show more</h2>
+            </div>
+            <div class="service-addOn-selected">
+              <p>
+                <span class="sp-addOn-1">Suggested add-ons</span>
+                (<span class="sp-addOn-2">
+                  <strong>
+                    ${titleAddOnSelected}
+                  </strong>
+                </span>)
+              </p>
+            </div>
+            <div class="wrap-list-addOn" data-id="${idItemChild}">
+              ${limitList.map((item) => {
+                return `
+                  <div class="item-addOn" data-id=${item.id}>
+                    <div class="right-item-addOn">
+                      <h2 class="text-right-item-addOn">
+                        ${item.title}
+                      </h2>
+                    </div>
+                    <div class="left-item-addOn">
+                      <div class="price-timedura">
+                        <h2 class="text-price-item-addOn">${item.price}</h2>
+                        <p class="timedura">${item.timedura}</p>
+                      </div>
+                      <div class="checkbox-addOn">
+                        <div class="circle-addOn"></div>
+                      </div>
+                    </div>
+                  </div>
+                `
+              }).join('')}
+            </div>
+          </div>
+        </div>
+      `
     }
   // render infor store
     // render promotion shop
@@ -872,7 +1002,117 @@
     });
   }
 
-
+  // render sumary
+  function renderSumary (dataSumary) {
+    const $containerSumary = $('.wrap-sumary');
+    console.log("wrapsum: ", $containerSumary);
+    $containerSumary.empty();
+    const htmlSumary =  `
+      <div class="container-sumary">
+        <div class="header-sumary">
+          <h2 class="title-header-sumary text-uppercase">Booking sumary</h2>
+          <p class="sub-time-sumary">14:00, Thu, May 14 2025</p>
+        </div>
+        <div class="wrap-list-sumary">
+          <div class="item-sumary">
+            <div class="top-item-sumary">
+              <div class="left-top-item-sumary">
+                <button class="edit-sumary">
+                  <i class="fa-solid fa-pen-to-square"></i>
+                  Edit
+                </button>
+                <button class="delete-sumary">
+                  <i class="fa-solid fa-trash"></i>
+                  Delete
+                </button>
+              </div>
+              <div class="right-top-item-sumary">
+                <button class="btn-upload-image">Upload Image</button>
+              </div>
+            </div>
+            <div class="body-item-sumary">
+              <div class="wrap-item-content">
+                <div class="item-content">
+                  <div class="p-wrap">
+                    <p class="text-name-service">Classic Mani</p>
+                    <p class="text-name-tech">Next Available</p>
+                    <p class="text-time-dura">20 mins</p>
+                    <p class="text-price-serice">$ 10.00</p>
+                  </div>
+                </div>
+              </div>
+              <div class="wrap-item-content">
+                <div class="item-content">
+                  <div class="p-wrap">
+                    <p class="text-name-service">Classic Mani</p>
+                    <p class="text-name-tech">Next Available</p>
+                    <p class="text-time-dura">20 mins</p>
+                    <p class="text-price-serice">$ 10.00</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="total-pay">
+              <p class="text-total-amount">Total (2)</p>
+              <p class="text-total-times">60 mins</p>
+              <p class="text-total-price">$ 35</p>
+            </div>
+          </div>
+          <div class="item-sumary">
+            <div class="top-item-sumary">
+              <div class="left-top-item-sumary">
+                <button class="edit-sumary">
+                  <i class="fa-solid fa-pen-to-square"></i>
+                  Edit
+                </button>
+                <button class="delete-sumary">
+                  <i class="fa-solid fa-trash"></i>
+                  Delete
+                </button>
+              </div>
+              <div class="right-top-item-sumary">
+                <button class="btn-upload-image">Upload Image</button>
+              </div>
+            </div>
+            <div class="body-item-sumary">
+              <div class="wrap-item-content">
+                <div class="item-content">
+                  <div class="p-wrap">
+                    <p class="text-name-service">Classic Mani</p>
+                    <p class="text-name-tech">Next Available</p>
+                    <p class="text-time-dura">20 mins</p>
+                    <p class="text-price-serice">$ 10.00</p>
+                  </div>
+                </div>
+              </div>
+              <div class="wrap-item-content">
+                <div class="item-content">
+                  <div class="p-wrap">
+                    <p class="text-name-service">Classic Mani</p>
+                    <p class="text-name-tech">Next Available</p>
+                    <p class="text-time-dura">20 mins</p>
+                    <p class="text-price-serice">$ 10.00</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="total-pay">
+              <p class="text-total-amount">Total (2)</p>
+              <p class="text-total-times">60 mins</p>
+              <p class="text-total-price">$ 35</p>
+            </div>
+          </div>
+        </div>
+        <div class="confirm-booking">
+          <button class="btn-confirm-booking">
+            Confirm
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+    `
+    $containerSumary.append(htmlSumary);
+  }
 
   // popup cart user
   function renderPopupCart(dataCart) {
@@ -959,7 +1199,6 @@
             <button id="next">&#x25B6;</button>
           </div>
           <div class="calendar-grid" id="days">
-            <!-- days will be rendered here -->
           </div>
         </div>
         <div class="timeslot">
@@ -969,10 +1208,10 @@
             <h2>Scroll to see more time slots</h2>
           </div>
         </div>
-      </div>`
+      </div>`,
+      `<div id="triggerBlock" class="wrap-sumary"></div>`
     );
-    const { dataBooking, dataGuest } = dataBlock; // Lấy dataBooking từ dataBlock
-    console.log("dataBlock: ", dataBlock);
+    const { dataBooking, dataGuest } = dataBlock;
     if (banner.optionBooked === 'GUESTS') {
       renderCountControls('.wrap-control', dataGuest, dataBooking);
       renderGuestInputs('.wrap-input-guests', dataGuest, dataBooking);
@@ -1240,7 +1479,7 @@
           renderListService(listDataService, '.list-more', dataBooking, currentUserId);
         });
     // Xử lý select services
-    $(document).on('click', '.expend-title', function () {
+    $(document).on('click', '.expand-title', function () {
       const $wrap = $(this).next('.wrap-list-more');
       const $iconDown = $(this).find('.fa-chevron-down');
 
@@ -1257,9 +1496,11 @@
       const $card = $parentBtn.closest('.card-more');
       const title = $card.find('.bold-medium-14').text();
       const user = dataBooking.users.find(u => u.id === currentUserId);
+
       if (user) {
         user.services.push({ title });
       }
+      console.log("user: ", user);
       $(this).hide();
       const $selectUser = $parentBtn.find('.wrap-select-user');
       const $btnDelete = $parentBtn.find('.btn-delete');
@@ -1346,6 +1587,39 @@
       $wrap.find('#full-name-selected').text(name);
       $wrap.find('.option-select-user').removeClass('show');
     });
+    // toggle addOn service
+    $(document).on('click', '.expand-addOn', function() {
+      console.log("check: ")
+      const $wrapAddOn = $(this).closest('.wrap-addOn');
+      const dataId = parseInt($wrapAddOn.attr('data-id'));
+      const $wrapListAddOn = $wrapAddOn.find('.wrap-list-addOn');
+      const childId = parseInt($wrapListAddOn.attr('data-id'));
+
+      const isExpanded = $(this).hasClass('expanded');
+
+      const dataItem = listDataService.find(({item}) => item.id === dataId);
+      if(!dataItem) return;
+
+      const newListAddOn = renderListAddOn(dataItem.item, childId, !isExpanded);
+
+      $wrapAddOn.replaceWith(newListAddOn);
+
+      if(!isExpanded) {
+        console.log("check: ", isExpanded);
+        $(`[data-id=${dataId}].wrap-addOn .expand-addOn`).addClass('expanded')
+      }
+    })
+
+    // selected add-on option
+    $(document).on('click', '.checkbox-addOn', function(){
+      const $this = $(this);
+      $('.checkbox-addOn').removeClass("selected");
+      $this.addClass('selected');
+
+      // Thêm add on đã chọn vào data
+    })
+
+  // START: Xử lý option trên banner
     // Xử lý nút Copy Service
     $(document).on('click', '.btn-copy-service', function (e) {
       e.stopPropagation();
@@ -1409,4 +1683,41 @@
 
     // Hiển thị time slots cho ngày hôm nay
     renderTimeSlotsForDate(selectedDate, dataBooking, currentUserId);
+
+    // confirm booking
+    renderSumary({});
+
+
+    // test btn scroll
+    const $btn = $('#scrollToTopBtn');
+    const $trigger = $('#triggerBlock');
+    const $target = $('#targetBlock');
+    console.log('$btn:', $btn.length, 'trigger:', $trigger.length, 'target:', $target.length);
+
+    // Hàm kiểm tra trigger có trong khung nhìn chưa
+    function isInViewport($el) {
+      const rect = $el[0].getBoundingClientRect();
+      return rect.top < window.innerHeight && rect.bottom > 0;
+    }
+
+    // Khi scroll: kiểm tra có nhìn thấy block trigger chưa
+    $('.wrap-home-templates').on('scroll', function () {
+     console.log('$btn:', $btn.length, 'trigger:', $trigger.length, 'target:', $target.length);
+
+      if (isInViewport($trigger)) {
+        $btn.fadeIn();
+      } else {
+        $btn.fadeOut();
+      }
+    });
+
+    // Khi click nút → scroll lên block target
+    $btn.on('click', function () {
+      const $container = $('.wrap-home-templates');
+      const scrollTopValue = $target.position().top;
+
+      $container.animate({
+        scrollTop: scrollTopValue
+      }, 500);
+    });
   });
