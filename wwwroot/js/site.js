@@ -1021,7 +1021,7 @@ const onlineStore = {
       colorActiveNav: '#04972f',
       iconUser: `
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="19" viewBox="0 0 18 19" fill="none">
-          <path d="M15 15.8066C15 13.7356 12.3137 12.0566 9 12.0566C5.68629 12.0566 3 13.7356 3 15.8066M9 9.80664C6.92893 9.80664 5.25 8.12771 5.25 6.05664C5.25 3.98557 6.92893 2.30664 9 2.30664C11.0711 2.30664 12.75 3.98557 12.75 6.05664C12.75 8.12771 11.0711 9.80664 9 9.80664Z" stroke="#061315" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M15 15.8066C15 13.7356 12.3137 12.0566 9 12.0566C5.68629 12.0566 3 13.7356 3 15.8066M9 9.80664C6.92893 9.80664 5.25 8.12771 5.25 6.05664C5.25 3.98557 6.92893 2.30664 9 2.30664C11.0711 2.30664 12.75 3.98557 12.75 6.05664C12.75 8.12771 11.0711 9.80664 9 9.80664Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
       `,
       buttonBooking: {
@@ -1034,13 +1034,13 @@ const onlineStore = {
       cart: {
         icon: `
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="19" viewBox="0 0 18 19" fill="none">
-            <path d="M5.625 5.81269V5.08519C5.625 3.39769 6.9825 1.74019 8.67 1.58269C10.68 1.38769 12.375 2.97019 12.375 4.94269V5.97769" stroke="black" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
-            <path d="M6.7506 16.5605H11.2506C14.2656 16.5605 14.8056 15.353 14.9631 13.883L15.5256 9.38305C15.7281 7.55305 15.2031 6.06055 12.0006 6.06055H6.0006C2.7981 6.06055 2.2731 7.55305 2.4756 9.38305L3.0381 13.883C3.1956 15.353 3.7356 16.5605 6.7506 16.5605Z" stroke="black" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
-            <path d="M11.6209 9.06055H11.6276" stroke="black" stroke-linecap="round" stroke-linejoin="round" />
-            <path d="M6.37088 9.06055H6.37762" stroke="black" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M5.625 5.81269V5.08519C5.625 3.39769 6.9825 1.74019 8.67 1.58269C10.68 1.38769 12.375 2.97019 12.375 4.94269V5.97769" stroke="currentColor" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M6.7506 16.5605H11.2506C14.2656 16.5605 14.8056 15.353 14.9631 13.883L15.5256 9.38305C15.7281 7.55305 15.2031 6.06055 12.0006 6.06055H6.0006C2.7981 6.06055 2.2731 7.55305 2.4756 9.38305L3.0381 13.883C3.1956 15.353 3.7356 16.5605 6.7506 16.5605Z" stroke="currentColor" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M11.6209 9.06055H11.6276" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M6.37088 9.06055H6.37762" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
         `,
-        quatity: '1',
+        quatity: '0',
         bgColor: '#ea001e',
         color: 'white',
       },
@@ -1089,8 +1089,13 @@ const onlineStore = {
       desc: `We hope that your visit will be a relaxing and wonderful experience.
 Please do not hesitate to share your opinions with the salon manager so that your next visit at MIA will be an even better experience.`,
       bookFor: 'Book Appointment for',
+      optionBooked: 'ME',
       btnOptionBook: {
-        content: 'Just me',
+        content: [
+          {text: 'Just me', type: 'ME'},
+          {text: '2 - 6 Guests', type: 'GUESTS'},
+          {text: 'Family', type: 'FAMILY'}
+        ],
         icon: `<i class="fa-solid fa-chevron-down rotate-transition"></i>`,
         color: 'white',
         bgColor: '#04972f',
@@ -1502,8 +1507,13 @@ Please do not hesitate to share your opinions with the salon manager so that you
         desc: `We hope that your visit will be a relaxing and wonderful experience.
 Please do not hesitate to share your opinions with the salon manager so that your next visit at MIA will be an even better experience.`,
         bookFor: 'Book Appointment for',
+        optionBooked: 'ME',
         btnOptionBook: {
-          content: 'Just me',
+          content: [
+          {id:'option-me', text: 'Just me', type: 'ME'},
+          {id:'option-guests', text: '2 - 6 Guests', type: 'GUESTS'},
+          {id:'option-family', text: 'Family', type: 'FAMILY'}
+        ],
           icon: `<i class="fa-solid fa-chevron-down rotate-transition"></i>`,
           color: 'white',
           bgColor: '#04972f',
@@ -1520,8 +1530,9 @@ Please do not hesitate to share your opinions with the salon manager so that you
         storeInfo: {},
         policy: {},
         socialLink: {},
+        socialIcon: [],
       },
-      socialIcon: [],
+      bannerProSelected: {}
     };
 
     return {
@@ -1562,9 +1573,9 @@ function renderTemplates($wrapList, dataTemplates, limit = null) {
 
   const listToRender = limit ? dataTemplates.slice(0, limit) : dataTemplates;
 
-  listToRender.forEach((item)=> {
+  listToRender.forEach((item) => {
     $wrapList.append(renderItemTemplate(item));
-  })
+  });
 }
 function renderItemTemplate(item) {
   return `
@@ -1692,7 +1703,7 @@ const renderColorTheme = (configThemeColor) => {
               background-color: ${color};
               height: ${height}px;
               width: ${width}px;
-              border-radius: ${borderRadius}px
+              border-radius: ${borderRadius}px;
             ">
 
             ${
@@ -1741,7 +1752,6 @@ const renderInfo = (info) => {
     })
     .join('');
 };
-
 
 const renderSideInfor = (sideInfo) => {
   if (!sideInfo || !Array.isArray(sideInfo)) return '';
@@ -2410,7 +2420,6 @@ function animateHeight($el, isExpand) {
   }
 }
 
-
 // ============= *BEGIN function template popup detail
 function showTemplatePopup(
   id,
@@ -2639,16 +2648,17 @@ function renderListService(dataList, containerSelector = '.list-more') {
   const $container = $(containerSelector);
   $container.empty();
 
-  dataList.forEach(({ item}, i) => {
-      const $moreItem = $(`<div class="more-item" style="z-index: ${100 + item.listItem.length - i}"></div>`);
+  dataList.forEach(({ item }, i) => {
+    const $moreItem = $(
+      `<div class="more-item" style="z-index: ${100 + item.listItem.length - i}"></div>`
+    );
 
     const $expandTitle = renderExpandTitle(item);
     $moreItem.append($expandTitle);
 
-      const $listCards = item.listItem.map(renderServiceCard);
-      console.log("i: ", i)
-      console.log(item.listItem.length)
-      const $wrapper = $(`<div class="wrap-list-more"></div>`).append($listCards);
+    const $listCards = item.listItem.map(renderServiceCard);
+    console.log(item.listItem.length);
+    const $wrapper = $(`<div class="wrap-list-more"></div>`).append($listCards);
     $moreItem.append($wrapper);
 
     $container.append($moreItem);
@@ -2741,15 +2751,17 @@ function renderAdvertisePage(dataAdvertise) {
             })}
           </p>
         </div>
-        <div class="text-uppercase sign-in"
-            style="
-              --bgColor-signin: ${buttonSignIn.bgColor};
-              --text-color-signin: ${buttonSignIn.color};
-              --bgColor-signin-hover: ${buttonSignIn.bgColorHover};
-              --border-signin: ${buttonSignIn.border};
-            "
-        >
-          ${buttonSignIn.content}
+        <div class="wrap-signin">
+          <div class="text-uppercase sign-in"
+              style="
+                --bgColor-signin: ${buttonSignIn.bgColor};
+                --text-color-signin: ${buttonSignIn.color};
+                --bgColor-signin-hover: ${buttonSignIn.bgColorHover};
+                --border-signin: ${buttonSignIn.border};
+              "
+          >
+            ${buttonSignIn.content}
+          </div>
         </div>
       </div>
     </div>
@@ -2757,7 +2769,7 @@ function renderAdvertisePage(dataAdvertise) {
 }
 function renderBannerPage(dataBannerPage) {
   const { greeting, brand, title, desc, bookFor, btnOptionBook, image } = dataBannerPage;
-
+  console.log('banner 2');
   return `
     <div class="banner">
       <div class="content-banner">
@@ -2782,7 +2794,7 @@ function renderBannerPage(dataBannerPage) {
                 --border-book-for: ${btnOptionBook.border};
               "
             >
-              ${btnOptionBook.content}
+              ${btnOptionBook.content[0].text}
               ${btnOptionBook.icon}
             </button>
           </div>
@@ -3186,67 +3198,76 @@ $(document).ready(function () {
 
   // **** BEGIN Sự kiện bên trái template
   $(document).on('click', '.item-option-change .btn-option', function () {
-  const $clickedBtn = $(this);
-  const $wrapItemOption = $clickedBtn.closest('.wrap-item-option');
-  const $optionContent = $wrapItemOption.find('.option-content');
-  const $icon = $clickedBtn.find('i');
-  const $itemOptionChange = $clickedBtn.parent('.item-option-change');
+    const $clickedBtn = $(this);
+    const $wrapItemOption = $clickedBtn.closest('.wrap-item-option');
+    const $optionContent = $wrapItemOption.find('.option-content');
+    const $icon = $clickedBtn.find('i');
+    const $itemOptionChange = $clickedBtn.parent('.item-option-change');
 
-  const isSelfOpen = $clickedBtn.hasClass('active');
+    const isSelfOpen = $clickedBtn.hasClass('active');
 
-  const clickedId = $optionContent.attr('id');
+    const clickedId = $optionContent.attr('id');
 
-  // ⚠️ Check nếu option đang mở là gift-card hoặc membership
-  const currentlyOpened = $('.option-content.expanded');
-  const currentlyOpenedId = currentlyOpened.attr('id');
+    // ⚠️ Check nếu option đang mở là gift-card hoặc membership
+    const currentlyOpened = $('.option-content.expanded');
+    const currentlyOpenedId = currentlyOpened.attr('id');
 
-  const commonOptionIds = ['option-theme-color', 'option-info', 'option-side-info', 'option-banner', 'option-social'];
-  const isClickedCommonOption = commonOptionIds.includes(clickedId);
-  const isCurrentlyMembershipOrGiftCard = ['option-gift-card', 'option-membership'].includes(currentlyOpenedId);
+    const commonOptionIds = [
+      'option-theme-color',
+      'option-info',
+      'option-side-info',
+      'option-banner',
+      'option-social',
+    ];
+    const isClickedCommonOption = commonOptionIds.includes(clickedId);
+    const isCurrentlyMembershipOrGiftCard = ['option-gift-card', 'option-membership'].includes(
+      currentlyOpenedId
+    );
 
-  if (isClickedCommonOption && isCurrentlyMembershipOrGiftCard) {
-    if (currentlyOpenedId === 'option-gift-card') {
-      $('#toggle-gift-card').prop('checked', false)
-      .trigger('change');;
-    } else if (currentlyOpenedId === 'option-membership') {
-      $('#toggle-membership').prop('checked', false)
-      .trigger('change');;
+    if (isClickedCommonOption && isCurrentlyMembershipOrGiftCard) {
+      if (currentlyOpenedId === 'option-gift-card') {
+        $('#toggle-gift-card').prop('checked', false).trigger('change');
+      } else if (currentlyOpenedId === 'option-membership') {
+        $('#toggle-membership').prop('checked', false).trigger('change');
+      }
     }
-  }
 
-  // Đóng tất cả trước
-  $('.item-option-change.active').removeClass('active');
-  $('.option-content.expanded').removeClass('expanded');
-  $('.btn-option.active').removeClass('active sub').addClass('plus').find('i').removeClass('fa-minus').addClass('fa-plus');
+    // Đóng tất cả trước
+    $('.item-option-change.active').removeClass('active');
+    $('.option-content.expanded').removeClass('expanded');
+    $('.btn-option.active')
+      .removeClass('active sub')
+      .addClass('plus')
+      .find('i')
+      .removeClass('fa-minus')
+      .addClass('fa-plus');
 
-  if (!isSelfOpen) {
-    // Nếu click vào button khác, mở cái mới
-    $optionContent.addClass('expanded');
-    $icon.removeClass('fa-plus').addClass('fa-minus');
-    $itemOptionChange.addClass('active');
-    $clickedBtn.removeClass('plus').addClass('active sub');
+    if (!isSelfOpen) {
+      // Nếu click vào button khác, mở cái mới
+      $optionContent.addClass('expanded');
+      $icon.removeClass('fa-plus').addClass('fa-minus');
+      $itemOptionChange.addClass('active');
+      $clickedBtn.removeClass('plus').addClass('active sub');
 
-    // Render nếu content rỗng
-    const renderMap = {
-      'option-theme-color': () => renderColorTheme(configThemeColor),
-      'option-info': () => renderInfo(info),
-      'option-side-info': () => renderSideInfor(sideInfo),
-      'option-banner': () => renderBanner(bannerPromotion),
-      'option-gift-card': () => renderGiftCardAndMembership(giftCard),
-      'option-membership': () => renderGiftCardAndMembership(membership),
-      'option-social': () => renderSocial(dataSocialPage),
-    };
+      // Render nếu content rỗng
+      const renderMap = {
+        'option-theme-color': () => renderColorTheme(configThemeColor),
+        'option-info': () => renderInfo(info),
+        'option-side-info': () => renderSideInfor(sideInfo),
+        'option-banner': () => renderBanner(bannerPromotion),
+        'option-gift-card': () => renderGiftCardAndMembership(giftCard),
+        'option-membership': () => renderGiftCardAndMembership(membership),
+        'option-social': () => renderSocial(dataSocialPage),
+      };
 
-    const renderFn = renderMap[clickedId];
-    const isEmpty = $optionContent.children().length === 0 && $optionContent.text().trim() === '';
-    if (renderFn && isEmpty) {
-      const html = renderFn();
-      $optionContent.html(html);
+      const renderFn = renderMap[clickedId];
+      const isEmpty = $optionContent.children().length === 0 && $optionContent.text().trim() === '';
+      if (renderFn && isEmpty) {
+        const html = renderFn();
+        $optionContent.html(html);
+      }
     }
-  }
-});
-
-
+  });
 
   // -- CHANGE LOGO * xử lý chọn logo
   // Gán sự kiện khi bấm nút upload
@@ -3416,31 +3437,31 @@ $(document).ready(function () {
   });
 
   // --- START xử lý focus hiển thị ký tự còn lại
-$(document).on('focus', '.input-info, .textarea-info', function () {
-  const id = $(this).attr('id');
-  const index = id.split('-').pop();
-  const $msg = $(`#char-msg-${index}`);
-  const maxLength = $(this).attr('maxlength');
-  const currentLength = $(this).val().length;
+  $(document).on('focus', '.input-info, .textarea-info', function () {
+    const id = $(this).attr('id');
+    const index = id.split('-').pop();
+    const $msg = $(`#char-msg-${index}`);
+    const maxLength = $(this).attr('maxlength');
+    const currentLength = $(this).val().length;
 
-  $msg.text(`Bạn còn có thể nhập ${maxLength - currentLength} ký tự`);
-  $msg.show();
-});
+    $msg.text(`Bạn còn có thể nhập ${maxLength - currentLength} ký tự`);
+    $msg.show();
+  });
 
-$(document).on('input', '.input-info, .textarea-info', function () {
-  const id = $(this).attr('id');
-  const index = id.split('-').pop();
-  const $msg = $(`#char-msg-${index}`);
-  const maxLength = $(this).attr('maxlength');
-  const currentLength = $(this).val().length;
+  $(document).on('input', '.input-info, .textarea-info', function () {
+    const id = $(this).attr('id');
+    const index = id.split('-').pop();
+    const $msg = $(`#char-msg-${index}`);
+    const maxLength = $(this).attr('maxlength');
+    const currentLength = $(this).val().length;
 
-  $msg.text(`Bạn còn có thể nhập ${maxLength - currentLength} ký tự`);
-});
+    $msg.text(`Bạn còn có thể nhập ${maxLength - currentLength} ký tự`);
+  });
 
-$(document).on('blur', '.input-info, .textarea-info', function () {
-  const index = $(this).attr('id').split('-').pop();
-  $(`#char-msg-${index}`).hide();
-});
+  $(document).on('blur', '.input-info, .textarea-info', function () {
+    const index = $(this).attr('id').split('-').pop();
+    $(`#char-msg-${index}`).hide();
+  });
   // ---END xử lý focus hiển thị ký tự còn lại
 
   // -- * SIDE INFO *
@@ -3491,7 +3512,7 @@ $(document).on('blur', '.input-info, .textarea-info', function () {
       requestAnimationFrame(() => $('.popup-container-promotion').addClass('move-right'));
     } else {
       // delete dataWeb
-      dataWeb.promotion = {};
+      dataWeb.sideInfo.promotion = {};
 
       $pageWrap.empty().hide();
       $overPromotion.empty().hide();
@@ -3505,12 +3526,12 @@ $(document).on('blur', '.input-info, .textarea-info', function () {
     const $container = $('#store-info-page');
     if ($(this).is(':checked')) {
       // save dataWeb
-      dataWeb.storeInfo = dataStoreInfo;
+      dataWeb.sideInfo.storeInfo = dataStoreInfo;
 
       $container.html(renderStoreInfo(dataStoreInfo, colorPrimary.color)).show();
     } else {
       // Delete dataWeb
-      dataWeb.storeInfo = {};
+      dataWeb.sideInfo.storeInfo = {};
 
       $container.empty().hide();
     }
@@ -3530,12 +3551,12 @@ $(document).on('blur', '.input-info, .textarea-info', function () {
     const $container = $('#policy-page');
     if ($(this).is(':checked')) {
       // save dataWeb
-      dataWeb.policy = dataPolicyPage;
+      dataWeb.sideInfo.policy = dataPolicyPage;
 
       $container.html(renderPolicyPage(dataPolicyPage, colorPrimary.color)).show();
     } else {
       // delete dataWeb
-      dataWeb.policy = {};
+      dataWeb.sideInfo.policy = {};
       $container.empty().hide();
     }
     updateToggleState();
@@ -3546,12 +3567,12 @@ $(document).on('blur', '.input-info, .textarea-info', function () {
     const $container = $('#social-link-page');
     if ($(this).is(':checked')) {
       // save dataWeb
-      dataWeb.socialLink = dataSocialLink;
+      dataWeb.sideInfo.socialLink = dataSocialLink;
 
       $container.html(renderSocialLink(dataSocialLink, colorPrimary.color)).show();
     } else {
       // delete dataWeb
-      dataWeb.socialLink = {};
+      dataWeb.sideInfo.socialLink = {};
       $container.empty().hide();
     }
     updateToggleState();
@@ -3569,7 +3590,7 @@ $(document).on('blur', '.input-info, .textarea-info', function () {
     const dataPromSelected = listPromotion.item.find((i) => i.id === id);
 
     // save dataWeb
-    dataWeb.promotion = dataPromSelected;
+    dataWeb.sideInfo.promotion = dataPromSelected;
 
     const $sideWrap = $('#si-promotion');
     const $itemPromotionSelected = $('#si-promotion .item-promotion-selected');
@@ -3604,17 +3625,17 @@ $(document).on('blur', '.input-info, .textarea-info', function () {
     $('.over-promotion').remove();
   });
   // close promotion
-  $(document).on('click', '.btn-closepopup-promotion', function() {
+  $(document).on('click', '.btn-closepopup-promotion', function () {
     // nếu có item-promotion-selected thì khi tắt popup toggle promotion vẫn on
     const $itemPromotionSelected = $('.item-promotion-selected');
-    if($itemPromotionSelected.length >0) {
+    if ($itemPromotionSelected.length > 0) {
       $('.over-promotion').remove();
-    }else {
-      $('#sit-promotion').prop('checked', false).trigger('change')
+    } else {
+      $('#sit-promotion').prop('checked', false).trigger('change');
       $('.over-promotion').remove();
     }
     // ngược lại nếu chưa có item-promotion-selected thì toggle promotion off
-  })
+  });
   // Cập nhật banner background cho wrap-item-promotion-page
   $(document).on('change', '#select-banner-pm', function () {
     const isChecked = $(this).is(':checked');
@@ -3622,6 +3643,7 @@ $(document).on('blur', '.input-info, .textarea-info', function () {
     const bgImgBp = bannerPromotion.find((item) => item.id === idItemSelect)?.img;
     const $loShowbg = $('.wrap-item-promotion-page');
     const $itemPromotionPage = $loShowbg.find('.item-promotion-page');
+
 
     // bỏ chọn các toggle on khác
     $('input#select-banner-pm').not($(this)).prop('checked', false);
@@ -3636,6 +3658,8 @@ $(document).on('blur', '.input-info, .textarea-info', function () {
         'justify-content': 'flex-start',
         padding: '24px 12px',
       });
+      // Thêm vào dataWeb
+      dataWeb.bannerProSelected.image = bgImgBp;
     } else {
       $('.overlay-dark').remove();
       $itemPromotionPage.removeClass('transparent');
@@ -3644,6 +3668,8 @@ $(document).on('blur', '.input-info, .textarea-info', function () {
         'justify-content': 'center',
         padding: '',
       });
+      dataWeb.bannerProSelected = {};
+
     }
   });
 
@@ -3676,25 +3702,23 @@ $(document).on('blur', '.input-info, .textarea-info', function () {
   });
   // copy trên active membership và active gift card
   $(document).on('click', '.option-content-item .btn-copy', function () {
-  const $button = $(this);
-  const $textarea = $button.siblings('textarea.item-link');
+    const $button = $(this);
+    const $textarea = $button.siblings('textarea.item-link');
 
-  $textarea[0].select();
-  $textarea[0].setSelectionRange(0, 99999);
+    $textarea[0].select();
+    $textarea[0].setSelectionRange(0, 99999);
 
-  const successful = document.execCommand('copy');
+    const successful = document.execCommand('copy');
 
-  if (successful) {
-    // Đổi tooltip
-    $button.attr('data-tooltip', 'Copied!')
-           .addClass('show-tooltip');
+    if (successful) {
+      // Đổi tooltip
+      $button.attr('data-tooltip', 'Copied!').addClass('show-tooltip');
 
-    setTimeout(() => {
-      $button.attr('data-tooltip', 'Copy')
-             .removeClass('show-tooltip');
-    }, 1000);
-  }
-});
+      setTimeout(() => {
+        $button.attr('data-tooltip', 'Copy').removeClass('show-tooltip');
+      }, 1000);
+    }
+  });
 
   // toggle gift card
   $(document).on('change', '#toggle-gift-card', function () {
@@ -3736,14 +3760,14 @@ $(document).on('blur', '.input-info, .textarea-info', function () {
 
     if (isChecked && indexInSelected === -1) {
       // save dataWeb
-      dataWeb.socialIcon.push(itemSelected);
+      dataWeb.sideInfo.socialIcon.push(itemSelected);
 
       dataSocialPageSelected.push(itemSelected);
       const htmlSocialItem = renderSocialItemPage(itemSelected);
       $loShowSo.find('.list-social').append(htmlSocialItem);
     } else if (!isChecked && indexInSelected !== -1) {
       // delete dataWeb
-      dataWeb.socialIcon.splice(indexInSelected, 1);
+      dataWeb.sideInfo.socialIcon.splice(indexInSelected, 1);
 
       dataSocialPageSelected.splice(indexInSelected, 1);
       $loShowSo.find(`.wrap-image-social[data-id="${idSelected}"`).remove();
@@ -4003,7 +4027,7 @@ $(document).on('blur', '.input-info, .textarea-info', function () {
     //banner
     dataWeb.banner = dataBannerPage;
 
-      console.log('dataWeb: ', dataWeb);
-      localStorage.setItem('dataTemplate', JSON.stringify(dataWeb));
+    console.log('dataWeb: ', dataWeb);
+    localStorage.setItem('dataTemplate', JSON.stringify(dataWeb));
   });
 });

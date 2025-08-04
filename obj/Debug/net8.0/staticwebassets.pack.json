@@ -5,6 +5,14 @@
       "PackagePath": "staticwebassets/OnlineStore.bundle.scp.css"
     },
     {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/assets/images/banner-template/cloud-left.png",
+      "PackagePath": "staticwebassets/assets/images/banner-template/cloud-left.png"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/assets/images/banner-template/image-banner-left-1.png",
+      "PackagePath": "staticwebassets/assets/images/banner-template/image-banner-left-1.png"
+    },
+    {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/assets/images/bannerPromotion/banner-promotion-1.jpg",
       "PackagePath": "staticwebassets/assets/images/bannerPromotion/banner-promotion-1.jpg"
     },
