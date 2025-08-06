@@ -1,5 +1,8 @@
 ﻿  const dataTemplate = JSON.parse(localStorage.getItem('dataTemplate'));
   let dataRelease = JSON.parse(JSON.stringify(dataTemplate));
+  console.log('dataPage ', dataRelease)
+  const colorPrimary = dataRelease?.color?.bgPrimary || '#00bed6';
+  const colorSecondary = dataRelease?.color?.bgSecondary || '#1cdef4';
   // Thêm option vào item id = "page-about"
   const optionItems = [
     { aboutItemId: 1, text: 'About Nailvibe', bgColor: dataRelease.color.bgPrimary },
@@ -32,14 +35,24 @@
             id: 1,
             firstName: 'Shane',
             lastName: 'Fox',
-            fullName: 'Shane Fox',
             phoneNumber: '0230203023',
             email: 'jessica.hanson@gmail.com',
             gender: genderEnum.MALE,
-            services: [], // Danh sách dịch vụ đã chọn
+            services: [
+              {
+                idService: '',
+                itemService: [
+                  {
+                    idItemService: '',
+                    selectedStaff: null,
+                  }
+                ]
+              }
+            ], // Danh sách dịch vụ đã chọn
             selectedDate: null, // Ngày được chọn (Date object)
             selectedTimeSlot: null, // Khung giờ được chọn
-            selectedStaff: null, // Thợ được chọn
+            isSelecting: false,
+            isChoosing: false,
           },
         ],
       };
@@ -65,7 +78,6 @@
                 subTitle: 'Hydrating Pedi Salt Soak 1',
                 priceRental: '$45',
                 timetext: '40min',
-                userSelected: {},
                 listOptionAddOn: [
                   {
                     id: 1,
@@ -135,7 +147,6 @@
                 subTitle: 'Hydrating Pedi Salt Soak 1',
                 priceRental: '$45',
                 timetext: '40min',
-                userSelected: {},
                 listOptionAddOn:[],
               },
             ],
@@ -161,7 +172,6 @@
                 subTitle: 'Hydrating Pedi Salt Soak 1',
                 priceRental: '$45',
                 timetext: '40min',
-                userSelected: {},
                 listOptionAddOn:[],
               },
               {
@@ -170,14 +180,13 @@
                 subTitle: 'Hydrating Pedi Salt Soak 1',
                 priceRental: '$45',
                 timetext: '40min',
-                userSelected: {},
                 listOptionAddOn:[],
               },
             ],
           },
         },
       ];
-      const listUser = [
+      const listUserStaff = [
         {
           id: 'default',
           avatar: '/assets/images/listUser/userAvailable.png',
@@ -206,40 +215,159 @@
           borderColor: dataRelease?.color?.bgPrimary || '#04972F',
         },
       };
-
+      let dataMe = {
+        id: 1,
+        firstName: 'Shane',
+        lastName: 'Fox',
+        phoneNumber: '0230203023',
+        email: 'jessica.hanson@gmail.com',
+        gender: genderEnum.MALE,
+        services: [
+          {
+            idService: '',
+            itemService: [
+              {
+                idItemService: '',
+                selectedStaff: null,
+              }
+            ]
+          }
+        ],
+        selectedDate: null,
+        selectedTimeSlot: null,
+        isChoosing: false,
+      }
       let dataGuest =[
         {
           id: 1,
-          fullName: '',
+          firstName: null,
+          lastName: null,
+          phoneNumber: null,
+          email: null,
+          gender: null,
+          services: [
+
+          ],
+          selectedDate: null,
+          selectedTimeSlot: null,
+          isSelecting: false,
+          isChoosing: false,
         },
         {
           id: 2,
-          fullName: '',
-        }
+          firstName: null,
+          lastName: null,
+          phoneNumber: null,
+          email: null,
+          gender: null,
+          services: [
+
+          ],
+          selectedDate: null,
+          selectedTimeSlot: null,
+          isSelecting: false,
+          isChoosing: false,
+        },
       ]
       let dataFamily =[
         {
           id: 1,
-          fullName: 'Nguyen A',
+          firstName: 'Family',
+          lastName: 'own',
+          phoneNumber: '092304923',
+          email: 'khacowner@gmail.com',
+          gender: genderEnum.FEMALE,
+          services: [
+            {
+              idService: 1,
+              itemService: [
+                {
+                  idItemService: 1,
+                  idSelectedStaff: 'default',
+                }
+              ]
+            }
+          ],
+          selectedDate: null,
+          selectedTimeSlot: null,
+          isSelecting: false,
+          isChoosing: false,
         },
         {
+          id: 1,
+          firstName: 'Family',
+          lastName: '1',
+          phoneNumber: '092304923',
+          email: 'khac1@gmail.com',
+          gender: genderEnum.FEMALE,
+          services: [
+            {
+              idService: 1,
+              itemService: [
+                {
+                  idItemService: 1,
+                  idSelectedStaff: 'default',
+                }
+              ]
+            }
+          ],
+          selectedDate: null,
+          selectedTimeSlot: null,
+          isSelecting: false,
+          isChoosing: false,
+        },{
           id: 2,
-          fullName: 'Nguyen B',
+          firstName: 'Family',
+          lastName: '2',
+          phoneNumber: '000012',
+          email: 'khac2@gmail.com',
+          gender: genderEnum.FEMALE,
+          services: [
+            {
+              idService: 1,
+              itemService: [
+                {
+                  idItemService: 1,
+                  idSelectedStaff: 'default',
+                }
+              ]
+            }
+          ],
+          selectedDate: null,
+          selectedTimeSlot: null,
+          isSelecting: false,
+          isChoosing: false,
         },
         {
-          id: 3,
-          fullName: 'Nguyen C',
+          id: 1,
+          firstName: 'Family',
+          lastName: '3',
+          phoneNumber: '000003',
+          email: 'khac3@gmail.com',
+          gender: genderEnum.FEMALE,
+          services: [
+            {
+              idService: 1,
+              itemService: [
+                {
+                  idItemService: 2,
+                  idSelectedStaff: 'default',
+                }
+              ]
+            }
+          ],
+          selectedDate: null,
+          selectedTimeSlot: null,
+          isSelecting: false,
+          isChoosing: false,
         },
-        {
-          id: 4,
-          fullName: 'Nguyen D',
-        }
       ];
       return {
         dataBooking,
         listDataService,
-        listUser,
+        listUserStaff,
         dataCart,
+        dataMe,
         dataGuest,
         dataFamily
       };
@@ -391,7 +519,7 @@
         </span>
         ${icon}
       </button>
-      <div class="list-option-booking hidden">
+      <div class="list-option-booking">
         ${content.map(item => {
           if (item.type === optionBooked) return '';
           return `
@@ -411,74 +539,184 @@
 
     $(containerSelector).html(html);
   }
+  // function render option copy
+    function renderCopyServiceOption(containerSelector, optionCopyService) {
+      const {
+        dataUser,
+        bgColor = '',
+        border = '#E28B01',
+        color = '#E28B01',
+        icon = `<i class="fa-solid fa-chevron-up rotate-transition"></i>`
+      } = optionCopyService;
+
+      const userSelecting = dataUser.find(x=> x.isSelecting === true);
+
+      const availableUsers = dataUser.filter((item) => !item.isSelecting && item.firstName)
+
+      const html = `
+        <button class="btn-option-copy-user"
+          style="
+            --color-user-copy: ${color};
+            --bg-user-copy: ${bgColor};
+            --border-user-copy: ${border};
+          "
+        >
+          <span class="text-selected-option">
+            ${userSelecting ? userSelecting.firstName : 'Choose guest copy service'}
+          </span>
+          ${icon}
+        </button>
+        <div class="list-option-copy">
+          ${availableUsers.length === 0 ?
+            `<div class="option-item-none">
+              None Option
+            </div>`
+            :
+            dataUser.map(item => {
+            if (item.isSelecting === true || !item.firstName || item.services.length === 0 ) return '';
+            return `
+              <button class="option-item-copy" data-id="${item.id}"
+                style="
+                  --color-user-copy: ${color};
+                  --bg-user-copy: ${bgColor};
+                  --border-user-copy: ${border};
+                "
+              >
+                ${item.firstName}
+              </button>
+            `;
+          }).join('')}
+        </div>
+      `;
+
+      $(containerSelector).html(html);
+    }
+    //render button copy
+    function renderCopyServiceBtn (containerSelector) {
+      const isUserSelected = $('.btn-option-copy-user').hasClass('selected');
+      console.log("isUserSelc: ", isUserSelected)
+      const htmlBtn =`
+          <button class="btn-copy-service ${!isUserSelected ? 'disabled' : ''}"
+            ${!isUserSelected ? 'disabled' :''}
+          >
+            Copy Service
+          </button>
+        `
+      $(containerSelector).html(htmlBtn);
+    }
+
+    // render info user: firstname, lastname, email or phone
+    function renderInfoUser(containerSelector, dataUser) {
+      const {firstName, lastName, phoneNumber, email} = dataUser;
+
+      const htmlInputInfoUser = `
+          <div class="item-info-input">
+            <label>First name</label>
+            <input
+              placeholder="Optional (*)"
+              value="${firstName || ''}"
+            />
+          </div>
+          <div class="item-info-input">
+            <label>Last name</label>
+            <input
+              placeholder="Optional (*)"
+              value="${lastName || ''}"
+            />
+          </div>
+          <div class="item-info-input">
+            <label>Email or phone</label>
+            <input
+              placeholder="Optional (*)"
+              value="${email || phoneNumber || ''}"
+            />
+          </div>
+      `
+      $(containerSelector).html(htmlInputInfoUser)
+    }
   // render control user booking
-  function renderCountControls(containerSelector, dataArray, dataBooking) {
+  function renderCountControls(containerSelector, dataBooking) {
     const $c = $(containerSelector);
     $c.empty();
-    // Kiểm tra xem có user nào đã chọn dịch vụ hay không
-    const hasSelectedServices = dataBooking.users.some(user => user.services.length > 0);
-
     $c.html(`
       <div class="guest-controls">
         <button class="btn-decrease">–</button>
-        <span class="guest-count">${dataArray.length}</span>
+        <span class="guest-count">${dataBooking.users.length}</span>
         <button class="btn-increase">+</button>
-        ${hasSelectedServices ? `
-          <div class="copy-service-wrapper">
-            <button class="btn-copy-service">Copy Service</button>
-            <div class="copy-service-dropdown hidden">
-              ${dataBooking.users
-                .filter(user => user.services.length > 0)
-                .map(user => `
-                  <div class="copy-service-item" data-user-id="${user.id}">
-                    ${user.fullName || 'Unknown'}
-                  </div>
-                `).join('')}
-            </div>
-          </div>
-        ` : ''}
       </div>
     `);
   }
   // render input fullname user
-  function renderGuestInputs(containerSelector, dataArray, dataBooking) {
+  function renderGuestInputs(containerSelector, dataBooking) {
     const $c = $(containerSelector);
+    const $containerGuestInput = $(`<div class="container-guest-input"></div>`)
     $c.empty();
+    $containerGuestInput.empty();
 
-    if (!dataArray || dataArray.length === 0) return;
+    $c.append($containerGuestInput);
 
-    dataArray.forEach(item => {
-      // Tìm user tương ứng trong dataBooking.users hoặc tạo mới nếu chưa có
-      let user = dataBooking.users.find(u => u.id === item.id);
-      if (!user) {
-        user = {
-          id: item.id,
-          firstName: '',
-          lastName: '',
-          fullName: item.fullName,
-          phoneNumber: '',
-          email: '',
-          gender: genderEnum.OTHER,
-          services: [],
-          selectedDate: null,
-          selectedTimeSlot: null,
-          selectedStaff: null,
-        };
-        dataBooking.users.push(user);
-      }
+    if (!dataBooking || dataBooking.users.length === 0) return;
+    // input name customer
+    dataBooking.users.forEach(item => {
 
-      $c.append(`
-        <div class="guest-input" data-id="${item.id}">
-          <input
-            type="text"
-            class="input-fullname"
-            value="${item.fullName}"
-            placeholder="Full name..."
-          />
-          <button class="btn-remove">×</button>
-        </div>
+      const $inputBox = $(`
+          <div class="guest-input" data-id="${item.id}"
+            style="
+              --color-cur-primary: ${colorPrimary}
+            "
+          >
+            <input
+              type="text"
+              class="input-fullname ${item.isChoosing ? 'active' : ''}"
+              value="${item.firstName || ''}"
+              placeholder="First name..."
+              data-id=${item.id}
+            />
+            <button class="btn-remove">×</button>
+          </div>
       `);
+        $containerGuestInput.append($inputBox);
     });
+    // copy service customer
+      // Kiểm tra xem có user nào đã chọn dịch vụ hay không
+    const hasSelectedServices = dataBooking.users.some(user => user.services.length > 0);
+    if(hasSelectedServices) {
+      // kiểm tra có user được chọn để copy
+      const isUserSelected = $('.btn-option-copy-user').hasClass('selected');
+
+      console.log("isSelected: ", isUserSelected);
+
+      const $copyService =
+        $(`
+          <div class="copy-service-wrapper">
+            <div class="copy-options-wrapper">
+            </div>
+            <div class="copy-btn-wrapper">
+            </div>
+          </div>
+        `)
+      const optionCopyService = {
+        dataUser: dataBooking.users,
+        bgColor: '',
+        border: '#E28B01',
+        color: '#E28B01',
+        icon: `<i class="fa-solid fa-chevron-up rotate-transition"></i>`
+      };
+
+
+      $c.append($copyService);
+      renderCopyServiceBtn('.copy-btn-wrapper');
+      renderCopyServiceOption('.copy-options-wrapper',optionCopyService )
+
+    }
+    console.log("check2: ", dataBooking);
+    $c.append('<div class="container-info-user"></div>')
+    // Điền thông tin khách hàng, tự fill nếu đã có thông tin: firstname, lastname và emai or phone
+    const userChoosing=  dataBooking.users.find(u => u.isChoosing === true);
+    if(userChoosing) {
+      console.log("check 3")
+      renderInfoUser('.container-info-user', userChoosing)
+    }
   }
 
 
@@ -491,7 +729,11 @@
     return `
       <div class="banner">
         <div class="content-banner">
-          <div class="wrap-content-left-banner">
+          <div class="wrap-content-left-banner"
+            style="
+              --color-cur-primary: ${colorPrimary};
+            "
+          >
             <div class="hight-text-banner">
               <div class="welcome-to">${greeting}</div>
               <p>
@@ -533,16 +775,18 @@
       $container.empty();
 
       dataList.forEach(({ item }, i) => {
+        const idMoreItem = item.id;
         const $moreItem = $(
-          `<div class="more-item" data-id=${item.id} style="z-index: ${100 + item.listItem.length - i}"></div>`
+          `<div class="more-item" data-id=${idMoreItem} style="z-index: ${100 + item.listItem.length - i}"></div>`
         );
 
         const $expandTitle = renderExpandTitle(item);
         $moreItem.append($expandTitle);
 
-        const $listCards = item.listItem.map(cardItem => renderServiceCard(cardItem, dataBooking, currentUserId));
+        //render card
+        const $listCards = item.listItem.map(cardItem => renderServiceCard(idMoreItem, cardItem, dataBooking, currentUserId));
+
         const $wrapper = $(`<div class="wrap-list-more"></div>`).append($listCards);
-        console.log("item.listItem: ", item.listItem);
         const $ListAddOn = item.listItem.map(cardItem =>renderListAddOn(item, cardItem.id));
         $wrapper.append($ListAddOn);
         $moreItem.append($wrapper);
@@ -561,9 +805,9 @@
       return $title;
     }
     // item card service
-    function renderServiceCard(cardItem, dataBooking, currentUserId) {
+    function renderServiceCard(idMoreItem, cardItem, dataBooking, currentUserId) {
       const $cardMore = $(`
-          <div class="card-more">
+          <div class="card-more" data-id="${cardItem.id}">
           </div>
         `);
 
@@ -580,29 +824,39 @@
         </div>
       `);
       const user = dataBooking.users.find(u => u.id === currentUserId);
-      const isSelected = user && user.services.some(s => s.title === cardItem.title);
+      const isSelected = user && user.services.some(s => s.idService === idMoreItem);
+      const serviceCardMoreCurr = user.services.find((se) => se.idService === idMoreItem);
 
-      const $listUser = $(`
-        <div class="option-select-user">
-          ${renderSelectedUsers(user?.selectedStaff ? { name: user.selectedStaff } : {})}
+      console.log("serviceCardMore: ", serviceCardMoreCurr);
+
+      const serviceCardItemCurr = serviceCardMoreCurr && serviceCardMoreCurr.find((si) => si.idItemService === cardItem.id);
+
+      console.log("serviceCardItemCurr: ", serviceCardItemCurr);
+
+      const staffUserSelected = serviceCardItemCurr && serviceCardItemCurr.selectedStaff;
+
+
+      const $listUserStaff = $(`
+        <div class="option-select-staff">
+          ${renderSelectedStaff(staffUserSelected ? staffUserSelected : {})}
         </div>
       `);
 
       const $actions = renderActionButtons(cardItem, dataBooking, currentUserId, isSelected);
 
-      $cardMore.append($top, $actions, $listUser);
+      $cardMore.append($top, $actions, $listUserStaff);
       return $cardMore;
     }
-    // Render danh sách user để chọn
-    function renderUserOptions(users) {
+    // Render danh sách staff để chọn
+    function renderUserOptions(staff) {
       return `
-        <div class="wrap-user">
-          ${users
+        <div class="wrap-staff">
+          ${staff
             .map(
               (user) => `
-            <div class="item-user" data-id="${user.id}">
-              <div class="avatar-user">
-                <img src="${user.avatar}" alt="image ${user.name}" class="img-user" />
+            <div class="item-staff" data-id="${user.id}">
+              <div class="avatar-staff">
+                <img src="${user.avatar}" alt="image ${user.name}" class="img-staff" />
               </div>
               <span class="full-name">${user.name}</span>
             </div>
@@ -612,16 +866,16 @@
         </div>
       `;
     }
-    // hiển thị user đã được chọn
-    function renderSelectedUsers(userSelected) {
-      if (!userSelected || Object.keys(userSelected).length === 0) return '';
+    // hiển thị staff đã được chọn
+    function renderSelectedStaff(staffSelected) {
+      if (!staffSelected || Object.keys(staffSelected).length === 0) return '';
 
-      const { name = 'Name user', image = '' } = userSelected;
+      const { name = 'Name user', image = '' } = staffSelected;
 
       return `
-        <div class="item-user">
-          <div class="avatar-user">
-            <img src="${image}" alt="image user" class="img-user"/>
+        <div class="item-staff">
+          <div class="avatar-staff">
+            <img src="${image}" alt="image staff" class="img-staff"/>
           </div>
           <span>${name}</span>
         </div>
@@ -629,6 +883,7 @@
     }
     // btn action
     function renderActionButtons(item, dataBooking, currentUserId, isSelected) {
+      console.log("check render action butn")
       const $wrap = $('<div class="add-more"></div>');
 
       const $add = $(`
@@ -670,7 +925,6 @@
 
       const limitList = isFull ? listOptionAddOn : listOptionAddOn.slice(0, 4);
 
-      console.log("limit: ", limitList)
 
       return `
         <div class="wrap-addOn" data-id=${dataItem.id}>
@@ -1005,7 +1259,6 @@
   // render sumary
   function renderSumary (dataSumary) {
     const $containerSumary = $('.wrap-sumary');
-    console.log("wrapsum: ", $containerSumary);
     $containerSumary.empty();
     const htmlSumary =  `
       <div class="container-sumary">
@@ -1211,14 +1464,28 @@
       </div>`,
       `<div id="triggerBlock" class="wrap-sumary"></div>`
     );
-    const { dataBooking, dataGuest } = dataBlock;
+    const { dataBooking, dataMe, dataGuest, dataFamily } = dataBlock;
     if (banner.optionBooked === 'GUESTS') {
-      renderCountControls('.wrap-control', dataGuest, dataBooking);
-      renderGuestInputs('.wrap-input-guests', dataGuest, dataBooking);
+      // Thay bằng data guest
+      dataBooking.type = typeBookingEnum.GUESTS;
+      dataBooking.users = dataGuest;
+
+      // Default user đầu tiên isChoosing
+      dataBooking.users[0].isChoosing = true;
+
+      renderCountControls('.wrap-control', dataBooking);
+      renderGuestInputs('.wrap-input-guests', dataBooking);
       $('.wrap-input-guests').removeClass('hidden');
     } else if (banner.optionBooked === 'FAMILY') {
-      renderCountControls('.wrap-control', dataFamily, dataBooking);
-      renderGuestInputs('.wrap-input-guests', dataFamily, dataBooking);
+      // Thay bằng data family
+      dataBooking.type = typeBookingEnum.FAMILY;
+      dataBooking.users = dataFamily;
+
+      // Default user đầu tiên isChoosing
+      dataBooking.users[0].isChoosing = true;
+
+      renderCountControls('.wrap-control', dataBooking);
+      renderGuestInputs('.wrap-input-guests', dataBooking);
       $('.wrap-input-guests').removeClass('hidden');
     }
     // init render list services
@@ -1284,12 +1551,12 @@
 
   $(document).ready(function () {
     const $wrapHomeTemp = $('.wrap-home-templates');
-    const { dataBooking, listDataService, listUser, dataCart,dataGuest, dataFamily } = templateStore.load();
+    const { dataBooking, listDataService, listUserStaff, dataCart,dataMe, dataGuest, dataFamily } = templateStore.load();
     let {banner} = dataRelease;
     // Khai báo currentUserId trước khi gọi renderBlockTemplate
     let currentUserId = dataBooking.users[0]?.id || 1;
 
-    renderBlockTemplate({listDataService, listUser, dataBooking, dataGuest, dataFamily, currentUserId});
+    renderBlockTemplate({listDataService, listUserStaff, dataBooking,dataMe,  dataGuest, dataFamily, currentUserId});
 
     // Các sự kiện tương tác trên header
       // << START: dropdown option header
@@ -1357,7 +1624,7 @@
             }
       // >> END: popup cart
       // << START: Xử lý chọn option: ME, FAMILY, GUESTS
-        // Toggle khi bấm vào button chính
+        // Toggle chọn loại dịch vụ
         $(document).on('click', '.btn-option-banner-selected', function (e) {
           e.stopPropagation(); // tránh bị close ngay khi click
 
@@ -1372,12 +1639,15 @@
         // Đóng dropdown khi click ra ngoài
         $(document).on('click', function () {
           $('.list-option-booking').removeClass('active');
+          $('.list-option-copy').removeClass('active');
         });
         //
-        let currentData = [];
         function updateGuestSection() {
-          renderCountControls('.wrap-control', currentData, dataBooking);
-          renderGuestInputs('.wrap-input-guests', currentData, dataBooking);
+          // Default user đầu tiên isChoosing
+          dataBooking.users[0].isChoosing = true;
+
+          renderCountControls('.wrap-control', dataBooking);
+          renderGuestInputs('.wrap-input-guests', dataBooking);
         }
         $(document).on('click', '.option-item-booking', function (e) {
           e.stopPropagation();
@@ -1389,12 +1659,21 @@
           // Render lại component option
           renderBookingOption('.wrap-book-for', banner.btnOptionBook, banner.optionBooked);
           // Hiện ô nhập thêm nếu là guests hoặc family
-          if (selectedType === 'GUESTS') currentData = dataGuest;
-          else if (selectedType === 'FAMILY') currentData = dataFamily;
-          else currentData = [];
+          if (selectedType === 'GUESTS'){
+            dataBooking.type = typeBookingEnum.GUESTS;
+            dataBooking.users = dataGuest;
+          }
+          else if (selectedType === 'FAMILY') {
+            dataBooking.type = typeBookingEnum.FAMILY;
+            dataBooking.users = dataFamily;
+          }
+          else {
+            dataBooking.type = typeBookingEnum.ME;
+            dataBooking.users = dataMe;
+          };
 
-          // show or hide cả 2 khu vực
-          if (currentData.length) {
+          // show or hide cả 2
+          if (dataBooking.type !== typeBookingEnum.ME) {
             $('.wrap-input-guests').removeClass('hidden');
             updateGuestSection();
           } else {
@@ -1403,40 +1682,49 @@
             $('.wrap-input-guests').empty();
           }
         });
-        // Tăng số lượng
+        // Tăng số lượng khách
         $(document).on('click', '.btn-increase', function() {
-          const maxId = currentData.reduce((max,i) => Math.max(max,i.id), 0);
+          const maxId = dataBooking.users.reduce((max,i) => Math.max(max,i.id), 0);
           const newId = maxId + 1;
-          currentData.push({ id: newId, fullName: '' });
           dataBooking.users.push({
             id: newId,
             firstName: '',
             lastName: '',
-            fullName: '',
             phoneNumber: '',
             email: '',
             gender: genderEnum.OTHER,
-            services: [],
+            services: [
+              {
+                idService: '',
+                itemService: [
+                  {
+                    idItemService: '',
+                    selectedStaff: null,
+                  }
+                ]
+              }
+            ],
             selectedDate: null,
             selectedTimeSlot: null,
-            selectedStaff: null,
+            isSelecting: false,
+            isChoosing: false,
           });
           updateGuestSection();
         });
 
         // Giảm số lượng
         $(document).on('click', '.btn-decrease', function() {
-          if (currentData.length <= 1) {
+          if (dataBooking.users.length <= 1) {
             alert('Bạn phải chọn tối thiểu 1 người.');
             return;
           }
-          const idx = currentData.findIndex(i => i.fullName === '');
+          const idx = dataBooking.users.findIndex(i => i.firstName === '');
           if (idx === -1) {
             alert('Không thể xóa khi tất cả các ô đã điền tên.');
             return;
           }
-          const idToRemove = currentData[idx].id;
-          currentData.splice(idx, 1);
+          const idToRemove = dataBooking.users[idx].id;
+          dataBooking.users.splice(idx, 1);
           dataBooking.users = dataBooking.users.filter(u => u.id !== idToRemove);
           updateGuestSection();
         });
@@ -1446,14 +1734,13 @@
           const $inpWrap = $(this).closest('.guest-input');
           const id = +$inpWrap.data('id');
 
-          if (currentData.length <= 1) {
+          if (dataBooking.users.length <= 1) {
             alert('Bạn phải giữ tối thiểu 1 người.');
             return;
           }
-          const obj = currentData.find(i => i.id === id);
-          if (!obj.fullName) {
-            currentData = currentData.filter(i => i.id !== id);
-            dataBooking.users = dataBooking.users.filter(u => u.id !== id);
+          const obj = dataBooking.users.find(i => i.id === id);
+          if (!obj.firstName) {
+            dataBooking.users = dataBooking.users.filter(i => i.id !== id);
             updateGuestSection();
           } else {
             alert('Không thể xóa khi ô đã nhập tên.');
@@ -1464,20 +1751,53 @@
         $(document).on('input', '.input-fullname', function() {
           const id = +$(this).closest('.guest-input').data('id');
           const val = $(this).val();
-          const obj = currentData.find(i => i.id === id);
-          if (obj) obj.fullName = val;
-          const user = dataBooking.users.find(u => u.id === id);
-          if (user) user.fullName = val;
+          const obj = dataBooking.users.find(i => i.id === id);
+          console.log("obj: ", obj);
+          if (obj) obj.firstName = val;
         });
 
         //focus onput ( xử lý active như tab)
         $(document).on('focus', '.input-fullname', function () {
-            $('.input-fullname').removeClass('active'); // Bỏ active các ô khác
-          $(this).addClass('active'); // Thêm active ô đang focus
+          $('.input-fullname').removeClass('active');
+          $(this).addClass('active');
+          const $this = $(this);
+          const idFocus = $this.data('id');
+          dataBooking.users.forEach((user) =>{
+            user.isChoosing = (user.id === idFocus)
+          });
+
           currentUserId = +$(this).closest('.guest-input').data('id');
           // Cập nhật lại danh sách dịch vụ để hiển thị đúng user
           renderListService(listDataService, '.list-more', dataBooking, currentUserId);
         });
+    // Xử lý chọn user để copy
+      // Toggle khi bấm vào button chính
+      $(document).on('click', '.btn-option-copy-user', function (e) {
+        e.stopPropagation(); // tránh bị close ngay khi click
+
+        const $dropdown = $(this).next('.list-option-copy');
+        $('.btn-option-copy-user i').not($(this).find('i')).removeClass('rotate-180');
+
+        $('.list-option-copy').not($dropdown).removeClass('active'); // close các dropdown khác
+        $dropdown.toggleClass('active');
+        $(this).find('i').toggleClass('rotate-180');
+      });
+      // Chọn user để copy
+      $(document).on('click', '.option-item-copy', function(e) {
+        e.stopPropagation();
+        const $this = $(this);
+        const idUserSelected = $this.data('id');
+
+        // Cập nhật user được chọn copy trong dataUser
+        const userSelected = dataBooking.users.find((u) => u.id === idUserSelected);
+        userSelected.isSelecting = true;
+        // Thêm selected vào btn-option-copy-user
+        $('.btn-option-copy-user').addClass('selected');
+        // render lại
+        const optionCopyService = {dataUser: dataBooking.users}
+        renderCopyServiceBtn('.copy-btn-wrapper')
+        renderCopyServiceOption('.copy-options-wrapper',optionCopyService);
+      })
     // Xử lý select services
     $(document).on('click', '.expand-title', function () {
       const $wrap = $(this).next('.wrap-list-more');
@@ -1500,7 +1820,6 @@
       if (user) {
         user.services.push({ title });
       }
-      console.log("user: ", user);
       $(this).hide();
       const $selectUser = $parentBtn.find('.wrap-select-user');
       const $btnDelete = $parentBtn.find('.btn-delete');
@@ -1530,26 +1849,26 @@
     $(document).on('click', '.wrap-select-user .toggle-select', function (e) {
       e.stopPropagation();
 
-      const $toggle = $(this); // phần tử được click
+      const $toggle = $(this);
       const $parentN = $toggle.closest('.wrap-select-user');
 
       const $wrap = $toggle.closest('.card-more');
-      const $optionList = $wrap.find('.option-select-user');
+      const $optionList = $wrap.find('.option-select-staff');
 
       const $iconChecked = $parentN.find('.icon-checked');
 
       // Nếu chưa render
       if ($optionList.children().length === 0) {
-        const html = renderUserOptions(listUser);
+        const html = renderUserOptions(listUserStaff);
         $optionList.html(html);
       }
 
       // Xóa dropdown cũ
-      $('.option-select-user').not($optionList).removeClass('show');
+      $('.option-select-staff').not($optionList).removeClass('show');
 
       // Lấy kích thước của toggle-select
       const toggleWidth = $toggle.outerWidth();
-      // Lấy vị trí cho option-select-user
+      // Lấy vị trí cho option-select-staff
       const optionUserWidth = $iconChecked.outerWidth();
       const paddingCardMore = 20;
       const gapWrapSelectUser = 16;
@@ -1567,17 +1886,63 @@
       $optionList.toggleClass('show');
     });
 
-    // touch out close option user
+    // touch out close option staff
     $(document).on('click', function () {
-      const $optionList = $(this).find('.option-select-user');
+      const $optionList = $(this).find('.option-select-staff');
       $optionList.empty();
-      $('.option-select-user').removeClass('show');
+      $('.option-select-staff').removeClass('show');
     });
 
-    // gắn user selected
-    $(document).on('click', '.item-user', function (e) {
+    // gắn staff selected cho user
+    $(document).on('click', '.item-staff', function (e) {
       e.stopPropagation();
-      const name = $(this).find('.full-name').text();
+      const $this = $(this);
+      const idStaff = $this.data('id');
+      const staffSelecting = listUserStaff.find((st) => st.id == idStaff);
+      console.log("idStaff: ", idStaff);
+      console.log("listUserStaff: ", listUserStaff);
+      console.log("staffSelecting: ", staffSelecting);
+
+      const idService = $this.closest('.more-item').data('id');
+      const idItemService = $this.closest('.card-more').data('id');
+
+      const userSelecting = dataBooking.users.find((u) => u.isChoosing === true);
+      console.log("idService: ", idService);
+      console.log("idItemService: ", idItemService);
+      console.log("userSelecting: ", userSelecting);
+
+
+      // nếu khong tìm thấy idService trong userSelecting thì thêm mới
+      let serviceExit = userSelecting.services.find((item) => item.idService === idService);
+      let serviceItemExit = serviceExit && serviceExit.itemService.find(item => item.idItemService ===idItemService);
+
+      if (serviceExit) {
+        if (serviceItemExit) {
+          serviceItemExit.selectedStaff = staffSelecting;
+        } else {
+          serviceItemExit = {
+            idItemService,
+            selectedStaff: staffSelecting
+          };
+          serviceExit.itemService.push(serviceItemExit);
+        }
+      } else {
+        serviceExit = {
+          idService,
+          itemService: [
+            {
+              idItemService,
+              selectedStaff: staffSelecting
+            }
+          ]
+        };
+        userSelecting.services.push(serviceExit);
+      }
+
+      console.log("dataBooking: ", dataBooking)
+
+
+      const name = $(this).find(".full-name").text();
       const $wrap = $(this).closest('.card-more');
       const user = dataBooking.users.find(u => u.id === currentUserId);
       if (user) {
@@ -1585,11 +1950,10 @@
       }
 
       $wrap.find('#full-name-selected').text(name);
-      $wrap.find('.option-select-user').removeClass('show');
+      $wrap.find('.option-select-staff').removeClass('show');
     });
     // toggle addOn service
     $(document).on('click', '.expand-addOn', function() {
-      console.log("check: ")
       const $wrapAddOn = $(this).closest('.wrap-addOn');
       const dataId = parseInt($wrapAddOn.attr('data-id'));
       const $wrapListAddOn = $wrapAddOn.find('.wrap-list-addOn');
@@ -1605,7 +1969,6 @@
       $wrapAddOn.replaceWith(newListAddOn);
 
       if(!isExpanded) {
-        console.log("check: ", isExpanded);
         $(`[data-id=${dataId}].wrap-addOn .expand-addOn`).addClass('expanded')
       }
     })
@@ -1617,13 +1980,27 @@
       $this.addClass('selected');
 
       // Thêm add on đã chọn vào data
+      const idItemService = $this.closest('.wrap-addOn').data('id'); // tương ứng id card-more
+      console.log("idItemSer: ", idItemService);
+      const idService = $this.closest('.more-item').data('id');
+      console.log("idService: ", idService);
+      const idItemAddOn = $this.closest('.item-addOn').data('id');
+
+      const serviceCur = listDataService.find(({item}) => item.id == idService)?.item;
+      console.log("serviceCur: ", serviceCur);
+      const itemService = serviceCur && serviceCur.listItem.find((item) => item.id == idItemService);
+      console.log("itemService: ", itemService);
+      const itemAddOn = itemService && itemService.listOptionAddOn.find((item) => item.id == idItemAddOn);
+
+      // Kiểm tra đã
+
     })
 
   // START: Xử lý option trên banner
     // Xử lý nút Copy Service
     $(document).on('click', '.btn-copy-service', function (e) {
       e.stopPropagation();
-      const $dropdown = $(this).next('.copy-service-dropdown');
+      const $dropdown = $(this).next('.copy-options-wrapper');
       $dropdown.toggleClass('hidden');
     });
 
@@ -1638,7 +2015,7 @@
         targetUser.selectedTimeSlot = sourceUser.selectedTimeSlot;
         targetUser.selectedStaff = sourceUser.selectedStaff;
       }
-      $(this).closest('.copy-service-dropdown').addClass('hidden');
+      $(this).closest('.copy-options-wrapper').addClass('hidden');
       renderListService(listDataService, '.list-more', dataBooking, currentUserId);
     });
     // Xử lý chọn ngày đặt lịch
@@ -1692,7 +2069,6 @@
     const $btn = $('#scrollToTopBtn');
     const $trigger = $('#triggerBlock');
     const $target = $('#targetBlock');
-    console.log('$btn:', $btn.length, 'trigger:', $trigger.length, 'target:', $target.length);
 
     // Hàm kiểm tra trigger có trong khung nhìn chưa
     function isInViewport($el) {
@@ -1702,7 +2078,6 @@
 
     // Khi scroll: kiểm tra có nhìn thấy block trigger chưa
     $('.wrap-home-templates').on('scroll', function () {
-     console.log('$btn:', $btn.length, 'trigger:', $trigger.length, 'target:', $target.length);
 
       if (isInViewport($trigger)) {
         $btn.fadeIn();

@@ -29,6 +29,10 @@
       "PackagePath": "staticwebassets/assets/images/bannerPromotion/banner-promotion-4.jpg"
     },
     {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/assets/images/cart-user/img_bg.svg",
+      "PackagePath": "staticwebassets/assets/images/cart-user/img_bg.svg"
+    },
+    {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/assets/images/listUser/avatar1.png",
       "PackagePath": "staticwebassets/assets/images/listUser/avatar1.png"
     },
