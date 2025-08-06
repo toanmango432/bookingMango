@@ -1992,7 +1992,7 @@
       console.log("itemService: ", itemService);
       const itemAddOn = itemService && itemService.listOptionAddOn.find((item) => item.id == idItemAddOn);
 
-      console.log("itemAddOn: ", itemAddOn);
+      // Kiểm tra đã
 
     })
 
