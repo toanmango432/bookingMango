@@ -1954,7 +1954,6 @@
     });
     // toggle addOn service
     $(document).on('click', '.expand-addOn', function() {
-      console.log("check: ")
       const $wrapAddOn = $(this).closest('.wrap-addOn');
       const dataId = parseInt($wrapAddOn.attr('data-id'));
       const $wrapListAddOn = $wrapAddOn.find('.wrap-list-addOn');
@@ -1970,7 +1969,6 @@
       $wrapAddOn.replaceWith(newListAddOn);
 
       if(!isExpanded) {
-        console.log("check: ", isExpanded);
         $(`[data-id=${dataId}].wrap-addOn .expand-addOn`).addClass('expanded')
       }
     })
@@ -1982,6 +1980,20 @@
       $this.addClass('selected');
 
       // Thêm add on đã chọn vào data
+      const idItemService = $this.closest('.wrap-addOn').data('id'); // tương ứng id card-more
+      console.log("idItemSer: ", idItemService);
+      const idService = $this.closest('.more-item').data('id');
+      console.log("idService: ", idService);
+      const idItemAddOn = $this.closest('.item-addOn').data('id');
+
+      const serviceCur = listDataService.find(({item}) => item.id == idService)?.item;
+      console.log("serviceCur: ", serviceCur);
+      const itemService = serviceCur && serviceCur.listItem.find((item) => item.id == idItemService);
+      console.log("itemService: ", itemService);
+      const itemAddOn = itemService && itemService.listOptionAddOn.find((item) => item.id == idItemAddOn);
+
+      console.log("itemAddOn: ", itemAddOn);
+
     })
 
   // START: Xử lý option trên banner
