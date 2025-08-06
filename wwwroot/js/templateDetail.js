@@ -39,20 +39,12 @@
             email: 'jessica.hanson@gmail.com',
             gender: genderEnum.MALE,
             services: [
-              {
-                idService: '',
-                itemService: [
-                  {
-                    idItemService: '',
-                    selectedStaff: null,
-                  }
-                ]
-              }
+
             ], // Danh sách dịch vụ đã chọn
             selectedDate: null, // Ngày được chọn (Date object)
             selectedTimeSlot: null, // Khung giờ được chọn
             isSelecting: false,
-            isChoosing: false,
+            isChoosing: true,
           },
         ],
       };
@@ -215,7 +207,7 @@
           borderColor: dataRelease?.color?.bgPrimary || '#04972F',
         },
       };
-      let dataMe = {
+      let dataMe = [{
         id: 1,
         firstName: 'Shane',
         lastName: 'Fox',
@@ -223,20 +215,13 @@
         email: 'jessica.hanson@gmail.com',
         gender: genderEnum.MALE,
         services: [
-          {
-            idService: '',
-            itemService: [
-              {
-                idItemService: '',
-                selectedStaff: null,
-              }
-            ]
-          }
+
         ],
         selectedDate: null,
         selectedTimeSlot: null,
-        isChoosing: false,
-      }
+        isSelecting: false,
+        isChoosing: true,
+      }]
       let dataGuest =[
         {
           id: 1,
@@ -283,7 +268,11 @@
               itemService: [
                 {
                   idItemService: 1,
-                  idSelectedStaff: 'default',
+                  selectedStaff: {
+                    id: 'default',
+                    avatar: '/assets/images/listUser/userAvailable.png',
+                    name: 'Next Available',
+                  },
                 }
               ]
             }
@@ -306,7 +295,11 @@
               itemService: [
                 {
                   idItemService: 1,
-                  idSelectedStaff: 'default',
+                  selectedStaff: {
+                    id: 'default',
+                    avatar: '/assets/images/listUser/userAvailable.png',
+                    name: 'Next Available',
+                  },
                 }
               ]
             }
@@ -328,7 +321,11 @@
               itemService: [
                 {
                   idItemService: 1,
-                  idSelectedStaff: 'default',
+                  selectedStaff: {
+                    id: '1',
+                    avatar: '/assets/images/listUser/userAvailable.png',
+                    name: 'Next Available',
+                  },
                 }
               ]
             }
@@ -351,7 +348,11 @@
               itemService: [
                 {
                   idItemService: 2,
-                  idSelectedStaff: 'default',
+                  selectedStaff: {
+                    id: '1',
+                    avatar: '/assets/images/listUser/userAvailable.png',
+                    name: 'Next Available',
+                  },
                 }
               ]
             }
@@ -373,6 +374,42 @@
       };
     },
   };
+
+  // HELP FUNCTION
+  function isValidPhoneNumber(phoneNumber) {
+    if (typeof phoneNumber !== 'string') return false;
+
+    // Xóa tất cả ký tự không phải số
+    const cleaned = phoneNumber.replace(/\D/g, '');
+
+    // Regex kiểm tra: bắt đầu bằng 0, đủ 10 chữ số
+    const regex = /^0\d{9}$/;
+
+    return regex.test(cleaned);
+  }
+
+  function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+  }
+  // FORMAT PHONE NUMBER
+  function formatPhoneNumber(raw) {
+    const digits = raw.replace(/\D/g, '');
+    if (digits.length !== 10) return raw;
+
+    return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+  }
+  // SNAKE text error
+  function shakeError($el) {
+    $el.addClass('shake');
+    setTimeout(() => {
+      $el.removeClass('shake');
+    }, 400);
+  }
+  // FORMAT FIRSTNAME USER
+  function formatAutoFirstName(owner, id) {
+    return owner.firstName + ' ' + 'G' + id;
+  }
+
 
   // Function block element
   function renderNavHeaderTemplates(dataHeaderNav) {
@@ -551,7 +588,7 @@
 
       const userSelecting = dataUser.find(x=> x.isSelecting === true);
 
-      const availableUsers = dataUser.filter((item) => !item.isSelecting && item.firstName)
+      const availableUsers = dataUser.filter((item) => !item.isSelecting && !item.isChoosing && item.firstName)
 
       const html = `
         <button class="btn-option-copy-user"
@@ -573,7 +610,7 @@
             </div>`
             :
             dataUser.map(item => {
-            if (item.isSelecting === true || !item.firstName || item.services.length === 0 ) return '';
+            if (item.isSelecting === true || item.isChoosing || !item.firstName || item.services.length === 0 ) return '';
             return `
               <button class="option-item-copy" data-id="${item.id}"
                 style="
@@ -594,7 +631,6 @@
     //render button copy
     function renderCopyServiceBtn (containerSelector) {
       const isUserSelected = $('.btn-option-copy-user').hasClass('selected');
-      console.log("isUserSelc: ", isUserSelected)
       const htmlBtn =`
           <button class="btn-copy-service ${!isUserSelected ? 'disabled' : ''}"
             ${!isUserSelected ? 'disabled' :''}
@@ -606,36 +642,52 @@
     }
 
     // render info user: firstname, lastname, email or phone
-    function renderInfoUser(containerSelector, dataUser) {
+    function renderInfoUser(containerSelector, dataUser, firstUser) {
       const {firstName, lastName, phoneNumber, email} = dataUser;
+      let emailPhone = phoneNumber;
+      if(!isValidPhoneNumber(phoneNumber)) {
+        emailPhone = email;
+        dataUser.phoneNumber = '';
+      }else {
+        dataUser.email = '';
+      }
 
+      const isFirst = firstUser.id === dataUser.id;
+      // Chỉ yêu cầu nhập đầy đủ cho user đầu tiên
       const htmlInputInfoUser = `
           <div class="item-info-input">
             <label>First name</label>
             <input
-              placeholder="Optional (*)"
+              placeholder="Required (*)"
               value="${firstName || ''}"
+              id="firstname-banner"
             />
+            <p class="error-message"></p>
           </div>
           <div class="item-info-input">
             <label>Last name</label>
             <input
-              placeholder="Optional (*)"
+              placeholder="${isFirst ? 'Required (*)' : 'Optional (*)'}"
               value="${lastName || ''}"
+              id="lastname-banner"
             />
+            <p class="error-message"></p>
           </div>
           <div class="item-info-input">
             <label>Email or phone</label>
             <input
-              placeholder="Optional (*)"
-              value="${email || phoneNumber || ''}"
+              placeholder="${isFirst ? 'Required (*)' : 'Optional (*)'}"
+              value="${emailPhone || ''}"
+              id="emailPhone-banner"
             />
+            <p class="error-message"></p>
           </div>
       `
       $(containerSelector).html(htmlInputInfoUser)
     }
   // render control user booking
   function renderCountControls(containerSelector, dataBooking) {
+    if(dataBooking.type === typeBookingEnum.ME) return;
     const $c = $(containerSelector);
     $c.empty();
     $c.html(`
@@ -657,7 +709,7 @@
 
     if (!dataBooking || dataBooking.users.length === 0) return;
     // input name customer
-    dataBooking.users.forEach(item => {
+    dataBooking.users.forEach((item, index) => {
 
       const $inputBox = $(`
           <div class="guest-input" data-id="${item.id}"
@@ -668,9 +720,10 @@
             <input
               type="text"
               class="input-fullname ${item.isChoosing ? 'active' : ''}"
-              value="${item.firstName || ''}"
-              placeholder="First name..."
+              value="${item.firstName || `GUEST ${index + 1}`}"
+              placeholder="Name customer"
               data-id=${item.id}
+              readonly
             />
             <button class="btn-remove">×</button>
           </div>
@@ -679,43 +732,37 @@
     });
     // copy service customer
       // Kiểm tra xem có user nào đã chọn dịch vụ hay không
-    const hasSelectedServices = dataBooking.users.some(user => user.services.length > 0);
-    if(hasSelectedServices) {
-      // kiểm tra có user được chọn để copy
-      const isUserSelected = $('.btn-option-copy-user').hasClass('selected');
+      const hasSelectedServices = dataBooking.users.some(user => user.services.length > 0);
+      if(hasSelectedServices) {
+        // kiểm tra có user được chọn để copy
 
-      console.log("isSelected: ", isUserSelected);
-
-      const $copyService =
-        $(`
-          <div class="copy-service-wrapper">
-            <div class="copy-options-wrapper">
+        const $copyService =
+          $(`
+            <div class="copy-service-wrapper">
+              <div class="copy-options-wrapper">
+              </div>
+              <div class="copy-btn-wrapper">
+              </div>
             </div>
-            <div class="copy-btn-wrapper">
-            </div>
-          </div>
-        `)
-      const optionCopyService = {
-        dataUser: dataBooking.users,
-        bgColor: '',
-        border: '#E28B01',
-        color: '#E28B01',
-        icon: `<i class="fa-solid fa-chevron-up rotate-transition"></i>`
-      };
+          `)
+        const optionCopyService = {
+          dataUser: dataBooking.users,
+          bgColor: '',
+          border: '#E28B01',
+          color: '#E28B01',
+          icon: `<i class="fa-solid fa-chevron-up rotate-transition"></i>`
+        };
 
-
-      $c.append($copyService);
-      renderCopyServiceBtn('.copy-btn-wrapper');
-      renderCopyServiceOption('.copy-options-wrapper',optionCopyService )
-
+        $c.append($copyService);
+        renderCopyServiceBtn('.copy-btn-wrapper');
+        renderCopyServiceOption('.copy-options-wrapper',optionCopyService )
     }
-    console.log("check2: ", dataBooking);
     $c.append('<div class="container-info-user"></div>')
     // Điền thông tin khách hàng, tự fill nếu đã có thông tin: firstname, lastname và emai or phone
     const userChoosing=  dataBooking.users.find(u => u.isChoosing === true);
+    const firstUser = dataBooking.users[0];
     if(userChoosing) {
-      console.log("check 3")
-      renderInfoUser('.container-info-user', userChoosing)
+      renderInfoUser('.container-info-user', userChoosing, firstUser)
     }
   }
 
@@ -787,7 +834,7 @@
         const $listCards = item.listItem.map(cardItem => renderServiceCard(idMoreItem, cardItem, dataBooking, currentUserId));
 
         const $wrapper = $(`<div class="wrap-list-more"></div>`).append($listCards);
-        const $ListAddOn = item.listItem.map(cardItem =>renderListAddOn(item, cardItem.id));
+        const $ListAddOn = item.listItem.map(cardItem =>renderListAddOn(item, cardItem.id, dataBooking));
         $wrapper.append($ListAddOn);
         $moreItem.append($wrapper);
 
@@ -824,17 +871,10 @@
         </div>
       `);
       const user = dataBooking.users.find(u => u.id === currentUserId);
-      const isSelected = user && user.services.some(s => s.idService === idMoreItem);
+
       const serviceCardMoreCurr = user.services.find((se) => se.idService === idMoreItem);
-
-      console.log("serviceCardMore: ", serviceCardMoreCurr);
-
-      const serviceCardItemCurr = serviceCardMoreCurr && serviceCardMoreCurr.find((si) => si.idItemService === cardItem.id);
-
-      console.log("serviceCardItemCurr: ", serviceCardItemCurr);
-
+      const serviceCardItemCurr = serviceCardMoreCurr && serviceCardMoreCurr.itemService.find((si) => si.idItemService === cardItem.id);
       const staffUserSelected = serviceCardItemCurr && serviceCardItemCurr.selectedStaff;
-
 
       const $listUserStaff = $(`
         <div class="option-select-staff">
@@ -842,7 +882,7 @@
         </div>
       `);
 
-      const $actions = renderActionButtons(cardItem, dataBooking, currentUserId, isSelected);
+      const $actions = renderActionButtons(idMoreItem, cardItem.id, dataBooking, currentUserId);
 
       $cardMore.append($top, $actions, $listUserStaff);
       return $cardMore;
@@ -867,10 +907,10 @@
       `;
     }
     // hiển thị staff đã được chọn
-    function renderSelectedStaff(staffSelected) {
-      if (!staffSelected || Object.keys(staffSelected).length === 0) return '';
+    function renderSelectedStaff(selectedStaff) {
+      if (!selectedStaff || Object.keys(selectedStaff).length === 0) return '';
 
-      const { name = 'Name user', image = '' } = staffSelected;
+      const { name = 'Name user', image = '' } = selectedStaff;
 
       return `
         <div class="item-staff">
@@ -882,8 +922,11 @@
       `;
     }
     // btn action
-    function renderActionButtons(item, dataBooking, currentUserId, isSelected) {
-      console.log("check render action butn")
+    function renderActionButtons(idMoreItem, idCardItem, dataBooking, currentUserId) {
+      // Kiểm tra có staff đã được chọn trong item service này hay không
+      const findUserCur = dataBooking.users.find((u) => u.id === currentUserId);
+      const findService = findUserCur.services.find((s) => s.idService == idMoreItem);
+      const findItemService = findService && findService.itemService.find((is) => is.idItemService == idCardItem);
       const $wrap = $('<div class="add-more"></div>');
 
       const $add = $(`
@@ -898,7 +941,7 @@
             <i class="fa-solid fa-check"></i>
           </div>
           <div class="toggle-select">
-            <span id="full-name-selected">${isSelected && dataBooking.users.find(u => u.id === currentUserId)?.selectedStaff || 'Next Available'}</span>
+            <span id="full-name-selected">${findItemService && findItemService.selectedStaff.name || 'Next Available'}</span>
             <i class="fa-solid fa-chevron-down"></i>
           </div>
         </div>
@@ -911,12 +954,16 @@
           </svg>
         </button>
       `);
-
-      $wrap.append($add, $wrapSelect, $del);
+      //
+      if(findItemService) {
+        $wrap.append($wrapSelect, $del);
+      }else{
+        $wrap.append($add);
+      }
       return $wrap;
     }
     // render list add on
-    function renderListAddOn (dataItem, idItemChild, isFull=false) {
+    function renderListAddOn (dataItem, idItemChild,dataBooking, isFull=false) {
 
       const titleAddOnSelected = dataItem.value;
       const findItemChild = dataItem.listItem.find((i) => i.id === idItemChild);
@@ -924,7 +971,10 @@
       if(!findItemChild || listOptionAddOn.length ===0 ) return '';
 
       const limitList = isFull ? listOptionAddOn : listOptionAddOn.slice(0, 4);
-
+      // Trong card item kiểm tra option được chọn
+      const curUser = dataBooking.users.find((u) => u.isChoosing);
+      const findService = curUser && curUser.services.find((s) => s.idService == dataItem.id);
+      const findItemService = findService && findService.itemService.find((si) => si.idItemService == idItemChild);
 
       return `
         <div class="wrap-addOn" data-id=${dataItem.id}>
@@ -945,6 +995,7 @@
             </div>
             <div class="wrap-list-addOn" data-id="${idItemChild}">
               ${limitList.map((item) => {
+                const isOptionSelected = findItemService?.optionals?.some(opt => opt.id === item.id);
                 return `
                   <div class="item-addOn" data-id=${item.id}>
                     <div class="right-item-addOn">
@@ -957,7 +1008,7 @@
                         <h2 class="text-price-item-addOn">${item.price}</h2>
                         <p class="timedura">${item.timedura}</p>
                       </div>
-                      <div class="checkbox-addOn">
+                      <div class="checkbox-addOn ${isOptionSelected ? 'selected' :''}">
                         <div class="circle-addOn"></div>
                       </div>
                     </div>
@@ -1445,20 +1496,51 @@
         </div>
       </div>`,
       `<div class="calendar-timeslot">
-        <div class="calendar">
-          <div class="calendar-header">
-            <button id="prev">&#x25C0;</button>
-            <div id="monthYear"></div>
-            <button id="next">&#x25B6;</button>
+        <div class="wrap-calendar-time">
+          <div class="top-cal-time">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M7.16625 11.4688H13.4263V2.46875H1.90625V21.9688H13.4263V12.9688H7.16625V11.4688Z" fill="#E27303" />
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M21.8448 11.4691C19.8328 11.4681 18.0008 9.63605 18.0008 7.62305V6.87305H16.5008V7.62305C16.5008 9.10005 17.1758 10.4801 18.2198 11.4691L13.4219 11.469V12.969L18.2198 12.9691C17.1758 13.9581 16.5008 15.3371 16.5008 16.8141V17.5641H18.0008V16.8141C18.0008 14.8021 19.8338 12.9691 21.8458 12.9691H22.5958V11.4691H21.8448Z" fill="#E27303" />
+            </svg>
+            <h2 class="title-copy-time text-uppercase mb-0">SELECT DATE AND TIME</h2>
+            <div class="copy-time">
+              <input
+                id="select-banner-pm"
+                type='checkbox'
+                class='toggle-switch'
+              />
+             <span class="text-same-time">Start on same time</span>
+            </div>
           </div>
-          <div class="calendar-grid" id="days">
-          </div>
-        </div>
-        <div class="timeslot">
-          <h2 id="selectedDateTitle">August 14, 2025</h2>
-          <div id="timeSlotsContainer" class="time-slots"></div>
-          <div class="text-scroll-more">
-            <h2>Scroll to see more time slots</h2>
+          <div class="container-cal-time">
+            <div class="calendar">
+              <div class="calendar-header">
+                <button id="prev">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
+                    <path d="M12.5547 22.752C18.0775 22.752 22.5547 18.2748 22.5547 12.752C22.5547 7.22911 18.0775 2.75195 12.5547 2.75195C7.03184 2.75195 2.55469 7.22911 2.55469 12.752C2.55469 18.2748 7.03184 22.752 12.5547 22.752Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M16.0547 12.752H10.0547" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12.0547 9.75195L9.05469 12.752L12.0547 15.752" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div id="monthYear"></div>
+                <button id="next">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
+                    <path d="M12.5547 22.752C18.0775 22.752 22.5547 18.2748 22.5547 12.752C22.5547 7.22911 18.0775 2.75195 12.5547 2.75195C7.03184 2.75195 2.55469 7.22911 2.55469 12.752C2.55469 18.2748 7.03184 22.752 12.5547 22.752Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M9.05469 12.752H15.0547" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M13.0547 15.752L16.0547 12.752L13.0547 9.75195" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              </div>
+              <div class="calendar-grid" id="days">
+              </div>
+            </div>
+            <div class="timeslot">
+              <h2 id="selectedDateTitle">August 14, 2025</h2>
+              <div id="timeSlotsContainer" class="time-slots"></div>
+              <div class="text-scroll-more">
+                <h2>Scroll to see more time slots</h2>
+              </div>
+            </div>
           </div>
         </div>
       </div>`,
@@ -1643,8 +1725,8 @@
         });
         //
         function updateGuestSection() {
-          // Default user đầu tiên isChoosing
-          dataBooking.users[0].isChoosing = true;
+          // Default user đầu tiên isSelecting
+          // dataBooking.users[0].isSelecting = true;
 
           renderCountControls('.wrap-control', dataBooking);
           renderGuestInputs('.wrap-input-guests', dataBooking);
@@ -1662,10 +1744,12 @@
           if (selectedType === 'GUESTS'){
             dataBooking.type = typeBookingEnum.GUESTS;
             dataBooking.users = dataGuest;
+            dataBooking.users[0].isChoosing = true;
           }
           else if (selectedType === 'FAMILY') {
             dataBooking.type = typeBookingEnum.FAMILY;
             dataBooking.users = dataFamily;
+            dataBooking.users[0].isChoosing = true;
           }
           else {
             dataBooking.type = typeBookingEnum.ME;
@@ -1681,6 +1765,10 @@
             $('.wrap-control').empty();
             $('.wrap-input-guests').empty();
           }
+
+          // render lại list service
+          renderListService(listDataService, '.list-more', dataBooking, currentUserId);
+
         });
         // Tăng số lượng khách
         $(document).on('click', '.btn-increase', function() {
@@ -1694,15 +1782,6 @@
             email: '',
             gender: genderEnum.OTHER,
             services: [
-              {
-                idService: '',
-                itemService: [
-                  {
-                    idItemService: '',
-                    selectedStaff: null,
-                  }
-                ]
-              }
             ],
             selectedDate: null,
             selectedTimeSlot: null,
@@ -1746,30 +1825,287 @@
             alert('Không thể xóa khi ô đã nhập tên.');
           }
         });
+        // Cập nhật data khi onChange input
+          // firstname
+          $(document).on('input', '#firstname-banner', function() {
+            const $this = $(this);
+            const $parent = $this.closest('.wrap-input-guests');
+            const userCur = dataBooking.users.find((u) => u.isChoosing);
+            const isFirst = dataBooking.users[0].id === userCur.id;
+            const $findInputFullname = $parent.find(`.guest-input[data-id=${userCur.id}] input`);
 
-        // Cập nhật data khi gõ input
-        $(document).on('input', '.input-fullname', function() {
-          const id = +$(this).closest('.guest-input').data('id');
-          const val = $(this).val();
-          const obj = dataBooking.users.find(i => i.id === id);
-          console.log("obj: ", obj);
-          if (obj) obj.firstName = val;
-        });
+            const $error = $this.next('.error-message');
 
-        //focus onput ( xử lý active như tab)
-        $(document).on('focus', '.input-fullname', function () {
-          $('.input-fullname').removeClass('active');
-          $(this).addClass('active');
-          const $this = $(this);
-          const idFocus = $this.data('id');
-          dataBooking.users.forEach((user) =>{
-            user.isChoosing = (user.id === idFocus)
+            const val = $this.val();
+            $findInputFullname.val(val);
+            if(val === '') {
+              $findInputFullname.val(`GUEST ${userCur.id}`);
+            }
+            // Valid text required
+            if (isFirst && val === '') {
+              $this.addClass('is-invalid');
+              $error.text('First name is required.');
+            } else {
+              $this.removeClass('is-invalid');
+              $error.text('');
+            }
+            // Update data user
+            userCur.firstName = val;
+          });
+          //  lastName
+          $(document).on('input', '#lastname-banner', function() {
+            const $this = $(this);
+            const userCur = dataBooking.users.find((u) => u.isChoosing);
+            const isFirst = dataBooking.users[0].id === userCur.id;
+
+            const $error = $this.next('.error-message');
+
+            const val = $this.val();
+            // Valid text required
+            if (isFirst && val === '') {
+              $this.addClass('is-invalid');
+              $error.text('Last name is required.');
+            } else {
+              $this.removeClass('is-invalid');
+              $error.text('');
+            }
+
+            // Update data user
+            userCur.lastName = val;
+          });
+          //  phone or email
+          $(document).on('input', '#emailPhone-banner', function () {
+            const $this = $(this);
+            const userCur = dataBooking.users.find((u) => u.isChoosing);
+            const isFirst = dataBooking.users[0].id === userCur.id;
+
+            let val = $this.val().trim();
+            const $error = $this.next('.error-message');
+
+            const digits = val.replace(/\D/g, '');
+
+            let isPhone = false;
+            let isEmail = false;
+
+            // Check nếu là phone đủ 10 số
+            if (digits.length === 10 && /^\d+$/.test(digits)) {
+              val = formatPhoneNumber(digits); // Format lại hiển thị
+              $this.val(val); // Gán lại giá trị vào input
+              isPhone = true;
+            } else {
+               // Nếu đang ở dạng đã format mà không còn đủ 10 số → gỡ format
+              if (val.includes('(') || val.includes(')') || val.includes('-')) {
+                if (digits.length !== 10) {
+                  val = digits;
+                  $this.val(val);
+                }
+              }
+
+              isPhone = isValidPhoneNumber(val);
+              isEmail = isValidEmail(val);
+            }
+
+            // Cập nhật lỗi
+            if (isFirst && val === '') {
+              $this.addClass('is-invalid');
+              $error.text('Email or phone is required.');
+            } else if (val !== '' && !isPhone && !isEmail) {
+              $this.addClass('is-invalid');
+              $error.text('Email or phone is incorrect format.');
+            } else {
+              $this.removeClass('is-invalid');
+              $error.text('');
+            }
+
+            // Update data user
+            userCur.email = isEmail ? val : '';
+            userCur.phoneNumber = isPhone ? digits : '';
           });
 
-          currentUserId = +$(this).closest('.guest-input').data('id');
-          // Cập nhật lại danh sách dịch vụ để hiển thị đúng user
+        // Xử lý blur valid
+          // BLUR firstName
+          function validateFirstNameInput($input) {
+            const $parent = $input.closest('.wrap-input-guests');
+            const userCur = dataBooking.users.find((u) => u.isChoosing);
+            const $findInputFullname = $parent.find(`.guest-input[data-id=${userCur.id}] input`);
+            const $error = $input.next('.error-message');
+            const val = $input.val().trim();
+
+            $findInputFullname.val(val || `GUEST ${userCur.id}`);
+            userCur.firstName = val;
+
+            if (val === '') {
+              $input.addClass('is-invalid');
+              $error.text('First name is required.');
+            } else {
+              $input.removeClass('is-invalid');
+              $error.text('');
+            }
+          }
+          // BLUR lastname
+          function validateLastNameInput($input) {
+            const userCur = dataBooking.users.find((u) => u.isChoosing);
+            const isFirst = dataBooking.users[0].id === userCur.id;
+            const $error = $input.next('.error-message');
+            const val = $input.val().trim();
+
+            userCur.lastName = val;
+
+            if (isFirst && val === '') {
+              $input.addClass('is-invalid');
+              $error.text('Last name is required.');
+            } else {
+              $input.removeClass('is-invalid');
+              $error.text('');
+            }
+          }
+          // BLUR phone&email
+          function validateEmailPhoneInput($input) {
+            const userCur = dataBooking.users.find((u) => u.isChoosing);
+            const isFirst = dataBooking.users[0].id === userCur.id;
+            const val = $input.val().trim();
+            const $error = $input.next('.error-message');
+
+            const isPhone = isValidPhoneNumber(val);
+            const isEmail = isValidEmail(val);
+
+            userCur.email = isEmail ? val : '';
+            userCur.phoneNumber = isPhone ? val : '';
+
+            if (isFirst && val === '') {
+              $input.addClass('is-invalid');
+              $error.text('Email or phone is required.');
+            } else if (val !== '' && !isPhone && !isEmail) {
+              $input.addClass('is-invalid');
+              $error.text('Email or phone is incorrect format.');
+            } else {
+              $input.removeClass('is-invalid');
+              $error.text('');
+            }
+          }
+
+        // input firstName và blur
+        $(document).on('input blur', '#firstname-banner', function () {
+          validateFirstNameInput($(this));
+        });
+        $(document).on('input blur', '#lastname-banner', function () {
+          validateLastNameInput($(this));
+        });
+
+        $(document).on('input blur', '#emailPhone-banner', function () {
+          validateEmailPhoneInput($(this));
+        });
+
+        // Cập nhật data khi onChange input
+
+        //focus onput ( xử lý active như tab)
+       $(document).on('focus', '.input-fullname', function () {
+          const $this = $(this);
+          const idFocus = $this.data('id');
+          const $container = $this.closest('.wrap-input-guests');
+          const idNext = + $container.find('.guest-input').data('id');
+
+          const currentUser = dataBooking.users.find(u => u.isChoosing);
+          const firstUser = dataBooking.users[0];
+
+          // Lấy giá trị đang nhập của tab hiện tại
+          const $wrapCur = $(`.container-info-user`);
+          const valFirstName = $wrapCur.find('#firstname-banner').val().trim();
+          const valLastName = $wrapCur.find('#lastname-banner').val().trim();
+          const valEmailPhone = $wrapCur.find('#emailPhone-banner').val().trim();
+
+          const isPhone = isValidPhoneNumber(valEmailPhone);
+          const isEmail = isValidEmail(valEmailPhone);
+
+          // Kiểm tra nếu là user đầu tiên → bắt buộc phải nhập
+          let hasError = false;
+          if (currentUser.id === firstUser.id) {
+
+            if (valFirstName === '') {
+              $wrapCur.find('#firstname-banner').addClass('is-invalid');
+              const $errorFirst = $wrapCur.find('#firstname-banner').next('.error-message');
+              $errorFirst.text('First name is required.');
+              shakeError($errorFirst);
+              hasError = true;
+            }
+
+            if (valLastName === '') {
+              $wrapCur.find('#lastname-banner').addClass('is-invalid');
+              const $errorFirst = $wrapCur.find('#lastname-banner').next('.error-message');
+              $errorFirst.text('Last name is required.');
+              shakeError($errorFirst);
+              hasError = true;
+            }
+
+            if (valEmailPhone === '') {
+              $wrapCur.find('#emailPhone-banner').addClass('is-invalid');
+              const $errorFirst = $wrapCur.find('#emailPhone-banner').next('.error-message');
+              $errorFirst.text('Email or phone is required.');
+              shakeError($errorFirst);
+              hasError = true;
+            } else if (!isPhone && !isEmail) {
+              $wrapCur.find('#emailPhone-banner').addClass('is-invalid');
+              const $errorFirst = $wrapCur.find('#emailPhone-banner').next('.error-message');
+              $errorFirst.text('Email or phone is incorrect format.');
+              shakeError($errorFirst);
+              hasError = true;
+            }
+          } else {
+            if (valFirstName === '') {
+              $wrapCur.find('#firstname-banner').addClass('is-invalid');
+              const $errorFirst = $wrapCur.find('#firstname-banner').next('.error-message');
+              $errorFirst.text('First name is required.');
+              shakeError($errorFirst);
+              hasError = true;
+            }
+
+            if (valEmailPhone !== '' && !isPhone && !isEmail) {
+              $wrapCur.find('#emailPhone-banner').addClass('is-invalid');
+              const $errorFirst = $wrapCur.find('#emailPhone-banner').next('.error-message');
+              $errorFirst.text('Email or phone is incorrect format.');
+              shakeError($errorFirst);
+              hasError = true;
+            }
+          }
+          if (hasError) {
+            $this.blur(); // Gỡ focus
+            return;
+          }
+
+
+          // Đủ điều kiện mới chuyển tab
+          $('.input-fullname').removeClass('active');
+          $this.addClass('active');
+
+          dataBooking.users.forEach((user) => {
+            user.isChoosing = (user.id === idFocus);
+          });
+
+          currentUserId = idFocus;
+          const nextUser = dataBooking.users.find((u) => u.id === currentUserId);
+          // Nếu next tab được thì kiểm tra firstName của user khác user owner thì format firstName user owner + G + id
+          if(! nextUser.firstName) {
+            let nextNameUser = formatAutoFirstName(dataBooking.users[0], currentUserId);
+            nextUser.firstName = nextNameUser;
+          }
+
+          const userChoosing = dataBooking.users.find(u => u.isChoosing);
+          if (userChoosing) {
+            renderInfoUser('.container-info-user', userChoosing, firstUser);
+          }
+
+          // render lại option copy
+          const optionCopyService = {
+            dataUser: dataBooking.users,
+            bgColor: '',
+            border: '#E28B01',
+            color: '#E28B01',
+            icon: `<i class="fa-solid fa-chevron-up rotate-transition"></i>`
+          };
+          renderCopyServiceOption('.copy-options-wrapper',optionCopyService )
           renderListService(listDataService, '.list-more', dataBooking, currentUserId);
         });
+
     // Xử lý chọn user để copy
       // Toggle khi bấm vào button chính
       $(document).on('click', '.btn-option-copy-user', function (e) {
@@ -1798,6 +2134,16 @@
         renderCopyServiceBtn('.copy-btn-wrapper')
         renderCopyServiceOption('.copy-options-wrapper',optionCopyService);
       })
+      // Copy service
+      $(document).on('click', '.btn-copy-service', function () {
+        const userChoosing = dataBooking.users.find((u) => u.isChoosing);
+        const userSelectedCopy = dataBooking.users.find((u) => u.isSelecting);
+        if(userChoosing !== userSelectedCopy) {
+          userChoosing.services = JSON.parse(JSON.stringify(userSelectedCopy.services));
+        }
+        // upadate lại list service
+        renderListService(listDataService, '.list-more', dataBooking, currentUserId);
+      })
     // Xử lý select services
     $(document).on('click', '.expand-title', function () {
       const $wrap = $(this).next('.wrap-list-more');
@@ -1812,38 +2158,72 @@
     });
     // btn more
     $(document).on('click', '.add-more .btn-add-more', function () {
-      const $parentBtn = $(this).closest('.add-more');
-      const $card = $parentBtn.closest('.card-more');
-      const title = $card.find('.bold-medium-14').text();
-      const user = dataBooking.users.find(u => u.id === currentUserId);
+      const $this = $(this);
+      const $card = $this.closest('.card-more');
 
-      if (user) {
-        user.services.push({ title });
+      // Thêm staff id defult vào user
+      const staffSelecting = listUserStaff.find((st) => st.id == 'default');
+      const idService = $this.closest('.more-item').data('id');
+      const idItemService = $card.data('id');
+      const userSelecting = dataBooking.users.find((u) => u.isChoosing === true);
+
+      // nếu khong tìm thấy idService trong userSelecting thì thêm mới
+      let serviceExit = userSelecting.services.find((item) => item.idService === idService);
+      let serviceItemExit = serviceExit && serviceExit.itemService.find(item => item.idItemService ===idItemService);
+
+      if (serviceExit) {
+        if (serviceItemExit) {
+          serviceItemExit.selectedStaff = staffSelecting;
+        } else {
+          serviceItemExit = {
+            idItemService,
+            selectedStaff: staffSelecting
+          };
+          serviceExit.itemService.push(serviceItemExit);
+        }
+      } else {
+        serviceExit = {
+          idService,
+          itemService: [
+            {
+              idItemService,
+              selectedStaff: staffSelecting
+            }
+          ]
+        };
+        userSelecting.services.push(serviceExit);
       }
-      $(this).hide();
-      const $selectUser = $parentBtn.find('.wrap-select-user');
-      const $btnDelete = $parentBtn.find('.btn-delete');
+      const $action = renderActionButtons(idService, idItemService, dataBooking, currentUserId);
+      $card.find('.add-more').replaceWith($action);
 
-      $selectUser.css('display', 'flex').hide().fadeIn();
-      $btnDelete.show();
       updateGuestSection(); // Cập nhật để hiển thị nút Copy Service
     });
     // remove option select user
     $(document).on('click', '.add-more .btn-delete', function () {
+      const $this = $(this);
+
       const $parentBtn = $(this).closest('.add-more');
       const $card = $parentBtn.closest('.card-more');
       const title = $card.find('.bold-medium-14').text();
+
       const user = dataBooking.users.find(u => u.id === currentUserId);
       if (user) {
         user.services = user.services.filter(s => s.title !== title);
       }
-      $(this).hide();
-      const $selectUser = $parentBtn.find('.wrap-select-user');
-      const $btnAddmore = $parentBtn.find('.btn-add-more');
 
-      $selectUser.hide();
-      $btnAddmore.show();
-      updateGuestSection(); // Cập nhật để hiển thị nút Copy Service
+      // remove staff of user in databooking
+      const idService = $this.closest('.more-item').data('id');
+      const idItemService = $this.closest('.card-more').data('id');
+      const userSelecting = dataBooking.users.find((u) => u.isChoosing === true);
+
+      const serviceDelete = userSelecting.services.find((s) =>s.idService == idService);
+
+      if (serviceDelete && serviceDelete.itemService) {
+        serviceDelete.itemService = serviceDelete.itemService.filter(is => is.idItemService != idItemService);
+      }
+
+      const $action = renderActionButtons(idService, idItemService, dataBooking, currentUserId);
+      $card.find('.add-more').replaceWith($action);
     });
     // select option user
     $(document).on('click', '.wrap-select-user .toggle-select', function (e) {
@@ -1899,17 +2279,11 @@
       const $this = $(this);
       const idStaff = $this.data('id');
       const staffSelecting = listUserStaff.find((st) => st.id == idStaff);
-      console.log("idStaff: ", idStaff);
-      console.log("listUserStaff: ", listUserStaff);
-      console.log("staffSelecting: ", staffSelecting);
 
       const idService = $this.closest('.more-item').data('id');
       const idItemService = $this.closest('.card-more').data('id');
 
       const userSelecting = dataBooking.users.find((u) => u.isChoosing === true);
-      console.log("idService: ", idService);
-      console.log("idItemService: ", idItemService);
-      console.log("userSelecting: ", userSelecting);
 
 
       // nếu khong tìm thấy idService trong userSelecting thì thêm mới
@@ -1939,18 +2313,13 @@
         userSelecting.services.push(serviceExit);
       }
 
-      console.log("dataBooking: ", dataBooking)
-
-
       const name = $(this).find(".full-name").text();
       const $wrap = $(this).closest('.card-more');
-      const user = dataBooking.users.find(u => u.id === currentUserId);
-      if (user) {
-        user.selectedStaff = name;
-      }
 
       $wrap.find('#full-name-selected').text(name);
       $wrap.find('.option-select-staff').removeClass('show');
+
+      updateGuestSection(); // Cập nhật để hiển thị nút Copy Service
     });
     // toggle addOn service
     $(document).on('click', '.expand-addOn', function() {
@@ -1964,7 +2333,7 @@
       const dataItem = listDataService.find(({item}) => item.id === dataId);
       if(!dataItem) return;
 
-      const newListAddOn = renderListAddOn(dataItem.item, childId, !isExpanded);
+      const newListAddOn = renderListAddOn(dataItem.item, childId,dataBooking, !isExpanded);
 
       $wrapAddOn.replaceWith(newListAddOn);
 
@@ -1974,50 +2343,63 @@
     })
 
     // selected add-on option
-    $(document).on('click', '.checkbox-addOn', function(){
+    $(document).on('click', '.checkbox-addOn', function () {
       const $this = $(this);
-      $('.checkbox-addOn').removeClass("selected");
-      $this.addClass('selected');
+      const $wrapAddOn = $this.closest('.wrap-addOn');
+      const $itemAddOn = $this.closest('.item-addOn');
 
-      // Thêm add on đã chọn vào data
-      const idItemService = $this.closest('.wrap-addOn').data('id'); // tương ứng id card-more
-      console.log("idItemSer: ", idItemService);
       const idService = $this.closest('.more-item').data('id');
-      console.log("idService: ", idService);
-      const idItemAddOn = $this.closest('.item-addOn').data('id');
+      const idItemService = $wrapAddOn.data('id'); // id card-more
+      const idItemAddOn = $itemAddOn.data('id');
 
-      const serviceCur = listDataService.find(({item}) => item.id == idService)?.item;
-      console.log("serviceCur: ", serviceCur);
-      const itemService = serviceCur && serviceCur.listItem.find((item) => item.id == idItemService);
-      console.log("itemService: ", itemService);
-      const itemAddOn = itemService && itemService.listOptionAddOn.find((item) => item.id == idItemAddOn);
+      const serviceCur = listDataService.find(({ item }) => item.id == idService)?.item;
+      const itemService = serviceCur?.listItem.find((item) => item.id == idItemService);
+      const itemAddOn = itemService?.listOptionAddOn.find((item) => item.id == idItemAddOn);
 
-      // Kiểm tra đã
+      const userCurr = dataBooking.users.find((u) => u.isChoosing === true);
+      let serviceInUser = userCurr.services.find((item) => item.idService == idService);
 
-    })
+      if (!serviceInUser) {
+        serviceInUser = {
+          idService,
+          itemService: []
+        };
+        userCurr.services.push(serviceInUser);
+      }
+
+      let itemServiceInUser = serviceInUser.itemService.find((item) => item.idItemService == idItemService);
+
+      if (!itemServiceInUser) {
+        itemServiceInUser = {
+          idItemService,
+          selectedStaff: null,
+          optionals: [] // dùng mảng
+        };
+        serviceInUser.itemService.push(itemServiceInUser);
+      }
+
+      // Đảm bảo optionals là mảng
+      if (!Array.isArray(itemServiceInUser.optionals)) {
+        itemServiceInUser.optionals = [];
+      }
+
+      // Kiểm tra itemAddOn có đang tồn tại trong optionals không
+      const index = itemServiceInUser.optionals.findIndex((opt) => opt.id === itemAddOn.id);
+
+      if (index > -1) {
+        // Đã chọn rồi ⇒ bỏ chọn
+        itemServiceInUser.optionals.splice(index, 1);
+        $this.removeClass("selected");
+      } else {
+        // Chưa chọn ⇒ thêm vào
+        itemServiceInUser.optionals.push(itemAddOn);
+        $this.addClass("selected");
+      }
+    });
+
 
   // START: Xử lý option trên banner
-    // Xử lý nút Copy Service
-    $(document).on('click', '.btn-copy-service', function (e) {
-      e.stopPropagation();
-      const $dropdown = $(this).next('.copy-options-wrapper');
-      $dropdown.toggleClass('hidden');
-    });
 
-    // Xử lý chọn user để copy dịch vụ
-    $(document).on('click', '.copy-service-item', function () {
-      const sourceUserId = +$(this).data('user-id');
-      const sourceUser = dataBooking.users.find(u => u.id === sourceUserId);
-      const targetUser = dataBooking.users.find(u => u.id === currentUserId);
-      if (sourceUser && targetUser) {
-        targetUser.services = [...sourceUser.services];
-        targetUser.selectedDate = sourceUser.selectedDate;
-        targetUser.selectedTimeSlot = sourceUser.selectedTimeSlot;
-        targetUser.selectedStaff = sourceUser.selectedStaff;
-      }
-      $(this).closest('.copy-options-wrapper').addClass('hidden');
-      renderListService(listDataService, '.list-more', dataBooking, currentUserId);
-    });
     // Xử lý chọn ngày đặt lịch
     const monthNames = [
         "January", "February", "March", "April", "May", "June",

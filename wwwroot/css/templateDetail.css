@@ -596,7 +596,7 @@
 .wrap-control {
   position: absolute;
   top: var(--px-8);
-  left: 100%;
+  left: calc(100% + 12px);
   z-index: 10;
 }
 
@@ -662,6 +662,7 @@
   border-radius: 0px;
   border-bottom: 1px solid #ccc;
   color: var(--color-cur-primary);
+  cursor: pointer;
 }
 .guest-input .btn-remove {
   position: absolute;
@@ -687,10 +688,10 @@
 }
 
 .input-fullname.active {
-  border-bottom: 2px solid var(--color-cur-primary);
+  border-bottom: 3px solid var(--color-cur-primary);
 }
 .input-fullname:focus-visible {
-  border-bottom: 2px solid var(--color-cur-primary);
+  border-bottom: 3px solid var(--color-cur-primary);
   outline: none;
 }
 
@@ -714,7 +715,7 @@
   color: var(--color-user-copy, white);
   font: normal normal 500 var(--s-20);
 }
-.copy-service-wrapper .btn-option-copy-user:hover{
+.copy-service-wrapper .btn-option-copy-user:hover {
   background-color: #fff6e6;
 }
 .copy-service-wrapper .btn-option-copy-user {
@@ -761,13 +762,13 @@
   justify-content: space-around;
   align-items: center;
   border-radius: 12px;
-  border: 1px solid var(--color-cur-primary,#04972f);
+  border: 1px solid var(--color-cur-primary, #04972f);
   background: var(--color-cur-primary, #0c7e2d);
   color: white;
   font: normal normal 500 var(--s-20);
 }
 .list-option-copy .option-item-copy:hover {
-    background: #b1c9b8;
+  background: #b1c9b8;
 }
 .option-item-none {
   display: flex;
@@ -817,6 +818,13 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+}
+
+.wrap-input-guests .container-info-user .item-info-input .error-message {
+  color: red;
+  font-size: 12px;
+  margin-top: 4px;
+  padding-left: 8px;
 }
 
 .wrap-input-guests .container-info-user .item-info-input input {
@@ -967,7 +975,7 @@
   justify-content: space-between;
 }
 .wrap-service-infoshop .card-more .add-more .wrap-select-user {
-  display: none;
+  display: flex;
   gap: 16px;
   align-items: center;
 }
@@ -998,7 +1006,8 @@
   opacity: 0.9;
 }
 .wrap-service-infoshop .card-more .add-more .btn-delete {
-  display: none;
+  display: flex;
+  align-items: center;
   border: none;
   background: none;
 }
@@ -1183,8 +1192,47 @@
 
 /* calendar & timeslot */
 .calendar-timeslot {
+  width: 100%;
+  display: flex;
+  padding: 42.5px 56.055px;
+  justify-content: center;
+  align-items: center;
+  align-self: stretch;
+  background: var(--Templates-1-Secondary-orange-50, #fcf3e6);
+}
+.wrap-calendar-time {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+}
+.container-cal-time {
+  width: 100%;
   display: flex;
   justify-content: space-around;
+}
+.top-cal-time {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.title-copy-time {
+  color: var(--text-color-primary);
+  font: normal normal 600 var(--s-24);
+}
+.copy-time {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.text-same-time {
+  color: var(--text-color-primary);
+  font: normal normal 500 var(--s-18);
+}
+#monthYear {
+  flex: 1 0 0;
+  text-align: center;
 }
 /* css calender */
 .calendar {
@@ -1194,6 +1242,7 @@
   padding: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
 .calendar-header {
   display: flex;
   justify-content: space-between;
@@ -1214,16 +1263,23 @@
   gap: 5px;
 }
 .day-name {
-  font-weight: bold;
-  color: #444;
+  font: normal normal 300 var(--s-20);
+  color: var(--text-color-primary);
+  display: flex;
+  min-width: 70px;
+  padding: 8px 24px;
+  justify-content: center;
+  align-items: center;
 }
 .day {
+  font: normal normal 500 var(--s-20);
   padding: 10px 0;
   border-radius: 8px;
   cursor: pointer;
 }
 .day.past {
-  color: #bbb;
+  color: #a3a3a3;
+  font: normal normal 500 var(--s-20);
   cursor: not-allowed;
 }
 .day.inactive {
@@ -1232,20 +1288,30 @@
   position: relative;
   pointer-events: none;
 }
+#prev svg:hover {
+  color: var(--bs-main);
+}
+#next svg:hover {
+  color: var(--bs-main);
+}
 
 .day.inactive::after {
   content: "";
   position: absolute;
   top: 50%;
-  left: 15%;
-  width: 70%;
-  height: 1px;
+  top: 50%;
+  left: 32%;
+  width: 36%;
+  height: 0.5px;
   background: #999;
   transform: translateY(-50%);
 }
 .day.today {
   background: white;
   color: #006e3d;
+}
+.day:not(.active):hover {
+  background: #d3d3d3;
 }
 .day.active {
   background: #006e3d !important;
@@ -1256,12 +1322,27 @@
 .timeslot {
   width: 45%;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: 12px;
+  background: white;
+}
+#selectedDateTitle {
+  font: normal normal 500 var(--s-24);
+  text-align: center;
+  margin-bottom: 0px;
+  padding: 12px;
 }
 .time-slots {
   max-height: 300px;
   overflow-y: auto;
   border-top: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
+}
+.time-slots h2 {
+  text-align: center;
+  padding: 12px;
+  font: normal normal 500 var(--s-24);
 }
 
 .time-slot {
@@ -1271,6 +1352,9 @@
   padding: 12px 16px;
   border-bottom: 1px solid #eee;
   cursor: pointer;
+}
+.time-slot span {
+  font: normal normal 400 var(--s-15);
 }
 
 .time-slot.selected {
@@ -1286,6 +1370,21 @@
 
 .time-slot.selected .circle {
   background-color: green;
+}
+.text-scroll-more {
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+.text-scroll-more h2 {
+  font: normal normal 400 var(--s-15);
+  text-align: center;
+  padding: 10px;
+  background: green;
+  color: white;
+  margin-bottom: 0px;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
 }
 
 /* sumary */
@@ -1434,3 +1533,51 @@
   background: var(--Foundation-Green-Normal, #0c7e2d);
   color: white;
 }
+
+/* checked toggle */
+.toggle-switch {
+  appearance: none;
+  width: var(--px-48);
+  height: var(--px-24);
+  background: #ccc;
+  border-radius: var(--px-20);
+  position: relative;
+  outline: none;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.toggle-switch:checked {
+  background: var(--bs-main);
+}
+
+.toggle-switch::before {
+  content: "";
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  background: white;
+  border-radius: 50%;
+  top: 1px;
+  left: 2.5px;
+  transition: transform 0.3s;
+}
+
+.toggle-switch:checked::before {
+  transform: translateX(21px);
+}
+
+/* snake text error */
+@keyframes shake {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-5px); }
+  40% { transform: translateX(5px); }
+  60% { transform: translateX(-5px); }
+  80% { transform: translateX(5px); }
+  100% { transform: translateX(0); }
+}
+
+.shake {
+  animation: shake 0.4s ease;
+}
+
