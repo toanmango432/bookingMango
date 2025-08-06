@@ -916,6 +916,9 @@
         <div class="item-staff">
           <div class="avatar-staff">
             <img src="${image}" alt="image staff" class="img-staff"/>
+        <div class="item-staff">
+          <div class="avatar-staff">
+            <img src="${image}" alt="image staff" class="img-staff"/>
           </div>
           <span>${name}</span>
         </div>
@@ -1787,12 +1790,15 @@
             selectedTimeSlot: null,
             isSelecting: false,
             isChoosing: false,
+            isSelecting: false,
+            isChoosing: false,
           });
           updateGuestSection();
         });
 
         // Giảm số lượng
         $(document).on('click', '.btn-decrease', function() {
+          if (dataBooking.users.length <= 1) {
           if (dataBooking.users.length <= 1) {
             alert('Bạn phải chọn tối thiểu 1 người.');
             return;
@@ -2273,6 +2279,8 @@
       $('.option-select-staff').removeClass('show');
     });
 
+    // gắn staff selected cho user
+    $(document).on('click', '.item-staff', function (e) {
     // gắn staff selected cho user
     $(document).on('click', '.item-staff', function (e) {
       e.stopPropagation();

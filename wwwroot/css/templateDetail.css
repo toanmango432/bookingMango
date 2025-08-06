@@ -466,6 +466,7 @@
   width: 42%;
   position: relative;
   top: var(--px-200);
+  top: var(--px-200);
   display: flex;
   flex-direction: column;
   gap: 24px;
