@@ -41,6 +41,26 @@
       "PackagePath": "staticwebassets/assets/images/listUser/userAvailable.png"
     },
     {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/assets/images/nail-upload/nail1.jpg",
+      "PackagePath": "staticwebassets/assets/images/nail-upload/nail1.jpg"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/assets/images/nail-upload/nail2.jpg",
+      "PackagePath": "staticwebassets/assets/images/nail-upload/nail2.jpg"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/assets/images/nail-upload/nail3.jpg",
+      "PackagePath": "staticwebassets/assets/images/nail-upload/nail3.jpg"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/assets/images/nail-upload/nail4.png",
+      "PackagePath": "staticwebassets/assets/images/nail-upload/nail4.png"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/assets/images/nail-upload/nail5.png",
+      "PackagePath": "staticwebassets/assets/images/nail-upload/nail5.png"
+    },
+    {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/assets/images/neon.jpg",
       "PackagePath": "staticwebassets/assets/images/neon.jpg"
     },
@@ -95,6 +115,10 @@
     {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/assets/images/templates/logo-template.png",
       "PackagePath": "staticwebassets/assets/images/templates/logo-template.png"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/assets/images/upload-represent/image-represent-upload.png",
+      "PackagePath": "staticwebassets/assets/images/upload-represent/image-represent-upload.png"
     },
     {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/assets/images/vintage.png",

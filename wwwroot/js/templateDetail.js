@@ -405,9 +405,69 @@
       $el.removeClass('shake');
     }, 400);
   }
+  // SHOW error valid input
+  function showInputError($input, message) {
+    let $error = $input.siblings('.input-error');
+
+    if ($error.length === 0) {
+      $error = $('<p class="input-error mb-0"></p>');
+      $input.after($error);
+    }
+
+    $error.text(message);
+  }
+
+function clearInputError($input) {
+  $input.siblings('.input-error').remove();
+}
+
+
   // FORMAT FIRSTNAME USER
   function formatAutoFirstName(owner, id) {
     return owner.firstName + ' ' + 'G' + id;
+  }
+
+  // Refactor Data
+  function buildServiceSummary(data, listDataService) {
+    const dataService = data.services;
+
+    const images = data.images ? data.images : [];
+    if (!Array.isArray(dataService)) return [];
+
+    const listServiceUser =  dataService.map(service => {
+      console.log("service: ", service);
+
+      const foundService = listDataService.find(s => s.item.id === service.idService);
+      if (!foundService) return null;
+
+      const serviceInfo = {
+        services: {
+          id: foundService.item.id,
+          nameService: foundService.item.value,
+        },
+        itemService: service.itemService.map(item => {
+          const matchedItem = foundService.item.listItem.find(i => i.id === item.idItemService);
+          if (!matchedItem) return null;
+
+          return {
+            title: matchedItem.title,
+            subTitle: matchedItem.subTitle,
+            priceRental: matchedItem.priceRental,
+            timetext: matchedItem.timetext,
+            selectedStaff: item.selectedStaff,
+            optionals: item.optionals ?? [],
+          };
+        }).filter(Boolean),
+      };
+
+      return serviceInfo;
+    }).filter(Boolean);
+
+    return {
+      listServiceUser,
+      images,
+    }
+
   }
 
 
@@ -1012,7 +1072,9 @@
                         <p class="timedura">${item.timedura}</p>
                       </div>
                       <div class="checkbox-addOn ${isOptionSelected ? 'selected' :''}">
-                        <div class="circle-addOn"></div>
+                        <div class="circle-addOn">
+                          <i class="fa-solid fa-check"></i>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1292,7 +1354,9 @@
       const div = $(`
         <div class="time-slot">
           <span>${slot}</span>
-          <div class="circle"></div>
+          <div class="circle">
+            <div class="dot"></div>
+          </div>
         </div>
       `);
       container.append(div);
@@ -1311,9 +1375,39 @@
   }
 
   // render sumary
-  function renderSumary (dataSumary) {
+  function renderSumary (dataBooking, listDataService) {
     const $containerSumary = $('.wrap-sumary');
     $containerSumary.empty();
+    // Kiểm tra mảng users
+    const hasUserWithService = dataBooking.users.some(user => Array.isArray(user.services) && user.services.length >0);
+
+    if(!Array.isArray(dataBooking.users) || !hasUserWithService) {
+      return ``;
+    }
+
+    // hàm tính tiền tạm thời, do data chưa chuẩn
+    function parsePrice(priceStr) {
+      // Bỏ ký tự $ và chuyển sang số
+      return parseFloat(priceStr.replace('$', '')) || 0;
+    }
+
+    function parseTime(timeStr) {
+      if (!timeStr) return 0;
+      return parseInt(timeStr.replace(/[^0-9]/g, '')) || 0;
+    }
+
+    function getTotalPrice(service) {
+      const basePrice = parsePrice(service.priceRental);
+
+      const optionalTotal = (service.optionals || []).reduce((sum, opt) => {
+        return sum + parsePrice(opt.price);
+      }, 0);
+
+      const total = basePrice + optionalTotal;
+
+      return total.toFixed(2);
+    }
+
     const htmlSumary =  `
       <div class="container-sumary">
         <div class="header-sumary">
@@ -1321,94 +1415,93 @@
           <p class="sub-time-sumary">14:00, Thu, May 14 2025</p>
         </div>
         <div class="wrap-list-sumary">
-          <div class="item-sumary">
-            <div class="top-item-sumary">
-              <div class="left-top-item-sumary">
-                <button class="edit-sumary">
-                  <i class="fa-solid fa-pen-to-square"></i>
-                  Edit
-                </button>
-                <button class="delete-sumary">
-                  <i class="fa-solid fa-trash"></i>
-                  Delete
-                </button>
-              </div>
-              <div class="right-top-item-sumary">
-                <button class="btn-upload-image">Upload Image</button>
-              </div>
-            </div>
-            <div class="body-item-sumary">
-              <div class="wrap-item-content">
-                <div class="item-content">
-                  <div class="p-wrap">
-                    <p class="text-name-service">Classic Mani</p>
-                    <p class="text-name-tech">Next Available</p>
-                    <p class="text-time-dura">20 mins</p>
-                    <p class="text-price-serice">$ 10.00</p>
-                  </div>
+        ${dataBooking.users.map((userBooking) => {
+          const dataRefact = buildServiceSummary(userBooking, listDataService);
+          // tính tổng bản ghi, tổng tiền và tổng time
+          let totalServices = 0;
+          let totalMinutes = 0;
+          let totalPrice = 0;
+
+          if (dataRefact.listServiceUser && Array.isArray(dataRefact.listServiceUser)) {
+            dataRefact.listServiceUser.forEach(item => {
+              item.itemService.forEach(is => {
+                totalServices += 1;
+
+                // Tính thời gian chính
+                totalMinutes += parseTime(is.timetext);
+
+                // Cộng thêm thời gian optional nếu có
+                const optionalMins = (is.optionals || []).reduce((sum, opt) => {
+                  return sum + parseTime(opt.timedura);
+                }, 0);
+                totalMinutes += optionalMins;
+
+                totalPrice += Number(getTotalPrice(is) || 0);
+              });
+            });
+          }
+
+          return `
+            <div class="item-sumary" data-id="${userBooking.id}">
+              <div class="top-item-sumary">
+                <div class="left-top-item-sumary">
+                  <button class="edit-sumary">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    Edit
+                  </button>
+                  <button class="delete-sumary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
+                      <path d="M14.8359 10.7598V17.7598M10.8359 10.7598V17.7598M6.83594 6.75977V18.5598C6.83594 19.6799 6.83594 20.2395 7.05392 20.6674C7.24567 21.0437 7.55141 21.3502 7.92773 21.542C8.35514 21.7598 8.91493 21.7598 10.0328 21.7598H15.639C16.7569 21.7598 17.3159 21.7598 17.7433 21.542C18.1197 21.3502 18.4264 21.0437 18.6182 20.6674C18.8359 20.24 18.8359 19.6808 18.8359 18.5629V6.75977M6.83594 6.75977H8.83594M6.83594 6.75977H4.83594M8.83594 6.75977H16.8359M8.83594 6.75977C8.83594 5.82788 8.83594 5.36217 8.98818 4.99463C9.19117 4.50457 9.58026 4.11499 10.0703 3.91201C10.4379 3.75977 10.9041 3.75977 11.8359 3.75977H13.8359C14.7678 3.75977 15.2338 3.75977 15.6013 3.91201C16.0914 4.11499 16.4806 4.50457 16.6836 4.99463C16.8358 5.36217 16.8359 5.82788 16.8359 6.75977M16.8359 6.75977H18.8359M18.8359 6.75977H20.8359" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Delete
+                  </button>
+                </div>
+                <div class="right-top-item-sumary">
+                  <button class="btn-upload-image">Upload Image ${dataRefact.images.length !== 0 ? `(${dataRefact.images.length})` : ''}</button>
                 </div>
               </div>
-              <div class="wrap-item-content">
-                <div class="item-content">
-                  <div class="p-wrap">
-                    <p class="text-name-service">Classic Mani</p>
-                    <p class="text-name-tech">Next Available</p>
-                    <p class="text-time-dura">20 mins</p>
-                    <p class="text-price-serice">$ 10.00</p>
-                  </div>
-                </div>
+              <div class="user-book">
+                <h2>${userBooking.firstName + " " + userBooking.lastName}</h2>
+              </div>
+              <div class="body-item-sumary">
+                ${dataRefact.listServiceUser && dataRefact.listServiceUser.map((item) => {
+                  const services = item.services;
+                  const itemService = item.itemService;
+                  return itemService.map((is) => {
+                    console.log("check itemServce: ", is)
+                    return `
+                      <div class="wrap-item-content">
+                        <div class="item-content">
+                          <div class="p-wrap">
+                            <div class="action-item-ser">
+                              <p class="edit-item-ser">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                              </p>
+                              <p class="delete-item-ser">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
+                                  <path d="M14.8359 10.7598V17.7598M10.8359 10.7598V17.7598M6.83594 6.75977V18.5598C6.83594 19.6799 6.83594 20.2395 7.05392 20.6674C7.24567 21.0437 7.55141 21.3502 7.92773 21.542C8.35514 21.7598 8.91493 21.7598 10.0328 21.7598H15.639C16.7569 21.7598 17.3159 21.7598 17.7433 21.542C18.1197 21.3502 18.4264 21.0437 18.6182 20.6674C18.8359 20.24 18.8359 19.6808 18.8359 18.5629V6.75977M6.83594 6.75977H8.83594M6.83594 6.75977H4.83594M8.83594 6.75977H16.8359M8.83594 6.75977C8.83594 5.82788 8.83594 5.36217 8.98818 4.99463C9.19117 4.50457 9.58026 4.11499 10.0703 3.91201C10.4379 3.75977 10.9041 3.75977 11.8359 3.75977H13.8359C14.7678 3.75977 15.2338 3.75977 15.6013 3.91201C16.0914 4.11499 16.4806 4.50457 16.6836 4.99463C16.8358 5.36217 16.8359 5.82788 16.8359 6.75977M16.8359 6.75977H18.8359M18.8359 6.75977H20.8359" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                              </p>
+                            </div>
+                            <p class="text-name-service">${is.title}</p>
+                            <p class="text-name-tech">${is.selectedStaff.name}</p>
+                            <p class="text-time-dura">${is.timetext}</p>
+                            <p class="text-price-serice">$ ${getTotalPrice(is)}</p>
+                          </div>
+                        </div>
+                      </div>
+                    `
+                  }).join('')
+                }).join('')}
+              </div>
+              <div class="total-pay">
+                <p class="text-total-amount">Total (${totalServices})</p>
+                <p class="text-total-times">${totalMinutes} min</p>
+                <p class="text-total-price">$ ${totalPrice}</p>
               </div>
             </div>
-            <div class="total-pay">
-              <p class="text-total-amount">Total (2)</p>
-              <p class="text-total-times">60 mins</p>
-              <p class="text-total-price">$ 35</p>
-            </div>
-          </div>
-          <div class="item-sumary">
-            <div class="top-item-sumary">
-              <div class="left-top-item-sumary">
-                <button class="edit-sumary">
-                  <i class="fa-solid fa-pen-to-square"></i>
-                  Edit
-                </button>
-                <button class="delete-sumary">
-                  <i class="fa-solid fa-trash"></i>
-                  Delete
-                </button>
-              </div>
-              <div class="right-top-item-sumary">
-                <button class="btn-upload-image">Upload Image</button>
-              </div>
-            </div>
-            <div class="body-item-sumary">
-              <div class="wrap-item-content">
-                <div class="item-content">
-                  <div class="p-wrap">
-                    <p class="text-name-service">Classic Mani</p>
-                    <p class="text-name-tech">Next Available</p>
-                    <p class="text-time-dura">20 mins</p>
-                    <p class="text-price-serice">$ 10.00</p>
-                  </div>
-                </div>
-              </div>
-              <div class="wrap-item-content">
-                <div class="item-content">
-                  <div class="p-wrap">
-                    <p class="text-name-service">Classic Mani</p>
-                    <p class="text-name-tech">Next Available</p>
-                    <p class="text-time-dura">20 mins</p>
-                    <p class="text-price-serice">$ 10.00</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="total-pay">
-              <p class="text-total-amount">Total (2)</p>
-              <p class="text-total-times">60 mins</p>
-              <p class="text-total-price">$ 35</p>
-            </div>
-          </div>
+          `
+        })}
         </div>
         <div class="confirm-booking">
           <button class="btn-confirm-booking">
@@ -1421,49 +1514,313 @@
     $containerSumary.append(htmlSumary);
   }
 
-  // popup cart user
-  function renderPopupCart(dataCart) {
-    const { order, noneOrder, btnBack } = dataCart;
+  // render content popup paypal
+  function renderPaypalOption () {
     return `
-      <div class="overlay-screen">
-        <div class="popup-container-cart">
-          <div class="popup-wrap-cart">
-            <div class="title-select-services">
-              <h2 class="text-uppercase">Services Selected</h2>
+      <div class="wrap-paypal-option>
+
+      </div>
+    `
+  }
+
+  // POPUP
+    // base popup
+    function renderBasePopup(innerContentHTML, height = 620, width = 560) {
+      // Clear popup cũ nếu có
+      $('.overlay-screen').remove();
+
+      const html = `
+        <div class="overlay-screen">
+          <div class="popup-container-template"
+            style="
+              height: ${height}px;
+              width: ${width}px;
+            "
+          >
+            ${innerContentHTML}
+            <div class="btn-closepopup">
+              <i class="fa-solid fa-xmark"></i>
             </div>
-            <div class="wrap-list-services">
-              ${
-                order && order.length > 0
-                  ? order.map((item) => {
-                      return `
-                  <div class="list-order">
-                    Map order here
-                  </div>
-                `;
-                    })
-                  : `<div class="image-order-none">
-                <img src=${noneOrder.image} alt="Empty order" class="empty-img-order"/>
-              </div>`
-              }
-            </div>
-            <div class="wrap-btn-back-order">
-              <div class="btn-back-order"
-                style="
-                --borderBtnBackOrder: ${btnBack.borderColor};
-                --bgBtnBackOrder: ${btnBack.bgColor};
-                "
-              >
-                ${btnBack.text}
-              </div>
-            </div>
-          </div>
-          <div class="btn-closepopup">
-            <i class="fa-solid fa-xmark"></i>
           </div>
         </div>
-      </div>
-    `;
-  }
+      `;
+      return html;
+    }
+
+    // content popup cart user
+    function renderCartContent(dataCart) {
+      const { order, noneOrder, btnBack } = dataCart;
+
+      return `
+        <div class="popup-wrap-cart">
+          <div class="title-select-services">
+            <h2 class="text-uppercase">Services Selected</h2>
+          </div>
+          <div class="wrap-list-services">
+            ${
+              order && order.length > 0
+                ? order.map((item) => {
+                    return `
+                  <div class="list-order">
+                    Map order: ${item.name}
+                  </div>
+                `;
+                  }).join('')
+                : `<div class="image-order-none">
+                  <img src="${noneOrder.image}" alt="Empty order" class="empty-img-order"/>
+                </div>`
+            }
+          </div>
+          <div class="wrap-btn-back-order">
+            <div class="btn-back-order"
+              style="
+              --borderBtnBackOrder: ${btnBack.borderColor};
+              --bgBtnBackOrder: ${btnBack.bgColor};
+              "
+            >
+              ${btnBack.text}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+    // content popup verify phone & email
+    function renderVerifyEmailPhoneContent() {
+      return `
+        <div class="popup-wrap-verify-emailPhone"
+          style="
+            --color-cur-primary: ${colorPrimary}
+          "
+        >
+          <div class="title-appointment">
+            <h2>Please enter your cell phone number or email to make appointment</h2>
+          </div>
+          <div class="input-container">
+            <input type="text" id="appointment-input" class="appointment-input" value="Enrich.co@gmail.vn" placeholder="Enter phone number or email">
+            <span class="clear-icon">&larr;</span>
+          </div>
+          <div class="consent-container">
+            <span class="wrap-icon-checked">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 13 13" fill="none">
+                <path d="M1.5 6.73671L4.67305 9.75195L11.5 3.75195" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <label for="consent-checkbox">Input your number to consent to HANG NAILS & SPA SMS messages. Opt out with Stop</label>
+          </div>
+          <div class="button-container">
+            <button class="btn-back-emailPhone">Back</button>
+            <button class="btn-next-emailPhone">Next</button>
+          </div>
+        </div>
+      `;
+    }
+    // content popup verify code
+    function renderVerifyCodeContent(phoneMasked = '(+84) 124 2149') {
+      return `
+        <div class="popup-wrap-verify-code"
+          style="
+            --color-cur-primary: ${colorPrimary}
+          "
+        >
+          <div class="title-verify-number">
+            <h2>VERIFY YOUR NUMBER</h2>
+          </div>
+          <p class="desc-verify">Enter the code we sent over SMS to ${phoneMasked}</p>
+
+          <div class="otp-inputs">
+            ${[...Array(6)].map((_, i) => `<input type="text" maxlength="1" class="otp-box" data-index="${i}" />`).join('')}
+          </div>
+
+          <div class="resend-wrapper">
+            Didn’t get a code? <span class="resend-btn disabled">Send Again (<span class="countdown">00:59</span>)</span>
+          </div>
+
+          <div class="consent-container">
+            <span class="wrap-icon-checked">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 13 13" fill="none">
+                <path d="M1.5 6.73671L4.67305 9.75195L11.5 3.75195" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <label>Input your number to consent to HANG NAILS & SPA SMS messages. Opt out with Stop</label>
+          </div>
+
+          <div class="button-container">
+            <button class="btn-back-verify">Back</button>
+            <button class="btn-next-verify" disabled>Verify →</button>
+          </div>
+        </div>
+      `;
+    }
+    // Content popup register
+    function renderRegisterForm () {
+      return `
+        <div class="wrap-popup-register"
+          style="
+            --color-cur-primary: ${colorPrimary}
+          "
+        >
+          <h2 class="title-register text-uppercase">
+            Register
+          </h2>
+          <div class="pa-intro-register">
+            <p class="content">
+              Your name and phone number will be used to send you
+              appointment confirmations and reminders.
+              We’ll also be able to call or text you if anything changes.
+            </p>
+          </div>
+          <div class="form-group">
+            <div class="form-input-phone">
+              <label>
+                Phone
+                <p>*</p>
+              </label>
+              <input placeholder="Phone" id="phone-register"/>
+            </div>
+            <div class="form-input-fullname">
+              <div class="form-input-firstname-register">
+                <label>
+                  First Name
+                  <p>*</p>
+                </label>
+                <input placeholder="First Name" id="firstname-register"/>
+              </div>
+              <div class="form-input-lastname-register">
+                <label>
+                  Last Name
+                  <p>*</p>
+                </label>
+                <input placeholder="Last Name" id="lastname-register"/>
+              </div>
+            </div>
+            <div class="form-input-email">
+              <label>
+                Email
+                <p>*</p>
+              </label>
+              <input placeholder="Email" id="email-register"/>
+            </div>
+            <div class="form-input-zipcode">
+              <label>
+                Zip Code
+                <p>*</p>
+              </label>
+              <input placeholder="Zip Code" id="zipcode-register"/>
+            </div>
+          </div>
+          <div class="button-container">
+            <button class="btn-back-verify-register">Back</button>
+            <button class="btn-next-verify-register" disabled>Verify →</button>
+          </div>
+        </div>
+      `
+    }
+    // Content policies
+    function renderPoliciesForm() {
+      return `
+        <div>
+          <div class="title-timeoff">
+            <h2 class="title-policies text-uppercase>
+              Salon Policies
+            </h2>
+            <span class="timeoff">
+              5:00
+            </span>
+          </div>
+          <div class="content-policies">
+            Content policies rest
+          </div>
+          <div class="button-container">
+            <button class="btn-back-policies">Back</button>
+            <button class="btn-next-accept">Accept</button>
+          </div>
+        </div>
+      `
+    }
+
+    // Content popup upload image
+    function renderPopupUpload(dataImages) {
+
+        const maxImages = 3;
+
+      // Đảm bảo luôn có 3 item render
+      const imageSlots = Array.from({ length: maxImages }).map((_, index) => {
+        const img = dataImages[index]; // Có thể undefined nếu ít hơn 3 ảnh
+        const hasImg = !!img?.link;
+
+        return `
+          <div class="cover-input-img">
+            <label class="upload-box">
+              <i>＋</i>
+              <span class="text">${hasImg ? 'Change image' : 'Upload image'}</span>
+              <img
+                class="preview"
+                src="${hasImg ? img.link : ''}"
+                style="display: ${hasImg ? 'block' : 'none'};"
+              />
+              <div class="error-msg" style="display: none;">Error</div>
+              <input type="file" accept=".png,.jpg,.jpeg,.svg">
+            </label>
+            <div class="btn-action-img">
+              <button class="remove-img">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
+                  <path d="M14.832 10.2559V17.2559M10.832 10.2559V17.2559M6.83203 6.25586V18.0559C6.83203 19.176 6.83203 19.7356 7.05002 20.1635C7.24177 20.5398 7.5475 20.8463 7.92383 21.0381C8.35123 21.2559 8.91103 21.2559 10.0289 21.2559H15.6351C16.753 21.2559 17.312 21.2559 17.7394 21.0381C18.1157 20.8463 18.4225 20.5398 18.6143 20.1635C18.832 19.736 18.832 19.1769 18.832 18.0589V6.25586M6.83203 6.25586H8.83203M6.83203 6.25586H4.83203M8.83203 6.25586H16.832M8.83203 6.25586C8.83203 5.32398 8.83203 4.85826 8.98427 4.49072C9.18726 4.00067 9.57635 3.61109 10.0664 3.4081C10.4339 3.25586 10.9001 3.25586 11.832 3.25586H13.832C14.7639 3.25586 15.2299 3.25586 15.5974 3.4081C16.0875 3.61109 16.4767 4.00067 16.6797 4.49072C16.8319 4.85826 16.832 5.32398 16.832 6.25586M16.832 6.25586H18.832M18.832 6.25586H20.832" stroke="#061315" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+              <button class="edit-img">
+                <i class="fa-solid fa-plus"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      });
+
+      return `
+        <div class="popup-wrap-upload">
+          <div class="title-upload">
+            <h2>Upload photos</h2>
+          </div>
+          <div class="center-upload">
+            <div class="wrap-img-represent">
+              <img src="/assets/images/upload-represent/image-represent-upload.png" alt="Image represent upload"/>
+            </div>
+            <div class="desc-how-up">
+              <span class="click-upload">
+                Click To Upload
+              </span>
+              <span class="drag-upload">
+                Or Drag And Drop
+              </span>
+            </div>
+            <div class="condi-img">
+              <span class="name">
+                <p>Png, </p>
+                <p>Svg, </p>
+                <p>Jpg </p>
+              </span>
+              <span class="max-size">
+                Max File Size: 15Mb
+              </span>
+            </div>
+          </div>
+          <div class="wrap-list-img">
+            <div class="container-list-img">
+              ${imageSlots.join('')}
+            </div>
+          </div>
+          <div class="wrap-action-btn">
+            <div class="container-action-btn">
+              <button class="cancel-upload">
+                Cancel
+              </button>
+              <button class="save-upload">
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      `
+    }
 
   // Function render block element
   function renderBlockTemplate(dataBlock) {
@@ -1634,12 +1991,16 @@
     renderBookingOption('.wrap-book-for', banner.btnOptionBook, banner.optionBooked);
   }
 
+
   $(document).ready(function () {
     const $wrapHomeTemp = $('.wrap-home-templates');
     const { dataBooking, listDataService, listUserStaff, dataCart,dataMe, dataGuest, dataFamily } = templateStore.load();
     let {banner} = dataRelease;
     // Khai báo currentUserId trước khi gọi renderBlockTemplate
     let currentUserId = dataBooking.users[0]?.id || 1;
+    // fake time , sẽ xử lý thêm close form
+    let resendCountdown = 59;
+    let resendInterval;
 
     renderBlockTemplate({listDataService, listUserStaff, dataBooking,dataMe,  dataGuest, dataFamily, currentUserId});
 
@@ -1652,7 +2013,7 @@
           const $parent = $(this).closest('.nav-item-with-dropdown');
 
           // Ẩn các dropdown khác
-          $('.nav-item-with-dropdown').not($parent).removeClass('open').find('i').removeClass('rotate-transition rotate-180');;
+          $('.nav-item-with-dropdown').not($parent).removeClass('open').find('i').removeClass('rotate-transition rotate-180');
 
           // Toggle hiện dropdown option hiện tại
           $parent.toggleClass('open');
@@ -1679,7 +2040,7 @@
         // Mở popup cart
         $wrapHomeTemp.on('click', '.cart-user button', function (e) {
           e.stopPropagation();
-          const html = renderPopupCart(dataCart);
+          const html = renderBasePopup(renderCartContent(dataCart));
           $wrapHomeTemp.append(html);
 
           setTimeout(() => {
@@ -1689,25 +2050,28 @@
         // Đóng popup cart
           // 1. Đóng khi click overlay-screen
             $wrapHomeTemp.on('click', '.overlay-screen', function (e) {
-              if (e.target === this) closePopupCart();
+              if (e.target === this) closePopupContainerTemplate();
             });
           // 2. Đóng khi click btn 'back'
             $wrapHomeTemp.on('click', '.btn-back-order', function () {
-              closePopupCart();
+              closePopupContainerTemplate();
             });
 
           // 3. Đóng khi click btn close 'x'
             $wrapHomeTemp.on('click', '.btn-closepopup', function () {
-              closePopupCart();
+              closePopupContainerTemplate();
             });
           // 4. Function animation đóng popup cart
-            function closePopupCart() {
+            function closePopupContainerTemplate() {
               const $overlay = $('.overlay-screen');
               $overlay.removeClass('show'); // remove class để thu nhỏ
 
               setTimeout(() => {$overlay.remove()}, 300); // chờ animation xong mới xóa DOM
             }
       // >> END: popup cart
+      // << START: popup verify user
+
+      // >> END: popup verify user
       // << START: Xử lý chọn option: ME, FAMILY, GUESTS
         // Toggle chọn loại dịch vụ
         $(document).on('click', '.btn-option-banner-selected', function (e) {
@@ -1751,8 +2115,14 @@
           }
           else if (selectedType === 'FAMILY') {
             dataBooking.type = typeBookingEnum.FAMILY;
-            dataBooking.users = dataFamily;
-            dataBooking.users[0].isChoosing = true;
+            // Verify trước khi gán dataBooking.users cho dataFamily
+            const htmlPopupVerify = renderBasePopup(renderVerifyEmailPhoneContent())
+            $wrapHomeTemp.append(htmlPopupVerify);
+            setTimeout(() => {
+              $('.overlay-screen').addClass('show');
+            }, 10);
+            // dataBooking.users = dataFamily;
+            // dataBooking.users[0].isChoosing = true;
           }
           else {
             dataBooking.type = typeBookingEnum.ME;
@@ -1799,7 +2169,6 @@
         // Giảm số lượng
         $(document).on('click', '.btn-decrease', function() {
           if (dataBooking.users.length <= 1) {
-          if (dataBooking.users.length <= 1) {
             alert('Bạn phải chọn tối thiểu 1 người.');
             return;
           }
@@ -1810,7 +2179,6 @@
           }
           const idToRemove = dataBooking.users[idx].id;
           dataBooking.users.splice(idx, 1);
-          dataBooking.users = dataBooking.users.filter(u => u.id !== idToRemove);
           updateGuestSection();
         });
 
@@ -1967,9 +2335,11 @@
           }
           // BLUR phone&email
           function validateEmailPhoneInput($input) {
+
             const userCur = dataBooking.users.find((u) => u.isChoosing);
             const isFirst = dataBooking.users[0].id === userCur.id;
             const val = $input.val().trim();
+            console.log("valid-input-banner: ", val);
             const $error = $input.next('.error-message');
 
             const isPhone = isValidPhoneNumber(val);
@@ -1987,6 +2357,25 @@
             } else {
               $input.removeClass('is-invalid');
               $error.text('');
+            }
+          }
+          // Check phone form register
+          function validateEmailPhoneFormRegister($input) {
+            console.log("blur")
+            const val = $input.val().trim();
+            const isPhone = isValidPhoneNumber(val);
+
+            if(isPhone) {
+              const $errorMs = $input.next('.input-error')
+              $errorMs.text('');
+            }
+            if(val === ''){
+              showInputError($input, `Phone is required`);
+              shakeError($input);
+            }
+            if(!isPhone) {
+              showInputError($input, `Phone is incorrect format!`);
+              shakeError($input);
             }
           }
 
@@ -2023,7 +2412,7 @@
           const isPhone = isValidPhoneNumber(valEmailPhone);
           const isEmail = isValidEmail(valEmailPhone);
 
-          // Kiểm tra nếu là user đầu tiên → bắt buộc phải nhập
+          // Kiểm tra nếu là user đầu tiên, buộc nhập đủ
           let hasError = false;
           if (currentUser.id === firstUser.id) {
 
@@ -2041,6 +2430,7 @@
               $errorFirst.text('Last name is required.');
               shakeError($errorFirst);
               hasError = true;
+              console.log("check firstName banner")
             }
 
             if (valEmailPhone === '') {
@@ -2077,7 +2467,7 @@
             $this.blur(); // Gỡ focus
             return;
           }
-
+          console.log("check tran tabs")
 
           // Đủ điều kiện mới chuyển tab
           $('.input-fullname').removeClass('active');
@@ -2203,6 +2593,9 @@
       $card.find('.add-more').replaceWith($action);
 
       updateGuestSection(); // Cập nhật để hiển thị nút Copy Service
+
+      //Cập nhật table booking
+      renderSumary(dataBooking, listDataService);
     });
     // remove option select user
     $(document).on('click', '.add-more .btn-delete', function () {
@@ -2281,8 +2674,6 @@
 
     // gắn staff selected cho user
     $(document).on('click', '.item-staff', function (e) {
-    // gắn staff selected cho user
-    $(document).on('click', '.item-staff', function (e) {
       e.stopPropagation();
       const $this = $(this);
       const idStaff = $this.data('id');
@@ -2328,6 +2719,9 @@
       $wrap.find('.option-select-staff').removeClass('show');
 
       updateGuestSection(); // Cập nhật để hiển thị nút Copy Service
+
+      //Cập nhật table booking
+      renderSumary(dataBooking, listDataService);
     });
     // toggle addOn service
     $(document).on('click', '.expand-addOn', function() {
@@ -2351,14 +2745,14 @@
     })
 
     // selected add-on option
-    $(document).on('click', '.checkbox-addOn', function () {
+    $(document).on('click', '.item-addOn', function () {
       const $this = $(this);
       const $wrapAddOn = $this.closest('.wrap-addOn');
-      const $itemAddOn = $this.closest('.item-addOn');
+      const $checkboxAddOn = $this.find('.checkbox-addOn');
 
       const idService = $this.closest('.more-item').data('id');
       const idItemService = $wrapAddOn.data('id'); // id card-more
-      const idItemAddOn = $itemAddOn.data('id');
+      const idItemAddOn = $this.data('id');
 
       const serviceCur = listDataService.find(({ item }) => item.id == idService)?.item;
       const itemService = serviceCur?.listItem.find((item) => item.id == idItemService);
@@ -2397,13 +2791,333 @@
       if (index > -1) {
         // Đã chọn rồi ⇒ bỏ chọn
         itemServiceInUser.optionals.splice(index, 1);
-        $this.removeClass("selected");
+        $checkboxAddOn.removeClass("selected");
       } else {
         // Chưa chọn ⇒ thêm vào
         itemServiceInUser.optionals.push(itemAddOn);
-        $this.addClass("selected");
+        $checkboxAddOn.addClass("selected");
+      }
+
+      // Cập nhật sumary
+      renderSumary(dataBooking, listDataService);
+    });
+
+    // Xử lý sự kiện cho verify
+    $(document).on('click', '.btn-next-emailPhone', function () {
+      const phoneDisplay = '(+84) 124 2149'; // hard code tạm
+      const newContent = renderVerifyCodeContent(phoneDisplay);
+      const html = renderBasePopup(newContent);
+
+      $wrapHomeTemp.append(html);
+      setTimeout(() => {
+        $('.overlay-screen').addClass('show');
+      }, 10);
+    });
+    // Auto focus và chuyển sang ô tiếp theo
+    $(document).on('input', '.otp-box', function () {
+      const $this = $(this);
+      const val = $this.val();
+      const index = parseInt($this.data('index'), 10);
+
+      if (val.length === 1) {
+        $(`.otp-box[data-index="${index + 1}"]`).focus();
+      }
+
+      // Nếu đủ 6 ô thì bật nút Verify
+      const allFilled = $('.otp-box').toArray().every(input => $(input).val().length === 1);
+      $('.btn-next-verify').prop('disabled', !allFilled);
+    });
+
+    // Cho phép back bằng phím ←
+    $(document).on('keydown', '.otp-box', function (e) {
+      const $this = $(this);
+      const index = parseInt($this.data('index'), 10);
+
+      if (e.key === 'Backspace' && !$this.val()) {
+        $(`.otp-box[data-index="${index - 1}"]`).focus();
       }
     });
+
+    // next verify code
+    $(document).on('click', '.btn-next-verify',function () {
+      const contentUserInfo = renderRegisterForm();
+      const html = renderBasePopup(contentUserInfo, 762, 886);
+
+      $wrapHomeTemp.append(html);
+      setTimeout(() => {
+        $('.overlay-screen').addClass('show');
+      }, 10);
+
+      //clear interval time opt
+      clearInterval(resendInterval);
+    })
+
+    function startResendTimer() {
+      $('.resend-btn').addClass('disabled');
+
+      resendInterval = setInterval(() => {
+        resendCountdown--;
+        $('.countdown').text(`00:${resendCountdown < 10 ? '0' + resendCountdown : resendCountdown}`);
+
+        if (resendCountdown <= 0) {
+          clearInterval(resendInterval);
+          $('.resend-btn').removeClass('disabled').text('Send Again');
+        }
+      }, 1000);
+    }
+
+    // Khi hiển thị popup code
+    $(document).on('click', '.btn-next-emailPhone', function () {
+      resendCountdown = 59;
+      startResendTimer();
+    });
+    // back để quay về popup trước đó
+    $(document).on('click', '.btn-back-verify', function () {
+      const htmlPopupVerify = renderBasePopup(renderVerifyEmailPhoneContent())
+      $wrapHomeTemp.append(htmlPopupVerify);
+      setTimeout(() => {
+        $('.overlay-screen').addClass('show');
+      }, 10);
+    });
+    // back form register
+    $(document).on('click', '.btn-back-verify-register', function () {
+      const htmlPopupVerify = renderBasePopup(renderVerifyCodeContent())
+      $wrapHomeTemp.append(htmlPopupVerify);
+
+      // fake time opt
+      resendCountdown = 59;
+      startResendTimer();
+
+      setTimeout(() => {
+        $('.overlay-screen').addClass('show');
+      }, 10);
+    });
+    $(document).on('click', '.btn-next-verify-register', function() {
+      const contentPolicies = renderPoliciesForm();
+      const html = renderBasePopup(contentPolicies, 768, 886);
+
+      $wrapHomeTemp.append(html);
+      setTimeout(() => {
+        $('.overlay-screen').addClass('show');
+      }, 10);
+
+      // xử lý check lại toàn bộ form input, verify và snake text error
+       // Lấy giá trị trên tab hiện tại
+        const $wrapRegis = $(`.wrap-popup-register`);
+        const valPhoneRegis = $wrapRegis.find('#phone-register').val().trim();
+        const valFirstRegis = $wrapRegis.find('#firstname-register').val().trim();
+        const valLastRegis = $wrapRegis.find('#lastname-register').val().trim();
+        const valEmailRegis = $wrapRegis.find('#email-register').val().trim();
+        const valZipCodeRegis = $wrapRegis.find('#zipcode-register').val().trim();
+
+        const isPhone = isValidPhoneNumber(valPhoneRegis);
+        const isEmail = isValidEmail(valEmailRegis);
+
+      let hasError = false;
+
+      if (valPhoneRegis === '' || !isPhone) {
+        const $errorPhoneRegis = $wrapRegis.find('#phone-register').next('.input-error');
+
+        const textErr = !isPhone ? 'Phone is incorrect format.' : 'Phone is required!'
+        $errorPhoneRegis.text(textErr);
+        shakeError($errorPhoneRegis);
+        hasError = true;
+      }
+
+      if (valEmailPhone !== '' && !isPhone && !isEmail) {
+        const $errorEmailRegis = $wrapRegis.find('#email-register').next('.input-error');
+
+        const textErr = !isPhone ? 'Email is incorrect format.' : 'Email is required!'
+        $errorEmailRegis.text(textErr);
+        shakeError($errorEmailRegis);
+        hasError = true;
+      }
+
+      if (hasError) {
+        $this.blur(); // Gỡ focus
+        return;
+      }
+    })
+    // Sự kiện trên popup register
+    $(document).on('input', '#firstname-register, #lastname-register, #email-register, #zipcode-register', function () {
+      const $input = $(this);
+      const val = $input.val().trim();
+      if (val) {
+        clearInputError($input);
+      }
+
+      // Bật / tắt nút verify nếu nhập đủ
+      const allFilled = $('#firstname-register').val().trim()
+        && $('#lastname-register').val().trim()
+        && $('#email-register').val().trim()
+        && $('#zipcode-register').val().trim();
+
+      $('.btn-next-verify-register').prop('disabled', !allFilled);
+    });
+
+    $(document).on('blur', '#firstname-register, #lastname-register, #email-register, #zipcode-register', function () {
+      const $input = $(this);
+      const id = $input.attr('id');
+      const val = $input.val().trim();
+      const nameMap = {
+        'firstname-register': 'First Name',
+        'lastname-register': 'Last Name',
+        'email-register': 'Email',
+        'zipcode-register': 'Zip Code'
+      };
+
+      const fieldName = nameMap[id] || 'This field';
+
+      if (!val) {
+        showInputError($input, `${fieldName} is required`);
+        shakeError($input);
+        return;
+      }
+
+      if (id === 'email-register' && !isValidEmail(val)) {
+        showInputError($input, `Invalid ${fieldName}`);
+        shakeError($input);
+        return;
+      }
+
+      // Nếu hợp lệ => xóa lỗi
+      clearInputError($input);
+    });
+    // blur #phone-register
+    $(document).on('blur', '#phone-register', function () {
+      validateEmailPhoneFormRegister($(this));
+    });
+
+    $(document).on('input', '#phone-register', function () {
+      const $phone = $('#phone-register');
+
+      let phoneVal = $phone.val().trim();
+      console.log("check: ", phoneVal);
+      const phoneDigits = phoneVal.replace(/\D/g, '');
+
+      let valid = true;
+
+      // Check nếu là phone đủ 10 số
+      if (phoneDigits.length === 10 && /^\d+$/.test(phoneDigits)) {
+        phoneVal = formatPhoneNumber(phoneDigits);
+        $phone.val(phoneVal);
+        valid = isValidPhoneNumber(phoneVal);
+      } else {
+          // Nếu đang ở dạng đã format mà không còn đủ 10 số → gỡ format
+        if (phoneVal.includes('(') || phoneVal.includes(')') || phoneVal.includes('-')) {
+          if (phoneDigits.length !== 10) {
+            phoneVal = phoneDigits;
+            $phone.val(phoneVal);
+          }
+        }
+        valid = isValidPhoneNumber(phoneVal);
+      }
+      if(!valid) {
+        showInputError($phone, 'Phone is incorrect format')
+      }
+    });
+
+    // Xử lý upload hình ảnh
+      // Mở popup upload hình ảnh
+      let userSelectedUpload;
+      $(document).on('click', '.btn-upload-image', function() {
+        const $this = $(this);
+        userSelectedUpload = $this.closest('.item-sumary').data('id');
+        const findUser = dataBooking.users.find((item) => item.id == userSelectedUpload);
+
+        const dataImages = findUser.images ? findUser.images : {};
+        const popUpload = renderPopupUpload(dataImages);
+        const html = renderBasePopup(popUpload, 810, 800);
+
+        $wrapHomeTemp.append(html);
+        setTimeout(() => {
+          $('.overlay-screen').addClass('show');
+        }, 10);
+      })
+      //Onchange hình ảnh
+      $(document).on('change', '.upload-box input[type="file"]', function () {
+        const file = this.files[0];
+        const $label = $(this).closest('.upload-box');
+        const $errorMsg = $label.find('.error-msg');
+
+        // Reset lỗi trước đó
+        $label.removeClass('error');
+        $errorMsg.hide();
+
+        if (file) {
+          // tạm bỏ qua jpg để check ảnh valid
+          // 'image/jpg', 'image/svg+xml', 'image/jpeg'
+          const validTypes = ['image/png'];
+
+          if (!validTypes.includes(file.type)) {
+            $label.addClass('error');
+            $errorMsg.show();
+            $(this).val(''); // Reset file nếu muốn
+            return;
+          }
+
+          // Nếu hợp lệ thì hiển thị ảnh
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            $label.find('img.preview').attr('src', e.target.result).show();
+            $label.find('i, .text').hide();
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      // remove image
+      $(document).on('click', '.remove-img', function () {
+        const $cover = $(this).closest('.cover-input-img');
+        const $label = $cover.find('.upload-box');
+
+        $label.find('input[type="file"]').val('');
+        $label.find('img.preview').hide().attr('src', '');
+        $label.find('i, .text').show();
+        $label.removeClass('error');
+        $label.find('.error-msg').hide();
+      });
+
+      // edit image
+      $(document).on('click', '.edit-img', function () {
+        const $cover = $(this).closest('.cover-input-img');
+        const $input = $cover.find('.upload-box input[type="file"]');
+
+        $input.trigger('click'); // chọn lại ảnh
+      });
+      // cancel
+      $(document).on('click', '.cancel-upload', function () {
+        closePopupContainerTemplate();
+      })
+      // save imag
+      $(document).on('click', '.save-upload', function () {
+        const $this =  $(this);
+        const images = [];
+
+        $('.cover-input-img .upload-box img.preview').each(function () {
+          const base64Img = $(this).attr('src');
+          if (base64Img) {
+            images.push({
+              id: Date.now() + Math.random(), // ID tạm để đảm bảo duy nhất
+              link: base64Img
+            });
+          }
+        });
+
+        // id của user upload image userSelectedUpload
+        const user = dataBooking.users.find(u => u.id == userSelectedUpload);
+        console.log("ussers: ", user);
+
+        if (!user) return;
+
+        if (!Array.isArray(user.images)) user.images = [];
+
+        user.images.push(...images);
+        closePopupContainerTemplate();
+
+        // render lại sumary cập nhật ảnh
+        renderSumary(dataBooking, listDataService);
+      })
 
 
   // START: Xử lý option trên banner
@@ -2452,7 +3166,10 @@
     renderTimeSlotsForDate(selectedDate, dataBooking, currentUserId);
 
     // confirm booking
-    renderSumary({});
+    renderSumary(dataBooking, listDataService);
+    $(document).on('click', '.edit-sumary', function() {
+      console.log("dataBooking; ", dataBooking);
+    })
 
 
     // test btn scroll

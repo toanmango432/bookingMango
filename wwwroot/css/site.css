@@ -98,6 +98,7 @@
   --px-20: calc(20px * var(--scale) / 100);
   --px-22: calc(22px * var(--scale) / 100);
   --px-24: calc(24px * var(--scale) / 100);
+  --px-25: calc(25px * var(--scale) / 100);
   --px-28: calc(28px * var(--scale) / 100);
   --px-32: calc(32px * var(--scale) / 100);
   --px-36: calc(36px * var(--scale) / 100);
@@ -2363,7 +2364,7 @@ td td:last-child {
 .toggle-switch {
   appearance: none;
   width: var(--px-48);
-  height: var(--px-24);
+  height: var(--px-25);
   background: #ccc;
   border-radius: var(--px-20);
   position: relative;

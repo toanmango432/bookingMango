@@ -1008,7 +1008,7 @@ const onlineStore = {
       itemNav: [
         {
           id: "page-fag",
-          name: "Fag 1",
+          name: "Fag",
         },
         {
           id: "page-membership",
