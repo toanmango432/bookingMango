@@ -73,6 +73,18 @@
       "PackagePath": "staticwebassets/assets/images/pastel.png"
     },
     {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/assets/images/payment-success/app-store.svg",
+      "PackagePath": "staticwebassets/assets/images/payment-success/app-store.svg"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/assets/images/payment-success/img-succes-payment.png",
+      "PackagePath": "staticwebassets/assets/images/payment-success/img-succes-payment.png"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/assets/images/payment-success/visa.png",
+      "PackagePath": "staticwebassets/assets/images/payment-success/visa.png"
+    },
+    {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/assets/images/promotions/promotion1.png",
       "PackagePath": "staticwebassets/assets/images/promotions/promotion1.png"
     },

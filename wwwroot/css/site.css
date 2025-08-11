@@ -2384,7 +2384,7 @@ td td:last-child {
   height: 22px;
   background: white;
   border-radius: 50%;
-  top: 1px;
+  top: 1.5px;
   left: 2.5px;
   transition: transform 0.3s;
 }

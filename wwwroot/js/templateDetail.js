@@ -25,6 +25,14 @@
     MALE: 'MALE',
     FEMALE: 'FEMALE',
   };
+  const typeInput = {
+    PHONE: 'PHONE',
+    EMAIL: 'EMAIL',
+  }
+  const typeRequire = {
+    REQUIRED: 'REQUIRED',
+    NOTREQUIRED: 'NOT-REQUIRED'
+  }
 
   const templateStore = {
     load: () => {
@@ -405,26 +413,311 @@
       $el.removeClass('shake');
     }, 400);
   }
-  // SHOW error valid input
-  function showInputError($input, message) {
-    let $error = $input.siblings('.input-error');
-
-    if ($error.length === 0) {
-      $error = $('<p class="input-error mb-0"></p>');
-      $input.after($error);
-    }
-
+  // SHOW error valid input, and snake text
+  function showInputError($input, message, isSnake = false) {
+    let $error = $input.siblings('.error-message');
     $error.text(message);
+
+    isSnake && shakeError($error);
   }
 
-function clearInputError($input) {
-  $input.siblings('.input-error').remove();
-}
-
+  function clearInputError($input) {
+    $input.siblings('.error-message').text('');
+  }
 
   // FORMAT FIRSTNAME USER
   function formatAutoFirstName(owner, id) {
     return owner.firstName + ' ' + 'G' + id;
+  }
+  // function lấy ngày
+  function normalizeToDate(d) {
+    if (!d) return null;
+    const dt = (d instanceof Date) ? d : new Date(d);
+    return isNaN(dt.getTime()) ? null : dt;
+  }
+
+  function isNonWorkingDay(date, fakeDataCalender) {
+    if (!date) return false;
+    const m0 = date.getMonth();     // 0-index
+    const m1 = m0 + 1;             // maybe your map uses 1-index
+    const day = date.getDate();
+    const arr0 = fakeDataCalender[m0] || [];
+    const arr1 = fakeDataCalender[m1] || [];
+    return arr0.includes(day) || arr1.includes(day);
+  }
+
+  function findNextWorkingDate(startDate, fakeDataCalender, maxDays = 365) {
+    const d = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+    let tries = 0;
+    while (isNonWorkingDay(d, fakeDataCalender) && tries < maxDays) {
+      d.setDate(d.getDate() + 1);
+      tries++;
+    }
+    return d;
+  }
+
+  // function kiểm tra giá trị input, sử dụng sau khi đã valid
+  function checkValInputs(listIdInput) {
+    return listIdInput.every((item) => $(item).val().trim() !=='');
+  }
+  // function update show content nút scroll to target
+  function updateScrollButton(options = {}) {
+    const $mainScrollBtn = $('.scroll-btn-main');
+
+    if (options.text) {
+      $mainScrollBtn.find('.text-control-scroll').text(options.text);
+    }
+    if (options.icon) {
+      $mainScrollBtn.find('.icon-control-scroll i').attr('class', options.icon);
+    }
+    if (options.target) {
+      $mainScrollBtn.data('target', options.target);
+    }
+    if (options.trigger) {
+      $mainScrollBtn.data('trigger', options.trigger);
+    }
+    if (options.triggerBanner) {
+      $mainScrollBtn.attr('data-trigger-banner', options.triggerBanner);
+    }
+
+    forceShowScrollBtn = !!options.force;
+    $mainScrollBtn.fadeIn();
+  }
+  //function hiển thị button scroll
+  function showScrollToTarget(currentUser){
+    if (
+      !currentUser.services || currentUser.services.length === 0 ||
+      !currentUser.selectedDate ||
+      !currentUser.selectedTimeSlot
+    ) {
+      // Nếu chưa chọn service
+      if (!currentUser.services || currentUser.services.length === 0) {
+        updateScrollButton({
+          target: '#section-service',
+          trigger: '#trigger-service',
+          triggerBanner: '#triggerBlockSumary',
+          text: 'Choose Service',
+          icon: 'fa fa-hand-pointer down',
+          force: false
+        });
+        return;
+      }
+
+      // Nếu chưa chọn date hoặc time slot
+      if (!currentUser.selectedDate || !currentUser.selectedTimeSlot) {
+        updateScrollButton({
+          target: '#section-date-time',
+          trigger: '#trigger-date-time',
+          triggerBanner: '#triggerBlockSumary',
+          text: 'Select Date & Time',
+          icon: 'fa fa-hand-pointer down',
+          force: false
+        });
+
+        return;
+      }
+    }
+  }
+  // function kiểm tra dataBooking đã chọn đầy đủ service và timming all users, show scroll continue
+  function showScrollToFinalBooking (dataBooking) {
+    return dataBooking.users.every((item) => {
+      return item.services.length > 0 && item.selectedDate && item.selectedTimeSlot;
+    })
+  }
+  function showScrollButton(selector) {
+  const $section = $(selector);
+
+  $('html, body').animate({
+    scrollTop: $section.offset().top - 100
+  }, 500);
+
+  // Hiển thị nút hoặc highlight section
+  $section.addClass('highlight');
+  setTimeout(() => $section.removeClass('highlight'), 2000);
+}
+  // Hàm cấu hình nút scroll tái sử dụng
+  function setupScrollButton({
+      triggerSelector,   // selector để kiểm tra hiển thị nút
+      targetSelector,    // selector block muốn scroll tới
+      text,              // text nút
+      iconClass          // class icon Font Awesome
+  }) {
+      const $btn = $('#scrollToTopBtn');
+      const $trigger = $(triggerSelector);
+      const $target = $(targetSelector);
+
+      // Cập nhật text & icon
+      $btn.find('.text-control-scroll').text(text);
+      $btn.find('.icon-control-scroll i')
+          .removeAttr('class')
+          .addClass(iconClass);
+
+      // Hàm kiểm tra trigger có trong viewport
+      function isInViewport($el) {
+          const rect = $el[0].getBoundingClientRect();
+          return rect.top < window.innerHeight && rect.bottom > 0;
+      }
+
+      // Lắng nghe scroll container
+      $('.wrap-home-templates').off('scroll.scrollBtn').on('scroll.scrollBtn', function () {
+          if (isInViewport($trigger)) {
+              $btn.fadeIn();
+          } else {
+              $btn.fadeOut();
+          }
+      });
+
+      // Click → scroll tới target
+      $btn.off('click.scrollBtn').on('click.scrollBtn', function () {
+          const $container = $('.wrap-home-templates');
+          const scrollTopValue = $target.position().top;
+
+          $container.animate({
+              scrollTop: scrollTopValue
+          }, 500);
+      });
+  }
+
+
+  // startConfirmAnimation(loopCount, options)
+  function startConfirmAnimation(loopCount, options = {}) {
+    const sel = options.selector || '.check-circle';
+    const btnSel = options.buttonSelector || '.btn-request-another';
+    const $circleWrap = $(sel).first();
+    const $btn = $(btnSel).first();
+
+    if (!$circleWrap.length) {
+      console.warn('[startConfirmAnimation] wrapper not found:', sel);
+      return null;
+    }
+
+    // store original markup for cloning
+    const originalInner = $circleWrap.html();
+    if (!originalInner || originalInner.trim() === '') {
+      console.warn('[startConfirmAnimation] no inner HTML in wrapper to clone');
+      return null;
+    }
+
+    // timings (ms) - can override via options
+    const borderMs = options.borderMs ?? 1000; // draw outer stroke
+    const fillMs   = options.fillMs   ?? 400;  // background expand
+    const checkMs  = options.checkMs  ?? 1000; // check draw + pop
+    const totalMs  = borderMs + fillMs + checkMs;
+
+    // button label setup
+    if ($btn.length) {
+      const orig = $btn.data('orig-text') || $btn.text().replace(/\(\d+\)/, '').trim();
+      $btn.data('orig-text', orig);
+      $btn.text(orig);
+    }
+
+    const timeouts = [];
+
+    function clearAllTimeouts() {
+      while (timeouts.length) {
+        const t = timeouts.shift();
+        clearTimeout(t);
+      }
+    }
+
+    // prepare inserted SVG elements (set dash arrays, inline stroke-width, vars)
+    function prepareSvg($wrap) {
+      const $path = $wrap.find('.check-path');
+      const $stroke = $wrap.find('.stroke-circle');
+      const $fill = $wrap.find('.fill-circle');
+
+      if (!$path.length || !$stroke.length || !$fill.length) {
+        console.warn('[startConfirmAnimation] missing SVG parts after insert');
+        return null;
+      }
+
+      // compute path lengths
+      let checkLen = 50;
+      try { checkLen = Math.ceil($path.get(0).getTotalLength()); } catch (e) { /*fallback*/ }
+      let r = 28;
+      try { r = Number($stroke.attr('r')) || r; } catch (e) { /*fallback*/ }
+      const circ = Math.ceil(2 * Math.PI * r);
+
+      const initialStrokeW = options.initialStrokeW ?? 3;
+
+      $path.css({
+        'stroke-dasharray': checkLen,
+        'stroke-dashoffset': checkLen,
+        'opacity': 0,
+        'transform': 'scale(0.22)',
+        'transform-origin': '32px 32px'
+      });
+
+      $stroke.attr('stroke-width', initialStrokeW);
+      $stroke.css({
+        'stroke-dasharray': circ,
+        'stroke-dashoffset': circ,
+        'stroke-width': initialStrokeW + 'px',
+        'transform': 'scale(1)',
+        'transform-origin': '32px 32px',
+        'paint-order': 'stroke fill markers'
+      });
+
+      $fill.css({
+        'transform': 'scale(0)',
+        'opacity': 0,
+        'transform-origin': '32px 32px'
+      });
+
+      // set CSS vars on wrapper
+      const node = $wrap.get(0);
+      node.style.setProperty('--border-duration', `${borderMs}ms`);
+      node.style.setProperty('--fill-duration', `${fillMs}ms`);
+      node.style.setProperty('--check-duration', `${checkMs}ms`);
+      node.style.setProperty('--check-length', checkLen);
+      node.style.setProperty('--circumference', circ);
+      node.style.setProperty('--initial-stroke-width', initialStrokeW);
+
+      return { $path, $stroke, $fill, checkLen, circ, initialStrokeW };
+    }
+
+    // single run - không burst, giữ trạng thái cuối
+    function runOnce() {
+      // replace content with fresh clone to ensure animations start
+      $circleWrap.html(originalInner);
+
+      const prep = prepareSvg($circleWrap);
+      if (!prep) return;
+
+      // remove any leftover classes
+      $circleWrap.removeClass('animate-border animate-fill animate-check animate-burst');
+
+      // start sequence via RAF + timeouts
+      requestAnimationFrame(() => {
+        // draw border immediately
+        $circleWrap.addClass('animate-border');
+
+        // expand fill after border finished
+        timeouts.push(setTimeout(() => {
+          $circleWrap.addClass('animate-fill');
+        }, borderMs));
+
+        // draw check after border+fill
+        timeouts.push(setTimeout(() => {
+          $circleWrap.addClass('animate-check');
+        }, borderMs + fillMs));
+
+      });
+    }
+
+    // start first run
+    runOnce();
+
+    // controller - hỗ trợ stop
+    return {
+      stop() {
+        clearAllTimeouts();
+        if ($btn.length) $btn.text($btn.data('orig-text'));
+        $circleWrap.html(originalInner);
+        // reset SVG về trạng thái ban đầu nếu stop được gọi
+        prepareSvg($circleWrap);
+      }
+    };
   }
 
   // Refactor Data
@@ -435,7 +728,6 @@ function clearInputError($input) {
     if (!Array.isArray(dataService)) return [];
 
     const listServiceUser =  dataService.map(service => {
-      console.log("service: ", service);
 
       const foundService = listDataService.find(s => s.item.id === service.idService);
       if (!foundService) return null;
@@ -456,6 +748,7 @@ function clearInputError($input) {
             timetext: matchedItem.timetext,
             selectedStaff: item.selectedStaff,
             optionals: item.optionals ?? [],
+            idItemService: item.idItemService,
           };
         }).filter(Boolean),
       };
@@ -701,7 +994,7 @@ function clearInputError($input) {
       $(containerSelector).html(htmlBtn);
     }
 
-    // render info user: firstname, lastname, email or phone
+    // render info user banner: firstname, lastname, email or phone
     function renderInfoUser(containerSelector, dataUser, firstUser) {
       const {firstName, lastName, phoneNumber, email} = dataUser;
       let emailPhone = phoneNumber;
@@ -852,7 +1145,7 @@ function clearInputError($input) {
                 ${desc}
               </p>
             </div>
-            <div id="targetBlock" class="book-appoint">
+            <div id="targetBlockBanner" class="book-appoint">
               <div class="text-book-for">
                   <span class="book-for">${bookFor}</span>
                   <i class="fa-solid fa-arrow-right"></i>
@@ -931,7 +1224,6 @@ function clearInputError($input) {
         </div>
       `);
       const user = dataBooking.users.find(u => u.id === currentUserId);
-
       const serviceCardMoreCurr = user.services.find((se) => se.idService === idMoreItem);
       const serviceCardItemCurr = serviceCardMoreCurr && serviceCardMoreCurr.itemService.find((si) => si.idItemService === cardItem.id);
       const staffUserSelected = serviceCardItemCurr && serviceCardItemCurr.selectedStaff;
@@ -1040,7 +1332,13 @@ function clearInputError($input) {
       const findItemService = findService && findService.itemService.find((si) => si.idItemService == idItemChild);
 
       return `
-        <div class="wrap-addOn" data-id=${dataItem.id}>
+        <div
+          class="wrap-addOn"
+          data-id=${dataItem.id}
+          style="
+            --color-cur-primary: ${colorPrimary};
+          "
+        >
           <div class="container-addOn">
             <div class="expand-addOn">
               <i class="fa-solid fa-chevron-up"></i>
@@ -1216,8 +1514,123 @@ function clearInputError($input) {
         </div>
       `;
     }
+  // render time booking
+  function renderTimeBooking(dataBooking) {
+    const userCopyTime = dataBooking.users.find((u) => u.isSelecting && !u.isChoosing);
+
+    return `
+      <div class="calendar-timeslot">
+        <div class="wrap-calendar-time"
+          style="
+            --color-cur-primary: ${colorPrimary};
+          "
+        >
+          <div class="top-cal-time">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M7.16625 11.4688H13.4263V2.46875H1.90625V21.9688H13.4263V12.9688H7.16625V11.4688Z" fill="#E27303" />
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M21.8448 11.4691C19.8328 11.4681 18.0008 9.63605 18.0008 7.62305V6.87305H16.5008V7.62305C16.5008 9.10005 17.1758 10.4801 18.2198 11.4691L13.4219 11.469V12.969L18.2198 12.9691C17.1758 13.9581 16.5008 15.3371 16.5008 16.8141V17.5641H18.0008V16.8141C18.0008 14.8021 19.8338 12.9691 21.8458 12.9691H22.5958V11.4691H21.8448Z" fill="#E27303" />
+            </svg>
+            <h2 class="title-copy-time text-uppercase mb-0">SELECT DATE AND TIME</h2>
+            ${
+              userCopyTime && Object.keys(userCopyTime).length > 0 ?
+              `<div class="copy-time">
+                <input
+                  id="select-banner-pm"
+                  type='checkbox'
+                  class='toggle-switch'
+                  checked
+                />
+                <span class="text-same-time">Start on same time</span>
+              </div>` : ''
+          }
+          </div>
+          <div class="container-cal-time">
+            <div class="calendar">
+              <div class="calendar-header">
+                <button id="prev">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
+                    <path d="M12.5547 22.752C18.0775 22.752 22.5547 18.2748 22.5547 12.752C22.5547 7.22911 18.0775 2.75195 12.5547 2.75195C7.03184 2.75195 2.55469 7.22911 2.55469 12.752C2.55469 18.2748 7.03184 22.752 12.5547 22.752Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M16.0547 12.752H10.0547" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12.0547 9.75195L9.05469 12.752L12.0547 15.752" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div id="monthYear"></div>
+                <button id="next">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
+                    <path d="M12.5547 22.752C18.0775 22.752 22.5547 18.2748 22.5547 12.752C22.5547 7.22911 18.0775 2.75195 12.5547 2.75195C7.03184 2.75195 2.55469 7.22911 2.55469 12.752C2.55469 18.2748 7.03184 22.752 12.5547 22.752Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M9.05469 12.752H15.0547" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M13.0547 15.752L16.0547 12.752L13.0547 9.75195" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              </div>
+              <div class="calendar-grid" id="days">
+              </div>
+            </div>
+            <div class="timeslot">
+              <h2 id="selectedDateTitle">August 14, 2025</h2>
+              <div id="timeSlotsContainer" class="time-slots"></div>
+              <div class="text-scroll-more">
+                <h2>Scroll to see more time slots</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `
+  }
+  // render container time-booking && select time
+  function renderContainerTiming(
+    dataBooking,
+    currentDate,
+    monthNames,
+    dayNames,
+    currentMonth,
+    currentYear,
+    fakeDataCalender,
+    selectedDateParam,
+    currentUserId,
+    listDataService,
+  ) {
+    const $wrapCalendarTimeslot = $('.calendar-timeslot');
+    const htmlTimeBooking = renderTimeBooking(dataBooking);
+    $wrapCalendarTimeslot.replaceWith(htmlTimeBooking);
+
+    // Lấy user hiện tại
+    const user = dataBooking.users.find(u => u.id === currentUserId);
+
+    // 1. Lấy selectedDate ưu tiên từ user, nếu là string -> new Date()
+    let userSelected = user ? normalizeToDate(user.selectedDate) : null;
+
+    // 2. Nếu không có userSelected => chọn selectedDateParam hoặc today
+    let useDate = userSelected || normalizeToDate(selectedDateParam) || new Date();
+
+    // 3. Không để date ở quá khứ (so với today) — nếu quá khứ dùng today
+    const today = new Date();
+    const todayOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    if (useDate < todayOnly) useDate = todayOnly;
+
+    // 4. Nếu ngày rơi vào non-working, tìm ngày làm việc tiếp theo
+    useDate = findNextWorkingDate(useDate, fakeDataCalender);
+
+    // 5. đồng bộ month/year với useDate
+    currentMonth = useDate.getMonth();
+    currentYear = useDate.getFullYear();
+
+    // Render calendar + time slots với ngày đã chọn
+    renderCalendar(monthNames, dayNames, currentMonth, currentYear, fakeDataCalender, useDate, dataBooking, currentUserId, listDataService);
+
+    // Cập nhật tiêu đề ngày
+    const titleEl = document.getElementById("selectedDateTitle");
+    if (titleEl) titleEl.textContent = useDate.toDateString();
+
+    // Render time slots cho ngày này (và sẽ chọn time slot nếu user.selectedTimeSlot tồn tại)
+    renderTimeSlotsForDate(useDate, dataBooking, currentUserId, listDataService);
+  }
+
   // render calender
-  function renderCalendar(monthNames, dayNames, daysEl, monthYearEl, currentMonth, currentYear, fakeDataCalender, selectedDate, dataBooking, currentUserId) {
+  function renderCalendar(monthNames, dayNames, currentMonth, currentYear, fakeDataCalender, selectedDate, dataBooking, currentUserId, listDataService) {
+    const daysEl = document.getElementById("days");
+    const monthYearEl = document.getElementById("monthYear");
     daysEl.innerHTML = "";
     monthYearEl.textContent = `${monthNames[currentMonth]}, ${currentYear}`;
 
@@ -1225,6 +1638,8 @@ function clearInputError($input) {
     const todayDate = today.getDate();
     const todayMonth = today.getMonth();
     const todayYear = today.getFullYear();
+
+    const hasSelectedDate = !! selectedDate;
 
     // Render day names
     dayNames.forEach(day => {
@@ -1259,48 +1674,41 @@ function clearInputError($input) {
 
       if (nonWorking) {
         day.classList.add("inactive");
+      } else if (isPast) {
+        day.classList.add("past");
       } else {
-        if (isPast) {
-          day.classList.add("past");
-        } else if (isSelected) {
+        // Nếu ngày này là ngày đã chọn => luôn đánh 'active'
+        if (isSelected) {
           day.classList.add("active");
-        } else if (isToday) {
+          // không thêm today active nếu đã chọn selectedDate
+
+        }
+        // Nếu chưa có selectedDate nào, thì highlight today bằng 'today' + 'active'
+        else if (!hasSelectedDate && isToday) {
           day.classList.add("today", "active");
         }
+      }
+      // Gán sự kiện click chỉ nếu không phải ngày đã qua và không inactive
+      if (!isPast && !nonWorking) {
+        day.addEventListener("click", () => {
+          // cập nhật selectedDate
+          selectedDate = new Date(currentYear, currentMonth, date);
 
-        // Gán sự kiện click chỉ nếu không phải ngày đã qua
-        if (!isPast) {
-          day.addEventListener("click", () => {
-            const allDays = document.querySelectorAll(".day");
-            allDays.forEach(d => {
-              d.classList.remove("active");
-            });
+          // lưu vào user hiện tại (LUÔN cập nhật)
+          const user = dataBooking.users.find(u => u.id === currentUserId);
+          if (user) {
+            user.selectedDate = selectedDate;
+          }
 
-            const todayEl = Array.from(allDays).find(d =>
-              parseInt(d.textContent) === todayDate &&
-              currentMonth === todayMonth &&
-              currentYear === todayYear
-            );
+          // cập nhật UI: xóa tất cả state và set active cho ngày được click
+          const allDays = document.querySelectorAll(".day");
+          allDays.forEach(d => d.classList.remove("active", "today"));
 
-            if (todayEl && !todayEl.classList.contains("inactive")) {
-              todayEl.classList.remove("active");
-              todayEl.classList.add("today");
-            }
-
-            day.classList.remove("today");
-            day.classList.add("active");
-            selectedDate = new Date(currentYear, currentMonth, date);
-
-            // Lưu ngày vào user hiện tại
-            const user = dataBooking.users.find(u => u.id === currentUserId);
-            if (user) {
-              user.selectedDate = selectedDate;
-            }
-
-            document.getElementById("selectedDateTitle").textContent = selectedDate.toDateString();
-            renderTimeSlotsForDate(selectedDate, dataBooking, currentUserId);
-          });
-        }
+          day.classList.add("active");
+          // không thêm today active nếu đã chọn selectedDate
+          document.getElementById("selectedDateTitle").textContent = selectedDate.toDateString();
+          renderTimeSlotsForDate(selectedDate, dataBooking, currentUserId,listDataService );
+        });
       }
 
       daysEl.appendChild(day);
@@ -1326,7 +1734,7 @@ function clearInputError($input) {
 
     return slots;
   }
-  function renderTimeSlotsForDate(selectedDate, dataBooking, currentUserId) {
+  function renderTimeSlotsForDate(selectedDate, dataBooking, currentUserId, listDataService) {
     const container = $("#timeSlotsContainer");
     container.empty();
       //timeslot
@@ -1340,7 +1748,7 @@ function clearInputError($input) {
       6: ["08:00", "12:00"], // Thứ 7
     };
 
-    const weekday = selectedDate.getDay(); // 0 = Sun, 1 = Mon, ...
+    const weekday = selectedDate.getDay();
     const workingRange = workingHoursByWeekday[weekday];
 
     if (!workingRange || workingRange.length === 0) {
@@ -1361,21 +1769,43 @@ function clearInputError($input) {
       `);
       container.append(div);
     });
-
-    $(".time-slot").on("click", function () {
-      $(".time-slot").removeClass("selected");
+    container.off('click', '.time-slot');
+    container.on("click", ".time-slot", function () {
+      container.find(".time-slot").removeClass("selected");
       $(this).addClass("selected");
-
-      // Lưu khung giờ vào user hiện tại
       const user = dataBooking.users.find(u => u.id === currentUserId);
-      if (user) {
+      if (user){
         user.selectedTimeSlot = $(this).find('span').text();
+        user.selectedDate = selectedDate;
       }
+      // Kiểm tra user đã được chọn time và service đầy đủ chưa, đã đủ thì ẩn btn scroll
+      const isFinalBooking = showScrollToFinalBooking(dataBooking)
+      isFinalBooking && $('.scroll-btn-main').fadeOut();
+
+      renderSumary(dataBooking, listDataService);
     });
+
+    // Nếu user đã có selectedTimeSlot thì đánh dấu slot tương ứng
+    const user = dataBooking.users.find(u => u.id === currentUserId);
+    if (user && user.selectedTimeSlot) {
+      const match = container.find('.time-slot').filter(function() {
+        return $(this).find('span').text().trim() === String(user.selectedTimeSlot).trim();
+      });
+      if (match.length) {
+        container.find(".time-slot").removeClass("selected");
+        match.first().addClass("selected");
+        // scroll tới slot
+        // container.animate({ scrollTop: match.first().position().top - 40 }, 300);
+      } else {
+
+      }
+    }
   }
 
   // render sumary
   function renderSumary (dataBooking, listDataService) {
+    const isAllowConfirm = showScrollToFinalBooking(dataBooking);
+
     const $containerSumary = $('.wrap-sumary');
     $containerSumary.empty();
     // Kiểm tra mảng users
@@ -1409,7 +1839,7 @@ function clearInputError($input) {
     }
 
     const htmlSumary =  `
-      <div class="container-sumary">
+      <div id="section-booking" class="container-sumary">
         <div class="header-sumary">
           <h2 class="title-header-sumary text-uppercase">Booking sumary</h2>
           <p class="sub-time-sumary">14:00, Thu, May 14 2025</p>
@@ -1440,7 +1870,7 @@ function clearInputError($input) {
               });
             });
           }
-
+          console.log("dataRefact: ", dataRefact);
           return `
             <div class="item-sumary" data-id="${userBooking.id}">
               <div class="top-item-sumary">
@@ -1461,16 +1891,15 @@ function clearInputError($input) {
                 </div>
               </div>
               <div class="user-book">
-                <h2>${userBooking.firstName + " " + userBooking.lastName}</h2>
+                <h2>${userBooking?.firstName + " " + userBooking?.lastName}</h2>
               </div>
               <div class="body-item-sumary">
                 ${dataRefact.listServiceUser && dataRefact.listServiceUser.map((item) => {
                   const services = item.services;
                   const itemService = item.itemService;
                   return itemService.map((is) => {
-                    console.log("check itemServce: ", is)
                     return `
-                      <div class="wrap-item-content">
+                      <div class="wrap-item-content" data-id=${services.id} data-id-item=${is.idItemService}>
                         <div class="item-content">
                           <div class="p-wrap">
                             <div class="action-item-ser">
@@ -1483,9 +1912,9 @@ function clearInputError($input) {
                                 </svg>
                               </p>
                             </div>
-                            <p class="text-name-service">${is.title}</p>
-                            <p class="text-name-tech">${is.selectedStaff.name}</p>
-                            <p class="text-time-dura">${is.timetext}</p>
+                            <p class="text-name-service">${is?.title}</p>
+                            <p class="text-name-tech">${is.selectedStaff?.name}</p>
+                            <p class="text-time-dura">${is?.timetext}</p>
                             <p class="text-price-serice">$ ${getTotalPrice(is)}</p>
                           </div>
                         </div>
@@ -1501,10 +1930,10 @@ function clearInputError($input) {
               </div>
             </div>
           `
-        })}
+        }).join('')}
         </div>
         <div class="confirm-booking">
-          <button class="btn-confirm-booking">
+          <button class="btn-confirm-booking" ${isAllowConfirm ? '' : 'disabled'}>
             Confirm
             <i class="fa-solid fa-arrow-right"></i>
           </button>
@@ -1512,15 +1941,6 @@ function clearInputError($input) {
       </div>
     `
     $containerSumary.append(htmlSumary);
-  }
-
-  // render content popup paypal
-  function renderPaypalOption () {
-    return `
-      <div class="wrap-paypal-option>
-
-      </div>
-    `
   }
 
   // POPUP
@@ -1585,7 +2005,7 @@ function clearInputError($input) {
       `;
     }
     // content popup verify phone & email
-    function renderVerifyEmailPhoneContent() {
+    function renderVerifyEmailPhoneContent(emailOrPhone) {
       return `
         <div class="popup-wrap-verify-emailPhone"
           style="
@@ -1595,9 +2015,10 @@ function clearInputError($input) {
           <div class="title-appointment">
             <h2>Please enter your cell phone number or email to make appointment</h2>
           </div>
-          <div class="input-container">
-            <input type="text" id="appointment-input" class="appointment-input" value="Enrich.co@gmail.vn" placeholder="Enter phone number or email">
+          <div class="container-verify-emailPhone">
+            <input type="text" id="appointment-input" class="appointment-input" value="${emailOrPhone ? emailOrPhone : ''}" placeholder="Enter phone number or email">
             <span class="clear-icon">&larr;</span>
+            <p class="error-message"></p>
           </div>
           <div class="consent-container">
             <span class="wrap-icon-checked">
@@ -1609,13 +2030,13 @@ function clearInputError($input) {
           </div>
           <div class="button-container">
             <button class="btn-back-emailPhone">Back</button>
-            <button class="btn-next-emailPhone">Next</button>
+            <button class="btn-next-emailPhone" ${emailOrPhone ? '' : 'disabled' }>Next</button>
           </div>
         </div>
       `;
     }
     // content popup verify code
-    function renderVerifyCodeContent(phoneMasked = '(+84) 124 2149') {
+    function renderVerifyCodeContent(emailPhoneMasked = '(+84) 124 2149') {
       return `
         <div class="popup-wrap-verify-code"
           style="
@@ -1625,7 +2046,7 @@ function clearInputError($input) {
           <div class="title-verify-number">
             <h2>VERIFY YOUR NUMBER</h2>
           </div>
-          <p class="desc-verify">Enter the code we sent over SMS to ${phoneMasked}</p>
+          <p class="desc-verify">Enter the code we sent over SMS to ${emailPhoneMasked}</p>
 
           <div class="otp-inputs">
             ${[...Array(6)].map((_, i) => `<input type="text" maxlength="1" class="otp-box" data-index="${i}" />`).join('')}
@@ -1652,7 +2073,9 @@ function clearInputError($input) {
       `;
     }
     // Content popup register
-    function renderRegisterForm () {
+    function renderRegisterForm (dataRegis, fieldEntered = null) {
+      const valCheckDis = fieldEntered === typeInput.EMAIL ? dataRegis.email : dataRegis.phoneNumber;
+      const isDisabled = dataRegis.firstName && dataRegis.lastName && valCheckDis;
       return `
         <div class="wrap-popup-register"
           style="
@@ -1673,9 +2096,15 @@ function clearInputError($input) {
             <div class="form-input-phone">
               <label>
                 Phone
-                <p>*</p>
+                <p>${fieldEntered === typeInput.EMAIL ? '' : '*'}</p>
               </label>
-              <input placeholder="Phone" id="phone-register"/>
+              <input
+                id="phone-register"
+                placeholder="Phone number"
+                value="${ dataRegis.phoneNumber? dataRegis.phoneNumber : '' }"
+                data-type="${fieldEntered === typeInput.EMAIL ? typeRequire.NOTREQUIRED : typeRequire.REQUIRED}"
+              />
+              <p class="error-message"></p>
             </div>
             <div class="form-input-fullname">
               <div class="form-input-firstname-register">
@@ -1683,59 +2112,444 @@ function clearInputError($input) {
                   First Name
                   <p>*</p>
                 </label>
-                <input placeholder="First Name" id="firstname-register"/>
+                <input
+                  id="firstname-register"
+                  placeholder="First Name"
+                  value="${dataRegis.firstName ? dataRegis.firstName : ''}"
+                />
+                <p class="error-message"></p>
               </div>
               <div class="form-input-lastname-register">
                 <label>
                   Last Name
                   <p>*</p>
                 </label>
-                <input placeholder="Last Name" id="lastname-register"/>
+                <input
+                  placeholder="Last Name"
+                  id="lastname-register"
+                  value="${dataRegis.lastName ? dataRegis.lastName : ''}"
+                />
+                <p class="error-message"></p>
               </div>
             </div>
             <div class="form-input-email">
               <label>
                 Email
-                <p>*</p>
+                <p>${fieldEntered === typeInput.PHONE ? '' : '*'}</p>
               </label>
-              <input placeholder="Email" id="email-register"/>
+              <input
+                id="email-register"
+                placeholder="Email"
+                value="${dataRegis.email ? dataRegis.email : '' }"
+                data-type="${fieldEntered === typeInput.PHONE ? typeRequire.NOTREQUIRED : typeRequire.REQUIRED}"
+              />
+              <p class="error-message"></p>
             </div>
             <div class="form-input-zipcode">
               <label>
                 Zip Code
-                <p>*</p>
               </label>
               <input placeholder="Zip Code" id="zipcode-register"/>
+              <p class="error-message"></p>
             </div>
           </div>
           <div class="button-container">
             <button class="btn-back-verify-register">Back</button>
-            <button class="btn-next-verify-register" disabled>Verify →</button>
+            <button class="btn-next-verify-register" ${isDisabled ? '' : 'disabled'}>Sign In →</button>
           </div>
         </div>
       `
     }
     // Content policies
-    function renderPoliciesForm() {
+    function renderPoliciesForm(isTimeOff = false) {
       return `
-        <div>
+        <div class="wrap-popup-policies"
+          style="
+            --color-cur-primary: ${colorPrimary};
+          "
+        >
           <div class="title-timeoff">
-            <h2 class="title-policies text-uppercase>
+            <h2 class="title-policies text-uppercase">
               Salon Policies
             </h2>
-            <span class="timeoff">
+            <span class="timeoff ${isTimeOff ? '' : 'hidden'}">
               5:00
             </span>
           </div>
           <div class="content-policies">
-            Content policies rest
+            This section applies specifically to the booking functions available on
+            this Website and Mobile App. When using Vietnam Airlines' online booking
+            facility to purchase tickets and add-on products, you accept and comply
+            with the instructions, terms, conditions, and notes available on the website
+            and app, including but not limited to the followings: If this is not your
+            intention and/or you disagree with any part of these applicable terms and
+            conditions, DO NOT USE Vietnam Airlines' online booking facility.
           </div>
           <div class="button-container">
             <button class="btn-back-policies">Back</button>
-            <button class="btn-next-accept">Accept</button>
+            <button class="btn-next-policies">Accept</button>
           </div>
         </div>
       `
+    }
+    // Form chọn phương thức thanh toán
+    function renderPaymentMethodsForm(selectedMethod = null) {
+      return `
+        <div
+          class="wrap-popup-payment-methods"
+          style="
+            --color-cur-primary: ${colorPrimary};
+          "
+        >
+          <div class="header-popup-payment">
+            <h2 class="title-payment text-uppercase">Payments</h2>
+            <span class="time-off">5:59</span>
+          </div>
+          <div class="subtitle">
+            <span class="subtitle-text">
+              Choose your card
+            </span>
+            <span class="add-new-card-btn">
+              <i class="fa-solid fa-plus"></i>
+              Add new card
+            </span>
+          </div>
+          <div class="payment-methods-list">
+            <div class="payment-method-item">
+              <div class="wrap-name-method">
+                <div class="wrap-img-method">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="25" height="30" viewBox="0 0 25 30" fill="none">
+                    <path d="M7.16778 28.1027L7.66262 24.9596L6.56035 24.934H1.29688L4.95472 1.74087C4.96607 1.67086 5.00297 1.60557 5.05691 1.55921C5.11084 1.51285 5.17991 1.4873 5.25181 1.4873H14.1268C17.0731 1.4873 19.1064 2.10041 20.168 3.31055C20.6657 3.87824 20.9826 4.47149 21.1359 5.12433C21.2968 5.80935 21.2996 6.62778 21.1425 7.62598L21.1312 7.69883V8.33843L21.6289 8.62039C22.048 8.84273 22.3811 9.09725 22.6365 9.38867C23.0623 9.87405 23.3376 10.4909 23.454 11.2223C23.5742 11.9745 23.5344 12.8696 23.3376 13.8829C23.1105 15.0486 22.7434 16.0638 22.2476 16.8945C21.7916 17.66 21.2107 18.2948 20.5209 18.7868C19.8624 19.2543 19.0799 19.6091 18.1953 19.8361C17.338 20.0594 16.3607 20.172 15.2887 20.172H14.598C14.1041 20.172 13.6244 20.3499 13.2478 20.6688C12.8703 20.9942 12.6205 21.4389 12.5439 21.9253L12.4918 22.2082L11.6176 27.7479L11.5778 27.9513C11.5674 28.0157 11.5494 28.0478 11.5229 28.0696C11.4993 28.0895 11.4652 28.1027 11.4321 28.1027H7.16778Z" fill="#253B80"/>
+                    <path d="M22.1003 7.77148C22.0738 7.94085 22.0436 8.11399 22.0095 8.29187C20.8391 14.3009 16.835 16.3768 11.721 16.3768H9.11716C8.49175 16.3768 7.96474 16.8309 7.86729 17.4478L6.53415 25.9027L6.15664 28.2993C6.09324 28.7043 6.40548 29.0695 6.81422 29.0695H11.4324C11.9793 29.0695 12.4439 28.6721 12.53 28.1328L12.5754 27.8981L13.4449 22.3802L13.5007 22.0774C13.5859 21.5362 14.0514 21.1388 14.5983 21.1388H15.2889C19.7633 21.1388 23.266 19.3222 24.2897 14.0653C24.7174 11.8693 24.496 10.0356 23.3644 8.74603C23.0219 8.35716 22.5971 8.03452 22.1003 7.77148Z" fill="#179BD7"/>
+                    <path d="M20.8837 7.28728C20.7049 7.23524 20.5204 7.18793 20.3312 7.14536C20.141 7.10373 19.9461 7.06683 19.7455 7.03466C19.0434 6.92112 18.2742 6.86719 17.4501 6.86719H10.494C10.3227 6.86719 10.16 6.90598 10.0143 6.976C9.69351 7.13022 9.45508 7.43394 9.39737 7.80578L7.91758 17.1784L7.875 17.4519C7.97245 16.835 8.49946 16.3808 9.12487 16.3808H11.7287C16.8427 16.3808 20.8468 14.304 22.0172 8.29589C22.0522 8.11801 22.0816 7.94486 22.108 7.7755C21.8119 7.61844 21.4912 7.48408 21.1458 7.3696C21.0607 7.34121 20.9727 7.31377 20.8837 7.28728Z" fill="#222D65"/>
+                    <path d="M10.0101 6.97419C10.1568 6.90417 10.3186 6.86538 10.4898 6.86538H17.446C18.2701 6.86538 19.0393 6.91931 19.7413 7.03285C19.9419 7.06502 20.1368 7.10192 20.327 7.14355C20.5163 7.18613 20.7008 7.23343 20.8796 7.28547C20.9685 7.31197 21.0565 7.3394 21.1426 7.36684C21.488 7.48133 21.8087 7.61663 22.1049 7.77275C22.453 5.55211 22.102 4.04015 20.9013 2.67106C19.5777 1.16383 17.1886 0.518555 14.1316 0.518555H5.25662C4.63216 0.518555 4.09947 0.97271 4.00296 1.59055L0.306326 25.0221C0.233472 25.4858 0.591119 25.904 1.05852 25.904H6.53772L7.91343 17.1757L9.39322 7.80302C9.45094 7.43118 9.68937 7.12746 10.0101 6.97419Z" fill="#253B80"/>
+                  </svg>
+                </div>
+                <div class="name-numbercard">
+                  <span class="name-method">
+                    Paypal
+                  </span>
+                </div>
+              </div>
+              <div class="circle">
+                <div class="dot"></div>
+              </div>
+            </div>
+            <div class="payment-method-item">
+              <div class="wrap-name-method">
+                <div class=""wrap-img-method>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="30" height="31" viewBox="0 0 30 31" fill="none">
+                    <g clip-path="url(#clip0_787_142840)">
+                      <path d="M4.00476 11.3195C4.56726 11.367 5.12976 11.0345 5.48226 10.6107C5.82851 10.1782 6.05726 9.59195 6.00101 9.00195C5.49976 9.0257 4.88601 9.33445 4.53476 9.7682C4.20976 10.1382 3.93351 10.7482 4.00476 11.3195ZM2.61226 19.0595C3.23476 19.0357 3.47976 18.6507 4.22976 18.6507C4.98476 18.6507 5.20476 19.0595 5.86101 19.0507C6.54101 19.037 6.96726 18.4332 7.38351 17.8132C7.85601 17.1095 8.05351 16.4282 8.06351 16.3907C8.04976 16.377 6.75101 15.872 6.73601 14.3495C6.72226 13.0745 7.76351 12.4695 7.80851 12.432C7.22226 11.547 6.30851 11.452 5.98976 11.4282L5.99226 11.4295C5.17601 11.3807 4.47851 11.8995 4.09351 11.8995C3.69976 11.8995 3.10976 11.452 2.46226 11.4657C1.62476 11.4807 0.846011 11.962 0.419761 12.727C-0.461489 14.2632 0.189761 16.5332 1.04226 17.7845C1.45976 18.402 1.95601 19.0832 2.61226 19.0595ZM17.8123 14.2357H19.0923C19.1998 13.6645 19.7198 13.2882 20.4335 13.2882C21.301 13.2882 21.7885 13.697 21.7885 14.4532V14.967L20.0173 15.077C18.3723 15.177 17.481 15.862 17.481 17.0507C17.486 18.2495 18.4035 19.0482 19.721 19.0495C20.6123 19.0495 21.4373 18.5932 21.811 17.8657H21.8385V18.9795H23.151V14.3645C23.151 13.0282 22.096 12.162 20.4748 12.162C18.9698 12.162 17.856 13.0357 17.8123 14.2357ZM21.7935 16.4682C21.7935 17.3345 21.066 17.952 20.106 17.952C19.351 17.952 18.8685 17.5807 18.8685 17.0195C18.8685 16.4332 19.3323 16.097 20.2185 16.0445L21.7935 15.9445V16.4682ZM10.6973 9.7057V18.9782H12.1173V15.8095H14.081C15.876 15.8095 17.1323 14.5582 17.1323 12.7507C17.1323 10.9432 15.896 9.7057 14.1273 9.7057H10.6973ZM15.6898 12.7557C15.6898 13.9257 14.9873 14.602 13.7485 14.602H12.1173V10.9195H13.7535C14.986 10.9195 15.6898 11.5845 15.6898 12.7557Z" fill="black"/>
+                      <path d="M26.8609 17.727L25.1922 12.252H23.7109L26.1109 19.0032L25.9797 19.412C25.7634 20.1057 25.4122 20.3782 24.7847 20.3782C24.6722 20.3782 24.4572 20.3645 24.3672 20.3545V21.4682C24.4522 21.4882 24.8047 21.502 24.9122 21.502L24.9109 21.4995C26.2934 21.4995 26.9447 20.962 27.5134 19.3395L30.0022 12.252H28.5584L26.8897 17.727H26.8609Z" fill="black"/>
+                    </g>
+                    <defs>
+                      <clipPath id="clip0_787_142840">
+                        <rect width="30" height="30" fill="white" transform="translate(0 0.251953)"/>
+                      </clipPath>
+                    </defs>
+                  </svg>
+                </div>
+                <div class="name-numbercard">
+                  <span class="name-method">
+                    Apple Pay
+                  </span>
+                </div>
+              </div>
+              <div class="circle">
+                <div class="dot"></div>
+              </div>
+            </div>
+            <div class="payment-method-item">
+              <div class="wrap-name-method">
+                <div class=""wrap-img-method>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="30" height="31" viewBox="0 0 30 31" fill="none">
+                    <path d="M14.6835 11.8137V14.4331H16.299C16.6837 14.4331 17.0019 14.3039 17.2538 14.0454C17.5125 13.7872 17.6418 13.4798 17.6416 13.1232C17.6416 12.7741 17.5123 12.4701 17.2538 12.2112C17.0018 11.9458 16.6835 11.8131 16.299 11.813H14.6835V11.8137ZM14.6835 15.3554V18.3939H13.7188V10.8916H16.2783C16.9287 10.8916 17.4809 11.1081 17.9348 11.5412C18.3971 11.9741 18.628 12.5015 18.6276 13.1232C18.6276 13.7592 18.3967 14.29 17.9348 14.7156C17.4874 15.142 16.9352 15.3551 16.2782 15.3548H14.6834L14.6835 15.3554ZM19.6025 16.822C19.6025 17.074 19.7092 17.2837 19.9226 17.451C20.1363 17.6183 20.3857 17.7022 20.6726 17.7022C21.0786 17.7022 21.4395 17.5518 21.7578 17.2517C22.0761 16.9516 22.2351 16.5989 22.2351 16.1942C21.9345 15.9562 21.515 15.8373 20.9765 15.8377C20.5849 15.8377 20.258 15.9321 19.996 16.121C19.7342 16.3095 19.6026 16.5425 19.6026 16.822H19.6025ZM20.8512 13.0923C21.5648 13.0923 22.1278 13.2827 22.5402 13.6634C22.9525 14.044 23.1587 14.566 23.1586 15.2294V18.3938H22.2357V17.6815H22.1937C21.7953 18.2679 21.264 18.5611 20.5999 18.5612C20.0335 18.5612 19.5597 18.3937 19.1783 18.0587C18.7968 17.7227 18.6062 17.3033 18.6063 16.8006C18.6063 16.27 18.8072 15.8476 19.209 15.5336C19.6108 15.2195 20.1476 15.0622 20.8192 15.0618C21.3924 15.0618 21.8644 15.1666 22.2352 15.376V15.1558C22.2352 14.8206 22.1024 14.536 21.8368 14.3022C21.5705 14.0679 21.2604 13.9514 20.9033 13.9514C20.3645 13.9514 19.938 14.1785 19.6239 14.6327L18.7738 14.0979C19.2431 13.4273 19.9356 13.092 20.8513 13.0921L20.8512 13.0923Z" fill="#231F20"/>
+                    <path d="M28.4523 13.2588L25.2315 20.6558H24.2353L25.4313 18.0679L23.3125 13.2588H24.3618L25.893 16.947H25.9137L27.4029 13.2588H28.4523Z" fill="#231F20"/>
+                    <path d="M10.7768 14.7C10.7772 14.4061 10.7524 14.1128 10.7026 13.8232H6.63281V15.4834H8.96369C8.86379 16.0247 8.56127 16.4854 8.10197 16.7934V17.8716H9.49313C10.3075 17.121 10.7771 16.0116 10.7771 14.7H10.7768Z" fill="#4285F4"/>
+                    <path d="M6.63709 18.9129C7.80175 18.9129 8.78221 18.5307 9.49741 17.8716L8.10655 16.7934C7.71937 17.0541 7.22065 17.2063 6.63739 17.2063C5.51185 17.2063 4.55647 16.4483 4.21471 15.4268H2.78125V16.5373C3.49147 17.9456 4.95115 18.9129 6.63709 18.9129Z" fill="#34A853"/>
+                    <path d="M4.21301 15.4267C4.03257 14.8915 4.03257 14.3119 4.21301 13.7767V12.666H2.77985C2.47769 13.2665 2.32031 13.9294 2.32031 14.6016C2.32031 15.2738 2.47769 15.9367 2.77985 16.5372L4.21301 15.4267Z" fill="#FABB05"/>
+                    <path d="M6.63709 11.9973C7.27309 11.9973 7.84309 12.2157 8.29261 12.6439V12.6445L9.52435 11.414C8.77627 10.718 7.80115 10.291 6.63709 10.291C4.95109 10.291 3.49147 11.2577 2.78125 12.6661L4.21441 13.7765C4.55641 12.755 5.51155 11.9973 6.63709 11.9973Z" fill="#E94235"/>
+                  </svg>
+                </div>
+                <div class="name-numbercard">
+                  <span class="name-method">
+                    Google Pay
+                  </span>
+                </div>
+              </div>
+              <div class="circle">
+                <div class="dot"></div>
+              </div>
+            </div>
+          </div>
+          <div class="payment-summary">
+            <div class="sub-deposit">
+              <span class="sub-deposit-1r">
+                Total
+              </span>
+              <span class="sub-deposit-1l">
+                $200.00
+              </span>
+            </div>
+            <div class="cur-deposit">
+              <span class="sub-deposit-2r">
+                Deposit
+              </span>
+              <span class="sub-deposit-2l">
+                $60.00
+              </span>
+            </div>
+          </div>
+          <div class="button-container">
+            <button class="btn-back-payment">Back</button>
+            <button class="btn-next-payment">Confirm</button>
+          </div>
+        </div>
+      `;
+    }
+    // Form xác nhận thanh toán
+    function renderPaymentConfirmationForm(data = {}) {
+      const {
+        image = '/assets/images/payment-success/img-succes-payment.png',
+        ticketNumber = '38538',
+        dateTime = 'May 14, 2025 at 2:00PM',
+        paymentMethodLabel = 'VISA',
+        paymentMethodMasked = 'Xxx Xxx Xxx 4008',
+        deposit = '60.00',
+        remaining = '60.00',
+        requestAnotherCount = 5
+      } = data;
+
+      return `
+        <div class="wrap-popup-payment-confirmation"
+          style="
+            --color-cur-primary: ${typeof colorPrimary !== 'undefined' ? colorPrimary : '#39b54a'};
+          "
+        >
+          <div class="confirm-grid">
+            <!-- LEFT IMAGE -->
+            <div class="confirm-left">
+              <img src="${image}" alt="Salon image" class="confirm-image" />
+            </div>
+
+            <!-- RIGHT CONTENT -->
+            <div class="wrap-confirm-right">
+              <div class="confirm-right">
+                <div class="wrap-top-payment-success">
+                  <div class="check-circle" aria-hidden="true">
+                    <svg class="check-svg" viewBox="0 0 64 64" width="56" height="56" xmlns="http://www.w3.org/2000/svg">
+                      <!-- fill circle -->
+                      <circle class="fill-circle" cx="32" cy="32" r="28" fill="var(--color-cur-primary)"></circle>
+
+                      <!-- stroke circle for animated border (no fill) -->
+                      <circle class="stroke-circle" cx="32" cy="32" r="28" fill="none" stroke="#2d8e45" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+
+                      <!-- check path -->
+                      <path class="check-path" d="M20 34 L28 42 L44 24" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                    </svg>
+                  </div>
+                  <div class="confirm-top-content">
+                    <h2 class="confirm-title my-0">Appointment Is Requested</h2>
+                    <p class="confirm-desc mb-0">Thank you for booking with us! Please wait while we confirm your appointment.</p>
+                  </div>
+                </div>
+
+                <div class="divider"></div>
+                <div class="apoint-remain">
+                  <div class="appointment-rows">
+                    <div class="row">
+                      <div class="label">Ticket Number</div>
+                      <div class="value">#${ticketNumber}</div>
+                    </div>
+
+                    <div class="row">
+                      <div class="label">Date &amp; Time</div>
+                      <div class="value">${dateTime}</div>
+                    </div>
+
+                    <div class="row">
+                      <div class="label">Payment Method</div>
+                      <div class="value payment-method">
+                        <span class="pm-badge">${paymentMethodLabel}</span>
+                        <span class="pm-text">${paymentMethodMasked}</span>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="label">Deposit Paid</div>
+                      <div class="value">$${deposit}</div>
+                    </div>
+                  </div>
+
+                  <div class="remaining-wrapper">
+                    <div class="remaining-label">Remaining Balance</div>
+                    <div class="remaining-amount">$${remaining}</div>
+                  </div>
+                </div>
+                </div>
+              <button class="btn-request-another text-uppercase">REQUEST ANOTHER APPOINTMENT (${requestAnotherCount})</button>
+            </div>
+          </div>
+
+          <div class="dotted-sep" aria-hidden="true"></div>
+
+          <div class="app-promo">
+            <h3 class="promo-title">Experience Our App</h3>
+            <p class="promo-desc">
+              Conveniently manage all your appointments and gift cards with ease, and stay informed
+              about upcoming offers from the salon through our app.
+            </p>
+
+            <div class="badges">
+              <div class="google-badge">
+                <div class="icon-gg">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
+                    <g clip-path="url(#clip0_2870_30408)">
+                      <path d="M24.4905 12.4761C24.4905 11.4929 24.4088 10.7753 24.2321 10.0312H12.7422V14.4692H19.4865C19.3506 15.5721 18.6163 17.2331 16.9846 18.3492L16.9617 18.4978L20.5946 21.248L20.8463 21.2725C23.1579 19.1863 24.4905 16.1169 24.4905 12.4761Z" fill="#4285F4"/>
+                      <path d="M12.7372 24.1698C16.0413 24.1698 18.8152 23.1067 20.8413 21.2731L16.9796 18.3498C15.9462 19.054 14.5592 19.5456 12.7372 19.5456C9.50096 19.5456 6.75427 17.4596 5.77515 14.5762L5.63164 14.5881L1.85409 17.4449L1.80469 17.5791C3.81711 21.4856 7.95077 24.1698 12.7372 24.1698Z" fill="#34A853"/>
+                      <path d="M5.7758 14.5758C5.51745 13.8317 5.36794 13.0343 5.36794 12.2106C5.36794 11.3867 5.51745 10.5895 5.76221 9.84537L5.75536 9.6869L1.93048 6.78418L1.80533 6.84235C0.97592 8.46345 0.5 10.2839 0.5 12.2106C0.5 14.1372 0.97592 15.9576 1.80533 17.5787L5.7758 14.5758Z" fill="#FBBC05"/>
+                      <path d="M12.7372 4.87598C15.0351 4.87598 16.5852 5.84597 17.4691 6.65656L20.9228 3.36124C18.8017 1.43455 16.0413 0.251953 12.7372 0.251953C7.95077 0.251953 3.8171 2.93601 1.80469 6.84252L5.76156 9.84554C6.75427 6.96215 9.50096 4.87598 12.7372 4.87598Z" fill="#EB4335"/>
+                    </g>
+                    <defs>
+                      <clipPath id="clip0_2870_30408">
+                        <rect width="24" height="24" fill="white" transform="translate(0.5 0.251953)"/>
+                      </clipPath>
+                    </defs>
+                  </svg>
+                </div>
+                <div class="text-icon">
+                  <span class="small">GET IT ON</span>
+                  <span class="big">Google Play</span>
+                </div>
+              </div>
+              <div class="app-badge">
+                <div class="icon-app-store">
+                  <img
+                    src="/assets/images/payment-success/app-store.svg"
+                    alt="Icon app store"
+                    class="img-icon-appStore"
+                  />
+                </div>
+                <div class="text-icon">
+                  <span class="small">GET IT ON</span>
+                  <span class="big">App Store</span>
+                </div>
+              </div>
+            </div>
+
+            <p class="legal">
+              <p class="mb-0">
+                Apple and the Apple logo are trademarks of Apple Inc.,
+                registered in the U.S. and other countries.
+              </p>
+              <p class="mb-0">
+                App Store is a service mark of Apple Inc.
+              </p>
+              <p class="mb-0">
+                Google Play is a trademark of Google Inc.
+              </p>
+            </p>
+          </div>
+        </div>
+      `;
+    }
+
+    // Form thêm thẻ mới
+    function renderAddNewMethod() {
+      return `
+        <div class="wrap-popup-add-card"
+          style="--color-cur-primary: ${colorPrimary};">
+          <div class="header-popup-payment">
+            <h2 class="title-payment text-uppercase">Payments</h2>
+            <span class="time-off">5:59</span>
+          </div>
+          <div class="subtitle-card-new">
+            <h3 class="subtitle">Add new card</h3>
+          </div>
+          <div class="wrap-form-group-card-new">
+            <div class="form-group-card-new">
+              <label>
+                Card Holder Name
+                <p class="mb-0">*</p>
+              </label>
+              <input type="text" id="card-holder-name" placeholder="Card Holder Name">
+            </div>
+            <div class="form-group-card-new">
+              <label>
+                Card Number
+                <p class="mb-0">*</p>
+              </label>
+              <input type="text" id="card-number" placeholder="Card Number">
+              <p class="error-message"></p>
+            </div>
+            <div class="form-row-card-new">
+              <div class="group-card-ex">
+                <label>
+                  MM/YY
+                  <p class="mb-0">*</p>
+                </label>
+                <input type="text" id="card-expiry"placeholder="MM/YY">
+                <p class="error-message"></p>
+              </div>
+              <div class="group-card-ccv">
+                <label>
+                  CVV2
+                  <p class="mb-0">*</p>
+                </label>
+                <input type="text" id="card-cvv" placeholder="CVV2">
+                <p class="error-message"></p>
+              </div>
+            </div>
+            <div class="form-group-card-new">
+              <label>
+                Billing Address
+                <p class="mb-0">*</p>
+              </label>
+              <input type="text" id="card-billing-address" placeholder="Billing Address">
+              <p class="error-message"></p>
+            </div>
+            <div class="form-group-card-new">
+              <label>
+                Street
+              </label>
+              <input type="text" id="card-street" placeholder="Street">
+            </div>
+            <div class="form-group-card-new">
+              <label>
+                City
+              </label>
+              <input type="text" id="card-city" placeholder="City">
+            </div>
+            <div class="form-group-card-new">
+              <label>
+                State
+              </label>
+              <input type="text" id="card-state" placeholder="State">
+            </div>
+            <div class="form-group-card-new">
+              <label>
+                Zip
+                <p class="mb-0">*</p>
+              </label>
+              <input type="text" id="card-zip" placeholder="Zip">
+              <p class="error-message"></p>
+            </div>
+          </div>
+          <div class="form-group-card-sub">
+            <div class="checkbox-add-card">
+              <div class="circle-add-card">
+                <i class="fa-solid fa-check"></i>
+              </div>
+              <span>Save my card</span>
+            </div>
+          </div>
+          <div class="button-container">
+            <button class="btn-back-add-card">Back</button>
+            <button class="btn-add-card">Add</button>
+          </div>
+        </div>
+      `;
     }
 
     // Content popup upload image
@@ -1743,9 +2557,8 @@ function clearInputError($input) {
 
         const maxImages = 3;
 
-      // Đảm bảo luôn có 3 item render
       const imageSlots = Array.from({ length: maxImages }).map((_, index) => {
-        const img = dataImages[index]; // Có thể undefined nếu ít hơn 3 ảnh
+        const img = dataImages[index];
         const hasImg = !!img?.link;
 
         return `
@@ -1776,7 +2589,11 @@ function clearInputError($input) {
       });
 
       return `
-        <div class="popup-wrap-upload">
+        <div class="popup-wrap-upload"
+          style="
+            --color-cur-primary: ${colorPrimary};
+          "
+        >
           <div class="title-upload">
             <h2>Upload photos</h2>
           </div>
@@ -1832,6 +2649,7 @@ function clearInputError($input) {
     const htmlHeaderNav = renderNavHeaderTemplates(dataHeaderNav);
     const htmlAdvertise = renderAdvertisePage(advertises);
     const htmlBannerPage = renderBannerPage(banner);
+    const htmlTimeBooking = renderTimeBooking(dataBlock.dataBooking);
     // data render infoshop
 
 
@@ -1840,7 +2658,7 @@ function clearInputError($input) {
       `<div class="wrap-advertise-page">${htmlAdvertise}</div>`,
       `<div class="wrap-banner-page">${htmlBannerPage}</div>`,
       `<div class="wrap-service-infoshop">
-        <div class="list-more">
+        <div id="section-service" class="list-more">
         </div>
         <div id="list-info" class="show-list-info">
           <div id="item-promotion-page"></div>
@@ -1855,56 +2673,15 @@ function clearInputError($input) {
           </div>
         </div>
       </div>`,
-      `<div class="calendar-timeslot">
-        <div class="wrap-calendar-time">
-          <div class="top-cal-time">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M7.16625 11.4688H13.4263V2.46875H1.90625V21.9688H13.4263V12.9688H7.16625V11.4688Z" fill="#E27303" />
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M21.8448 11.4691C19.8328 11.4681 18.0008 9.63605 18.0008 7.62305V6.87305H16.5008V7.62305C16.5008 9.10005 17.1758 10.4801 18.2198 11.4691L13.4219 11.469V12.969L18.2198 12.9691C17.1758 13.9581 16.5008 15.3371 16.5008 16.8141V17.5641H18.0008V16.8141C18.0008 14.8021 19.8338 12.9691 21.8458 12.9691H22.5958V11.4691H21.8448Z" fill="#E27303" />
-            </svg>
-            <h2 class="title-copy-time text-uppercase mb-0">SELECT DATE AND TIME</h2>
-            <div class="copy-time">
-              <input
-                id="select-banner-pm"
-                type='checkbox'
-                class='toggle-switch'
-              />
-             <span class="text-same-time">Start on same time</span>
-            </div>
-          </div>
-          <div class="container-cal-time">
-            <div class="calendar">
-              <div class="calendar-header">
-                <button id="prev">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
-                    <path d="M12.5547 22.752C18.0775 22.752 22.5547 18.2748 22.5547 12.752C22.5547 7.22911 18.0775 2.75195 12.5547 2.75195C7.03184 2.75195 2.55469 7.22911 2.55469 12.752C2.55469 18.2748 7.03184 22.752 12.5547 22.752Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M16.0547 12.752H10.0547" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M12.0547 9.75195L9.05469 12.752L12.0547 15.752" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </button>
-                <div id="monthYear"></div>
-                <button id="next">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
-                    <path d="M12.5547 22.752C18.0775 22.752 22.5547 18.2748 22.5547 12.752C22.5547 7.22911 18.0775 2.75195 12.5547 2.75195C7.03184 2.75195 2.55469 7.22911 2.55469 12.752C2.55469 18.2748 7.03184 22.752 12.5547 22.752Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M9.05469 12.752H15.0547" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M13.0547 15.752L16.0547 12.752L13.0547 9.75195" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </button>
-              </div>
-              <div class="calendar-grid" id="days">
-              </div>
-            </div>
-            <div class="timeslot">
-              <h2 id="selectedDateTitle">August 14, 2025</h2>
-              <div id="timeSlotsContainer" class="time-slots"></div>
-              <div class="text-scroll-more">
-                <h2>Scroll to see more time slots</h2>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>`,
-      `<div id="triggerBlock" class="wrap-sumary"></div>`
+      `<div id="section-date-time" class="wrap-calendar-timeslot">${htmlTimeBooking}</div>`,
+      `<div
+        id="triggerBlockSumary"
+        class="wrap-sumary"
+        style="
+          --color-cur-primary: ${colorPrimary};
+        "
+      >
+      </div>`
     );
     const { dataBooking, dataMe, dataGuest, dataFamily } = dataBlock;
     if (banner.optionBooked === 'GUESTS') {
@@ -2001,6 +2778,26 @@ function clearInputError($input) {
     // fake time , sẽ xử lý thêm close form
     let resendCountdown = 59;
     let resendInterval;
+    let fieldEntered;
+    // Biến xử lý chọn ngày đặt lịch
+    const monthNames = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+    const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const currentDate = new Date();
+
+    let selectedDate = null;
+    let currentMonth = currentDate.getMonth();
+    let currentYear = currentDate.getFullYear();
+
+    const fakeDataCalender = {
+      8: [8, 9, 10, 12, 20, 22] // August: non-working days
+    };
+
+    // hiện nút scroll
+    let forceShowScrollBtn = false;
+    const $mainScrollBtn = $('.scroll-btn-main');
 
     renderBlockTemplate({listDataService, listUserStaff, dataBooking,dataMe,  dataGuest, dataFamily, currentUserId});
 
@@ -2121,22 +2918,40 @@ function clearInputError($input) {
             setTimeout(() => {
               $('.overlay-screen').addClass('show');
             }, 10);
-            // dataBooking.users = dataFamily;
-            // dataBooking.users[0].isChoosing = true;
+            // Vì chưa đăng nhập nên dataFamily khởi tạo là một mảng users:[]
+            const tempFamily = [
+                {
+                  id: 1,
+                  firstName: '',
+                  lastName: '',
+                  phoneNumber: '',
+                  email: '',
+                  gender: genderEnum.MALE,
+                  services: [
+
+                  ],
+                  selectedDate: null,
+                  selectedTimeSlot: null,
+                  isSelecting: false,
+                  isChoosing: true,
+                },
+              ]
+            dataBooking.users = tempFamily;
           }
           else {
             dataBooking.type = typeBookingEnum.ME;
             dataBooking.users = dataMe;
           };
 
+
           // show or hide cả 2
-          if (dataBooking.type !== typeBookingEnum.ME) {
-            $('.wrap-input-guests').removeClass('hidden');
-            updateGuestSection();
-          } else {
+          if (dataBooking.type !== typeBookingEnum.GUESTS) {
             $('.wrap-input-guests').addClass('hidden');
             $('.wrap-control').empty();
             $('.wrap-input-guests').empty();
+          } else {
+            $('.wrap-input-guests').removeClass('hidden');
+            updateGuestSection();
           }
 
           // render lại list service
@@ -2191,13 +3006,14 @@ function clearInputError($input) {
             alert('Bạn phải giữ tối thiểu 1 người.');
             return;
           }
-          const obj = dataBooking.users.find(i => i.id === id);
-          if (!obj.firstName) {
-            dataBooking.users = dataBooking.users.filter(i => i.id !== id);
-            updateGuestSection();
-          } else {
-            alert('Không thể xóa khi ô đã nhập tên.');
-          }
+          const index = dataBooking.users.findIndex(i => i.id === id);
+          const obj = dataBooking.users[index];
+          const nearestLeftUser = dataBooking.users[index - 1];
+          dataBooking.users = dataBooking.users.filter(i => i.id !== id);
+
+          nearestLeftUser.isChoosing = true;
+          updateGuestSection();
+
         });
         // Cập nhật data khi onChange input
           // firstname
@@ -2222,6 +3038,9 @@ function clearInputError($input) {
             } else {
               $this.removeClass('is-invalid');
               $error.text('');
+              // check show scroll service || timming
+              const isShowSroll = checkValInputs(['#firstname-banner', '#lastname-banner','#emailPhone-banner']);
+              isShowSroll && showScrollToTarget(userCur);
             }
             // Update data user
             userCur.firstName = val;
@@ -2242,6 +3061,9 @@ function clearInputError($input) {
             } else {
               $this.removeClass('is-invalid');
               $error.text('');
+              // check show scroll service || timming
+              const isShowSroll = checkValInputs(['#firstname-banner', '#lastname-banner','#emailPhone-banner']);
+              isShowSroll && showScrollToTarget(userCur);
             }
 
             // Update data user
@@ -2289,6 +3111,9 @@ function clearInputError($input) {
             } else {
               $this.removeClass('is-invalid');
               $error.text('');
+              // check show scroll service || timming
+              const isShowSroll = checkValInputs(['#firstname-banner', '#lastname-banner','#emailPhone-banner']);
+              isShowSroll && showScrollToTarget(userCur);
             }
 
             // Update data user
@@ -2333,13 +3158,12 @@ function clearInputError($input) {
               $error.text('');
             }
           }
-          // BLUR phone&email
-          function validateEmailPhoneInput($input) {
+          // BLUR phone&email banner
+          function validateEmailPhoneInputBanner($input) {
 
             const userCur = dataBooking.users.find((u) => u.isChoosing);
             const isFirst = dataBooking.users[0].id === userCur.id;
             const val = $input.val().trim();
-            console.log("valid-input-banner: ", val);
             const $error = $input.next('.error-message');
 
             const isPhone = isValidPhoneNumber(val);
@@ -2359,23 +3183,56 @@ function clearInputError($input) {
               $error.text('');
             }
           }
-          // Check phone form register
-          function validateEmailPhoneFormRegister($input) {
-            console.log("blur")
+          // BLUR phone&email
+          function validateEmailPhoneInput($input) {
+            const val = $input.val().trim();
+            const $error = $input.siblings('.error-message');
+
+            const isPhone = isValidPhoneNumber(val);
+            const isEmail = isValidEmail(val);
+
+            if (val === '') {
+              $input.addClass('is-invalid');
+              $error.text('Email or phone is required.');
+              shakeError($error);
+            } else if (val !== '' && !isPhone && !isEmail) {
+              $input.addClass('is-invalid');
+              $error.text('Email or phone is incorrect format.');
+              shakeError($error);
+            } else {
+              $input.removeClass('is-invalid');
+              $error.text('');
+            }
+            if(isPhone) return "PHONE";
+            if(isEmail) return "EMAIL";
+            return;
+          }
+          // Check phone form register blur
+          function validatePhoneFormRegister($input) {
             const val = $input.val().trim();
             const isPhone = isValidPhoneNumber(val);
 
             if(isPhone) {
-              const $errorMs = $input.next('.input-error')
+              const $errorMs = $input.next('.error-message')
               $errorMs.text('');
+            }else if(val === ''){
+              showInputError($input, `Phone is required`, true);
+            }else if(!isPhone) {
+              showInputError($input, `Phone is incorrect format!`, true);
             }
-            if(val === ''){
-              showInputError($input, `Phone is required`);
-              shakeError($input);
-            }
-            if(!isPhone) {
-              showInputError($input, `Phone is incorrect format!`);
-              shakeError($input);
+          }
+          // Check email form register
+          function validateEmailFormRegister($input) {
+            const val = $input.val().trim();
+            const isMail = isValidEmail(val);
+
+            if(isMail) {
+              const $errorMs = $input.next('.error-message')
+              $errorMs.text('');
+            }else if(val === ''){
+              showInputError($input, `Email is required`, true);
+            }else if(!isMail) {
+              showInputError($input, `Email is incorrect format!`, true);
             }
           }
 
@@ -2387,8 +3244,8 @@ function clearInputError($input) {
           validateLastNameInput($(this));
         });
 
-        $(document).on('input blur', '#emailPhone-banner', function () {
-          validateEmailPhoneInput($(this));
+        $(document).on('blur', '#emailPhone-banner', function () {
+          validateEmailPhoneInputBanner($(this));
         });
 
         // Cập nhật data khi onChange input
@@ -2430,7 +3287,6 @@ function clearInputError($input) {
               $errorFirst.text('Last name is required.');
               shakeError($errorFirst);
               hasError = true;
-              console.log("check firstName banner")
             }
 
             if (valEmailPhone === '') {
@@ -2467,8 +3323,8 @@ function clearInputError($input) {
             $this.blur(); // Gỡ focus
             return;
           }
-          console.log("check tran tabs")
-
+          // Kiểm tra đã chọn service và time slot chưa và show button scroll target
+          showScrollToTarget(currentUser);
           // Đủ điều kiện mới chuyển tab
           $('.input-fullname').removeClass('active');
           $this.addClass('active');
@@ -2500,6 +3356,14 @@ function clearInputError($input) {
           };
           renderCopyServiceOption('.copy-options-wrapper',optionCopyService )
           renderListService(listDataService, '.list-more', dataBooking, currentUserId);
+
+          // render lại timming để cập timming đã chọn
+          renderContainerTiming(
+            dataBooking, currentDate, monthNames,
+            dayNames, currentMonth, currentYear,
+            fakeDataCalender, nextUser.selectedDate || selectedDate, currentUserId,
+            listDataService,
+          );
         });
 
     // Xử lý chọn user để copy
@@ -2529,16 +3393,53 @@ function clearInputError($input) {
         const optionCopyService = {dataUser: dataBooking.users}
         renderCopyServiceBtn('.copy-btn-wrapper')
         renderCopyServiceOption('.copy-options-wrapper',optionCopyService);
+
+        // render lại timming để cập nút copy
+        renderContainerTiming(
+          dataBooking, currentDate, monthNames,
+          dayNames, currentMonth, currentYear,
+          fakeDataCalender, selectedDate, currentUserId,
+          listDataService,
+        );
       })
       // Copy service
       $(document).on('click', '.btn-copy-service', function () {
         const userChoosing = dataBooking.users.find((u) => u.isChoosing);
         const userSelectedCopy = dataBooking.users.find((u) => u.isSelecting);
+
+        // copy service
         if(userChoosing !== userSelectedCopy) {
           userChoosing.services = JSON.parse(JSON.stringify(userSelectedCopy.services));
         }
+        // kiểm tra nếu action copy datetime on thì copy cả timming
+        const isChecked = $('#select-banner-pm').prop('checked');
+        if(isChecked){
+          userChoosing.selectedDate = JSON.parse(JSON.stringify(userSelectedCopy.selectedDate));
+          userChoosing.selectedTimeSlot = JSON.parse(JSON.stringify(userSelectedCopy.selectedTimeSlot));
+        }
         // upadate lại list service
         renderListService(listDataService, '.list-more', dataBooking, currentUserId);
+
+        // render lại timming để show timming vừa copy
+        renderContainerTiming(
+          dataBooking, currentDate, monthNames,
+          dayNames, currentMonth, currentYear,
+          fakeDataCalender, userChoosing.selectedDate, currentUserId,
+          listDataService
+        );
+
+        const isFinalBooking = showScrollToFinalBooking(dataBooking);
+        isFinalBooking && updateScrollButton({
+          target: '#section-booking',
+          trigger: '#trigger-booking',
+          triggerBanner: '#triggerBlockSumary',
+          text: 'Continue Booking',
+          icon: 'fa fa-hand-pointer down',
+          force: false
+        });
+
+        // render lại sumary
+        renderSumary(dataBooking, listDataService);
       })
     // Xử lý select services
     $(document).on('click', '.expand-title', function () {
@@ -2561,10 +3462,10 @@ function clearInputError($input) {
       const staffSelecting = listUserStaff.find((st) => st.id == 'default');
       const idService = $this.closest('.more-item').data('id');
       const idItemService = $card.data('id');
-      const userSelecting = dataBooking.users.find((u) => u.isChoosing === true);
+      const userChoosing = dataBooking.users.find((u) => u.isChoosing === true);
 
-      // nếu khong tìm thấy idService trong userSelecting thì thêm mới
-      let serviceExit = userSelecting.services.find((item) => item.idService === idService);
+      // nếu khong tìm thấy idService trong userChoosing thì thêm mới
+      let serviceExit = userChoosing.services.find((item) => item.idService === idService);
       let serviceItemExit = serviceExit && serviceExit.itemService.find(item => item.idItemService ===idItemService);
 
       if (serviceExit) {
@@ -2587,12 +3488,24 @@ function clearInputError($input) {
             }
           ]
         };
-        userSelecting.services.push(serviceExit);
+        userChoosing.services.push(serviceExit);
       }
       const $action = renderActionButtons(idService, idItemService, dataBooking, currentUserId);
       $card.find('.add-more').replaceWith($action);
 
       updateGuestSection(); // Cập nhật để hiển thị nút Copy Service
+
+      // show nút scroll to choose time-slots nếu chưa chọn time-slots
+      if(!userChoosing.selectedDate || !userChoosing.selectedTimeSlot){
+        updateScrollButton({
+          target: '#section-date-time',
+          trigger: '#trigger-date-time',
+          triggerBanner: '#triggerBlockSumary',
+          text: 'Select Date & Time',
+          icon: 'fa fa-hand-pointer down',
+          force: false
+        });
+      }
 
       //Cập nhật table booking
       renderSumary(dataBooking, listDataService);
@@ -2682,11 +3595,11 @@ function clearInputError($input) {
       const idService = $this.closest('.more-item').data('id');
       const idItemService = $this.closest('.card-more').data('id');
 
-      const userSelecting = dataBooking.users.find((u) => u.isChoosing === true);
+      const userChoosing = dataBooking.users.find((u) => u.isChoosing === true);
 
 
-      // nếu khong tìm thấy idService trong userSelecting thì thêm mới
-      let serviceExit = userSelecting.services.find((item) => item.idService === idService);
+      // nếu khong tìm thấy idService trong userChoosing thì thêm mới
+      let serviceExit = userChoosing.services.find((item) => item.idService === idService);
       let serviceItemExit = serviceExit && serviceExit.itemService.find(item => item.idItemService ===idItemService);
 
       if (serviceExit) {
@@ -2709,7 +3622,7 @@ function clearInputError($input) {
             }
           ]
         };
-        userSelecting.services.push(serviceExit);
+        userChoosing.services.push(serviceExit);
       }
 
       const name = $(this).find(".full-name").text();
@@ -2719,6 +3632,18 @@ function clearInputError($input) {
       $wrap.find('.option-select-staff').removeClass('show');
 
       updateGuestSection(); // Cập nhật để hiển thị nút Copy Service
+
+      // show nút scroll to choose time-slots nếu chưa chọn time-slots
+      if(!userChoosing.selectedDate || !userChoosing.selectedTimeSlot){
+        updateScrollButton({
+          target: '#section-date-time',
+          trigger: '#trigger-date-time',
+          triggerBanner: '#triggerBlockSumary',
+          text: 'Select Date & Time',
+          icon: 'fa fa-hand-pointer down',
+          force: false
+        });
+      }
 
       //Cập nhật table booking
       renderSumary(dataBooking, listDataService);
@@ -2789,30 +3714,122 @@ function clearInputError($input) {
       const index = itemServiceInUser.optionals.findIndex((opt) => opt.id === itemAddOn.id);
 
       if (index > -1) {
-        // Đã chọn rồi ⇒ bỏ chọn
+        // Đã chọn rồi > bỏ chọn
         itemServiceInUser.optionals.splice(index, 1);
         $checkboxAddOn.removeClass("selected");
       } else {
-        // Chưa chọn ⇒ thêm vào
+        // Chưa chọn > thêm vào
         itemServiceInUser.optionals.push(itemAddOn);
         $checkboxAddOn.addClass("selected");
       }
 
+      // trigger gọi btn add more nếu chưa chọn thợ
+      const $wrapListMore = $this.closest('.wrap-list-more');
+      const $cardMore = $wrapListMore.find(`.card-more[data-id="${idItemService}"]`);
+      $cardMore.find('.add-more .btn-add-more').trigger('click');
       // Cập nhật sumary
       renderSumary(dataBooking, listDataService);
     });
+    // Xử lý onChange input appointment-input
+    $(document).on('input', '#appointment-input', function() {
+      const $this = $(this);
+      let val = $this.val().trim();
+      const $error = $this.siblings('.error-message');
 
-    // Xử lý sự kiện cho verify
+      const digits = val.replace(/\D/g, '');
+
+      let isPhone = false;
+      let isEmail = false;
+
+      // Check nếu là phone đủ 10 số
+      if (digits.length === 10 && /^\d+$/.test(digits)) {
+        val = formatPhoneNumber(digits); // Format lại hiển thị
+        $this.val(val); // Gán lại giá trị vào input
+        isPhone = true;
+      } else {
+          // Nếu đang ở dạng đã format mà không còn đủ 10 số → gỡ format
+        if (val.includes('(') || val.includes(')') || val.includes('-')) {
+          if (digits.length !== 10) {
+            val = digits;
+            $this.val(val);
+          }
+        }
+
+        isPhone = isValidPhoneNumber(val);
+        isEmail = isValidEmail(val);
+      }
+
+      // Cập nhật lỗi
+      if (val === '') {
+        $this.addClass('is-invalid');
+        $error.text('Email or phone is required.');
+        // $('.btn-next-emailPhone').prop('disabled', true)
+      } else if (val !== '' && !isPhone && !isEmail) {
+        $this.addClass('is-invalid');
+        $error.text('Email or phone is incorrect format.');
+        // $('.btn-next-emailPhone').prop('disabled', true)
+      } else {
+        $this.removeClass('is-invalid');
+        $error.text('');
+        // Cho phép next
+        $('.btn-next-emailPhone').prop('disabled', false)
+      }
+
+    })
+    // Xử lý blur input apointment-input
+    $(document).on('blur', '#appointment-input', function() {
+      const $this = $(this);
+      const res = validateEmailPhoneInput($this);
+      if(res ==="EMAIL") {
+        dataBooking.users[0].email = $this.val();
+      }else if(res === "PHONE"){
+        dataBooking.users[0].phoneNumber = $this.val();
+      }else {
+        // $('.btn-next-emailPhone').prop('disabled', true)
+      }
+    })
+
+    // Xử lý sự kiện cho next verify
     $(document).on('click', '.btn-next-emailPhone', function () {
-      const phoneDisplay = '(+84) 124 2149'; // hard code tạm
-      const newContent = renderVerifyCodeContent(phoneDisplay);
+      // verify val input trước khi cho next
+      const $appointInput = $('#appointment-input');
+      const res = validateEmailPhoneInput($appointInput);
+      if(!res) return;
+
+      // Lưu lại vào dataBooking
+      if(res === "PHONE"){
+        dataBooking.users[0].phoneNumber = $appointInput.val();
+        dataBooking.users[0].email = '';
+      }
+      if(res === "EMAIL"){
+        dataBooking.users[0].phoneNumber = '';
+        dataBooking.users[0].email = $appointInput.val();
+      }
+
+      const emailPhoneMasked = res === "EMAIL" ? dataBooking.users[0].email : dataBooking.users[0].phoneNumber;
+      const newContent = renderVerifyCodeContent(emailPhoneMasked);
       const html = renderBasePopup(newContent);
 
       $wrapHomeTemp.append(html);
       setTimeout(() => {
         $('.overlay-screen').addClass('show');
-      }, 10);
+
+        // focus vào input đầu tiên trong opt
+        $('.otp-box[data-index="0"]').focus();
+
+      }, 20);
+
+      resendCountdown = 59;
+      startResendTimer();
     });
+    // Xử lý back popup back
+    $(document).on('click', '.btn-back-emailPhone', function () {
+      dataBooking.users[0].email = '';
+      dataBooking.users[0].phoneNumber = '';
+      closePopupContainerTemplate();
+      // reset optionBooked = ME
+      renderBookingOption('.wrap-book-for', banner.btnOptionBook, typeBookingEnum.ME);
+    })
     // Auto focus và chuyển sang ô tiếp theo
     $(document).on('input', '.otp-box', function () {
       const $this = $(this);
@@ -2828,7 +3845,7 @@ function clearInputError($input) {
       $('.btn-next-verify').prop('disabled', !allFilled);
     });
 
-    // Cho phép back bằng phím ←
+    // Cho phép back bằng phím <-
     $(document).on('keydown', '.otp-box', function (e) {
       const $this = $(this);
       const index = parseInt($this.data('index'), 10);
@@ -2840,13 +3857,30 @@ function clearInputError($input) {
 
     // next verify code
     $(document).on('click', '.btn-next-verify',function () {
-      const contentUserInfo = renderRegisterForm();
-      const html = renderBasePopup(contentUserInfo, 762, 886);
+      const user = dataBooking.users[0];
+      const dataRegis = {};
+      if (user.email?.trim()) {
+        fieldEntered = typeInput.EMAIL;
+        dataRegis.email = user.email.trim();
+        user.phoneNumber = '';
+        user.firstName = '';
+        user.lastName = '';
+      } else if (user.phoneNumber?.trim()) {
+        fieldEntered = typeInput.PHONE;
+        dataRegis.phoneNumber = user.phoneNumber.trim();
+        user.email = '';
+        user.firstName = '';
+        user.lastName = '';
+      }
 
+      const contentFormRegis = renderRegisterForm(dataRegis, fieldEntered);
+      const html = renderBasePopup(contentFormRegis, 762, 886);
       $wrapHomeTemp.append(html);
       setTimeout(() => {
         $('.overlay-screen').addClass('show');
       }, 10);
+      document.getElementById("phone-register").readOnly = (fieldEntered === typeInput.PHONE);
+      document.getElementById("email-register").readOnly = (fieldEntered === typeInput.EMAIL);
 
       //clear interval time opt
       clearInterval(resendInterval);
@@ -2866,57 +3900,68 @@ function clearInputError($input) {
       }, 1000);
     }
 
-    // Khi hiển thị popup code
-    $(document).on('click', '.btn-next-emailPhone', function () {
-      resendCountdown = 59;
-      startResendTimer();
-    });
-    // back để quay về popup trước đó
+    // back để quay về popup email
     $(document).on('click', '.btn-back-verify', function () {
-      const htmlPopupVerify = renderBasePopup(renderVerifyEmailPhoneContent())
+      const emailOrPhone = dataBooking.users[0].email || dataBooking.users[0].phoneNumber;
+      const htmlPopupVerify = renderBasePopup(renderVerifyEmailPhoneContent(emailOrPhone))
+
       $wrapHomeTemp.append(htmlPopupVerify);
       setTimeout(() => {
         $('.overlay-screen').addClass('show');
       }, 10);
+
+      // reset data users[0]
+      dataBooking.users[0].email = '';
+      dataBooking.users[0].phoneNumber = '';
+      //clear interval time opt
+      clearInterval(resendInterval);
     });
     // back form register
     $(document).on('click', '.btn-back-verify-register', function () {
-      const htmlPopupVerify = renderBasePopup(renderVerifyCodeContent())
+      const emailOrPhone = dataBooking.users[0].email || dataBooking.users[0].phoneNumber;
+      const htmlPopupVerify = renderBasePopup(renderVerifyEmailPhoneContent(emailOrPhone))
       $wrapHomeTemp.append(htmlPopupVerify);
-
-      // fake time opt
-      resendCountdown = 59;
-      startResendTimer();
 
       setTimeout(() => {
         $('.overlay-screen').addClass('show');
       }, 10);
     });
+      // next verify
     $(document).on('click', '.btn-next-verify-register', function() {
-      const contentPolicies = renderPoliciesForm();
-      const html = renderBasePopup(contentPolicies, 768, 886);
-
-      $wrapHomeTemp.append(html);
-      setTimeout(() => {
-        $('.overlay-screen').addClass('show');
-      }, 10);
+      const $this = $(this);
 
       // xử lý check lại toàn bộ form input, verify và snake text error
+      // Chỉ check format mail và phone, đã xử lý onChange input verify button verify
        // Lấy giá trị trên tab hiện tại
         const $wrapRegis = $(`.wrap-popup-register`);
         const valPhoneRegis = $wrapRegis.find('#phone-register').val().trim();
         const valFirstRegis = $wrapRegis.find('#firstname-register').val().trim();
         const valLastRegis = $wrapRegis.find('#lastname-register').val().trim();
         const valEmailRegis = $wrapRegis.find('#email-register').val().trim();
-        const valZipCodeRegis = $wrapRegis.find('#zipcode-register').val().trim();
 
         const isPhone = isValidPhoneNumber(valPhoneRegis);
         const isEmail = isValidEmail(valEmailRegis);
 
       let hasError = false;
 
-      if (valPhoneRegis === '' || !isPhone) {
-        const $errorPhoneRegis = $wrapRegis.find('#phone-register').next('.input-error');
+      if(valEmailRegis === '' && valPhoneRegis === ''){
+        const $errorEmailRegis = $wrapRegis.find('#email-register').next('.error-message');
+        const textErrEmail = 'Please enter at least 1 of the 2 fields email or phone number!'
+        $errorEmailRegis.text(textErrEmail)
+        shakeError($errorEmailRegis);
+
+
+        const $errorPhoneNumberRegis = $wrapRegis.find('#phone-register').next('.error-message');
+        const textErrPhoneNumber = 'Please enter at least 1 of the 2 fields email or phone number!'
+        $errorPhoneNumberRegis.text(textErrPhoneNumber)
+        shakeError($errorPhoneNumberRegis);
+
+
+        hasError = true;
+      }
+
+      if (valPhoneRegis !== '' && !isPhone) {
+        const $errorPhoneRegis = $wrapRegis.find('#phone-register').next('.error-message');
 
         const textErr = !isPhone ? 'Phone is incorrect format.' : 'Phone is required!'
         $errorPhoneRegis.text(textErr);
@@ -2924,12 +3969,30 @@ function clearInputError($input) {
         hasError = true;
       }
 
-      if (valEmailPhone !== '' && !isPhone && !isEmail) {
-        const $errorEmailRegis = $wrapRegis.find('#email-register').next('.input-error');
+      if (valEmailRegis !== '' && !isEmail) {
+        const $errorEmailRegis = $wrapRegis.find('#email-register').next('.error-message');
 
-        const textErr = !isPhone ? 'Email is incorrect format.' : 'Email is required!'
+        const textErr = !isEmail ? 'Email is incorrect format.' : 'Email is required!'
         $errorEmailRegis.text(textErr);
         shakeError($errorEmailRegis);
+        hasError = true;
+      }
+
+      if (valFirstRegis === '') {
+        const $errorFirstRegis = $wrapRegis.find('#firstname-register').next('.error-message');
+
+        const textErr = 'First name is required!'
+        $errorFirstRegis.text(textErr);
+        shakeError($errorFirstRegis);
+        hasError = true;
+      }
+
+      if (valLastRegis === '') {
+        const $errorLastRegis = $wrapRegis.find('#lastname-register').next('.error-message');
+
+        const textErr = 'Last name is required!'
+        $errorLastRegis.text(textErr);
+        shakeError($errorLastRegis);
         hasError = true;
       }
 
@@ -2937,46 +4000,194 @@ function clearInputError($input) {
         $this.blur(); // Gỡ focus
         return;
       }
+
+      // Lưu thông tin vào dataBooking
+      dataBooking.users[0].email = valEmailRegis;
+      dataBooking.users[0].phoneNumber = valPhoneRegis;
+      dataBooking.users[0].firstName = valFirstRegis;
+      dataBooking.users[0].lastName = valLastRegis;
+
+      // close và hiển thị gia đình
+      // add thêm 1 thành viên rỗng nếu length dataBooking.users.length = 1
+      const newU = {
+        id: 2,
+        firstName: '',
+        lastName: '',
+        phoneNumber: '',
+        email: '',
+        gender: genderEnum.MALE,
+        services: [
+
+        ],
+        selectedDate: null,
+        selectedTimeSlot: null,
+        isSelecting: false,
+        isChoosing: false,
+      };
+      if(dataBooking.users.length <2 ) {
+        dataBooking.users.push(newU);
+      }
+      closePopupContainerTemplate();
+      $('.wrap-input-guests').removeClass('hidden');
+      updateGuestSection();
+
+    })
+    // back form policies
+    $(document).on('click', '.btn-back-policies', function() {
+      const dataRegis = {
+        firstName: dataBooking.users[0].firstName,
+        lastName: dataBooking.users[0].lastName,
+        email: dataBooking.users[0].email,
+        phoneNumber: dataBooking.users[0].phoneNumber
+      };
+
+      const contentFormRegis = renderRegisterForm(dataRegis, fieldEntered);
+      const html = renderBasePopup(contentFormRegis, 762, 886);
+
+      $wrapHomeTemp.append(html);
+      setTimeout(() => {
+        $('.overlay-screen').addClass('show');
+      }, 10);
+
+      document.getElementById("phone-register").readOnly = (fieldEntered === typeInput.PHONE);
+      document.getElementById("email-register").readOnly = (fieldEntered === typeInput.EMAIL);
+
+      // clear time nếu có
+    })
+    // next form policies
+    $(document).on('click', '.btn-next-policies', function() {
+      const contentPaymentMethod = renderPaymentMethodsForm();
+      const html = renderBasePopup(contentPaymentMethod, 776, 886);
+
+      $wrapHomeTemp.append(html);
+      setTimeout(() => {
+        $('.overlay-screen').addClass('show');
+      }, 10);
+    })
+    // add new card
+    $(document).on('click', '.add-new-card-btn', function () {
+      const contentAddNewMethod = renderAddNewMethod();
+      const html = renderBasePopup(contentAddNewMethod, 900, 886);
+
+      $wrapHomeTemp.append(html);
+      setTimeout(() => {
+        $('.overlay-screen').addClass('show');
+      }, 10);
+    })
+    // back: add new card
+    $(document).on('click', '.btn-back-add-card', function() {
+      const contentPaymentMethod = renderPaymentMethodsForm();
+      const html = renderBasePopup(contentPaymentMethod, 776, 886);
+
+      $wrapHomeTemp.append(html);
+      setTimeout(() => {
+        $('.overlay-screen').addClass('show');
+      }, 10);
+    })
+    // back select payment
+    $(document).on('click', '.btn-back-payment', function() {
+      const contentPolicies = renderPoliciesForm();
+      const html = renderBasePopup(contentPolicies, 768, 886);
+
+      $wrapHomeTemp.append(html);
+      setTimeout(() => {
+        $('.overlay-screen').addClass('show');
+      }, 10);
+    })
+    // Confirm payment final
+    $(document).on('click', '.btn-next-payment', function () {
+      const contentSuccessPayment = renderPaymentConfirmationForm();
+      const html = renderBasePopup(contentSuccessPayment, 920, 886);
+
+      $wrapHomeTemp.append(html);
+      setTimeout(() => {
+        $('.overlay-screen').addClass('show');
+      }, 10);
+
+      // start animation 5 vòng (fake 5s)
+      setTimeout(() => {
+        startConfirmAnimation(1, {
+          selector: '.wrap-popup-payment-confirmation .check-circle',
+          buttonSelector: '.wrap-popup-payment-confirmation .btn-request-another'
+        });
+      }, 50);
     })
     // Sự kiện trên popup register
-    $(document).on('input', '#firstname-register, #lastname-register, #email-register, #zipcode-register', function () {
-      const $input = $(this);
-      const val = $input.val().trim();
+     // Kiểm tra và disable btn verify form register
+    $(document).on('input', '#firstname-register, #lastname-register, #email-register, #phone-register', function () {
+      const $this = $(this);
+      const val = $this.val().trim();
       if (val) {
-        clearInputError($input);
+        clearInputError($this);
       }
 
-      // Bật / tắt nút verify nếu nhập đủ
-      const allFilled = $('#firstname-register').val().trim()
-        && $('#lastname-register').val().trim()
-        && $('#email-register').val().trim()
-        && $('#zipcode-register').val().trim();
+      // verify button next :(Verify)
+      let allFilled = $('#firstname-register').val().trim()
+        && $('#lastname-register').val().trim();
+
+      if($this.attr('id') === 'email-register'){
+        if($this.data('type') === typeRequire.REQUIRED){
+          const valEmail = $this.val().trim();
+
+          allFilled = allFilled && valEmail;
+        }
+      }
+      if($this.attr('id') === 'phone-register'){
+        const $this = $(this);
+
+        let phoneVal = $this.val().trim();
+        const isRequired = $this.data('type') === typeRequire.REQUIRED;
+        const phoneDigits = phoneVal.replace(/\D/g, '');
+
+        let valid = true;
+
+        // Check nếu là phone đủ 10 số
+        if (phoneDigits.length === 10 && /^\d+$/.test(phoneDigits)) {
+          phoneVal = formatPhoneNumber(phoneDigits);
+          $this.val(phoneVal);
+          valid = isValidPhoneNumber(phoneVal);
+        } else {
+            // Nếu đang ở dạng đã format mà không còn đủ 10 số → gỡ format
+          if (phoneVal.includes('(') || phoneVal.includes(')') || phoneVal.includes('-')) {
+            if (phoneDigits.length !== 10) {
+              phoneVal = phoneDigits;
+              $this.val(phoneVal);
+            }
+          }
+          valid = isValidPhoneNumber(phoneVal);
+        }
+        if(phoneVal === '' && !isRequired){
+          clearInputError($this);
+        }
+        else if(!valid) {
+          showInputError($this, 'Phone is incorrect format')
+        }
+        else {
+          clearInputError($this);
+        }
+
+        if($this.data('type') === typeRequire.REQUIRED){
+          const valPhone = $this.val().trim();
+          allFilled = allFilled && valPhone;
+        }
+      }
 
       $('.btn-next-verify-register').prop('disabled', !allFilled);
     });
-
-    $(document).on('blur', '#firstname-register, #lastname-register, #email-register, #zipcode-register', function () {
+    // blur #firsname-register, #lastname-register,
+    $(document).on('blur', '#firstname-register, #lastname-register', function () {
       const $input = $(this);
       const id = $input.attr('id');
       const val = $input.val().trim();
       const nameMap = {
         'firstname-register': 'First Name',
         'lastname-register': 'Last Name',
-        'email-register': 'Email',
-        'zipcode-register': 'Zip Code'
       };
 
       const fieldName = nameMap[id] || 'This field';
 
       if (!val) {
-        showInputError($input, `${fieldName} is required`);
-        shakeError($input);
-        return;
-      }
-
-      if (id === 'email-register' && !isValidEmail(val)) {
-        showInputError($input, `Invalid ${fieldName}`);
-        shakeError($input);
+        showInputError($input, `${fieldName} is required`, true);
         return;
       }
 
@@ -2985,36 +4196,82 @@ function clearInputError($input) {
     });
     // blur #phone-register
     $(document).on('blur', '#phone-register', function () {
-      validateEmailPhoneFormRegister($(this));
+      const $this = $(this);
+      const isRequired = $this.data('type');
+      if(isRequired === typeRequire.REQUIRED){
+        validatePhoneFormRegister($this);
+      }
+      // nếu val = '', clear error, néu có val vẫn valid format
+      if($this.val() === '' && isRequired === typeRequire.NOTREQUIRED){
+        clearInputError($this);
+      }else{
+        validatePhoneFormRegister($this);
+      }
+    });
+    // blur #email-register
+    $(document).on('blur', '#email-register', function() {
+      const $this = $(this);
+      const isRequired = $this.data('type');
+      if(isRequired === typeRequire.REQUIRED){
+        validateEmailFormRegister($this);
+      }
+      // nếu val = '', clear error, néu có val vẫn valid format
+      if($this.val() === '' && isRequired === typeRequire.NOTREQUIRED){
+        clearInputError($this);
+      }else{
+        validateEmailFormRegister($this);
+      }
+    })
+    // Sự kiện mở form phương thức thanh toán
+    $(document).on('click', '.btn-open-payment', function () {
+      const html = renderBasePopup(renderPaymentMethodsForm(), 762, 886);
+      $wrapHomeTemp.append(html);
+      setTimeout(() => $('.overlay-screen').addClass('show'), 10);
     });
 
-    $(document).on('input', '#phone-register', function () {
-      const $phone = $('#phone-register');
+    // Chuyển sang form thêm thẻ mới
+    $(document).on('click', '.btn-add-new-card', function () {
+      const html = renderBasePopup(renderAddNewCardForm(), 762, 886);
+      $wrapHomeTemp.html(html); // thay nội dung popup
+      setTimeout(() => $('.overlay-screen').addClass('show'), 10);
+    });
 
-      let phoneVal = $phone.val().trim();
-      console.log("check: ", phoneVal);
-      const phoneDigits = phoneVal.replace(/\D/g, '');
+    // Lưu thẻ mới và quay lại form phương thức thanh toán
+    $(document).on('click', '.btn-save-card', function () {
+      // Giả lập lưu card (ở đây bạn call API thật)
+      const newCard = {
+        type: 'Visa',
+        number: '**** 1234',
+        exp: '12/28'
+      };
 
-      let valid = true;
+      // Render lại form chọn phương thức với thẻ mới tick sẵn
+      const html = renderBasePopup(renderPaymentMethodsForm(newCard), 762, 886);
+      $wrapHomeTemp.html(html);
+      setTimeout(() => $('.overlay-screen').addClass('show'), 10);
+    });
 
-      // Check nếu là phone đủ 10 số
-      if (phoneDigits.length === 10 && /^\d+$/.test(phoneDigits)) {
-        phoneVal = formatPhoneNumber(phoneDigits);
-        $phone.val(phoneVal);
-        valid = isValidPhoneNumber(phoneVal);
-      } else {
-          // Nếu đang ở dạng đã format mà không còn đủ 10 số → gỡ format
-        if (phoneVal.includes('(') || phoneVal.includes(')') || phoneVal.includes('-')) {
-          if (phoneDigits.length !== 10) {
-            phoneVal = phoneDigits;
-            $phone.val(phoneVal);
-          }
-        }
-        valid = isValidPhoneNumber(phoneVal);
-      }
-      if(!valid) {
-        showInputError($phone, 'Phone is incorrect format')
-      }
+    // Xác nhận phương thức và mở form xác nhận thanh toán
+    $(document).on('click', '.btn-confirm-payment-method', function () {
+      // Lấy dữ liệu thanh toán đã chọn (demo)
+      const paymentInfo = {
+        ticketType: 'VIP Ticket',
+        date: 'Aug 20, 2025',
+        time: '10:30 AM',
+        method: 'Visa **** 1234',
+        deposit: '$50',
+        remaining: '$150'
+      };
+
+      const html = renderBasePopup(renderPaymentConfirmationForm(paymentInfo), 762, 886);
+      $wrapHomeTemp.html(html);
+      setTimeout(() => $('.overlay-screen').addClass('show'), 10);
+    });
+
+    // Xác nhận cuối cùng
+    $(document).on('click', '.btn-final-confirm', function () {
+      alert('Thanh toán thành công!');
+      $('.overlay-screen').removeClass('show');
     });
 
     // Xử lý upload hình ảnh
@@ -3106,7 +4363,6 @@ function clearInputError($input) {
 
         // id của user upload image userSelectedUpload
         const user = dataBooking.users.find(u => u.id == userSelectedUpload);
-        console.log("ussers: ", user);
 
         if (!user) return;
 
@@ -3121,85 +4377,170 @@ function clearInputError($input) {
 
 
   // START: Xử lý option trên banner
-
-    // Xử lý chọn ngày đặt lịch
-    const monthNames = [
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-    ];
-    const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    const daysEl = document.getElementById("days");
-    const monthYearEl = document.getElementById("monthYear");
-    const currentDate = new Date();
-
-    let selectedDate = null;
-    let currentMonth = currentDate.getMonth();
-    let currentYear = currentDate.getFullYear();
-
-    const fakeDataCalender = {
-      8: [8, 9, 10, 12, 20, 22] // August: non-working days
-    };
-
-    document.getElementById("prev").addEventListener("click", () => {
+    $(document).on("click",'#prev', function() {
       if (currentMonth > 0) {
         currentMonth--;
-        renderCalendar(monthNames, dayNames, daysEl, monthYearEl, currentMonth, currentYear, fakeDataCalender, selectedDate, dataBooking, currentUserId);
+        // Khởi tạo ngày hôm nay làm selectedDate
+        selectedDate = new Date(currentYear, currentMonth, currentDate.getDate());
+
+        renderCalendar(monthNames, dayNames, currentMonth, currentYear, fakeDataCalender, selectedDate, dataBooking, currentUserId, listDataService);
+        // Cập nhật tiêu đề ngày được chọn
+        document.getElementById("selectedDateTitle").textContent = selectedDate.toDateString();
+        // Hiển thị time slots cho ngày hôm nay
+        renderTimeSlotsForDate(selectedDate, dataBooking, currentUserId, listDataService);
       }
     });
-
-    document.getElementById("next").addEventListener("click", () => {
+    $(document).on("click",'#next', function() {
       if (currentMonth < 11) {
         currentMonth++;
-        renderCalendar(monthNames, dayNames, daysEl, monthYearEl, currentMonth, currentYear, fakeDataCalender, selectedDate, dataBooking, currentUserId);
+        // Khởi tạo ngày hôm nay làm selectedDate
+        selectedDate = new Date(currentYear, currentMonth, currentDate.getDate());
+
+        renderCalendar(monthNames, dayNames, currentMonth, currentYear, fakeDataCalender, selectedDate, dataBooking, currentUserId, listDataService);
+        // Cập nhật tiêu đề ngày được chọn
+        document.getElementById("selectedDateTitle").textContent = selectedDate.toDateString();
+        // Hiển thị time slots cho ngày hôm nay
+        renderTimeSlotsForDate(selectedDate, dataBooking, currentUserId, listDataService);
       }
     });
 
-    renderCalendar(monthNames, dayNames, daysEl, monthYearEl, currentMonth, currentYear, fakeDataCalender, selectedDate, dataBooking, currentUserId);
+    // START: confirm booking
+    $(document).on('click', '.btn-confirm-booking', function() {
+      const contentPolicies = renderPoliciesForm();
+      const html = renderBasePopup(contentPolicies, 768, 886);
 
-    // Khởi tạo ngày hôm nay làm selectedDate
+      $wrapHomeTemp.append(html);
+      setTimeout(() => {
+        $('.overlay-screen').addClass('show');
+      }, 10);
+    })
+
+
+    renderCalendar(monthNames, dayNames, currentMonth, currentYear, fakeDataCalender, selectedDate, dataBooking, currentUserId, listDataService);
+    // Khởi tạo ngày hôm nay làm selectedDate và gán ngày hôm nay cho selectedDate user nếu selectedDate chưa có
     selectedDate = new Date(currentYear, currentMonth, currentDate.getDate());
-
     // Cập nhật tiêu đề ngày được chọn
     document.getElementById("selectedDateTitle").textContent = selectedDate.toDateString();
-
     // Hiển thị time slots cho ngày hôm nay
-    renderTimeSlotsForDate(selectedDate, dataBooking, currentUserId);
+    renderTimeSlotsForDate(selectedDate, dataBooking, currentUserId, listDataService);
 
     // confirm booking
     renderSumary(dataBooking, listDataService);
     $(document).on('click', '.edit-sumary', function() {
-      console.log("dataBooking; ", dataBooking);
+      const $container = $('.wrap-home-templates');
+    const $target = $('#section-service');
+
+      scrollToElementInContainer($container, $target, -250, 500);
     })
 
+  function isInViewport($el) {
+    if (!$el || !$el.length) return false;
+    const rect = $el[0].getBoundingClientRect();
+    return rect.top < window.innerHeight && rect.bottom > 0;
+  }
 
-    // test btn scroll
-    const $btn = $('#scrollToTopBtn');
-    const $trigger = $('#triggerBlock');
-    const $target = $('#targetBlock');
+  // Lắng nghe scroll container
+  $('.wrap-home-templates').on('scroll', function () {
+    if (forceShowScrollBtn) return;
 
-    // Hàm kiểm tra trigger có trong khung nhìn chưa
-    function isInViewport($el) {
-      const rect = $el[0].getBoundingClientRect();
-      return rect.top < window.innerHeight && rect.bottom > 0;
+    const $trigger = $($mainScrollBtn.data('triggerBanner'));
+    const $triggerSum = $('#triggerBlockSumary');
+    const isFinalBooking = showScrollToFinalBooking(dataBooking);
+    if (isInViewport($trigger) && !isFinalBooking) {
+      if(dataBooking.type === typeBookingEnum.ME) {
+        if(dataBooking.users[0].services.length < 1){
+          updateScrollButton({
+            target: '#section-service',
+            trigger: '#trigger-service',
+            triggerBanner: '#triggerBlockSumary',
+            text: 'Choose Service',
+            icon: 'fa fa-hand-pointer',
+            force: false
+          });
+        }else if(!dataBooking.users[0].selectedDate || ! dataBooking.users[0].selectedTimeSlot) {
+          updateScrollButton({
+          target: '#section-date-time',
+          trigger: '#trigger-date-time',
+          triggerBanner: '#triggerBlockSumary',
+          text: 'Select Date & Time',
+          icon: 'fa fa-hand-pointer',
+          force: false
+        });
+        }
+      }else{
+        updateScrollButton({
+          target: '#targetBlockBanner',
+          trigger: '#triggerBlockSumary', // hiện khi scroll tới trigger
+          text: 'Scroll to choose user',
+          icon: 'fa fa-hand-pointer',
+          triggerBanner: '#triggerBlockSumary',
+          force: false
+        });
+      }
+      $mainScrollBtn.fadeIn();
+    }else if(isFinalBooking && !isInViewport($triggerSum)){
+      updateScrollButton({
+        target: '#section-booking',
+        trigger: '#trigger-booking',
+        triggerBanner: '#triggerBlockSumary',
+        text: 'Continue Booking',
+        icon: 'fa fa-hand-pointer down',
+        force: false
+      });
+    } else {
+      $mainScrollBtn.fadeOut();
+    }
+  });
+
+  function scrollToElementInContainer($container, $target, extra = 0, duration = 500) {
+    if (!$target || !$target.length) return;
+
+    // Nếu container là window / body -> dùng offset
+    const containerEl = $container && $container.length ? $container[0] : null;
+    const isDocument = !containerEl || containerEl === document.body || containerEl === document.documentElement;
+
+    if (isDocument) {
+      // scroll toàn trang
+      const top = $target.offset().top + extra;
+      $('html, body').animate({ scrollTop: top }, duration);
+      return;
     }
 
-    // Khi scroll: kiểm tra có nhìn thấy block trigger chưa
-    $('.wrap-home-templates').on('scroll', function () {
+    // Container cuộn
+    const containerRect = containerEl.getBoundingClientRect();
+    const targetRect = $target[0].getBoundingClientRect();
+    const currentScroll = $container.scrollTop();
 
-      if (isInViewport($trigger)) {
-        $btn.fadeIn();
-      } else {
-        $btn.fadeOut();
-      }
-    });
+    // Vị trí tương đối của target so với container's content top
+    const relativeTop = (targetRect.top - containerRect.top) + currentScroll;
 
-    // Khi click nút → scroll lên block target
-    $btn.on('click', function () {
-      const $container = $('.wrap-home-templates');
-      const scrollTopValue = $target.position().top;
+    // Nếu container có padding-top, bù vào (tuỳ layout)
+    const paddingTop = parseFloat($container.css('padding-top')) || 0;
 
-      $container.animate({
-        scrollTop: scrollTopValue
-      }, 500);
-    });
+    const finalScroll = Math.round(relativeTop - paddingTop + extra);
+    $container.animate({ scrollTop: finalScroll }, duration);
+  }
+
+
+  // Sự kiện click nút scroll
+  $mainScrollBtn.on('click', function () {
+    const $container = $('.wrap-home-templates');
+    const $target = $($mainScrollBtn.data('target'));
+
+    if ($target.length) {
+      // 86 header, 136 adverties, extra 30
+      scrollToElementInContainer($container, $target, -250, 500);
+    }
   });
+
+    $(document).on('click', '#page-fag', function () {
+      const contentPaymentMethod = renderPaymentMethodsForm();
+      const html = renderBasePopup(contentPaymentMethod, 776, 886);
+
+      $wrapHomeTemp.append(html);
+      setTimeout(() => {
+        $('.overlay-screen').addClass('show');
+      }, 10);
+    })
+  });
+

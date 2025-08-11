@@ -15,8 +15,21 @@
 <div class="container-home-template">
     <div class="wrap-home-templates">
     </div>
-    <button id="scrollToTopBtn" style="display: none; position: fixed; bottom: 20px; right: 20px; z-index: 999;">
-        ↑ Scroll to Top
+    <button
+        class="scroll-btn-main"
+        data-trigger-banner="#triggerBlockSumary"
+        data-trigger="#triggerBlockSumary"
+        data-target="#targetBlockBanner"
+        data-text="Scroll to Banner"
+        data-icon="fa-solid fa-down-long"
+        style="display: none; position: fixed; bottom: 20px; right: 20px; z-index: 999;"
+    >
+        <span class="icon-control-scroll">
+            <i class="fa-solid fa-down-long"></i>
+        </span>
+        <span class="text-control-scroll">
+            Scroll To Banner
+        </span>
     </button>
 </div>
 @section Styles {
