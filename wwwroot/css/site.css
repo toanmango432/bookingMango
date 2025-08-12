@@ -289,14 +289,14 @@
 
 body,
 html {
-  font-family: Montserrat;
+  font-family: Montserrat !important;
   /* color: var(--black, #000); */
-  color: var(--text-color-primary);
+  color: var(--text-color-primary) !important;
   margin: 0px;
   padding: 0px;
 }
 p {
-  margin: 0px;
+  margin: 0px !important;
 }
 
 ::-webkit-scrollbar {
