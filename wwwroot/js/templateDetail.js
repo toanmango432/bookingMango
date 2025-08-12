@@ -486,7 +486,9 @@
   //function hiển thị button scroll
   function showScrollToTarget(dataBooking, directUp = false){
     // Ưu tiên check user choosing
+    console.log("check 2");
     const currentUser = dataBooking.users.find((u) => u.isChoosing);
+    console.log("currentUser: ", currentUser);
     // Nếu chưa chọn service
     if (!currentUser.services || currentUser.services.length === 0) {
       updateScrollButton({
@@ -1781,7 +1783,7 @@
         user.selectedDate = selectedDate;
       }
       // Kiểm tra user đã được chọn time và service đầy đủ chưa, đã đủ thì ẩn btn scroll
-      const isFinalBooking = showScrollToFinalBooking(dataBooking)
+      const isFinalBooking = showScrollToFinalBooking(user)
       isFinalBooking && $('.scroll-btn-main').fadeOut();
 
       renderSumary(dataBooking, listDataService);
@@ -4625,6 +4627,7 @@
     const $triggerSum = $('#triggerBlockSumary');
     const isFinalBooking = showScrollToFinalBooking(dataBooking);
     if (isInViewport($trigger) && !isFinalBooking) {
+      console.log("check 1");
       const isSeTi = showScrollToTarget(dataBooking, true);
       if(!isSeTi){
         updateScrollButton({
