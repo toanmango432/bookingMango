@@ -3385,10 +3385,14 @@ $(document).ready(function () {
   });
   // -- * CHANGE COLOR * Sử lý chọn màu
   $(document).on("click", ".item-theme", function () {
+
     const index = $(this).data("index");
     const item = configThemeColor.colorTheme[index];
-
-    if (item.selected || item.active) {
+    if(item.active && !item.selected){
+      const removedType = getRemovedType();
+      item.selected = true;
+      item.type = removedType;
+    }else if (item.selected || item.active) {
       // Bỏ chọn khi click lại vào item đã chọn
       delete item.type;
       item.selected = !item.selected;
@@ -3476,7 +3480,7 @@ $(document).ready(function () {
             $socialLink.replaceWith(htmlSocialLinkPage);
           }
         } else if (removedType === "SECONDARY") {
-          // CẬP NHẬT MÀU
+          // Cập nhật màu
           colorSecondary = configThemeColor.colorTheme.find(
             (item) => item.type === "SECONDARY"
           );
