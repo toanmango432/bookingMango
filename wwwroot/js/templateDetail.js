@@ -484,58 +484,59 @@
     $mainScrollBtn.fadeIn();
   }
   //function hiển thị button scroll
-  function showScrollToTarget(currentUser){
-    if (
-      !currentUser.services || currentUser.services.length === 0 ||
-      !currentUser.selectedDate ||
-      !currentUser.selectedTimeSlot
-    ) {
-      // Nếu chưa chọn service
-      if (!currentUser.services || currentUser.services.length === 0) {
-        updateScrollButton({
-          target: '#section-service',
-          trigger: '#trigger-service',
-          triggerBanner: '#triggerBlockSumary',
-          text: 'Choose Service',
-          icon: 'fa fa-hand-pointer down',
-          force: false
-        });
-        return;
-      }
-
-      // Nếu chưa chọn date hoặc time slot
-      if (!currentUser.selectedDate || !currentUser.selectedTimeSlot) {
-        updateScrollButton({
-          target: '#section-date-time',
-          trigger: '#trigger-date-time',
-          triggerBanner: '#triggerBlockSumary',
-          text: 'Select Date & Time',
-          icon: 'fa fa-hand-pointer down',
-          force: false
-        });
-
-        return;
-      }
+  function showScrollToTarget(dataBooking, directUp = false){
+    // Ưu tiên check user choosing
+    const currentUser = dataBooking.users.find((u) => u.isChoosing);
+    // Nếu chưa chọn service
+    if (!currentUser.services || currentUser.services.length === 0) {
+      updateScrollButton({
+        target: '#section-service',
+        trigger: '#trigger-service',
+        triggerBanner: '#triggerBlockSumary',
+        text: 'Choose Service',
+        icon: `fa fa-hand-pointer ${directUp ? 'up' : 'down'}`,
+        force: false
+      });
+      return true;
     }
+
+    // Nếu chưa chọn date hoặc time slot
+    if (!currentUser.selectedDate || !currentUser.selectedTimeSlot) {
+      updateScrollButton({
+        target: '#section-date-time',
+        trigger: '#trigger-date-time',
+        triggerBanner: '#triggerBlockSumary',
+        text: 'Select Date & Time',
+        icon: 'fa fa-hand-pointer down',
+        force: false
+      });
+      return true;
+    }
+    // kiểm tra các user đã chọn service, time
+    // to-do
+    return false;
   }
   // function kiểm tra dataBooking đã chọn đầy đủ service và timming all users, show scroll continue
   function showScrollToFinalBooking (dataBooking) {
+    if(!dataBooking.users){
+      return dataBooking.services.length > 0 && dataBooking.selectedDate && dataBooking.selectedTimeSlot;
+    }
     return dataBooking.users.every((item) => {
       return item.services.length > 0 && item.selectedDate && item.selectedTimeSlot;
     })
   }
   function showScrollButton(selector) {
-  const $section = $(selector);
+    const $section = $(selector);
 
-  $('html, body').animate({
-    scrollTop: $section.offset().top - 100
-  }, 500);
+    $('html, body').animate({
+      scrollTop: $section.offset().top - 100
+    }, 500);
 
-  // Hiển thị nút hoặc highlight section
-  $section.addClass('highlight');
-  setTimeout(() => $section.removeClass('highlight'), 2000);
-}
-  // Hàm cấu hình nút scroll tái sử dụng
+    // Hiển thị nút hoặc highlight section
+    $section.addClass('highlight');
+    setTimeout(() => $section.removeClass('highlight'), 2000);
+  }
+  // Hàm cấu hình nút scroll
   function setupScrollButton({
       triggerSelector,   // selector để kiểm tra hiển thị nút
       targetSelector,    // selector block muốn scroll tới
@@ -567,7 +568,7 @@
           }
       });
 
-      // Click → scroll tới target
+      // Click > scroll tới target
       $btn.off('click.scrollBtn').on('click.scrollBtn', function () {
           const $container = $('.wrap-home-templates');
           const scrollTopValue = $target.position().top;
@@ -942,9 +943,9 @@
       const userSelecting = dataUser.find(x=> x.isSelecting === true);
 
       const availableUsers = dataUser.filter((item) => !item.isSelecting && !item.isChoosing && item.firstName)
-
+      const isSelected = !$('btn-option-copy-user').hasClass('selected') && userSelecting;
       const html = `
-        <button class="btn-option-copy-user"
+        <button class="btn-option-copy-user ${isSelected ? 'selected':''}"
           style="
             --color-user-copy: ${color};
             --bg-user-copy: ${bgColor};
@@ -1107,8 +1108,8 @@
         };
 
         $c.append($copyService);
+        renderCopyServiceOption('.copy-options-wrapper',optionCopyService ) // gọi trước để cập nhật selected
         renderCopyServiceBtn('.copy-btn-wrapper');
-        renderCopyServiceOption('.copy-options-wrapper',optionCopyService )
     }
     $c.append('<div class="container-info-user"></div>')
     // Điền thông tin khách hàng, tự fill nếu đã có thông tin: firstname, lastname và emai or phone
@@ -1318,7 +1319,8 @@
       return $wrap;
     }
     // render list add on
-    function renderListAddOn (dataItem, idItemChild,dataBooking, isFull=false) {
+    function renderListAddOn (dataItem, idItemChild, dataBooking, isFull=false) {
+
 
       const titleAddOnSelected = dataItem.value;
       const findItemChild = dataItem.listItem.find((i) => i.id === idItemChild);
@@ -1870,7 +1872,6 @@
               });
             });
           }
-          console.log("dataRefact: ", dataRefact);
           return `
             <div class="item-sumary" data-id="${userBooking.id}">
               <div class="top-item-sumary">
@@ -1891,7 +1892,7 @@
                 </div>
               </div>
               <div class="user-book">
-                <h2>${userBooking?.firstName + " " + userBooking?.lastName}</h2>
+                <h2>${userBooking.firstName ? userBooking.firstName : 'Not Name'}</h2>
               </div>
               <div class="body-item-sumary">
                 ${dataRefact.listServiceUser && dataRefact.listServiceUser.map((item) => {
@@ -1966,6 +1967,50 @@
       `;
       return html;
     }
+    function renderContentNotify(title, content, callback) {
+      const popupHtml = `
+        <div class="popup-notify">
+          <div class="popup-header">
+            <h3>${title}</h3>
+          </div>
+          <div class="popup-body">
+            ${content}
+          </div>
+          <div class="popup-footer">
+            <button class="btn-success">Đồng ý</button>
+            <button class="btn-cancel">Hủy</button>
+          </div>
+        </div>
+      `;
+
+      // Gắn event khi DOM đã append
+      setTimeout(() => {
+        const $overlay = $('.overlay-screen');
+
+        $overlay.find('.btn-success').on('click', function () {
+          if (typeof callback === 'function') {
+            callback();
+          }
+          closeNotify();
+        });
+
+        $overlay.find('.btn-cancel').on('click', closeNotify);
+
+        $overlay.on('click', function (e) {
+          if ($(e.target).is('.overlay-screen')) {
+            closeNotify();
+          }
+        });
+
+        function closeNotify() {
+          $overlay.hide();
+          $overlay.find('.popup-notify').remove();
+        }
+      });
+
+      return popupHtml;
+    }
+
 
     // content popup cart user
     function renderCartContent(dataCart) {
@@ -3002,8 +3047,8 @@
           const $inpWrap = $(this).closest('.guest-input');
           const id = +$inpWrap.data('id');
 
-          if (dataBooking.users.length <= 1) {
-            alert('Bạn phải giữ tối thiểu 1 người.');
+          if (dataBooking.users[0].id === id) {
+            alert('Không thể xoá người dùng này!');
             return;
           }
           const index = dataBooking.users.findIndex(i => i.id === id);
@@ -3013,7 +3058,7 @@
 
           nearestLeftUser.isChoosing = true;
           updateGuestSection();
-
+          renderSumary(dataBooking, listDataService);
         });
         // Cập nhật data khi onChange input
           // firstname
@@ -3040,7 +3085,7 @@
               $error.text('');
               // check show scroll service || timming
               const isShowSroll = checkValInputs(['#firstname-banner', '#lastname-banner','#emailPhone-banner']);
-              isShowSroll && showScrollToTarget(userCur);
+              isShowSroll && showScrollToTarget(dataBooking);
             }
             // Update data user
             userCur.firstName = val;
@@ -3063,7 +3108,7 @@
               $error.text('');
               // check show scroll service || timming
               const isShowSroll = checkValInputs(['#firstname-banner', '#lastname-banner','#emailPhone-banner']);
-              isShowSroll && showScrollToTarget(userCur);
+              isShowSroll && showScrollToTarget(dataBooking);
             }
 
             // Update data user
@@ -3113,7 +3158,7 @@
               $error.text('');
               // check show scroll service || timming
               const isShowSroll = checkValInputs(['#firstname-banner', '#lastname-banner','#emailPhone-banner']);
-              isShowSroll && showScrollToTarget(userCur);
+              isShowSroll && showScrollToTarget(dataBooking);
             }
 
             // Update data user
@@ -3319,12 +3364,20 @@
               hasError = true;
             }
           }
+
           if (hasError) {
             $this.blur(); // Gỡ focus
             return;
           }
           // Kiểm tra đã chọn service và time slot chưa và show button scroll target
-          showScrollToTarget(currentUser);
+          const isShowScrollTarget = showScrollToTarget(dataBooking);
+          if(isShowScrollTarget){
+            if($('.scroll-btn-main').is(':visible')){
+              shakeError($('.scroll-btn-main'));
+            }
+            $this.blur();
+            return;
+          }
           // Đủ điều kiện mới chuyển tab
           $('.input-fullname').removeClass('active');
           $this.addClass('active');
@@ -3339,6 +3392,8 @@
           if(! nextUser.firstName) {
             let nextNameUser = formatAutoFirstName(dataBooking.users[0], currentUserId);
             nextUser.firstName = nextNameUser;
+            // Cập nhật input fullname
+            $this.val(nextNameUser);
           }
 
           const userChoosing = dataBooking.users.find(u => u.isChoosing);
@@ -3383,6 +3438,12 @@
         e.stopPropagation();
         const $this = $(this);
         const idUserSelected = $this.data('id');
+
+        // Cập nhật lại isSelecting của user đang được chọn
+        const userCurSelecting = dataBooking.users.find((user) => user.isSelecting);
+        if(userCurSelecting){
+          userCurSelecting.isSelecting = false;
+        }
 
         // Cập nhật user được chọn copy trong dataUser
         const userSelected = dataBooking.users.find((u) => u.id === idUserSelected);
@@ -3505,6 +3566,16 @@
           icon: 'fa fa-hand-pointer down',
           force: false
         });
+      }else {
+        const isFinalBooking = showScrollToFinalBooking(dataBooking);
+        isFinalBooking && updateScrollButton({
+          target: '#section-booking',
+          trigger: '#trigger-booking',
+          triggerBanner: '#triggerBlockSumary',
+          text: 'Continue Booking',
+          icon: 'fa fa-hand-pointer down',
+          force: false
+        });
       }
 
       //Cập nhật table booking
@@ -3514,6 +3585,7 @@
     $(document).on('click', '.add-more .btn-delete', function () {
       const $this = $(this);
 
+      const $wrapListMore = $this.closest('.wrap-list-more');
       const $parentBtn = $(this).closest('.add-more');
       const $card = $parentBtn.closest('.card-more');
       const title = $card.find('.bold-medium-14').text();
@@ -3528,14 +3600,36 @@
       const idItemService = $this.closest('.card-more').data('id');
       const userSelecting = dataBooking.users.find((u) => u.isChoosing === true);
 
+      const serviceDeleteIndex = userSelecting.services.findIndex(se => se.idService == idService);
       const serviceDelete = userSelecting.services.find((s) =>s.idService == idService);
 
       if (serviceDelete && serviceDelete.itemService) {
         serviceDelete.itemService = serviceDelete.itemService.filter(is => is.idItemService != idItemService);
       }
+      // Kiểm tra xoá hết item service thì xoá service
+      if(serviceDelete.itemService.length === 0) {
+        userSelecting.services.splice(serviceDeleteIndex, 1);
+      }
 
       const $action = renderActionButtons(idService, idItemService, dataBooking, currentUserId);
       $card.find('.add-more').replaceWith($action);
+
+      // re-render list add on
+      const $wrapAddOn = $wrapListMore.find(`.wrap-addOn[data-id=${idService}]`);
+      const dataItem = listDataService.find(({item}) => item.id === idService);
+      // Kiểm tra idItemService có khớp data-id của wrap-list-addOn không
+      const $wrapListAddOn = $wrapAddOn.find(`.wrap-list-addOn[data-id=${idItemService}]`);
+      if($wrapListAddOn.length > 0){
+        const newListAddOn = renderListAddOn(dataItem.item, idItemService,dataBooking);
+        $wrapAddOn.replaceWith(newListAddOn);
+      }
+      // Nếu xoá hết service đã chọn xoá nút scroll continue booking
+      if(userSelecting.services.length === 0){
+        $mainScrollBtn.fadeOut();
+      }
+
+      // re-render sumary
+      renderSumary(dataBooking, listDataService);
     });
     // select option user
     $(document).on('click', '.wrap-select-user .toggle-select', function (e) {
@@ -3660,7 +3754,7 @@
       const dataItem = listDataService.find(({item}) => item.id === dataId);
       if(!dataItem) return;
 
-      const newListAddOn = renderListAddOn(dataItem.item, childId,dataBooking, !isExpanded);
+      const newListAddOn = renderListAddOn(dataItem.item, childId, dataBooking, !isExpanded);
 
       $wrapAddOn.replaceWith(newListAddOn);
 
@@ -4374,6 +4468,72 @@
         // render lại sumary cập nhật ảnh
         renderSumary(dataBooking, listDataService);
       })
+      // Các sự kiện trên sumary
+        // delete/edit service
+          // function delete service
+          const handleDeleteService = (idUser) => {
+            $(`.guest-input[data-id="${idUser}"]`).find('.btn-remove').trigger('click');
+          }
+          // function delete item service
+          const handleDeleteItemService = (idUser, idService, idItemService) => {
+            const user = dataBooking.users.find((u) => u.id == idUser);
+            if (!user) return;
+
+            const serviceIndex = user.services.findIndex((se) => se.idService == idService);
+            if(serviceIndex === -1) return;
+
+            const service = user.services[serviceIndex];
+
+            service.itemService = service.itemService.filter(
+              (is) => is.idItemService != idItemService
+            );
+
+            if(service.itemService.length === 0){
+              user.services.splice(serviceIndex, 1);
+            }
+
+            const userChoosing = dataBooking.users.find((user) => user.isChoosing);
+            renderListService(listDataService, '.list-more', dataBooking, userChoosing?.id);
+            // re-render sumary
+            renderSumary(dataBooking, listDataService);
+          }
+          // Delete service
+          $(document).on('click', '.delete-sumary', function() {
+            const $this = $(this);
+            const idUser = $this.closest('.item-sumary').data('id');
+            const nameUser = $this.closest('.item-sumary').find('.user-book h2').text().trim();
+            const title = `Xoá dịch vụ đã chọn của ${nameUser}?`
+            const content = ``
+            const htmlPopupNotify = renderContentNotify(title, content,() => handleDeleteService(idUser))
+            const html = renderBasePopup(htmlPopupNotify);
+
+            $wrapHomeTemp.append(html);
+            setTimeout(() => {
+              $('.overlay-screen').addClass('show')
+            }, 10)
+          })
+          // Delete item service
+          $(document).on('click', '.delete-item-ser', function() {
+            const $this = $(this);
+
+            const idUser = $this.closest('.item-sumary').data('id');
+            const idService = $this.closest('.wrap-item-content').data('id');
+            const idItemService = $this.closest('.wrap-item-content').data('id-item');
+
+            const $pWrap = $this.closest('.p-wrap');
+            const nameService = $pWrap.find('.text-name-service').text().trim();
+            const title = `Xoá dịch vụ ${nameService} ?`
+            const content = ``;
+
+            const htmlPopupNotify = renderContentNotify(title, content, () => handleDeleteItemService(idUser, idService, idItemService));
+            const html = renderBasePopup(htmlPopupNotify);
+
+            $wrapHomeTemp.append(html);
+            setTimeout(() => {
+              $('.overlay-screen').addClass('show');
+            }, 10);
+          })
+
 
 
   // START: Xử lý option trên banner
@@ -4426,11 +4586,29 @@
 
     // confirm booking
     renderSumary(dataBooking, listDataService);
-    $(document).on('click', '.edit-sumary', function() {
-      const $container = $('.wrap-home-templates');
-    const $target = $('#section-service');
 
+    $(document).on('click', '.edit-sumary', function() {
+      const $this = $(this);
+
+      const $container = $('.wrap-home-templates');
+      const $target = $('#section-service');
+
+      // Kiểm tra tab hiện tại có chọn đầy đủ service, time-slot chưa
+      const idUserEdit = $this.closest('.item-sumary').data('id');
+      const userCur = dataBooking.users.find(u => u.isChoosing);
+
+      const isFinalBooking = showScrollToFinalBooking(userCur);
+      if(isFinalBooking) {
+        const isShowScrollTarget = showScrollToTarget(dataBooking);
+        if(isShowScrollTarget && $('.scroll-btn-main').is(':visible')){
+          shakeError($('.scroll-btn-main'));
+        }
+      }
+      // Sau khi kiểm tra focus tab edit
+      $(`.input-fullname[data-id=${idUserEdit}]`).focus();
+      // Và scroll lên
       scrollToElementInContainer($container, $target, -250, 500);
+
     })
 
   function isInViewport($el) {
@@ -4447,36 +4625,18 @@
     const $triggerSum = $('#triggerBlockSumary');
     const isFinalBooking = showScrollToFinalBooking(dataBooking);
     if (isInViewport($trigger) && !isFinalBooking) {
-      if(dataBooking.type === typeBookingEnum.ME) {
-        if(dataBooking.users[0].services.length < 1){
-          updateScrollButton({
-            target: '#section-service',
-            trigger: '#trigger-service',
-            triggerBanner: '#triggerBlockSumary',
-            text: 'Choose Service',
-            icon: 'fa fa-hand-pointer',
-            force: false
-          });
-        }else if(!dataBooking.users[0].selectedDate || ! dataBooking.users[0].selectedTimeSlot) {
-          updateScrollButton({
-          target: '#section-date-time',
-          trigger: '#trigger-date-time',
-          triggerBanner: '#triggerBlockSumary',
-          text: 'Select Date & Time',
-          icon: 'fa fa-hand-pointer',
-          force: false
-        });
-        }
-      }else{
+      const isSeTi = showScrollToTarget(dataBooking, true);
+      if(!isSeTi){
         updateScrollButton({
           target: '#targetBlockBanner',
-          trigger: '#triggerBlockSumary', // hiện khi scroll tới trigger
+          trigger: '#triggerBlockSumary',
           text: 'Scroll to choose user',
           icon: 'fa fa-hand-pointer',
           triggerBanner: '#triggerBlockSumary',
           force: false
         });
       }
+
       $mainScrollBtn.fadeIn();
     }else if(isFinalBooking && !isInViewport($triggerSum)){
       updateScrollButton({
