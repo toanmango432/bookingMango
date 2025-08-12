@@ -488,7 +488,6 @@
     // Ưu tiên check user choosing
     console.log("check 2");
     const currentUser = dataBooking.users.find((u) => u.isChoosing);
-    console.log("currentUser: ", currentUser);
     // Nếu chưa chọn service
     if (!currentUser.services || currentUser.services.length === 0) {
       updateScrollButton({
@@ -1390,25 +1389,27 @@
   // render infor store
     // render promotion shop
     const renderPromotionItemPage = (dataProm, extraClass = '') => {
+      if(Object.keys(dataProm).length === 0) return '';
+
       return `
         <div class="item-promotion-page ${extraClass}">
           <div class="right-promotion-item">
-            <img src="${dataProm.img}" alt="image promotion" class="img-promotion"/>
+            <img src="${dataProm?.img}" alt="image promotion" class="img-promotion"/>
           </div>
           <div class="left-promotion-item">
             <div class="title-icon">
-              <h2 class="title mb-0">${dataProm.title.content}</h2>
+              <h2 class="title mb-0">${dataProm?.title?.content}</h2>
             </div>
             <div class="percent-promotion">
               <span class="percent"
-                style="--bgColor-percent: ${dataProm.percent.bgColor}; --textColor-percent: ${dataProm.percent.color};"
+                style="--bgColor-percent: ${dataProm?.percent?.bgColor}; --textColor-percent: ${dataProm?.percent?.color};"
               >
-                ${dataProm.percent.number}%
+                ${dataProm?.percent?.number}%
               </span>
-              <h2 class="title-percent mb-0">${dataProm.percent.content}</h2>
+              <h2 class="title-percent mb-0">${dataProm?.percent?.content}</h2>
             </div>
             <div class="date-time">
-              <p>Valid until ${dataProm.dateTime.endTime}</p>
+              <p>Valid until ${dataProm?.dateTime?.endTime}</p>
             </div>
           </div>
         </div>
@@ -1417,6 +1418,8 @@
 
     // render work-time
     const renderStoreInfo = (dataStoreInfo, color = '') => {
+      if(Object.keys(dataStoreInfo).length === 0) return '';
+
       const $container = $('<div class="store-info"></div>');
 
       const $left = $(`
@@ -1424,21 +1427,21 @@
           <h3 style="
             --colorTextStoreInfo: ${color};"
           >
-            ${dataStoreInfo.brand.toUpperCase()}
+            ${dataStoreInfo?.brand?.toUpperCase()}
           </h3>
-          <p>${dataStoreInfo.iconLocation} ${dataStoreInfo.phoneNumber}</p>
-          <p>${dataStoreInfo.address}</p>
+          <p>${dataStoreInfo?.iconLocation} ${dataStoreInfo?.phoneNumber}</p>
+          <p>${dataStoreInfo?.address}</p>
         </div>
       `);
 
       const $right = $('<div class="store-right"></div>');
       $right.append('<h4>HOURS</h4>');
 
-      dataStoreInfo.timeWork.forEach((item) => {
+      dataStoreInfo?.timeWork?.forEach((item) => {
         const $row = $(`
           <div class="store-hour-row">
-            <span class="weekday">${item.weekday}</span>
-            <span class="time">${item.time}</span>
+            <span class="weekday">${item?.weekday}</span>
+            <span class="time">${item?.time}</span>
           </div>
         `);
         $right.append($row);
@@ -1449,6 +1452,8 @@
     };
     // render policy
     const renderPolicyPage = (dataPolicyPage, color = '') => {
+      if(Object.keys(dataPolicyPage).length ===0) return '';
+
       const { title, styleTitle, listItem } = dataPolicyPage;
 
       const titleHtml = `
@@ -1458,12 +1463,12 @@
             --colorTextTitlePolicy: ${color}
           "
         >
-          ${title.toUpperCase()}
+          ${title?.toUpperCase()}
         </h3>
       `;
 
       const itemsHtml = listItem
-        .map((item) => {
+        ?.map((item) => {
           const contentHtml = item.content
             .map((part) => {
               if (part.style) {
@@ -1490,7 +1495,7 @@
     };
     //render social link
     const renderSocialLink = (data, color = '') => {
-      const address = encodeURIComponent(data.mapLocation.address);
+      const address = encodeURIComponent(data?.mapLocation?.address);
       return `
         <div class="map-wrapper"
           style="
@@ -2805,7 +2810,7 @@
           $loShowbg.append(`<div class="overlay-dark"></div>`);
         }
         $itemPromotionPage.addClass('transparent');
-        $loShowbg.css({
+        bannerProSelected.image && $loShowbg.css({
           'background-image': `url("${bannerProSelected.image}")`,
           'justify-content': 'flex-start',
           padding: '24px 12px',
