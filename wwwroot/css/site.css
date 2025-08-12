@@ -399,6 +399,7 @@ p {
   flex-direction: column;
   gap: 24px;
   background-color: #f7f7f7;
+  overflow: hidden;
 }
 
 .header-templates-left,
