@@ -1666,6 +1666,8 @@
       daysEl.appendChild(empty);
     }
 
+    let nearestWorkingDate = null;
+
     for (let date = 1; date <= daysInMonth; date++) {
       const day = document.createElement("div");
       day.className = "day";
@@ -1680,48 +1682,52 @@
             (currentYear === todayYear && currentMonth < todayMonth) ||
             (currentYear === todayYear && currentMonth === todayMonth && date < todayDate);
 
-
       if (nonWorking) {
         day.classList.add("inactive");
       } else if (isPast) {
         day.classList.add("past");
       } else {
-        // Nếu ngày này là ngày đã chọn => luôn đánh 'active'
+        // Nếu chưa có selectedDate và chưa tìm nearestWorkingDate
+        if (!hasSelectedDate && !nearestWorkingDate) {
+          nearestWorkingDate = date;
+        }
+
         if (isSelected) {
           day.classList.add("active");
-          // không thêm today active nếu đã chọn selectedDate
-
-        }
-        // Nếu chưa có selectedDate nào, thì highlight today bằng 'today' + 'active'
-        else if (!hasSelectedDate && isToday) {
-          day.classList.add("today", "active");
+        } else if (!hasSelectedDate && nearestWorkingDate === date) {
+          day.classList.add("active");
         }
       }
-      // Gán sự kiện click chỉ nếu không phải ngày đã qua và không inactive
+
+      // Gán select
       if (!isPast && !nonWorking) {
         day.addEventListener("click", () => {
-          // cập nhật selectedDate
           selectedDate = new Date(currentYear, currentMonth, date);
-
-          // lưu vào user hiện tại (LUÔN cập nhật)
           const user = dataBooking.users.find(u => u.id === currentUserId);
           if (user) {
             user.selectedDate = selectedDate;
           }
-
-          // cập nhật UI: xóa tất cả state và set active cho ngày được click
-          const allDays = document.querySelectorAll(".day");
-          allDays.forEach(d => d.classList.remove("active", "today"));
-
+          document.querySelectorAll(".day").forEach(d => d.classList.remove("active", "today"));
           day.classList.add("active");
-          // không thêm today active nếu đã chọn selectedDate
           document.getElementById("selectedDateTitle").textContent = selectedDate.toDateString();
-          renderTimeSlotsForDate(selectedDate, dataBooking, currentUserId,listDataService );
+          renderTimeSlotsForDate(selectedDate, dataBooking, currentUserId, listDataService);
         });
       }
 
       daysEl.appendChild(day);
     }
+
+    // Nếu chưa có selectedDate, set selectedDate = nearestWorkingDate
+    if (!hasSelectedDate && nearestWorkingDate) {
+      selectedDate = new Date(currentYear, currentMonth, nearestWorkingDate);
+      const user = dataBooking.users.find(u => u.id === currentUserId);
+      if (user) {
+        user.selectedDate = selectedDate;
+      }
+      document.getElementById("selectedDateTitle").textContent = selectedDate.toDateString();
+      renderTimeSlotsForDate(selectedDate, dataBooking, currentUserId, listDataService);
+    }
+
   }
   //render timeslot
   function generateTimeSlots(start, end, interval = 30) {
