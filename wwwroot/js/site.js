@@ -4157,5 +4157,7 @@ $(document).ready(function () {
 
     console.log("dataWeb: ", dataWeb);
     localStorage.setItem("dataTemplate", JSON.stringify(dataWeb));
+
+    window.open('https://localhost:7033/templates/1');
   });
 });
