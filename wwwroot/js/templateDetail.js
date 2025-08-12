@@ -1889,6 +1889,9 @@
             <div class="item-sumary" data-id="${userBooking.id}">
               <div class="top-item-sumary">
                 <div class="left-top-item-sumary">
+                  <div class="user-book">
+                    <h2>${userBooking.firstName ? userBooking.firstName : 'Not Name'}</h2>
+                  </div>
                   <button class="edit-sumary">
                     <i class="fa-solid fa-pen-to-square"></i>
                     Edit
@@ -1903,9 +1906,6 @@
                 <div class="right-top-item-sumary">
                   <button class="btn-upload-image">Upload Image ${dataRefact.images.length !== 0 ? `(${dataRefact.images.length})` : ''}</button>
                 </div>
-              </div>
-              <div class="user-book">
-                <h2>${userBooking.firstName ? userBooking.firstName : 'Not Name'}</h2>
               </div>
               <div class="body-item-sumary">
                 ${dataRefact.listServiceUser && dataRefact.listServiceUser.map((item) => {
@@ -2613,7 +2613,7 @@
     // Content popup upload image
     function renderPopupUpload(dataImages) {
 
-        const maxImages = 3;
+      const maxImages = 3;
 
       const imageSlots = Array.from({ length: maxImages }).map((_, index) => {
         const img = dataImages[index];
@@ -2622,8 +2622,14 @@
         return `
           <div class="cover-input-img">
             <label class="upload-box">
-              <i>＋</i>
-              <span class="text">${hasImg ? 'Change image' : 'Upload image'}</span>
+              <i class="fa-solid fa-cloud-arrow-down"></i>
+              <span class="text">
+              ${hasImg ? 'Change image' :
+                `
+                  <p class="text-click-to-upload">Click to upload<p/>
+                  <p> Or Drag and drop</p>
+                `
+              }</span>
               <img
                 class="preview"
                 src="${hasImg ? img.link : ''}"
@@ -2632,16 +2638,13 @@
               <div class="error-msg" style="display: none;">Error</div>
               <input type="file" accept=".png,.jpg,.jpeg,.svg">
             </label>
-            <div class="btn-action-img">
-              <button class="remove-img">
-                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
-                  <path d="M14.832 10.2559V17.2559M10.832 10.2559V17.2559M6.83203 6.25586V18.0559C6.83203 19.176 6.83203 19.7356 7.05002 20.1635C7.24177 20.5398 7.5475 20.8463 7.92383 21.0381C8.35123 21.2559 8.91103 21.2559 10.0289 21.2559H15.6351C16.753 21.2559 17.312 21.2559 17.7394 21.0381C18.1157 20.8463 18.4225 20.5398 18.6143 20.1635C18.832 19.736 18.832 19.1769 18.832 18.0589V6.25586M6.83203 6.25586H8.83203M6.83203 6.25586H4.83203M8.83203 6.25586H16.832M8.83203 6.25586C8.83203 5.32398 8.83203 4.85826 8.98427 4.49072C9.18726 4.00067 9.57635 3.61109 10.0664 3.4081C10.4339 3.25586 10.9001 3.25586 11.832 3.25586H13.832C14.7639 3.25586 15.2299 3.25586 15.5974 3.4081C16.0875 3.61109 16.4767 4.00067 16.6797 4.49072C16.8319 4.85826 16.832 5.32398 16.832 6.25586M16.832 6.25586H18.832M18.832 6.25586H20.832" stroke="#061315" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </button>
-              <button class="edit-img">
-                <i class="fa-solid fa-plus"></i>
-              </button>
-            </div>
+            ${hasImg ? `
+              <div class="btn-action-img">
+                <button class="remove-img">
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+              </div>` : ''
+            }
           </div>
         `;
       });
@@ -2674,7 +2677,7 @@
                 <p>Jpg </p>
               </span>
               <span class="max-size">
-                Max File Size: 15Mb
+                Max File Size: 6Mb
               </span>
             </div>
           </div>
@@ -4398,36 +4401,79 @@
           $('.overlay-screen').addClass('show');
         }, 10);
       })
-      //Onchange hình ảnh
-      $(document).on('change', '.upload-box input[type="file"]', function () {
-        const file = this.files[0];
-        const $label = $(this).closest('.upload-box');
+      //
+      function handleImageFile($coverInput, file) {
+        const $label = $coverInput.find('.upload-box');
         const $errorMsg = $label.find('.error-msg');
+        const validTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml'];
 
-        // Reset lỗi trước đó
+        // Reset lỗi
         $label.removeClass('error');
         $errorMsg.hide();
 
-        if (file) {
-          // tạm bỏ qua jpg để check ảnh valid
-          // 'image/jpg', 'image/svg+xml', 'image/jpeg'
-          const validTypes = ['image/png'];
-
-          if (!validTypes.includes(file.type)) {
-            $label.addClass('error');
-            $errorMsg.show();
-            $(this).val(''); // Reset file nếu muốn
-            return;
-          }
-
-          // Nếu hợp lệ thì hiển thị ảnh
-          const reader = new FileReader();
-          reader.onload = function (e) {
-            $label.find('img.preview').attr('src', e.target.result).show();
-            $label.find('i, .text').hide();
-          };
-          reader.readAsDataURL(file);
+        if (!validTypes.includes(file.type)) {
+          $label.addClass('error');
+          $errorMsg.show();
+          return;
         }
+
+        // Hiển thị ảnh preview
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          $label.find('img.preview')
+            .attr('src', e.target.result)
+            .show();
+          $label.find('i, .text').hide();
+
+          // Nếu chưa có nút .btn-action-img thì thêm vào
+          if ($coverInput.find('.btn-action-img').length === 0) {
+            $coverInput.append(`
+              <div class="btn-action-img">
+                <button class="remove-img">
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+              </div>
+            `);
+          } else {
+            $coverInput.find('.btn-action-img').show();
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+      //Onchange hình ảnh
+      $(document).on('change', '.upload-box input[type="file"]', function (e) {
+        const file = e.target.files[0];
+        if (file) {
+          const $coverInput = $(this).closest('.cover-input-img');
+          handleImageFile($coverInput, file);
+        }
+      });
+      // Ngăn hành vi mặc định khi kéo–thả vào document
+      $(document).on('dragover drop', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      });
+      // Drag over – highlight ô upload
+      $(document).on('dragover', '.upload-box', function (e) {
+        e.preventDefault();
+        $(this).addClass('drag-over');
+      });
+
+      // Drag leave – bỏ highlight
+      $(document).on('dragleave', '.upload-box', function (e) {
+        e.preventDefault();
+        $(this).removeClass('drag-over');
+      });
+
+      // Drop file vào
+      $(document).on('drop', '.upload-box', function (e) {
+        e.preventDefault();
+        const file = e.originalEvent.dataTransfer.files[0];
+        if (file) {
+          const $coverInput = $(this).closest('.cover-input-img');
+          handleImageFile($coverInput, file);
+        }
+        $(this).removeClass('drag-over');
       });
 
       // remove image
@@ -4440,6 +4486,9 @@
         $label.find('i, .text').show();
         $label.removeClass('error');
         $label.find('.error-msg').hide();
+
+        const $btnActionImg = $(this).closest('.btn-action-img');
+        $btnActionImg.hide();
       });
 
       // edit image
@@ -4474,7 +4523,8 @@
         if (!user) return;
 
         if (!Array.isArray(user.images)) user.images = [];
-
+        // clear ảnh cũ
+        user.images = [];
         user.images.push(...images);
         closePopupContainerTemplate();
 

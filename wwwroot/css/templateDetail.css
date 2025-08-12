@@ -1575,6 +1575,7 @@ select {
   gap: 24px;
 }
 .cover-input-img {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -1585,6 +1586,13 @@ select {
   align-items: center;
   justify-content: center;
   gap: 8px;
+  position: absolute;
+  top: -12px;
+  right: -8px;
+  border-radius: 26px;
+  border: 1px solid var(--Gray-Neutral-95, #f3f3f3);
+  background: var(--Gray-Neutral-100, #fff);
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.15);
 }
 .btn-action-img .remove-img,
 .btn-action-img .edit-img {
@@ -1602,12 +1610,13 @@ select {
 
 .btn-action-img .remove-img:hover,
 .btn-action-img .edit-img:hover {
-  background: #e7e5e5;
+  color: var(--bs-main);
 }
-
+.upload-box i {
+}
 .upload-box {
   position: relative;
-  border: 1px solid #ccc;
+  border: 1px dashed #ccc;
   border-radius: 12px;
   width: 140px;
   height: 140px;
@@ -1621,6 +1630,31 @@ select {
   color: #444;
   transition: border 0.2s ease;
 }
+.upload-box .text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.upload-box .text .text-click-to-upload {
+  position: relative;
+  color: #0000ee;
+}
+.upload-box.drag-over {
+  border: 2px dashed #00aaff;
+  background-color: #f0faff;
+}
+.upload-box .text .text-click-to-upload::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0px;
+  width: 100%;
+  height: 1px;
+  background-color: #0000ee;
+  transition: width 0.3s ease;
+}
+
 .upload-box img.preview {
   position: absolute;
   top: 0;
@@ -2845,7 +2879,7 @@ select {
   align-items: center;
 }
 .edit-sumary {
-  width: 80px;
+  min-width: 100px;
   justify-content: center;
   gap: 8px;
   border-radius: 4px;
@@ -2857,7 +2891,7 @@ select {
   padding: 4px;
 }
 .delete-sumary {
-  width: 80px;
+  min-width: 100px;
   justify-content: center;
   gap: 8px;
   border-radius: 4px;
