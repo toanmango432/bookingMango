@@ -1795,7 +1795,14 @@
       }
       // Kiểm tra user đã được chọn time và service đầy đủ chưa, đã đủ thì ẩn btn scroll
       const isFinalBooking = showScrollToFinalBooking(user)
-      isFinalBooking && $('.scroll-btn-main').fadeOut();
+      isFinalBooking && updateScrollButton({
+          target: '#section-booking',
+          trigger: '#trigger-booking',
+          triggerBanner: '#triggerBlockSumary',
+          text: 'Continue Booking',
+          icon: 'fa fa-hand-pointer down',
+          force: false
+        });
 
       renderSumary(dataBooking, listDataService);
     });
@@ -1819,7 +1826,15 @@
 
   // render sumary
   function renderSumary (dataBooking, listDataService) {
+    // Kiểm tra có user nào chọn xong servce và timming
+    console.log("dataBooking: ", dataBooking);
+    const someUChoosed = dataBooking.users.some(item => {
+      return item.services.length > 0 && item.selectedDate && item.selectedTimeSlot;
+    })
+    if(!someUChoosed) return '';
+
     const isAllowConfirm = showScrollToFinalBooking(dataBooking);
+    const owner = dataBooking.users[0];
 
     const $containerSumary = $('.wrap-sumary');
     $containerSumary.empty();
@@ -1896,12 +1911,16 @@
                     <i class="fa-solid fa-pen-to-square"></i>
                     Edit
                   </button>
-                  <button class="delete-sumary">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
-                      <path d="M14.8359 10.7598V17.7598M10.8359 10.7598V17.7598M6.83594 6.75977V18.5598C6.83594 19.6799 6.83594 20.2395 7.05392 20.6674C7.24567 21.0437 7.55141 21.3502 7.92773 21.542C8.35514 21.7598 8.91493 21.7598 10.0328 21.7598H15.639C16.7569 21.7598 17.3159 21.7598 17.7433 21.542C18.1197 21.3502 18.4264 21.0437 18.6182 20.6674C18.8359 20.24 18.8359 19.6808 18.8359 18.5629V6.75977M6.83594 6.75977H8.83594M6.83594 6.75977H4.83594M8.83594 6.75977H16.8359M8.83594 6.75977C8.83594 5.82788 8.83594 5.36217 8.98818 4.99463C9.19117 4.50457 9.58026 4.11499 10.0703 3.91201C10.4379 3.75977 10.9041 3.75977 11.8359 3.75977H13.8359C14.7678 3.75977 15.2338 3.75977 15.6013 3.91201C16.0914 4.11499 16.4806 4.50457 16.6836 4.99463C16.8358 5.36217 16.8359 5.82788 16.8359 6.75977M16.8359 6.75977H18.8359M18.8359 6.75977H20.8359" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    Delete
-                  </button>
+                  ${owner.id !== userBooking.id ?
+                    `
+                      <button class="delete-sumary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
+                          <path d="M14.8359 10.7598V17.7598M10.8359 10.7598V17.7598M6.83594 6.75977V18.5598C6.83594 19.6799 6.83594 20.2395 7.05392 20.6674C7.24567 21.0437 7.55141 21.3502 7.92773 21.542C8.35514 21.7598 8.91493 21.7598 10.0328 21.7598H15.639C16.7569 21.7598 17.3159 21.7598 17.7433 21.542C18.1197 21.3502 18.4264 21.0437 18.6182 20.6674C18.8359 20.24 18.8359 19.6808 18.8359 18.5629V6.75977M6.83594 6.75977H8.83594M6.83594 6.75977H4.83594M8.83594 6.75977H16.8359M8.83594 6.75977C8.83594 5.82788 8.83594 5.36217 8.98818 4.99463C9.19117 4.50457 9.58026 4.11499 10.0703 3.91201C10.4379 3.75977 10.9041 3.75977 11.8359 3.75977H13.8359C14.7678 3.75977 15.2338 3.75977 15.6013 3.91201C16.0914 4.11499 16.4806 4.50457 16.6836 4.99463C16.8358 5.36217 16.8359 5.82788 16.8359 6.75977M16.8359 6.75977H18.8359M18.8359 6.75977H20.8359" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Delete
+                      </button>
+                    ` :''
+                  }
                 </div>
                 <div class="right-top-item-sumary">
                   <button class="btn-upload-image">Upload Image ${dataRefact.images.length !== 0 ? `(${dataRefact.images.length})` : ''}</button>
@@ -1916,20 +1935,22 @@
                       <div class="wrap-item-content" data-id=${services.id} data-id-item=${is.idItemService}>
                         <div class="item-content">
                           <div class="p-wrap">
-                            <div class="action-item-ser">
-                              <p class="edit-item-ser">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                              </p>
-                              <p class="delete-item-ser">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
-                                  <path d="M14.8359 10.7598V17.7598M10.8359 10.7598V17.7598M6.83594 6.75977V18.5598C6.83594 19.6799 6.83594 20.2395 7.05392 20.6674C7.24567 21.0437 7.55141 21.3502 7.92773 21.542C8.35514 21.7598 8.91493 21.7598 10.0328 21.7598H15.639C16.7569 21.7598 17.3159 21.7598 17.7433 21.542C18.1197 21.3502 18.4264 21.0437 18.6182 20.6674C18.8359 20.24 18.8359 19.6808 18.8359 18.5629V6.75977M6.83594 6.75977H8.83594M6.83594 6.75977H4.83594M8.83594 6.75977H16.8359M8.83594 6.75977C8.83594 5.82788 8.83594 5.36217 8.98818 4.99463C9.19117 4.50457 9.58026 4.11499 10.0703 3.91201C10.4379 3.75977 10.9041 3.75977 11.8359 3.75977H13.8359C14.7678 3.75977 15.2338 3.75977 15.6013 3.91201C16.0914 4.11499 16.4806 4.50457 16.6836 4.99463C16.8358 5.36217 16.8359 5.82788 16.8359 6.75977M16.8359 6.75977H18.8359M18.8359 6.75977H20.8359" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                              </p>
-                            </div>
-                            <p class="text-name-service">${is?.title}</p>
-                            <p class="text-name-tech">${is.selectedStaff?.name}</p>
-                            <p class="text-time-dura">${is?.timetext}</p>
-                            <p class="text-price-serice">$ ${getTotalPrice(is)}</p>
+                          <p class="text-name-service">${is?.title}</p>
+                          <p class="text-name-tech">${is.selectedStaff?.name}</p>
+                          <p class="text-time-dura">${is?.timetext}</p>
+                          <p class="text-price-serice">$ ${getTotalPrice(is)}</p>
+                          <div class="action-item-ser">
+                            ${/*
+                            <p class="edit-item-ser">
+                              <i class="fa-solid fa-pen-to-square"></i>
+                            </p>
+                              */ ''}
+                            <p class="delete-item-ser">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
+                                <path d="M14.8359 10.7598V17.7598M10.8359 10.7598V17.7598M6.83594 6.75977V18.5598C6.83594 19.6799 6.83594 20.2395 7.05392 20.6674C7.24567 21.0437 7.55141 21.3502 7.92773 21.542C8.35514 21.7598 8.91493 21.7598 10.0328 21.7598H15.639C16.7569 21.7598 17.3159 21.7598 17.7433 21.542C18.1197 21.3502 18.4264 21.0437 18.6182 20.6674C18.8359 20.24 18.8359 19.6808 18.8359 18.5629V6.75977M6.83594 6.75977H8.83594M6.83594 6.75977H4.83594M8.83594 6.75977H16.8359M8.83594 6.75977C8.83594 5.82788 8.83594 5.36217 8.98818 4.99463C9.19117 4.50457 9.58026 4.11499 10.0703 3.91201C10.4379 3.75977 10.9041 3.75977 11.8359 3.75977H13.8359C14.7678 3.75977 15.2338 3.75977 15.6013 3.91201C16.0914 4.11499 16.4806 4.50457 16.6836 4.99463C16.8358 5.36217 16.8359 5.82788 16.8359 6.75977M16.8359 6.75977H18.8359M18.8359 6.75977H20.8359" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                              </svg>
+                            </p>
+                          </div>
                           </div>
                         </div>
                       </div>
@@ -1982,14 +2003,18 @@
     }
     function renderContentNotify(title, content, callback) {
       const popupHtml = `
-        <div class="popup-notify">
-          <div class="popup-header">
+        <div class="popup-notify"
+          style="
+            --color-cur-primary: ${colorPrimary};
+          "
+        >
+          <div class="popup-header-notify">
             <h3>${title}</h3>
           </div>
-          <div class="popup-body">
+          <div class="popup-body-notify">
             ${content}
           </div>
-          <div class="popup-footer">
+          <div class="popup-footer-notify">
             <button class="btn-success">Đồng ý</button>
             <button class="btn-cancel">Hủy</button>
           </div>
