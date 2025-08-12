@@ -3384,6 +3384,84 @@ $(document).ready(function () {
     reader.readAsDataURL(file); // đọc file thành base64 URL
   });
   // -- * CHANGE COLOR * Sử lý chọn màu
+  // func đổi màu
+  const updateColorPrimary = (item) => {
+    //header
+    dataHeaderNav.colorActiveNav = item.color;
+    dataHeaderNav.buttonBooking.bgBtn = item.color;
+    dataHeaderNav.buttonBooking.border = `1px solid ${item.color}`;
+    const htmlHeaderNav = renderNavHeaderTemplates(dataHeaderNav);
+    $(".wrap-header").html(htmlHeaderNav);
+    //advertise
+    dataAdvertise.bgAdvertise1.bgColor = item.color;
+    dataAdvertise.buttonSignIn.bgColor = item.color;
+    dataAdvertise.buttonSignIn.border = `1px solid ${item.color}`;
+
+    const htmlAdvertise = renderAdvertisePage(dataAdvertise);
+    $(".wrap-advertise-page").html(htmlAdvertise);
+
+    //banner
+    dataBannerPage.btnOptionBook.bgColor = item.color;
+    dataBannerPage.btnOptionBook.border = `1px solid ${item.color}`;
+
+    const htmlBannerPage = renderBannerPage(dataBannerPage);
+    $(".wrap-banner-page").html(htmlBannerPage);
+
+    //btn more info
+    const $wrapBtnMore = $(".wrap-btn-more-sideinfo");
+    if ($wrapBtnMore.length > 0) {
+      const htmlBtnMoreInfo = renderBtnMoreInfo(colorPrimary.color);
+      $wrapBtnMore.replaceWith(htmlBtnMoreInfo);
+    }
+
+    //store info
+    const $storeInfo = $(".store-info");
+    if ($storeInfo.length > 0) {
+      const htmlStoreInfoPage = renderStoreInfo(
+        dataStoreInfo,
+        colorPrimary.color
+      );
+
+      $storeInfo.replaceWith(htmlStoreInfoPage);
+    }
+
+    //policy
+    const $policy = $(".policy-page");
+    if ($policy.length > 0) {
+      //xử lý màu trong dataPolicy
+      dataPolicyPage.listItem.forEach((item) => {
+        item.content.forEach((child) => {
+          if (child.style && child.style.color) {
+            child.style.color = colorPrimary.color;
+          }
+        });
+      });
+      const htmlSPolicyPage = renderPolicyPage(
+        dataPolicyPage,
+        colorPrimary.color
+      );
+
+      $policy.replaceWith(htmlSPolicyPage);
+    }
+
+    //social link
+    const $socialLink = $(".map-wrapper");
+    if ($socialLink.length > 0) {
+      const htmlSocialLinkPage = renderSocialLink(
+        dataSocialLink,
+        colorPrimary.color
+      );
+
+      $socialLink.replaceWith(htmlSocialLinkPage);
+    }
+  }
+  const updateColorSecondary = (item) => {
+    //advertise
+    dataAdvertise.bgAdvertise2.bgColor = item.color;
+
+    const htmlAdvertisePage = renderAdvertisePage(dataAdvertise);
+    $(".wrap-advertise-page").html(htmlAdvertisePage);
+  }
   $(document).on("click", ".item-theme", function () {
 
     const index = $(this).data("index");
@@ -3392,10 +3470,32 @@ $(document).ready(function () {
       const removedType = getRemovedType();
       item.selected = true;
       item.type = removedType;
+
+      if(removedType === "PRIMARY"){
+        updateColorPrimary(item);
+
+      }else {
+        updateColorSecondary(item);
+      }
     }else if (item.selected || item.active) {
       // Bỏ chọn khi click lại vào item đã chọn
       delete item.type;
       item.selected = !item.selected;
+      const removedType = getRemovedType();
+      if(removedType === "PRIMARY"){
+        colorPrimary = '#00bed6';
+        const itemDefaultPrimary = {
+          color: '#00bed6'
+        }
+        updateColorPrimary(itemDefaultPrimary);
+
+      }else {
+        colorSecondary = '#E27303';
+        const itemDefaultSecond = {
+          color: '#E27303'
+        }
+        updateColorSecondary(itemDefaultSecond);
+      }
     } else if (!item.active) {
       const removedType = getRemovedType();
       if (removedType) {
@@ -3410,86 +3510,14 @@ $(document).ready(function () {
           colorPrimary = configThemeColor.colorTheme.find(
             (item) => item.type === "PRIMARY"
           );
+          updateColorPrimary(item);
 
-          //header
-          dataHeaderNav.colorActiveNav = item.color;
-          dataHeaderNav.buttonBooking.bgBtn = item.color;
-          dataHeaderNav.buttonBooking.border = `1px solid ${item.color}`;
-          const htmlHeaderNav = renderNavHeaderTemplates(dataHeaderNav);
-          $(".wrap-header").html(htmlHeaderNav);
-          //advertise
-          dataAdvertise.bgAdvertise1.bgColor = item.color;
-          dataAdvertise.buttonSignIn.bgColor = item.color;
-          dataAdvertise.buttonSignIn.border = `1px solid ${item.color}`;
-
-          const htmlAdvertise = renderAdvertisePage(dataAdvertise);
-          $(".wrap-advertise-page").html(htmlAdvertise);
-
-          //banner
-          dataBannerPage.btnOptionBook.bgColor = item.color;
-          dataBannerPage.btnOptionBook.border = `1px solid ${item.color}`;
-
-          const htmlBannerPage = renderBannerPage(dataBannerPage);
-          $(".wrap-banner-page").html(htmlBannerPage);
-
-          //btn more info
-          const $wrapBtnMore = $(".wrap-btn-more-sideinfo");
-          if ($wrapBtnMore.length > 0) {
-            const htmlBtnMoreInfo = renderBtnMoreInfo(colorPrimary.color);
-            $wrapBtnMore.replaceWith(htmlBtnMoreInfo);
-          }
-
-          //store info
-          const $storeInfo = $(".store-info");
-          if ($storeInfo.length > 0) {
-            const htmlStoreInfoPage = renderStoreInfo(
-              dataStoreInfo,
-              colorPrimary.color
-            );
-
-            $storeInfo.replaceWith(htmlStoreInfoPage);
-          }
-
-          //policy
-          const $policy = $(".policy-page");
-          if ($policy.length > 0) {
-            //xử lý màu trong dataPolicy
-            dataPolicyPage.listItem.forEach((item) => {
-              item.content.forEach((child) => {
-                if (child.style && child.style.color) {
-                  child.style.color = colorPrimary.color;
-                }
-              });
-            });
-            const htmlSPolicyPage = renderPolicyPage(
-              dataPolicyPage,
-              colorPrimary.color
-            );
-
-            $policy.replaceWith(htmlSPolicyPage);
-          }
-
-          //social link
-          const $socialLink = $(".map-wrapper");
-          if ($socialLink.length > 0) {
-            const htmlSocialLinkPage = renderSocialLink(
-              dataSocialLink,
-              colorPrimary.color
-            );
-
-            $socialLink.replaceWith(htmlSocialLinkPage);
-          }
         } else if (removedType === "SECONDARY") {
           // Cập nhật màu
           colorSecondary = configThemeColor.colorTheme.find(
             (item) => item.type === "SECONDARY"
           );
-
-          //advertise
-          dataAdvertise.bgAdvertise2.bgColor = item.color;
-
-          const htmlAdvertisePage = renderAdvertisePage(dataAdvertise);
-          $(".wrap-advertise-page").html(htmlAdvertisePage);
+          updateColorSecondary(item);
         }
 
         // Tìm item cũ đang giữ loại đó (PRIMARY hoặc SECONDARY)
