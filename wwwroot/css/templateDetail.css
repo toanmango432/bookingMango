@@ -2870,7 +2870,7 @@ select {
 }
 .user-book h2 {
   text-align: center;
-  padding: 8px 16px;
+  padding: 8px 16px 8px 0px;
   margin-bottom: 0px;
 }
 .left-top-item-sumary {

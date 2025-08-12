@@ -1826,18 +1826,17 @@
 
   // render sumary
   function renderSumary (dataBooking, listDataService) {
+    const $containerSumary = $('.wrap-sumary');
+    $containerSumary.empty();
     // Kiểm tra có user nào chọn xong servce và timming
-    console.log("dataBooking: ", dataBooking);
     const someUChoosed = dataBooking.users.some(item => {
       return item.services.length > 0 && item.selectedDate && item.selectedTimeSlot;
     })
-    if(!someUChoosed) return '';
+    if(!someUChoosed) $containerSumary.append('');;
 
     const isAllowConfirm = showScrollToFinalBooking(dataBooking);
     const owner = dataBooking.users[0];
 
-    const $containerSumary = $('.wrap-sumary');
-    $containerSumary.empty();
     // Kiểm tra mảng users
     const hasUserWithService = dataBooking.users.some(user => Array.isArray(user.services) && user.services.length >0);
 
