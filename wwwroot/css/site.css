@@ -1657,7 +1657,7 @@ td td:last-child {
 }
 
 .content-banner {
-  height: var(--px-348);
+  /* min-height: var(--px-348); */
   position: relative;
   display: flex;
   gap: var(--px-12);

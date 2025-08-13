@@ -395,6 +395,11 @@
 
     return regex.test(cleaned);
   }
+  function updateBannerHeight() {
+    const $content = $('.banner .content-banner');
+    const contentHeight = $content.outerHeight(true); // tính cả margin
+    $('.banner').height(contentHeight);
+  }
 
   function isValidEmail(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
@@ -792,7 +797,7 @@
 
                 return `
                 <div class="nav-item-with-dropdown" data-id="${item.id}">
-                  <button id="${item.id}" class="text-uppercase option">
+                  <button id="${item.id}" class="text-uppercase option ${item.id === 'page-service' ? 'active' : ''}">
                     ${item.name}
                     ${iconItemNav}
                   </button>
@@ -2650,7 +2655,7 @@
     }
 
     // Content popup upload image
-    function renderPopupUpload(dataImages) {
+    function renderPopupUpload(dataImages, isMobile) {
 
       const maxImages = 3;
 
@@ -2665,8 +2670,16 @@
               <span class="text">
               ${hasImg ? 'Change image' :
                 `
-                  <p class="text-click-to-upload">Click to upload<p/>
-                  <p> Or Drag and drop</p>
+                  ${isMobile ?
+                    `
+                      <p class="text-click-to-upload">Image</p>
+                    `
+                    :
+                    `
+                      <p class="text-click-to-upload">Click to upload<p/>
+                      <p> Or Drag and drop</p>
+                    `
+                  }
                 `
               }</span>
               <img
@@ -2702,12 +2715,20 @@
               <img src="/assets/images/upload-represent/image-represent-upload.png" alt="Image represent upload"/>
             </div>
             <div class="desc-how-up">
-              <span class="click-upload">
-                Click To Upload
-              </span>
-              <span class="drag-upload">
-                Or Drag And Drop
-              </span>
+              ${isMobile ?
+                `
+                <span>Choose your image</span>
+                `
+                :
+                `
+                  <span class="click-upload">
+                    Click To Upload
+                  </span>
+                  <span class="drag-upload">
+                    Or Drag And Drop
+                  </span>
+                `
+              }
             </div>
             <div class="condi-img">
               <span class="name">
@@ -3040,8 +3061,14 @@
             dataBooking.type = typeBookingEnum.FAMILY;
             // Verify trước khi gán dataBooking.users cho dataFamily
             const htmlVerifyEmailPhone = renderVerifyEmailPhoneContent();
+            let height = 620;
+            let width = 560;
+            if(isMobile) {
+              height = 620;
+              width = '100%';
+            }
             // const persistent = true;
-            const html = renderBasePopup(htmlVerifyEmailPhone);
+            const html = renderBasePopup(htmlVerifyEmailPhone, false, height, width);
             $wrapHomeTemp.append(html);
             setTimeout(() => {
               $('.overlay-screen').addClass('show');
@@ -3986,7 +4013,13 @@
       const emailPhoneMasked = res === "EMAIL" ? dataBooking.users[0].email : dataBooking.users[0].phoneNumber;
       const htmlVerifyEmailPhoneMasked = renderVerifyCodeContent(emailPhoneMasked);
       const persistent = true;
-      const html = renderBasePopup(htmlVerifyEmailPhoneMasked, persistent);
+      let height = 620;
+      let width = 560;
+      if(isMobile) {
+        height = 620;
+        width = '100%';
+      }
+      const html = renderBasePopup(htmlVerifyEmailPhoneMasked, persistent, height, width);
 
       $wrapHomeTemp.append(html);
       setTimeout(() => {
@@ -4051,7 +4084,13 @@
 
       const htmlFormRegis = renderRegisterForm(dataRegis, fieldEntered);
       const persistent = true;
-      const html = renderBasePopup(htmlFormRegis, persistent, 762, 886);
+      let height = 762;
+      let width = 886;
+      if(isMobile) {
+        height = 800;
+        width = '100%';
+      }
+      const html = renderBasePopup(htmlFormRegis, persistent, height, width);
       $wrapHomeTemp.append(html);
       setTimeout(() => {
         $('.overlay-screen').addClass('show');
@@ -4079,9 +4118,15 @@
     // back để quay về popup email
     $(document).on('click', '.btn-back-verify', function () {
       const emailOrPhone = dataBooking.users[0].email || dataBooking.users[0].phoneNumber;
+      let height = 620;
       const htmlVerifyEmailPhone = renderVerifyEmailPhoneContent(emailOrPhone);
+      let width = 560;
+      if(isMobile) {
+        height = 620;
+        width = '100%';
+      }
       // const persistent = true;
-      const htmlPopupVerify = renderBasePopup(htmlVerifyEmailPhone);
+      const htmlPopupVerify = renderBasePopup(htmlVerifyEmailPhone, false, height, width);
 
       $wrapHomeTemp.append(htmlPopupVerify);
       setTimeout(() => {
@@ -4099,7 +4144,13 @@
       const emailOrPhone = dataBooking.users[0].email || dataBooking.users[0].phoneNumber;
       const htmlVerifyEmailPhone = renderVerifyEmailPhoneContent(emailOrPhone);
       // const persistent = true;
-      const htmlPopupVerify = renderBasePopup(htmlVerifyEmailPhone);
+      let height = 620;
+      let width = 560;
+      if(isMobile) {
+        height = 620;
+        width = '100%';
+      }
+      const htmlPopupVerify = renderBasePopup(htmlVerifyEmailPhone, false, height, width);
       $wrapHomeTemp.append(htmlPopupVerify);
 
       setTimeout(() => {
@@ -4237,8 +4288,13 @@
     // next form policies
     $(document).on('click', '.btn-next-policies', function() {
       const contentPaymentMethod = renderPaymentMethodsForm();
-      const html = renderBasePopup(contentPaymentMethod,false, 776, 886);
-
+      let height = 776;
+      let width = 886;
+      if(isMobile) {
+        height = 776;;
+        width = '100%';
+      }
+      const html = renderBasePopup(contentPaymentMethod,false, height, width);
       $wrapHomeTemp.append(html);
       setTimeout(() => {
         $('.overlay-screen').addClass('show');
@@ -4257,8 +4313,14 @@
     })
     // back: add new card
     $(document).on('click', '.btn-back-add-card', function() {
+      let height = 776;
+      let width = 886;
+      if(isMobile) {
+        height = 776;;
+        width = '100%';
+      }
       const htmlPaymentMethod = renderPaymentMethodsForm();
-      const html = renderBasePopup(htmlPaymentMethod,false, 776, 886);
+      const html = renderBasePopup(htmlPaymentMethod,false, height, width);
 
       $wrapHomeTemp.append(html);
       setTimeout(() => {
@@ -4269,8 +4331,14 @@
     // back select payment
     $(document).on('click', '.btn-back-payment', function() {
       const htmlPoliciesForm = renderPoliciesForm();
+      let height = 768;
+      let width = 886;
+      if(isMobile) {
+        height = 700;
+        width = '100%'
+      }
       const persistent = true;
-      const html = renderBasePopup(htmlPoliciesForm, persistent, 768, 886);
+      const html = renderBasePopup(htmlPoliciesForm, persistent, height, width);
 
       $wrapHomeTemp.append(html);
       setTimeout(() => {
@@ -4409,8 +4477,13 @@
     // Sự kiện mở form phương thức thanh toán
     $(document).on('click', '.btn-open-payment', function () {
       const htmlPaymentMethod = renderPaymentMethodsForm();
-
-      const html = renderBasePopup(htmlPaymentMethod, false, 762, 886);
+      let height = 776;
+      let width = 886;
+      if(isMobile) {
+        height = 776;;
+        width = '100%';
+      }
+      const html = renderBasePopup(htmlPaymentMethod, false, height, width);
       $wrapHomeTemp.append(html);
       setTimeout(() => $('.overlay-screen').addClass('show'), 10);
     });
@@ -4434,7 +4507,13 @@
 
       // Render lại form chọn phương thức với thẻ mới tick sẵn
       const htmlPaymentMethod = renderPaymentMethodsForm(newCard);
-      const html = renderBasePopup(htmlPaymentMethod, false, 762, 886);
+      let height = 776;
+      let width = 886;
+      if(isMobile) {
+        height = 776;;
+        width = '100%';
+      }
+      const html = renderBasePopup(htmlPaymentMethod, false, height, width);
       $wrapHomeTemp.html(html);
       setTimeout(() => $('.overlay-screen').addClass('show'), 10);
     });
@@ -4471,8 +4550,15 @@
         const findUser = dataBooking.users.find((item) => item.id == userSelectedUpload);
 
         const dataImages = findUser.images ? findUser.images : {};
-        const popUpload = renderPopupUpload(dataImages);
-        const html = renderBasePopup(popUpload, false, 810, 800);
+        const popUpload = renderPopupUpload(dataImages, isMobile);
+
+        let width = 800;
+        let height = 810;
+        if(isMobile){
+          height = 600;
+          width = '100%';
+        }
+        const html = renderBasePopup(popUpload, false, height, width);
 
         $wrapHomeTemp.append(html);
         setTimeout(() => {
@@ -4645,8 +4731,15 @@
             const nameUser = $this.closest('.item-sumary').find('.user-book h2').text().trim();
             const title = `Xoá dịch vụ đã chọn của ${nameUser}?`
             const content = ``
+            let width = 560;
+            let height = 200;
+            if(isMobile){
+              height = 292;
+              width = '100%'
+            }
+
             const htmlPopupNotify = renderContentNotify(title, content,() => handleDeleteService(idUser))
-            const html = renderBasePopup(htmlPopupNotify);
+            const html = renderBasePopup(htmlPopupNotify, false, height, width);
 
             $wrapHomeTemp.append(html);
             setTimeout(() => {
@@ -4665,9 +4758,14 @@
             const nameService = $pWrap.find('.text-name-service').text().trim();
             const title = `Xoá dịch vụ ${nameService} ?`
             const content = ``;
-
+            let width = 560;
+            let height = 200;
+            if(isMobile){
+              height = 292;
+              width = '100%'
+            }
             const htmlPopupNotify = renderContentNotify(title, content, () => handleDeleteItemService(idUser, idService, idItemService));
-            const html = renderBasePopup(htmlPopupNotify);
+            const html = renderBasePopup(htmlPopupNotify,false, height, width);
 
             $wrapHomeTemp.append(html);
             setTimeout(() => {
@@ -4712,8 +4810,14 @@
     // START: confirm booking
     $(document).on('click', '.btn-confirm-booking', function() {
       const contentPolicies = renderPoliciesForm();
+      let height = 768;
+      let width = 886;
+      if(isMobile) {
+        height = 700;
+        width = '100%'
+      }
       const persistent = true;
-      const html = renderBasePopup(contentPolicies, persistent, 768, 886);
+      const html = renderBasePopup(contentPolicies, persistent, height, width);
 
       $wrapHomeTemp.append(html);
       setTimeout(() => {
@@ -4841,7 +4945,13 @@
 
     $(document).on('click', '#page-fag', function () {
       const contentPaymentMethod = renderPaymentMethodsForm();
-      const html = renderBasePopup(contentPaymentMethod,false, 776, 886);
+      let height = 776;
+      let width = 886;
+      if(isMobile) {
+        height = 776;;
+        width = '100%';
+      }
+      const html = renderBasePopup(contentPaymentMethod,false, height, width);
 
       $wrapHomeTemp.append(html);
       setTimeout(() => {
@@ -4866,5 +4976,18 @@
       })
 
 
+      // // Gọi khi load xong
+      // $(window).on('load', updateBannerHeight);
+
+      // // Gọi khi resize (phòng responsive)
+      // $(window).on('resize', updateBannerHeight);
+
+      // // Nếu nội dung thay đổi sau khi load (AJAX, DOM update)
+      // const observer = new MutationObserver(updateBannerHeight);
+      // observer.observe(document.querySelector('.banner .content-banner'), {
+      //   childList: true,
+      //   subtree: true,
+      //   characterData: true
+      // });
   });
 
