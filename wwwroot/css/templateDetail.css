@@ -839,16 +839,17 @@ select {
 }
 .payment-methods-list {
   width: 100%;
+  max-height: 420px;
+  overflow-y: scroll;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 8px;
-  flex: 1 0 0;
-  align-self: stretch;
 }
 .payment-method-item {
   width: 100%;
   display: flex;
+  flex-shrink: 0;
   height: 54px;
   padding: 0 12px;
   justify-content: space-between;
@@ -981,9 +982,12 @@ select {
 }
 .wrap-form-group-card-new {
   width: 100%;
+  max-height: 500px;
+  overflow-y: scroll;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  padding-right: 8px;
 }
 .form-group-card-new {
   width: 100%;
@@ -2945,10 +2949,11 @@ select {
 .item-content .p-wrap {
   width: 100%;
   display: flex;
+  align-items: center;
   margin-bottom: 0px;
 }
 .action-item-ser {
-  width: 4%;
+  width: 6%;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -3186,7 +3191,7 @@ select {
   display: flex;
   gap: 24px;
 }
-.popup-footer-notify .btn-success {
+.popup-footer-notify .btn-confirm-delete {
   display: flex;
   padding: 12px 24px;
   justify-content: center;
@@ -3196,6 +3201,8 @@ select {
   border-radius: 12px;
   border: 1px solid #e30000;
   background: #e30000;
+  color: white;
+  font: normal normal 600 var(--s-20);
 }
 .popup-footer-notify .btn-cancel {
   display: flex;
@@ -3207,4 +3214,9 @@ select {
   border-radius: 12px;
   border: 1px solid var(--color-cur-primary);
   background: var(--Foundation-Green-Light, #e6eee8);
+  font: normal normal 600 var(--s-20);
+}
+.popup-footer-notify .btn-confirm-delete:hover,
+.popup-footer-notify .btn-cancel:hover {
+  filter: brightness(0.95);
 }

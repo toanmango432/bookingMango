@@ -486,7 +486,6 @@
   //function hiển thị button scroll
   function showScrollToTarget(dataBooking, directUp = false){
     // Ưu tiên check user choosing
-    console.log("check 2");
     const currentUser = dataBooking.users.find((u) => u.isChoosing);
     // Nếu chưa chọn service
     if (!currentUser.services || currentUser.services.length === 0) {
@@ -1524,7 +1523,7 @@
       `;
     }
   // render time booking
-  function renderTimeBooking(dataBooking) {
+  function renderTimeBooking(dataBooking, isCopySameTime) {
     const userCopyTime = dataBooking.users.find((u) => u.isSelecting && !u.isChoosing);
 
     return `
@@ -1547,7 +1546,7 @@
                   id="select-banner-pm"
                   type='checkbox'
                   class='toggle-switch'
-                  checked
+                  ${isCopySameTime ? 'checked' : ''}
                 />
                 <span class="text-same-time">Start on same time</span>
               </div>` : ''
@@ -1599,9 +1598,10 @@
     selectedDateParam,
     currentUserId,
     listDataService,
+    isCopySameTime,
   ) {
     const $wrapCalendarTimeslot = $('.calendar-timeslot');
-    const htmlTimeBooking = renderTimeBooking(dataBooking);
+    const htmlTimeBooking = renderTimeBooking(dataBooking, isCopySameTime);
     $wrapCalendarTimeslot.replaceWith(htmlTimeBooking);
 
     // Lấy user hiện tại
@@ -1979,12 +1979,12 @@
 
   // POPUP
     // base popup
-    function renderBasePopup(innerContentHTML, height = 620, width = 560) {
+    function renderBasePopup(innerContentHTML,persistent = false, height = 620, width = 560) {
       // Clear popup cũ nếu có
       $('.overlay-screen').remove();
 
       const html = `
-        <div class="overlay-screen">
+        <div class="overlay-screen ${persistent ? 'persistent' :''}">
           <div class="popup-container-template"
             style="
               height: ${height}px;
@@ -2014,7 +2014,7 @@
             ${content}
           </div>
           <div class="popup-footer-notify">
-            <button class="btn-success">Đồng ý</button>
+            <button class="btn-confirm-delete">Đồng ý</button>
             <button class="btn-cancel">Hủy</button>
           </div>
         </div>
@@ -2024,7 +2024,7 @@
       setTimeout(() => {
         const $overlay = $('.overlay-screen');
 
-        $overlay.find('.btn-success').on('click', function () {
+        $overlay.find('.btn-confirm-delete').on('click', function () {
           if (typeof callback === 'function') {
             callback();
           }
@@ -2725,7 +2725,7 @@
     }
 
   // Function render block element
-  function renderBlockTemplate(dataBlock) {
+  function renderBlockTemplate(dataBlock, isCopySameTime) {
     // Variable data block
     const { dataHeaderNav, advertises, banner,sideInfo, bannerProSelected, color  } = dataRelease;
     const {promotion, policy, storeInfo, socialLink, socialIcon} = sideInfo;
@@ -2734,7 +2734,7 @@
     const htmlHeaderNav = renderNavHeaderTemplates(dataHeaderNav);
     const htmlAdvertise = renderAdvertisePage(advertises);
     const htmlBannerPage = renderBannerPage(banner);
-    const htmlTimeBooking = renderTimeBooking(dataBlock.dataBooking);
+    const htmlTimeBooking = renderTimeBooking(dataBlock.dataBooking, isCopySameTime);
     // data render infoshop
 
 
@@ -2883,8 +2883,10 @@
     // hiện nút scroll
     let forceShowScrollBtn = false;
     const $mainScrollBtn = $('.scroll-btn-main');
+    // Biến local copySameTime
+    let isCopySameTime = true
 
-    renderBlockTemplate({listDataService, listUserStaff, dataBooking,dataMe,  dataGuest, dataFamily, currentUserId});
+    renderBlockTemplate({listDataService, listUserStaff, dataBooking,dataMe,  dataGuest, dataFamily, currentUserId, isCopySameTime});
 
     // Các sự kiện tương tác trên header
       // << START: dropdown option header
@@ -2922,7 +2924,8 @@
         // Mở popup cart
         $wrapHomeTemp.on('click', '.cart-user button', function (e) {
           e.stopPropagation();
-          const html = renderBasePopup(renderCartContent(dataCart));
+          const htmlPopupCartContent = renderCartContent(dataCart);
+          const html = renderBasePopup(htmlPopupCartContent, false);
           $wrapHomeTemp.append(html);
 
           setTimeout(() => {
@@ -2930,9 +2933,15 @@
           }, 10);
         });
         // Đóng popup cart
-          // 1. Đóng khi click overlay-screen
+          // 1. Đóng / persitent khi click overlay-screen
             $wrapHomeTemp.on('click', '.overlay-screen', function (e) {
-              if (e.target === this) closePopupContainerTemplate();
+              const $this = $(this);
+              const $popupContainerTemplate = $this.find('.popup-container-template');
+              const isPersit = $this.hasClass('persistent');
+              if(e.target === this && isPersit){
+                shakeError($popupContainerTemplate);
+              }
+              else if (e.target === this) closePopupContainerTemplate();
             });
           // 2. Đóng khi click btn 'back'
             $wrapHomeTemp.on('click', '.btn-back-order', function () {
@@ -2998,8 +3007,10 @@
           else if (selectedType === 'FAMILY') {
             dataBooking.type = typeBookingEnum.FAMILY;
             // Verify trước khi gán dataBooking.users cho dataFamily
-            const htmlPopupVerify = renderBasePopup(renderVerifyEmailPhoneContent())
-            $wrapHomeTemp.append(htmlPopupVerify);
+            const htmlVerifyEmailPhone = renderVerifyEmailPhoneContent();
+            // const persistent = true;
+            const html = renderBasePopup(htmlVerifyEmailPhone);
+            $wrapHomeTemp.append(html);
             setTimeout(() => {
               $('.overlay-screen').addClass('show');
             }, 10);
@@ -3458,6 +3469,7 @@
             dayNames, currentMonth, currentYear,
             fakeDataCalender, nextUser.selectedDate || selectedDate, currentUserId,
             listDataService,
+            isCopySameTime,
           );
         });
 
@@ -3501,6 +3513,7 @@
           dayNames, currentMonth, currentYear,
           fakeDataCalender, selectedDate, currentUserId,
           listDataService,
+          isCopySameTime,
         );
       })
       // Copy service
@@ -3513,8 +3526,7 @@
           userChoosing.services = JSON.parse(JSON.stringify(userSelectedCopy.services));
         }
         // kiểm tra nếu action copy datetime on thì copy cả timming
-        const isChecked = $('#select-banner-pm').prop('checked');
-        if(isChecked){
+        if(isCopySameTime){
           userChoosing.selectedDate = JSON.parse(JSON.stringify(userSelectedCopy.selectedDate));
           userChoosing.selectedTimeSlot = JSON.parse(JSON.stringify(userSelectedCopy.selectedTimeSlot));
         }
@@ -3526,7 +3538,8 @@
           dataBooking, currentDate, monthNames,
           dayNames, currentMonth, currentYear,
           fakeDataCalender, userChoosing.selectedDate, currentUserId,
-          listDataService
+          listDataService,
+          isCopySameTime
         );
 
         const isFinalBooking = showScrollToFinalBooking(dataBooking);
@@ -3941,8 +3954,9 @@
       }
 
       const emailPhoneMasked = res === "EMAIL" ? dataBooking.users[0].email : dataBooking.users[0].phoneNumber;
-      const newContent = renderVerifyCodeContent(emailPhoneMasked);
-      const html = renderBasePopup(newContent);
+      const htmlVerifyEmailPhoneMasked = renderVerifyCodeContent(emailPhoneMasked);
+      const persistent = true;
+      const html = renderBasePopup(htmlVerifyEmailPhoneMasked, persistent);
 
       $wrapHomeTemp.append(html);
       setTimeout(() => {
@@ -4007,8 +4021,9 @@
         user.lastName = '';
       }
 
-      const contentFormRegis = renderRegisterForm(dataRegis, fieldEntered);
-      const html = renderBasePopup(contentFormRegis, 762, 886);
+      const htmlFormRegis = renderRegisterForm(dataRegis, fieldEntered);
+      const persistent = true;
+      const html = renderBasePopup(htmlFormRegis, persistent, 762, 886);
       $wrapHomeTemp.append(html);
       setTimeout(() => {
         $('.overlay-screen').addClass('show');
@@ -4037,7 +4052,9 @@
     // back để quay về popup email
     $(document).on('click', '.btn-back-verify', function () {
       const emailOrPhone = dataBooking.users[0].email || dataBooking.users[0].phoneNumber;
-      const htmlPopupVerify = renderBasePopup(renderVerifyEmailPhoneContent(emailOrPhone))
+      const htmlVerifyEmailPhone = renderVerifyEmailPhoneContent(emailOrPhone);
+      // const persistent = true;
+      const htmlPopupVerify = renderBasePopup(htmlVerifyEmailPhone);
 
       $wrapHomeTemp.append(htmlPopupVerify);
       setTimeout(() => {
@@ -4053,7 +4070,9 @@
     // back form register
     $(document).on('click', '.btn-back-verify-register', function () {
       const emailOrPhone = dataBooking.users[0].email || dataBooking.users[0].phoneNumber;
-      const htmlPopupVerify = renderBasePopup(renderVerifyEmailPhoneContent(emailOrPhone))
+      const htmlVerifyEmailPhone = renderVerifyEmailPhoneContent(emailOrPhone);
+      // const persistent = true;
+      const htmlPopupVerify = renderBasePopup(htmlVerifyEmailPhone);
       $wrapHomeTemp.append(htmlPopupVerify);
 
       setTimeout(() => {
@@ -4168,30 +4187,30 @@
     })
     // back form policies
     $(document).on('click', '.btn-back-policies', function() {
-      const dataRegis = {
-        firstName: dataBooking.users[0].firstName,
-        lastName: dataBooking.users[0].lastName,
-        email: dataBooking.users[0].email,
-        phoneNumber: dataBooking.users[0].phoneNumber
-      };
+      // const dataRegis = {
+      //   firstName: dataBooking.users[0].firstName,
+      //   lastName: dataBooking.users[0].lastName,
+      //   email: dataBooking.users[0].email,
+      //   phoneNumber: dataBooking.users[0].phoneNumber
+      // };
 
-      const contentFormRegis = renderRegisterForm(dataRegis, fieldEntered);
-      const html = renderBasePopup(contentFormRegis, 762, 886);
+      // const contentFormRegis = renderRegisterForm(dataRegis, fieldEntered);
+      // const html = renderBasePopup(contentFormRegis, 762, 886);
 
-      $wrapHomeTemp.append(html);
-      setTimeout(() => {
-        $('.overlay-screen').addClass('show');
-      }, 10);
+      // $wrapHomeTemp.append(html);
+      // setTimeout(() => {
+      //   $('.overlay-screen').addClass('show');
+      // }, 10);
 
-      document.getElementById("phone-register").readOnly = (fieldEntered === typeInput.PHONE);
-      document.getElementById("email-register").readOnly = (fieldEntered === typeInput.EMAIL);
-
+      // document.getElementById("phone-register").readOnly = (fieldEntered === typeInput.PHONE);
+      // document.getElementById("email-register").readOnly = (fieldEntered === typeInput.EMAIL);
+      closePopupContainerTemplate();
       // clear time nếu có
     })
     // next form policies
     $(document).on('click', '.btn-next-policies', function() {
       const contentPaymentMethod = renderPaymentMethodsForm();
-      const html = renderBasePopup(contentPaymentMethod, 776, 886);
+      const html = renderBasePopup(contentPaymentMethod,false, 776, 886);
 
       $wrapHomeTemp.append(html);
       setTimeout(() => {
@@ -4200,8 +4219,9 @@
     })
     // add new card
     $(document).on('click', '.add-new-card-btn', function () {
-      const contentAddNewMethod = renderAddNewMethod();
-      const html = renderBasePopup(contentAddNewMethod, 900, 886);
+      const htmlAddNewMethod = renderAddNewMethod();
+      const persistent = true;
+      const html = renderBasePopup(htmlAddNewMethod, persistent, 900, 886);
 
       $wrapHomeTemp.append(html);
       setTimeout(() => {
@@ -4210,28 +4230,31 @@
     })
     // back: add new card
     $(document).on('click', '.btn-back-add-card', function() {
-      const contentPaymentMethod = renderPaymentMethodsForm();
-      const html = renderBasePopup(contentPaymentMethod, 776, 886);
+      const htmlPaymentMethod = renderPaymentMethodsForm();
+      const html = renderBasePopup(htmlPaymentMethod,false, 776, 886);
 
       $wrapHomeTemp.append(html);
       setTimeout(() => {
         $('.overlay-screen').addClass('show');
       }, 10);
+      // settime close form
     })
     // back select payment
     $(document).on('click', '.btn-back-payment', function() {
-      const contentPolicies = renderPoliciesForm();
-      const html = renderBasePopup(contentPolicies, 768, 886);
+      const htmlPoliciesForm = renderPoliciesForm();
+      const persistent = true;
+      const html = renderBasePopup(htmlPoliciesForm, persistent, 768, 886);
 
       $wrapHomeTemp.append(html);
       setTimeout(() => {
         $('.overlay-screen').addClass('show');
       }, 10);
+      // settime close
     })
     // Confirm payment final
     $(document).on('click', '.btn-next-payment', function () {
       const contentSuccessPayment = renderPaymentConfirmationForm();
-      const html = renderBasePopup(contentSuccessPayment, 920, 886);
+      const html = renderBasePopup(contentSuccessPayment,false, 920, 886);
 
       $wrapHomeTemp.append(html);
       setTimeout(() => {
@@ -4358,21 +4381,24 @@
     })
     // Sự kiện mở form phương thức thanh toán
     $(document).on('click', '.btn-open-payment', function () {
-      const html = renderBasePopup(renderPaymentMethodsForm(), 762, 886);
+      const htmlPaymentMethod = renderPaymentMethodsForm();
+
+      const html = renderBasePopup(htmlPaymentMethod, false, 762, 886);
       $wrapHomeTemp.append(html);
       setTimeout(() => $('.overlay-screen').addClass('show'), 10);
     });
 
     // Chuyển sang form thêm thẻ mới
     $(document).on('click', '.btn-add-new-card', function () {
-      const html = renderBasePopup(renderAddNewCardForm(), 762, 886);
+      const htmlAddNewCardForm = renderAddNewCardForm();
+      const html = renderBasePopup(htmlAddNewCardForm, false, 762, 886);
       $wrapHomeTemp.html(html); // thay nội dung popup
       setTimeout(() => $('.overlay-screen').addClass('show'), 10);
     });
 
     // Lưu thẻ mới và quay lại form phương thức thanh toán
     $(document).on('click', '.btn-save-card', function () {
-      // Giả lập lưu card (ở đây bạn call API thật)
+      // Giả lập lưu card (ở call API thật)
       const newCard = {
         type: 'Visa',
         number: '**** 1234',
@@ -4380,7 +4406,8 @@
       };
 
       // Render lại form chọn phương thức với thẻ mới tick sẵn
-      const html = renderBasePopup(renderPaymentMethodsForm(newCard), 762, 886);
+      const htmlPaymentMethod = renderPaymentMethodsForm(newCard);
+      const html = renderBasePopup(htmlPaymentMethod, false, 762, 886);
       $wrapHomeTemp.html(html);
       setTimeout(() => $('.overlay-screen').addClass('show'), 10);
     });
@@ -4396,8 +4423,8 @@
         deposit: '$50',
         remaining: '$150'
       };
-
-      const html = renderBasePopup(renderPaymentConfirmationForm(paymentInfo), 762, 886);
+      const htmlPaymentConfirm = renderPaymentConfirmationForm(paymentInfo);
+      const html = renderBasePopup(htmlPaymentConfirm, false, 762, 886);
       $wrapHomeTemp.html(html);
       setTimeout(() => $('.overlay-screen').addClass('show'), 10);
     });
@@ -4418,7 +4445,7 @@
 
         const dataImages = findUser.images ? findUser.images : {};
         const popUpload = renderPopupUpload(dataImages);
-        const html = renderBasePopup(popUpload, 810, 800);
+        const html = renderBasePopup(popUpload, false, 810, 800);
 
         $wrapHomeTemp.append(html);
         setTimeout(() => {
@@ -4621,8 +4648,6 @@
             }, 10);
           })
 
-
-
   // START: Xử lý option trên banner
     $(document).on("click",'#prev', function() {
       if (currentMonth > 0) {
@@ -4650,11 +4675,18 @@
         renderTimeSlotsForDate(selectedDate, dataBooking, currentUserId, listDataService);
       }
     });
+    // toggle copy same time
+    $(document).on('change', '#select-banner-pm', function() {
+      const $this = $(this);
+      isCopySameTime = $this.prop('checked');
+      console.log("isCopySame: ", isCopySameTime);
+    })
 
     // START: confirm booking
     $(document).on('click', '.btn-confirm-booking', function() {
       const contentPolicies = renderPoliciesForm();
-      const html = renderBasePopup(contentPolicies, 768, 886);
+      const persistent = true;
+      const html = renderBasePopup(contentPolicies, persistent, 768, 886);
 
       $wrapHomeTemp.append(html);
       setTimeout(() => {
@@ -4712,7 +4744,6 @@
     const $triggerSum = $('#triggerBlockSumary');
     const isFinalBooking = showScrollToFinalBooking(dataBooking);
     if (isInViewport($trigger) && !isFinalBooking) {
-      console.log("check 1");
       const isSeTi = showScrollToTarget(dataBooking, true);
       if(!isSeTi){
         updateScrollButton({
@@ -4783,7 +4814,7 @@
 
     $(document).on('click', '#page-fag', function () {
       const contentPaymentMethod = renderPaymentMethodsForm();
-      const html = renderBasePopup(contentPaymentMethod, 776, 886);
+      const html = renderBasePopup(contentPaymentMethod,false, 776, 886);
 
       $wrapHomeTemp.append(html);
       setTimeout(() => {
