@@ -175,6 +175,9 @@
   color: var(--colorQa, white);
   font: normal normal 700 var(--s-16);
 }
+.list-option .nav-item-with-dropdown .user {
+  display: none;
+}
 
 .cart-profile .user {
   height: var(--px-24);
@@ -2365,6 +2368,9 @@ select {
   display: flex;
   justify-content: space-between;
 }
+.show-more-info {
+  display: none;
+}
 .wrap-service-infoshop .top-card .left-card {
   display: flex;
   flex-direction: column;
@@ -2614,7 +2620,7 @@ select {
 .calendar-timeslot {
   width: 100%;
   display: flex;
-  padding: 42.var(--px-5) 56.055px;
+  padding: 42var (--px-5) 56.055px;
   justify-content: center;
   align-items: center;
   align-self: stretch;
@@ -2722,7 +2728,7 @@ select {
   top: 50%;
   left: 32%;
   width: 36%;
-  height: 0.var(--px-5);
+  height: 0var (--px-5);
   background: #999;
   transform: translateY(-50%);
 }
@@ -2915,7 +2921,7 @@ select {
 .delete-sumary:hover {
   background-color: #d3d3d3;
 }
-.right-top-item-sumary {
+.right-top-item-sumary button {
   color: white;
   display: flex;
   padding: var(--px-8) var(--px-12);
@@ -2926,7 +2932,7 @@ select {
   border: 1px solid var(--foundation-green-light-active, #b1c9b8);
   background: var(--color-cur-primary);
 }
-.right-top-item-sumary:hover {
+.right-top-item-sumary button:hover {
   filter: brightness(0.95);
 }
 .btn-upload-image {
@@ -3091,7 +3097,7 @@ select {
   background: white;
   border-radius: 50%;
   top: 1.2px;
-  left: 2.var(--px-5);
+  left: 2var (--px-5);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -3219,4 +3225,359 @@ select {
 .popup-footer-notify .btn-confirm-delete:hover,
 .popup-footer-notify .btn-cancel:hover {
   filter: brightness(0.95);
+}
+
+/* ============ RESPONSIVE MOBILE =========== */
+
+/* HEADER */
+
+/* Ẩn toggle và giữ layout desktop */
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+/* Khi màn nhỏ (<= 768px) */
+@media (max-width: 768px) {
+  .wrap-header {
+    padding: 0px 8px;
+  }
+  .nav-header-web {
+    justify-content: space-between;
+    gap: 0; /* bỏ gap lớn */
+  }
+  .wrap-logo-nav-web {
+    height: 52px;
+    display: flex;
+    flex-shrink: 0;
+  }
+  .left-nav-web {
+    gap: 0;
+    justify-content: flex-end;
+  }
+  .cart-profile {
+    gap: 0px;
+    justify-content: flex-end;
+  }
+
+  .list-option {
+    flex-direction: column;
+    background: white;
+    position: absolute;
+    top: var(--px-52);
+    left: 0;
+    width: 100%;
+    border-top: 1px solid #ddd;
+
+    /* hiệu ứng mượt */
+    height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: height 0.4s ease, opacity 0.3s ease;
+  }
+  .wrap-home-templates .wrap-advertise-page {
+    top: 52px;
+  }
+  .cart-profile .right-profile {
+    gap: 16px;
+  }
+  .right-profile .booking {
+    font: normal normal 500 var(--s-12);
+  }
+  .cart-user {
+    height: 32px;
+    padding: 0 8px;
+  }
+  .list-option .nav-item-with-dropdown .user {
+    display: block;
+  }
+  .cart-profile .user {
+    display: none;
+  }
+  .cart-user button {
+    width: 18px;
+    height: 18px;
+  }
+  .cart-user .quantity-prod {
+    width: 18px;
+    height: 18px;
+    font: normal normal 700 var(--s-10);
+  }
+
+  .list-option.show {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    height: 294px;
+    opacity: 1;
+  }
+  .list-option.show .nav-item-with-dropdown button {
+    width: 100%;
+    font: normal normal 500 var(--s-14);
+    margin: 8px 16px 0px;
+  }
+
+  .menu-toggle {
+    height: 32px;
+    display: block;
+  }
+  .menu-toggle i {
+    height: 24px;
+    width: 24px;
+  }
+  .wrap-home-templates .advertise-bg-2 p {
+    font: normal normal 300 var(--s-12);
+  }
+  .banner {
+    overflow-x: hidden;
+  }
+  .wrap-home-templates .advertise .advertise-bg-1 {
+    width: 125%;
+    left: -42px;
+    transform: rotate(-9deg);
+  }
+  .img-banner-left {
+    display: none;
+  }
+  .wrap-home-templates .content-banner {
+    height: 612px;
+  }
+  .wrap-content-left-banner .welcome-to {
+    font: normal normal 400 var(--s-16);
+  }
+  .wrap-content-left-banner .hight-text-banner .text-mountains-christmas {
+    font: normal normal 700 var(--s-32);
+  }
+  .wrap-content-left-banner .hight-text-banner .time-relax {
+    font: normal normal 500 var(--s-32);
+  }
+  .wrap-content-left-banner .hight-text-banner .text-content-banner {
+    font: normal normal 300 var(--s-12);
+  }
+  .wrap-home-templates .book-appoint {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .book-appoint .book-for {
+    font: normal normal 600 var(--s-16);
+  }
+  .wrap-home-templates .book-appoint .text-book-for {
+    font: normal normal 600 var(--s-16);
+    padding: 12px 0px;
+  }
+  .wrap-home-templates .book-appoint .text-book-for i {
+    display: none;
+  }
+  .wrap-home-templates .book-appoint .wrap-book-for {
+    width: 184px;
+  }
+  .wrap-home-templates .content-banner {
+    flex-direction: column;
+    padding: 8px;
+    justify-content: flex-start;
+  }
+  .wrap-home-templates .wrap-content-left-banner {
+    width: 100%;
+    top: 0px;
+  }
+  .wrap-home-templates .img-banner-booking {
+    width: 100%;
+  }
+  .img-banner-booking .img-booking-1 {
+    width: 292px;
+    height: 292px;
+    top: -36px;
+    left: 76px;
+  }
+  .img-banner-booking .img-booking-2 {
+    width: 292px;
+    height: 292px;
+    top: -128px;
+    left: 128px;
+  }
+  .img-banner-booking .img-booking-3 {
+    height: 132px;
+    width: 332px;
+    top: 112px;
+    left: 20px;
+  }
+  .wrap-service-infoshop {
+    flex-direction: column-reverse;
+  }
+  .wrap-service-infoshop .show-list-info {
+    width: 100%;
+    max-height: 82px;
+    transition: height 0.4s ease;
+    overflow: hidden;
+  }
+  .show-more-info {
+    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .show-more-info button {
+    display: flex;
+    padding: var(--px-8) var(--px-24);
+    justify-content: center;
+    align-items: center;
+    border-radius: var(--px-12);
+    border: 1px solid var(--color-cur-primary);
+    background: var(--color-cur-primary);
+    color: var(--btn-color, white);
+    font: normal normal 400 var(--s-13);
+  }
+
+  .wrap-service-infoshop .show-list-info.show {
+    max-height: 500px;
+  }
+  .wrap-service-infoshop .list-more {
+    width: 100%;
+  }
+  .wrap-service-infoshop .list-more .more-item .wrap-list-more {
+    flex-direction: column;
+  }
+  .wrap-service-infoshop .list-more .more-item .card-more {
+    width: 100%;
+    flex-wrap: none;
+  }
+  .wrap-service-infoshop .list-more .more-item .wrap-list-more {
+    max-height: 1500px;
+  }
+  .wrap-list-addOn {
+    flex-direction: column;
+    padding-right: 8px;
+    max-height: 1000px ;
+    overflow-y: scroll;
+  }
+  .item-addOn {
+    width: 100%;
+  }
+  .wrap-calendar-time {
+    align-items: center;
+    padding: 12px 0px;
+  }
+  .container-cal-time {
+    width: 96%;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .calendar {
+    width: 100%;
+    padding: 12px;
+  }
+  .title-copy-time {
+    font: normal normal 600 var(--s-20);
+  }
+  #monthYear,
+  #selectedDateTitle {
+    font: normal normal 500 var(--s-20);
+  }
+  .day-name {
+    min-width: 48px;
+    font: normal normal 300 var(--s-14);
+  }
+  .calendar-grid{
+    gap: 2px;
+  }
+  .day,
+  .day.past,
+  .day.inactive {
+    font: normal normal 500 var(--s-14);
+  }
+  .wrap-list-sumary {
+    padding: var(--px-12);
+  }
+  .timeslot {
+    width: 100%;
+  }
+  .top-item-sumary {
+    flex-direction: column-reverse;
+  }
+  .left-top-item-sumary {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .right-top-item-sumary {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    padding: var(--px-8) var(--px-4);
+    font: normal normal 500 var(--s-14);
+    align-items: center;
+    justify-content: flex-end;
+  }
+  .right-top-item-sumary .btn-upload-image {
+    width: 132px;
+  }
+  .edit-sumary span {
+    display: none;
+  }
+  .edit-sumary {
+    min-width: 32px;
+  }
+  .edit-sumary i {
+    font-size: 24px;
+  }
+  .user-book h2 {
+    font: normal normal 500 var(--s-20);
+    text-align: left;
+  }
+  .item-content .p-wrap {
+    font: normal normal 400 var(--s-12);
+  }
+  .item-content .text-name-service {
+    width: 28.5%;
+  }
+  .action-item-ser {
+    width: 10%;
+  }
+  .total-pay .text-total-amount {
+    width: 30%;
+  }
+  .total-pay .text-total-times {
+    width: 30%;
+  }
+  .total-pay .text-total-price {
+    width: 40%;
+  }
+  .scroll-btn-main {
+    width: 220px;
+    padding: 14px;
+  }
+  /* button banner */
+  .book-appoint .btn-option-banner-selected {
+    padding: 8px 12px;
+  }
+  .wrap-home-templates .book-appoint .wrap-book-for .list-option-booking .option-item-booking {
+    padding: 8px 12px;
+    /* font: normal normal 500 var(--s-16); */
+  }
+  /* .wrap-input-guests  */
+  .container-guest-input {
+    flex-direction: column;
+  }
+  .guest-input {
+    width: 80%;
+  }
+  .wrap-control {
+    top: 62px;
+    right: -8px;
+  }
+
+  /* text banner */
+  .book-appoint .btn-option-banner-selected {
+    /* font: normal normal 500 var(--s-16); */
+  }
+
+  /* popup */
+  .popup-container-template {
+    padding: 16px;
+  }
 }

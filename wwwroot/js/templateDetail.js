@@ -776,6 +776,15 @@
         </div>
         <div class="left-nav-web">
           <div class="list-option">
+            <div class="nav-item-with-dropdown">
+              <button class="user"
+                style="
+                  text-align: start;
+                "
+              >
+                ${iconUser}
+              </button>
+            </div>
             ${itemNav
               .map((item) => {
                 const iconItemNav = item.icon ? item.icon : '';
@@ -837,6 +846,9 @@
                   ${cart.quatity}
                 </span>
               </div>
+              <button class="menu-toggle" aria-label="Toggle navigation">
+                <i class="fa-solid fa-bars"></i>
+              </button>
             </div>
           </div>
         </div>
@@ -1343,7 +1355,7 @@
         >
           <div class="container-addOn">
             <div class="expand-addOn">
-              <i class="fa-solid fa-chevron-up"></i>
+              <i class="fa-solid fa-chevron-up rotate-transition"></i>
               <h2>Show more</h2>
             </div>
             <div class="service-addOn-selected">
@@ -1908,7 +1920,7 @@
                   </div>
                   <button class="edit-sumary">
                     <i class="fa-solid fa-pen-to-square"></i>
-                    Edit
+                    <span>Edit</span>
                   </button>
                   ${owner.id !== userBooking.id ?
                     `
@@ -1978,8 +1990,11 @@
   }
 
   // POPUP
+      function formatUnit(val) {
+      return typeof val === 'number' ? `${val}px` : val;
+    }
     // base popup
-    function renderBasePopup(innerContentHTML,persistent = false, height = 620, width = 560) {
+    function renderBasePopup(innerContentHTML, persistent = false, height = 620, width = 560) {
       // Clear popup cũ nếu có
       $('.overlay-screen').remove();
 
@@ -1987,8 +2002,8 @@
         <div class="overlay-screen ${persistent ? 'persistent' :''}">
           <div class="popup-container-template"
             style="
-              height: ${height}px;
-              width: ${width}px;
+              height: ${formatUnit(height)};
+              width: ${formatUnit(width)};
             "
           >
             ${innerContentHTML}
@@ -2745,7 +2760,16 @@
       `<div class="wrap-service-infoshop">
         <div id="section-service" class="list-more">
         </div>
-        <div id="list-info" class="show-list-info">
+        <div id="list-info" class="show-list-info"
+          style="
+            --color-cur-primary: ${colorPrimary}
+          "
+        >
+          <div class="show-more-info">
+            <button class="btn-more-info">
+              Show More Info
+            </button>
+          </div>
           <div id="item-promotion-page"></div>
           <div id="store-info-page"></div>
           <div id="policy-page"></div>
@@ -2886,6 +2910,9 @@
     // Biến local copySameTime
     let isCopySameTime = true
 
+    // Kiểm tra mobile
+    const isMobile = $(window).width() <= 768;
+
     renderBlockTemplate({listDataService, listUserStaff, dataBooking,dataMe,  dataGuest, dataFamily, currentUserId, isCopySameTime});
 
     // Các sự kiện tương tác trên header
@@ -2924,8 +2951,13 @@
         // Mở popup cart
         $wrapHomeTemp.on('click', '.cart-user button', function (e) {
           e.stopPropagation();
+          let width = 560;
+          let height = 620;
+          if(isMobile){
+            width = '100%'
+          }
           const htmlPopupCartContent = renderCartContent(dataCart);
-          const html = renderBasePopup(htmlPopupCartContent, false);
+          const html = renderBasePopup(htmlPopupCartContent, false, height, width);
           $wrapHomeTemp.append(html);
 
           setTimeout(() => {
@@ -3473,7 +3505,7 @@
           );
         });
 
-    // Xử lý chọn user để copy
+      // Xử lý chọn user để copy
       // Toggle khi bấm vào button chính
       $(document).on('click', '.btn-option-copy-user', function (e) {
         e.stopPropagation(); // tránh bị close ngay khi click
@@ -3724,14 +3756,12 @@
       // Toggle hiển thị
       $optionList.toggleClass('show');
     });
-
     // touch out close option staff
     $(document).on('click', function () {
       const $optionList = $(this).find('.option-select-staff');
       $optionList.empty();
       $('.option-select-staff').removeClass('show');
     });
-
     // gắn staff selected cho user
     $(document).on('click', '.item-staff', function (e) {
       e.stopPropagation();
@@ -3812,10 +3842,11 @@
       $wrapAddOn.replaceWith(newListAddOn);
 
       if(!isExpanded) {
-        $(`[data-id=${dataId}].wrap-addOn .expand-addOn`).addClass('expanded')
+        const $addOn = $(`[data-id=${dataId}].wrap-addOn .expand-addOn`);
+        $addOn.addClass('expanded');
+        $addOn.find('i').addClass('rotate-180')
       }
     })
-
     // selected add-on option
     $(document).on('click', '.item-addOn', function () {
       const $this = $(this);
@@ -3935,7 +3966,6 @@
         // $('.btn-next-emailPhone').prop('disabled', true)
       }
     })
-
     // Xử lý sự kiện cho next verify
     $(document).on('click', '.btn-next-emailPhone', function () {
       // verify val input trước khi cho next
@@ -3992,7 +4022,6 @@
       const allFilled = $('.otp-box').toArray().every(input => $(input).val().length === 1);
       $('.btn-next-verify').prop('disabled', !allFilled);
     });
-
     // Cho phép back bằng phím <-
     $(document).on('keydown', '.otp-box', function (e) {
       const $this = $(this);
@@ -4002,7 +4031,6 @@
         $(`.otp-box[data-index="${index - 1}"]`).focus();
       }
     });
-
     // next verify code
     $(document).on('click', '.btn-next-verify',function () {
       const user = dataBooking.users[0];
@@ -4034,7 +4062,7 @@
       //clear interval time opt
       clearInterval(resendInterval);
     })
-
+    //
     function startResendTimer() {
       $('.resend-btn').addClass('disabled');
 
@@ -4048,7 +4076,6 @@
         }
       }, 1000);
     }
-
     // back để quay về popup email
     $(document).on('click', '.btn-back-verify', function () {
       const emailOrPhone = dataBooking.users[0].email || dataBooking.users[0].phoneNumber;
@@ -4648,7 +4675,7 @@
             }, 10);
           })
 
-  // START: Xử lý option trên banner
+    // START: Xử lý option trên banner
     $(document).on("click",'#prev', function() {
       if (currentMonth > 0) {
         currentMonth--;
@@ -4730,87 +4757,87 @@
 
     })
 
-  function isInViewport($el) {
-    if (!$el || !$el.length) return false;
-    const rect = $el[0].getBoundingClientRect();
-    return rect.top < window.innerHeight && rect.bottom > 0;
-  }
+    function isInViewport($el) {
+      if (!$el || !$el.length) return false;
+      const rect = $el[0].getBoundingClientRect();
+      return rect.top < window.innerHeight && rect.bottom > 0;
+    }
 
-  // Lắng nghe scroll container
-  $('.wrap-home-templates').on('scroll', function () {
-    if (forceShowScrollBtn) return;
+    // Lắng nghe scroll container
+    $('.wrap-home-templates').on('scroll', function () {
+      if (forceShowScrollBtn) return;
 
-    const $trigger = $($mainScrollBtn.data('triggerBanner'));
-    const $triggerSum = $('#triggerBlockSumary');
-    const isFinalBooking = showScrollToFinalBooking(dataBooking);
-    if (isInViewport($trigger) && !isFinalBooking) {
-      const isSeTi = showScrollToTarget(dataBooking, true);
-      if(!isSeTi){
+      const $trigger = $($mainScrollBtn.data('triggerBanner'));
+      const $triggerSum = $('#triggerBlockSumary');
+      const isFinalBooking = showScrollToFinalBooking(dataBooking);
+      if (isInViewport($trigger) && !isFinalBooking) {
+        const isSeTi = showScrollToTarget(dataBooking, true);
+        if(!isSeTi){
+          updateScrollButton({
+            target: '#targetBlockBanner',
+            trigger: '#triggerBlockSumary',
+            text: 'Scroll to choose user',
+            icon: 'fa fa-hand-pointer',
+            triggerBanner: '#triggerBlockSumary',
+            force: false
+          });
+        }
+
+        $mainScrollBtn.fadeIn();
+      }else if(isFinalBooking && !isInViewport($triggerSum)){
         updateScrollButton({
-          target: '#targetBlockBanner',
-          trigger: '#triggerBlockSumary',
-          text: 'Scroll to choose user',
-          icon: 'fa fa-hand-pointer',
+          target: '#section-booking',
+          trigger: '#trigger-booking',
           triggerBanner: '#triggerBlockSumary',
+          text: 'Continue Booking',
+          icon: 'fa fa-hand-pointer down',
           force: false
         });
+      } else {
+        $mainScrollBtn.fadeOut();
+      }
+    });
+
+    function scrollToElementInContainer($container, $target, extra = 0, duration = 500) {
+      if (!$target || !$target.length) return;
+
+      // Nếu container là window / body -> dùng offset
+      const containerEl = $container && $container.length ? $container[0] : null;
+      const isDocument = !containerEl || containerEl === document.body || containerEl === document.documentElement;
+
+      if (isDocument) {
+        // scroll toàn trang
+        const top = $target.offset().top + extra;
+        $('html, body').animate({ scrollTop: top }, duration);
+        return;
       }
 
-      $mainScrollBtn.fadeIn();
-    }else if(isFinalBooking && !isInViewport($triggerSum)){
-      updateScrollButton({
-        target: '#section-booking',
-        trigger: '#trigger-booking',
-        triggerBanner: '#triggerBlockSumary',
-        text: 'Continue Booking',
-        icon: 'fa fa-hand-pointer down',
-        force: false
-      });
-    } else {
-      $mainScrollBtn.fadeOut();
-    }
-  });
+      // Container cuộn
+      const containerRect = containerEl.getBoundingClientRect();
+      const targetRect = $target[0].getBoundingClientRect();
+      const currentScroll = $container.scrollTop();
 
-  function scrollToElementInContainer($container, $target, extra = 0, duration = 500) {
-    if (!$target || !$target.length) return;
+      // Vị trí tương đối của target so với container's content top
+      const relativeTop = (targetRect.top - containerRect.top) + currentScroll;
 
-    // Nếu container là window / body -> dùng offset
-    const containerEl = $container && $container.length ? $container[0] : null;
-    const isDocument = !containerEl || containerEl === document.body || containerEl === document.documentElement;
+      // Nếu container có padding-top, bù vào (tuỳ layout)
+      const paddingTop = parseFloat($container.css('padding-top')) || 0;
 
-    if (isDocument) {
-      // scroll toàn trang
-      const top = $target.offset().top + extra;
-      $('html, body').animate({ scrollTop: top }, duration);
-      return;
+      const finalScroll = Math.round(relativeTop - paddingTop + extra);
+      $container.animate({ scrollTop: finalScroll }, duration);
     }
 
-    // Container cuộn
-    const containerRect = containerEl.getBoundingClientRect();
-    const targetRect = $target[0].getBoundingClientRect();
-    const currentScroll = $container.scrollTop();
 
-    // Vị trí tương đối của target so với container's content top
-    const relativeTop = (targetRect.top - containerRect.top) + currentScroll;
+    // Sự kiện click nút scroll
+    $mainScrollBtn.on('click', function () {
+      const $container = $('.wrap-home-templates');
+      const $target = $($mainScrollBtn.data('target'));
 
-    // Nếu container có padding-top, bù vào (tuỳ layout)
-    const paddingTop = parseFloat($container.css('padding-top')) || 0;
-
-    const finalScroll = Math.round(relativeTop - paddingTop + extra);
-    $container.animate({ scrollTop: finalScroll }, duration);
-  }
-
-
-  // Sự kiện click nút scroll
-  $mainScrollBtn.on('click', function () {
-    const $container = $('.wrap-home-templates');
-    const $target = $($mainScrollBtn.data('target'));
-
-    if ($target.length) {
-      // 86 header, 136 adverties, extra 30
-      scrollToElementInContainer($container, $target, -250, 500);
-    }
-  });
+      if ($target.length) {
+        // 86 header, 136 adverties, extra 30
+        scrollToElementInContainer($container, $target, -250, 500);
+      }
+    });
 
     $(document).on('click', '#page-fag', function () {
       const contentPaymentMethod = renderPaymentMethodsForm();
@@ -4821,5 +4848,23 @@
         $('.overlay-screen').addClass('show');
       }, 10);
     })
+
+    // ========================
+    // ========================
+    // ========================
+    // ========================
+    // XỬ LÝ SỰ KIỆN TRÊN MOBILE
+      // HEADER MENU
+      $(document).on('click', '.menu-toggle', function () {
+        $('.list-option').toggleClass('show');
+      });
+
+      $(document).on('click', '.btn-more-info', function (){
+        const $this = $(this);
+        const $showListInfo = $this.closest('.show-list-info');
+        $showListInfo.toggleClass('show');
+      })
+
+
   });
 
