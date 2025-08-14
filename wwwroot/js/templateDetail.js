@@ -1652,7 +1652,6 @@
     // Render time slots cho ngày này (và sẽ chọn time slot nếu user.selectedTimeSlot tồn tại)
     renderTimeSlotsForDate(useDate, dataBooking, currentUserId, listDataService);
   }
-
   // render calender
   function renderCalendar(monthNames, dayNames, currentMonth, currentYear, fakeDataCalender, selectedDate, dataBooking, currentUserId, listDataService) {
     const daysEl = document.getElementById("days");

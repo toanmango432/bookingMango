@@ -2749,7 +2749,7 @@ box-shadow: 0 5px 5.6px 0 #F0F0F3;
   top: 50%;
   left: 32%;
   width: 36%;
-  height: 0var (--px-5);
+  height: 1px;
   background: #999;
   transform: translateY(-50%);
 }
