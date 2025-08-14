@@ -1,4 +1,6 @@
-﻿  const dataTemplate = JSON.parse(localStorage.getItem('dataTemplate'));
+﻿import { fetchAPI } from "./site.js";
+
+  const dataTemplate = JSON.parse(localStorage.getItem('dataTemplate'));
   let dataRelease = JSON.parse(JSON.stringify(dataTemplate));
   console.log('dataPage ', dataRelease)
   const colorPrimary = dataRelease?.color?.bgPrimary || '#00bed6';
@@ -485,7 +487,7 @@
       $mainScrollBtn.attr('data-trigger-banner', options.triggerBanner);
     }
 
-    forceShowScrollBtn = !!options.force;
+    // forceShowScrollBtn = !!options.force;
     $mainScrollBtn.fadeIn();
   }
   //function hiển thị button scroll
@@ -4731,7 +4733,7 @@
             const title = `Xoá dịch vụ đã chọn của ${nameUser}?`
             const content = ``
             let width = 560;
-            let height = 200;
+            let height = 320;
             if(isMobile){
               height = 292;
               width = '100%'
@@ -4758,7 +4760,7 @@
             const title = `Xoá dịch vụ ${nameService} ?`
             const content = ``;
             let width = 560;
-            let height = 200;
+            let height = 320;
             if(isMobile){
               height = 292;
               width = '100%'
@@ -4943,19 +4945,8 @@
     });
 
     $(document).on('click', '#page-fag', function () {
-      const contentPaymentMethod = renderPaymentMethodsForm();
-      let height = 776;
-      let width = 886;
-      if(isMobile) {
-        height = 776;;
-        width = '100%';
-      }
-      const html = renderBasePopup(contentPaymentMethod,false, height, width);
-
-      $wrapHomeTemp.append(html);
-      setTimeout(() => {
-        $('.overlay-screen').addClass('show');
-      }, 10);
+      const dataCategories = fetchAPI.get('/api/category/getallitem?RVCNo=336');
+      console.log("dataCategories: ", dataCategories);
     })
 
     // ========================

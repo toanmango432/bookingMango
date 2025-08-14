@@ -1935,6 +1935,7 @@ select {
   flex-shrink: 0;
   z-index: 51;
   position: relative;
+  height: 48px;
 }
 
 .wrap-home-templates .book-appoint .wrap-book-for .list-option-booking {
@@ -2658,6 +2659,7 @@ box-shadow: 0 5px 5.6px 0 #F0F0F3;
   width: 100%;
   display: flex;
   justify-content: space-around;
+  flex-direction: row;
 }
 .top-cal-time {
   display: flex;
@@ -3142,13 +3144,13 @@ box-shadow: 0 5px 5.6px 0 #F0F0F3;
     transform: translateX(0);
   }
   20% {
-    transform: translateX(-var(--px-5));
+    transform: translateX(calc(-1 * var(--px-5)));
   }
   40% {
     transform: translateX(var(--px-5));
   }
   60% {
-    transform: translateX(-var(--px-5));
+    transform: translateX(calc(-1 * var(--px-5)));
   }
   80% {
     transform: translateX(var(--px-5));

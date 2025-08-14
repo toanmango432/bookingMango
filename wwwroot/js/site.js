@@ -114,7 +114,7 @@ function wrapMomentInstance(validDate) {
 moment = customMoment;
 
 // Call api
-const fetchAPI = {
+export const fetchAPI = {
   get: (url, data) => {
     return fetchAPI.request("GET", url, data);
   },
@@ -136,6 +136,7 @@ const fetchAPI = {
   },
 
   request: async (method, url, data, queryParams) => {
+    const domain_api = 'https://uat-clientapp.enrichcous.com:4443'
     try {
       let headers = {
         "Access-Control-Allow-Origin": "*",
@@ -144,7 +145,7 @@ const fetchAPI = {
         "Content-Type": "application/json; charset=utf-8",
       };
 
-      let fullUrl = url;
+      let fullUrl = domain_api + url;
       if (queryParams) {
         const query = new URLSearchParams(queryParams);
         fullUrl += `?${query.toString()}`;
