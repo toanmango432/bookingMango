@@ -2913,6 +2913,7 @@ td td:last-child {
   flex-direction: column;
   align-items: flex-start;
   gap: var(--px-24);
+  padding: 24px;
 }
 .container-cal-time {
   width: 100%;
@@ -2921,7 +2922,6 @@ td td:last-child {
   justify-content: space-around;
   align-items: center;
   gap: 24px;
-  padding: 24px;
 }
 .top-cal-time {
   display: flex;

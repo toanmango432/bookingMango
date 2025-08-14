@@ -3513,6 +3513,7 @@ box-shadow: 0 5px 5.6px 0 #F0F0F3;
     width: 96%;
     flex-direction: column;
     gap: 12px;
+    padding: 0px;
   }
   .calendar {
     width: 100%;
