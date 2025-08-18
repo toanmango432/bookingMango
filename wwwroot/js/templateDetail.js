@@ -59,152 +59,69 @@
         ],
       };
       // Danh sách người làm việc có quyền
-      let listDataService = [
-        {
-          item: {
-            id: 1,
-            iconLeft: `
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M7.16625 11.4688H13.4263V2.46875H1.90625V21.9688H13.4263V12.9688H7.16625V11.4688Z" fill="#E27303" />
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M21.8448 11.4691C19.8328 11.4681 18.0008 9.63605 18.0008 7.62305V6.87305H16.5008V7.62305C16.5008 9.10005 17.1758 10.4801 18.2198 11.4691L13.4219 11.469V12.969L18.2198 12.9691C17.1758 13.9581 16.5008 15.3371 16.5008 16.8141V17.5641H18.0008V16.8141C18.0008 14.8021 19.8338 12.9691 21.8458 12.9691H22.5958V11.4691H21.8448Z" fill="#E27303" />
-            </svg>
-            `,
-            value: 'Manicure 1',
-            iconRight: `
-              <i class="fa-solid fa-chevron-down rotate-transition"></i>
-            `,
-            listItem: [
-              {
-                id: 1,
-                title: 'Essential Pedicure 1',
-                subTitle: 'Hydrating Pedi Salt Soak 1',
-                priceRental: '$45',
-                timetext: '40min',
-                listOptionAddOn: [
-                  {
-                    id: 1,
-                    title: 'Gel Extensions',
-                    price: '$40.00',
-                    timedura: '40min',
-                  },
-                  {
-                    id: 2,
-                    title: 'Gel Extensions Removal',
-                    price: '$40.00',
-                    timedura: '40min',
-                  },
-                  {
-                    id: 3,
-                    title: 'Gel Removal',
-                    price: '$40.00',
-                    timedura: '40min',
-                  },
-                  {
-                    id: 4,
-                    title: 'Basic Design (All Nails)',
-                    price: '$40.00',
-                    timedura: '40min',
-                  },
-                  {
-                    id: 5,
-                    title: 'Set up Design (All Nails)',
-                    price: '$40.00',
-                    timedura: '40min',
-                  },
-                  {
-                    id: 6,
-                    title: 'Basic Design (Per Nail)',
-                    price: '$40.00',
-                    timedura: '40min',
-                  },
-                  {
-                    id: 7,
-                    title: 'Foil Design (Per Nail)',
-                    price: '$40.00',
-                    timedura: '40min',
-                  },
-                  {
-                    id: 8,
-                    title: 'Step up Design (Per Nail)',
-                    price: '$40.00',
-                    timedura: '40min',
-                  },
-                  {
-                    id: 9,
-                    title: 'Back Massage',
-                    price: '$40.00',
-                    timedura: '40min',
-                  },
-                  {
-                    id: 10,
-                    title: 'Hand Massage',
-                    price: '$40.00',
-                    timedura: '40min',
-                  }
-                ]
-              },
-              {
-                id: 2,
-                title: 'Essential Pedicure 2',
-                subTitle: 'Hydrating Pedi Salt Soak 1',
-                priceRental: '$45',
-                timetext: '40min',
-                listOptionAddOn:[],
-              },
-            ],
-          },
-        },
-        {
-          item: {
-            id: 2,
-            iconLeft: `
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M7.16625 11.4688H13.4263V2.46875H1.90625V21.9688H13.4263V12.9688H7.16625V11.4688Z" fill="#E27303" />
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M21.8448 11.4691C19.8328 11.4681 18.0008 9.63605 18.0008 7.62305V6.87305H16.5008V7.62305C16.5008 9.10005 17.1758 10.4801 18.2198 11.4691L13.4219 11.469V12.969L18.2198 12.9691C17.1758 13.9581 16.5008 15.3371 16.5008 16.8141V17.5641H18.0008V16.8141C18.0008 14.8021 19.8338 12.9691 21.8458 12.9691H22.5958V11.4691H21.8448Z" fill="#E27303" />
-            </svg>
-            `,
-            value: 'Manicure 2',
-            iconRight: `
-            <i class="fa-solid fa-chevron-down rotate-transition"></i>
-            `,
-            listItem: [
-              {
-                id: 1,
-                title: 'Essential Pedicure 1',
-                subTitle: 'Hydrating Pedi Salt Soak 1',
-                priceRental: '$45',
-                timetext: '40min',
-                listOptionAddOn:[],
-              },
-              {
-                id: 2,
-                title: 'Essential Pedicure 2',
-                subTitle: 'Hydrating Pedi Salt Soak 1',
-                priceRental: '$45',
-                timetext: '40min',
-                listOptionAddOn:[],
-              },
-            ],
-          },
-        },
-      ];
-      const listUserStaff = [
-        {
-          id: 'default',
-          avatar: '/assets/images/listUser/userAvailable.png',
-          name: 'Next Available',
-        },
-        {
-          id: '1',
-          avatar: '/assets/images/listUser/avatar1.png',
-          name: 'Lily',
-        },
-        {
-          id: '2',
-          avatar: '/assets/images/listUser/avatar1.png',
-          name: 'Savananah',
-        },
-      ];
+      const getDataListDataService = async () => {
+        const dataCategories = await fetchAPI.get('/api/category/getallcategories?RVCNo=336');
+        const dataItemServices = await fetchAPI.get('/api/category/getallitem?RVCNo=336');
+
+        const dataServices = [];
+
+        dataCategories.forEach((itemCar) => {
+          const objCar = {};
+          const categoryID = itemCar.categoryID;
+
+          objCar.item = {};
+
+          objCar.item.id = categoryID;
+          objCar.item.value = itemCar.categoryName;
+
+          const listItem = [];
+          dataItemServices.forEach((itemSer) => {
+            if(itemSer.categoryID === categoryID && itemSer.isActive && itemSer.isShowOB) {
+              const ser = {};
+
+              ser.id = itemSer.itemID;
+              ser.title = itemSer.itemName;
+              ser.priceRental = itemSer.basePrice;
+              ser.timetext = itemSer.duration;
+
+              // list add on
+              const itemAddOn = [];
+              if(itemSer.listAddOn.length >0) {
+                itemSer.listAddOn.forEach((iAdd) => {
+                  const objAddOn = {};
+
+                  objAddOn.id = iAdd.addOnID;
+                  objAddOn.title = iAdd.itemName;
+                  objAddOn.price = iAdd.price;
+                  objAddOn.timedura = iAdd.duration;
+
+                  itemAddOn.push(objAddOn);
+                })
+              }
+              ser.listOptionAddOn = itemAddOn;
+              listItem.push(ser);
+            }
+          })
+          objCar.item.listItem = listItem;
+          dataServices.push(objCar);
+        })
+        return dataServices;
+        // check isActive && isShowOB true
+
+      }
+      const getlistUserStaff = async () => {
+        const resTechFull = await fetchAPI.get('/api/tech/gettechinfoofsalon?rvcNo=339');
+        const staffDefault = {
+          employeeID: 9999,
+          imageFileName: '/assets/images/listUser/userAvailable.png',
+          nickName: 'Next Available',
+        }
+        const dataTech = resTechFull.data.filter((item) => item.allowBookingOnline);
+        dataTech.unshift(staffDefault);
+        return dataTech || [];
+      }
+
+      //
 
       let dataCart = {
         order: [],
@@ -279,9 +196,9 @@
                 {
                   idItemService: 1,
                   selectedStaff: {
-                    id: 'default',
-                    avatar: '/assets/images/listUser/userAvailable.png',
-                    name: 'Next Available',
+                    employeeID: 9999,
+                    imageFileName: '/assets/images/listUser/userAvailable.png',
+                    nickName: 'Next Available',
                   },
                 }
               ]
@@ -306,9 +223,9 @@
                 {
                   idItemService: 1,
                   selectedStaff: {
-                    id: 'default',
-                    avatar: '/assets/images/listUser/userAvailable.png',
-                    name: 'Next Available',
+                    employeeID: 9999,
+                    imageFileName: '/assets/images/listUser/userAvailable.png',
+                    nickName: 'Next Available',
                   },
                 }
               ]
@@ -332,9 +249,9 @@
                 {
                   idItemService: 1,
                   selectedStaff: {
-                    id: '1',
-                    avatar: '/assets/images/listUser/userAvailable.png',
-                    name: 'Next Available',
+                    employeeID: 9999,
+                    imageFileName: '/assets/images/listUser/userAvailable.png',
+                    nickName: 'Next Available',
                   },
                 }
               ]
@@ -359,9 +276,9 @@
                 {
                   idItemService: 2,
                   selectedStaff: {
-                    id: '1',
-                    avatar: '/assets/images/listUser/userAvailable.png',
-                    name: 'Next Available',
+                    employeeID: 9999,
+                    imageFileName: '/assets/images/listUser/userAvailable.png',
+                    nickName: 'Next Available',
                   },
                 }
               ]
@@ -375,8 +292,8 @@
       ];
       return {
         dataBooking,
-        listDataService,
-        listUserStaff,
+        getDataListDataService,
+        getlistUserStaff,
         dataCart,
         dataMe,
         dataGuest,
@@ -1217,10 +1134,18 @@
     // title card service
     function renderExpandTitle(item) {
       const $title = $('<div class="expand-title"></div>');
-
-      $title.append(item.iconLeft);
+      const iconLeft = `
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M7.16625 11.4688H13.4263V2.46875H1.90625V21.9688H13.4263V12.9688H7.16625V11.4688Z" fill="#E27303" />
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M21.8448 11.4691C19.8328 11.4681 18.0008 9.63605 18.0008 7.62305V6.87305H16.5008V7.62305C16.5008 9.10005 17.1758 10.4801 18.2198 11.4691L13.4219 11.469V12.969L18.2198 12.9691C17.1758 13.9581 16.5008 15.3371 16.5008 16.8141V17.5641H18.0008V16.8141C18.0008 14.8021 19.8338 12.9691 21.8458 12.9691H22.5958V11.4691H21.8448Z" fill="#E27303" />
+              </svg>
+            `
+      const iconRight = `
+               <i class="fa-solid fa-chevron-down rotate-transition"></i>
+            `
+      $title.append(iconLeft);
       $title.append(`<p class="text-uppercase bold-medium-14 mb-0">${item.value}</p>`);
-      $title.append(item.iconRight);
+      $title.append(iconRight);
 
       return $title;
     }
@@ -1235,11 +1160,11 @@
         <div class="top-card">
           <div class="left-card">
             <p class="bold-medium-14">${cardItem.title}</p>
-            <p class="thin-mid-14">${cardItem.subTitle}</p>
+            <p class="thin-mid-14">${cardItem.subTitle ? cardItem.subTitle :'Not subtitle'}</p>
           </div>
           <div class="right-card">
-            <p class="bold-medium-20">${cardItem.priceRental}</p>
-            <p class="bold-mid-12">${cardItem.timetext}</p>
+            <p id="service-price" class="bold-medium-20">${cardItem.priceRental} $</p>
+            <p id="service-duration" class="bold-mid-12" data-value=${cardItem.timetext}>${cardItem.timetext} min</p>
           </div>
         </div>
       `);
@@ -1262,15 +1187,18 @@
     // Render danh sách staff để chọn
     function renderUserOptions(staff) {
       return `
+        <div class="search-staff">
+          <input type="text" class="search-staff-input" placeholder="Search staff..." />
+        </div>
         <div class="wrap-staff">
           ${staff
             .map(
               (user) => `
-            <div class="item-staff" data-id="${user.id}">
+            <div class="item-staff" data-id="${user.employeeID}">
               <div class="avatar-staff">
-                <img src="${user.avatar}" alt="image ${user.name}" class="img-staff" />
+                <img src="${user.imageFileName ? user.imageFileName : 'null'}" alt="image ${user.nickName ? user.nickName : 'Not nickname'}" class="img-staff" />
               </div>
-              <span class="full-name">${user.name}</span>
+              <span class="full-name">${user.nickName ? user.nickName : 'Not nickname'}</span>
             </div>
           `
             )
@@ -1317,7 +1245,7 @@
           </div>
           <div class="toggle-select">
             <span id="full-name-selected">${findItemService && findItemService.selectedStaff.name || 'Next Available'}</span>
-            <i class="fa-solid fa-chevron-down"></i>
+            <i class="fa-solid fa-chevron-down rotate-transition"></i>
           </div>
         </div>
       `);
@@ -1339,7 +1267,6 @@
     }
     // render list add on
     function renderListAddOn (dataItem, idItemChild, dataBooking, isFull=false) {
-
 
       const titleAddOnSelected = dataItem.value;
       const findItemChild = dataItem.listItem.find((i) => i.id === idItemChild);
@@ -1387,8 +1314,8 @@
                     </div>
                     <div class="left-item-addOn">
                       <div class="price-timedura">
-                        <h2 class="text-price-item-addOn">${item.price}</h2>
-                        <p class="timedura">${item.timedura}</p>
+                        <h2 class="text-price-item-addOn">${item.price} $</h2>
+                        <p class="timedura">${item.timedura} min</p>
                       </div>
                       <div class="checkbox-addOn ${isOptionSelected ? 'selected' :''}">
                         <div class="circle-addOn">
@@ -1544,7 +1471,10 @@
   // render time booking
   function renderTimeBooking(dataBooking, isCopySameTime) {
     const userCopyTime = dataBooking.users.find((u) => u.isSelecting && !u.isChoosing);
-
+    // Kiểm tra chọn service xong mới hiện chọn time
+    const userChoosing = dataBooking.users.find((u) => u.isChoosing);
+    const isSelectedService = userChoosing.services.length > 0;
+    console.log("isSelcetedService: ", isSelectedService);
     return `
       <div class="calendar-timeslot">
         <div class="wrap-calendar-time"
@@ -1865,11 +1795,13 @@
     // hàm tính tiền tạm thời, do data chưa chuẩn
     function parsePrice(priceStr) {
       // Bỏ ký tự $ và chuyển sang số
+      if(typeof priceStr ==='number') return priceStr;
       return parseFloat(priceStr.replace('$', '')) || 0;
     }
 
     function parseTime(timeStr) {
       if (!timeStr) return 0;
+      if(typeof timeStr === 'number') return timeStr;
       return parseInt(timeStr.replace(/[^0-9]/g, '')) || 0;
     }
 
@@ -1953,7 +1885,7 @@
                         <div class="item-content">
                           <div class="p-wrap">
                           <p class="text-name-service">${is?.title}</p>
-                          <p class="text-name-tech">${is.selectedStaff?.name}</p>
+                          <p class="text-name-tech">${is.selectedStaff?.nickName}</p>
                           <p class="text-time-dura">${is?.timetext}</p>
                           <p class="text-price-serice">$ ${getTotalPrice(is)}</p>
                           <div class="action-item-ser">
@@ -1979,6 +1911,7 @@
                 <p class="text-total-amount">Total (${totalServices})</p>
                 <p class="text-total-times">${totalMinutes} min</p>
                 <p class="text-total-price">$ ${totalPrice}</p>
+                <div class="action-item-ser"></div>
               </div>
             </div>
           `
@@ -2899,10 +2832,31 @@
     renderBookingOption('.wrap-book-for', banner.btnOptionBook, banner.optionBooked);
   }
 
+  // hàm kiểm tra thợ làm có đủ thời gian handle
+  function fcTechEnoughTime (userChoosing,itemSelected, staffSelected) {
 
-  $(document).ready(function () {
+    if (!userChoosing.services) return;
+
+    // Lấy tất cả itemService có selectedStaff trùng employeeID
+    const matchingServices = userChoosing.services
+      .flatMap(svc => svc.itemService || [])
+      .filter(item => item.selectedStaff?.employeeID === staffSelected.employeeID);
+
+    // Tính tổng duration
+    const totalDuration = matchingServices.reduce((sum, item) => sum + (item.duration || 0), 0);
+
+    console.log(`Tổng duration cho staff ${staffSelected.employeeID}:`, totalDuration)
+    // tìm itemService của userChoosing, mà có selectedStaff có employeeID = employeeID, rồi tính tổng duration, log ra duration đó
+  }
+
+
+  $(document).ready(async function () {
     const $wrapHomeTemp = $('.wrap-home-templates');
-    const { dataBooking, listDataService, listUserStaff, dataCart,dataMe, dataGuest, dataFamily } = templateStore.load();
+    const { dataBooking, getDataListDataService, getlistUserStaff, dataCart,dataMe, dataGuest, dataFamily } = templateStore.load();
+    const listDataService = await getDataListDataService();
+    const listUserStaff  = await getlistUserStaff();
+    const timeFree = await fetchAPI.get('/api/appointment/gettimebookonline?date=08/14/2025&duration=31&rvcno=336&empID=3360005')
+
     let {banner} = dataRelease;
     // Khai báo currentUserId trước khi gọi renderBlockTemplate
     let currentUserId = dataBooking.users[0]?.id || 1;
@@ -3053,13 +3007,14 @@
           // Render lại component option
           renderBookingOption('.wrap-book-for', banner.btnOptionBook, banner.optionBooked);
           // Hiện ô nhập thêm nếu là guests hoặc family
-          if (selectedType === 'GUESTS'){
-            dataBooking.type = typeBookingEnum.GUESTS;
-            dataBooking.users = dataGuest;
-            dataBooking.users[0].isChoosing = true;
-          }
-          else if (selectedType === 'FAMILY') {
-            dataBooking.type = typeBookingEnum.FAMILY;
+          // if (selectedType === typeBookingEnum.GUESTS){
+          //   dataBooking.type = typeBookingEnum.GUESTS;
+          //   dataBooking.users = dataGuest;
+          //   dataBooking.users[0].isChoosing = true;
+          // }
+          if (selectedType !== typeBookingEnum.ME) {
+            // console.log("selectedText: ", selectedText)
+            dataBooking.type = selectedType;
             // Verify trước khi gán dataBooking.users cho dataFamily
             const htmlVerifyEmailPhone = renderVerifyEmailPhoneContent();
             let height = 620;
@@ -3075,7 +3030,7 @@
               $('.overlay-screen').addClass('show');
             }, 10);
             // Vì chưa đăng nhập nên dataFamily khởi tạo là một mảng users:[]
-            const tempFamily = [
+            const tempData = [
                 {
                   id: 1,
                   firstName: '',
@@ -3092,7 +3047,7 @@
                   isChoosing: true,
                 },
               ]
-            dataBooking.users = tempFamily;
+            dataBooking.users = tempData;
           }
           else {
             dataBooking.type = typeBookingEnum.ME;
@@ -3101,7 +3056,7 @@
 
 
           // show or hide cả 2
-          if (dataBooking.type !== typeBookingEnum.GUESTS) {
+          if (dataBooking.type !== typeBookingEnum.ME) {
             $('.wrap-input-guests').addClass('hidden');
             $('.wrap-control').empty();
             $('.wrap-input-guests').empty();
@@ -3116,6 +3071,8 @@
         });
         // Tăng số lượng khách
         $(document).on('click', '.btn-increase', function() {
+          // max guest 6
+          if(dataBooking.users.length >=6) return;
           const maxId = dataBooking.users.reduce((max,i) => Math.max(max,i.id), 0);
           const newId = maxId + 1;
           dataBooking.users.push({
@@ -3633,7 +3590,7 @@
       const $card = $this.closest('.card-more');
 
       // Thêm staff id defult vào user
-      const staffSelecting = listUserStaff.find((st) => st.id == 'default');
+      const staffSelecting = listUserStaff.find((st) => st.employeeID == 9999);
       const idService = $this.closest('.more-item').data('id');
       const idItemService = $card.data('id');
       const userChoosing = dataBooking.users.find((u) => u.isChoosing === true);
@@ -3642,12 +3599,18 @@
       let serviceExit = userChoosing.services.find((item) => item.idService === idService);
       let serviceItemExit = serviceExit && serviceExit.itemService.find(item => item.idItemService ===idItemService);
 
+      // lấy thông tin service vừa chọn
+      const serviceSelected = listDataService.find(({item}) => item.id == idService)?.item;
+      const itemSelected = serviceSelected && serviceSelected.listItem.find((is) => is.id === idItemService);
+
       if (serviceExit) {
         if (serviceItemExit) {
           serviceItemExit.selectedStaff = staffSelecting;
         } else {
           serviceItemExit = {
             idItemService,
+            duration: itemSelected.timetext,
+            price: itemSelected.priceRental,
             selectedStaff: staffSelecting
           };
           serviceExit.itemService.push(serviceItemExit);
@@ -3658,6 +3621,8 @@
           itemService: [
             {
               idItemService,
+              duration: itemSelected.timetext,
+              price: itemSelected.priceRental,
               selectedStaff: staffSelecting
             }
           ]
@@ -3694,6 +3659,16 @@
       //Cập nhật table booking
       renderSumary(dataBooking, listDataService);
     });
+    // Xử lý chọn thợ: Dịch vụ được chọn và làm theo thứ tự chọn
+    // 1. Auto chọn thợ cho các service sau giống service đầu tiên customer chọn, nếu thợ đó không
+    //    đủ thời gian gian xử lý service tiếp theo thì auto 'next availble'.
+    //    Tại đây check funcCheckTechAvailable(users.services, idServiceChoosing)
+    // 2. Nếu customer đổi thợ trong bất kì service nào, tính thời gian phù hợp và lọc ra thợ available
+    // 3. Nếu sau khi chọn thợ rảnh cho service tiếp theo mà khung giờ rảnh của thợ đó cách thời
+    //    gian hoàn thành service trước đó quá 15p chờ đợi thì phải thông báo cho người dùng biết
+    //    trước khi chọn thợ, nếu không đồng ý, auto chọn next availble
+    // 4. Xử lý timeframe có thể chọn sau khi chọn service
+
     // remove option select user
     $(document).on('click', '.add-more .btn-delete', function () {
       const $this = $(this);
@@ -3748,10 +3723,14 @@
     $(document).on('click', '.wrap-select-user .toggle-select', function (e) {
       e.stopPropagation();
 
-      const $toggle = $(this);
-      const $parentN = $toggle.closest('.wrap-select-user');
+      // lấy danh sách thợ phù hợp
 
-      const $wrap = $toggle.closest('.card-more');
+      const $this = $(this);
+      const $parentN = $this.closest('.wrap-select-user');
+      const $iconDown = $this.find('i');
+      $iconDown.toggleClass('rotate-180');
+
+      const $wrap = $this.closest('.card-more');
       const $optionList = $wrap.find('.option-select-staff');
 
       const $iconChecked = $parentN.find('.icon-checked');
@@ -3766,7 +3745,7 @@
       $('.option-select-staff').not($optionList).removeClass('show');
 
       // Lấy kích thước của toggle-select
-      const toggleWidth = $toggle.outerWidth();
+      const toggleWidth = $this.outerWidth();
       // Lấy vị trí cho option-select-staff
       const optionUserWidth = $iconChecked.outerWidth();
       const paddingCardMore = 20;
@@ -3779,10 +3758,26 @@
         left: leftPosOptionList + 'px',
         width: toggleWidth + 'px',
         zIndex: 999,
+        height: 300 + 'px',
+        overflowY: 'scroll',
       });
 
       // Toggle hiển thị
       $optionList.toggleClass('show');
+    });
+    // search staff
+    $(document).on('click', '.search-staff-input', function (e) {
+      e.stopPropagation(); // Ngăn sự kiện click lan ra ngoài
+    });
+    $(document).on('keyup', '.search-staff-input', function (e) {
+      e.stopPropagation()
+      const searchText = $(this).val().toLowerCase();
+      const $wrap = $(this).closest('.option-select-staff');
+
+      $wrap.find('.item-staff').each(function () {
+        const name = $(this).find('.full-name').text().toLowerCase();
+        $(this).toggle(name.includes(searchText));
+      });
     });
     // touch out close option staff
     $(document).on('click', function () {
@@ -3795,8 +3790,8 @@
       e.stopPropagation();
       const $this = $(this);
       const idStaff = $this.data('id');
-      const staffSelecting = listUserStaff.find((st) => st.id == idStaff);
 
+      const staffSelecting = listUserStaff.find((st) => st.employeeID == idStaff);
       const idService = $this.closest('.more-item').data('id');
       const idItemService = $this.closest('.card-more').data('id');
 
@@ -3807,12 +3802,27 @@
       let serviceExit = userChoosing.services.find((item) => item.idService === idService);
       let serviceItemExit = serviceExit && serviceExit.itemService.find(item => item.idItemService ===idItemService);
 
+      // lấy thông tin service vừa chọn
+      const serviceSelected = listDataService.find(({item}) => item.id == idService)?.item;
+      const itemSelected = serviceSelected && serviceSelected.listItem.find((is) => is.id === idItemService);
+
+      if(idStaff !== 9999) {
+        const isTechEnoughTime = fcTechEnoughTime(userChoosing,itemSelected, staffSelecting)
+
+        if(!isTechEnoughTime){
+          // gọi hàm thông báo
+          // return;
+        } ;
+      }
+
       if (serviceExit) {
         if (serviceItemExit) {
           serviceItemExit.selectedStaff = staffSelecting;
         } else {
           serviceItemExit = {
             idItemService,
+            price: itemSelected.priceRental,
+            duration: itemSelected.timetext,
             selectedStaff: staffSelecting
           };
           serviceExit.itemService.push(serviceItemExit);
@@ -3823,6 +3833,8 @@
           itemService: [
             {
               idItemService,
+              price: itemSelected.priceRental,
+              duration: itemSelected.timetext,
               selectedStaff: staffSelecting
             }
           ]
@@ -3878,16 +3890,18 @@
     // selected add-on option
     $(document).on('click', '.item-addOn', function () {
       const $this = $(this);
-      const $wrapAddOn = $this.closest('.wrap-addOn');
+      const $wrapListAddOn = $this.closest('.wrap-list-addOn');
       const $checkboxAddOn = $this.find('.checkbox-addOn');
 
       const idService = $this.closest('.more-item').data('id');
-      const idItemService = $wrapAddOn.data('id'); // id card-more
+      const idItemService = $wrapListAddOn.data('id'); // id card-more
       const idItemAddOn = $this.data('id');
 
       const serviceCur = listDataService.find(({ item }) => item.id == idService)?.item;
       const itemService = serviceCur?.listItem.find((item) => item.id == idItemService);
-      const itemAddOn = itemService?.listOptionAddOn.find((item) => item.id == idItemAddOn);
+      const itemAddOn = itemService?.listOptionAddOn.find((item) => {
+        return item.id == idItemAddOn;
+      });
 
       const userCurr = dataBooking.users.find((u) => u.isChoosing === true);
       let serviceInUser = userCurr.services.find((item) => item.idService == idService);
@@ -3901,7 +3915,6 @@
       }
 
       let itemServiceInUser = serviceInUser.itemService.find((item) => item.idItemService == idItemService);
-
       if (!itemServiceInUser) {
         itemServiceInUser = {
           idItemService,
@@ -3915,9 +3928,8 @@
       if (!Array.isArray(itemServiceInUser.optionals)) {
         itemServiceInUser.optionals = [];
       }
-
       // Kiểm tra itemAddOn có đang tồn tại trong optionals không
-      const index = itemServiceInUser.optionals.findIndex((opt) => opt.id === itemAddOn.id);
+      const index = itemServiceInUser?.optionals.findIndex((opt) => opt.id === itemAddOn.id);
 
       if (index > -1) {
         // Đã chọn rồi > bỏ chọn
@@ -4805,7 +4817,6 @@
     $(document).on('change', '#select-banner-pm', function() {
       const $this = $(this);
       isCopySameTime = $this.prop('checked');
-      console.log("isCopySame: ", isCopySameTime);
     })
 
     // START: confirm booking
@@ -4944,9 +4955,13 @@
       }
     });
 
-    $(document).on('click', '#page-fag', function () {
-      const dataCategories = fetchAPI.get('/api/category/getallitem?RVCNo=336');
-      console.log("dataCategories: ", dataCategories);
+    $(document).on('click', '#page-fag', async function () {
+      const dataServices = await fetchAPI.get('/api/category/getallitem?RVCNo=336');
+
+      const dataBookingTime = await fetchAPI.get('/api/appointment/gettimebookonline?date=08/15/2025&duration=31&rvcno=336');
+      console.log("dataBookingTime : ", dataBookingTime)
+
+
     })
 
     // ========================
@@ -4978,6 +4993,28 @@
       //   childList: true,
       //   subtree: true,
       //   characterData: true
+
+
       // });
   });
 
+
+  /*
+   - 1. Verify email, phone:
+    -> (not) 1.1: register
+    -> 1.2: fill data user, gồm service gần nhất booking, chọn lại thợ và giờ
+  */
+  /*
+   - 1. Lấy ra thông tin tech cho service
+   - 2. Lấy ra time-frame phù hợp cho các service và tech đã chọn
+   - 3. Copy service, chọn lại thợ -> (1)&(2)
+   - 4. Khi copy service, kiểm tra có option copy time để copy time -> (1)&(2)
+   - 5. Xử lý booking kiểm tra tech, time-frame còn slot không:
+        -> (not) 5.1: api trả ra thợ bị "nghẽn" hoặc re-start
+        -> 5.2: Booking
+  */
+  /*
+    1. Chọn thẻ thanh toán -> verify thẻ
+    2. Thanh toán credit
+    END
+  */

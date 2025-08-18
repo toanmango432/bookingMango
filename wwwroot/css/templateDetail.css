@@ -10,6 +10,7 @@
   flex-grow: 1;
   position: relative;
   overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 .wrap-header {
@@ -2072,7 +2073,7 @@ select {
   padding: var(--px-20) var(--px-12) var(--px-24);
   column-gap: var(--px-24);
   row-gap: var(--px-12);
-  background-color: #ffffff9e;
+  background-color: #ffffffc9;
   z-index: 45;
   /* border-bottom-left-radius: var(--px-12);
   border-bottom-right-radius: var(--px-12); */
@@ -2113,9 +2114,9 @@ select {
 
 .input-fullname.active {
   border-bottom: 3px solid var(--color-cur-primary);
-  border-bottom: 1px solid var(--Foundation-Green-Normal, #0C7E2D);
-background: #FFF;
-box-shadow: 0 5px 5.6px 0 #F0F0F3;
+  border-bottom: 1px solid var(--Foundation-Green-Normal, #0c7e2d);
+  background: #fff;
+  box-shadow: 0 5px 5.6px 0 #f0f0f3;
 }
 .input-fullname:focus-visible {
   outline: none;
@@ -2356,9 +2357,10 @@ box-shadow: 0 5px 5.6px 0 #F0F0F3;
   gap: var(--px-12);
   max-height: 0;
   transition: max-height 0.6s ease;
-  max-height: 1000px;
+  max-height: 1500px;
   opacity: 1;
   transform: scaleY(1);
+  overflow-y: scroll;
 }
 
 .wrap-service-infoshop .list-more .more-item .wrap-list-more.collapsed {
@@ -2431,6 +2433,26 @@ box-shadow: 0 5px 5.6px 0 #F0F0F3;
 .wrap-service-infoshop .wrap-select-user .toggle-select:hover {
   opacity: 0.9;
 }
+/* css search staff */
+.search-staff {
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+  background: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.search-staff-input {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.search-staff-input:focus-visible {
+  outline: 2px solid var(--bs-main);
+}
+
 .wrap-service-infoshop .card-more .add-more .btn-delete {
   display: flex;
   align-items: center;
@@ -2468,7 +2490,7 @@ box-shadow: 0 5px 5.6px 0 #F0F0F3;
   z-index: 10;
   display: none;
   border-radius: var(--px-12);
-  padding: var(--px-8);
+  padding: 0px var(--px-8) var(--px-8);
   box-shadow: 0 0 var(--px-12) 0 rgba(0, 0, 0, 0.15);
   transition: box-shadow 0.3s ease;
 }
@@ -2557,7 +2579,7 @@ box-shadow: 0 5px 5.6px 0 #F0F0F3;
   width: 100%;
   max-height: 600px;
   display: flex;
-  justify-content: center;
+  /* justify-content: center; */
   flex-wrap: wrap;
   gap: var(--px-16);
   overflow-y: scroll;
@@ -3049,7 +3071,7 @@ box-shadow: 0 5px 5.6px 0 #F0F0F3;
   border-top: 1px solid #d3d3d3;
 }
 .total-pay .text-total-amount {
-  width: 62.5%;
+  width: 58.5%;
   margin-bottom: 0px;
 }
 .total-pay .text-total-times {
@@ -3273,6 +3295,7 @@ box-shadow: 0 5px 5.6px 0 #F0F0F3;
     gap: 0; /* bỏ gap lớn */
   }
   .wrap-logo-nav-web {
+    width: 20%;
     height: 52px;
     display: flex;
     flex-shrink: 0;
@@ -3418,7 +3441,6 @@ box-shadow: 0 5px 5.6px 0 #F0F0F3;
   }
   .wrap-home-templates .book-appoint {
     width: 100%;
-
   }
   .wrap-banner-page {
     overflow-x: hidden;
