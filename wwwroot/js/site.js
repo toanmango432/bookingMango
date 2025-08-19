@@ -227,7 +227,7 @@ const imgTrack = {
 };
 
 // Sweetalert2 Customizable Alert
-const alertCustom = (options = {}, callback) => {
+export const alertCustom = (options = {}, callback) => {
   // Default options for notification and actions
   const defaultOptions = {
     isNoti: true,
@@ -1109,7 +1109,7 @@ Please do not hesitate to share your opinions with the salon manager so that you
         content: [
           { text: "Just me", type: "ME" },
           { text: "2 - 6 Guests", type: "GUESTS" },
-          { text: "Family", type: "FAMILY" },
+          // { text: "Family", type: "FAMILY" }, // chưa handle
         ],
         icon: `<i class="fa-solid fa-chevron-down rotate-transition"></i>`,
         color: "white",
@@ -1543,7 +1543,7 @@ Please do not hesitate to share your opinions with the salon manager so that you
           content: [
             { id: "option-me", text: "Just me", type: "ME" },
             { id: "option-guests", text: "2 - 6 Guests", type: "GUESTS" },
-            { id: "option-family", text: "Family", type: "FAMILY" },
+            // { id: "option-family", text: "Family", type: "FAMILY" }, // chưa handle
           ],
           icon: `<i class="fa-solid fa-chevron-down rotate-transition"></i>`,
           color: "white",
@@ -2687,6 +2687,16 @@ function animateHeight($el, isExpand) {
 
     return slots;
   }
+
+  function formatAMPM(timeStr) {
+    const [hourStr, minute] = timeStr.split(":");
+    let hour = parseInt(hourStr, 10);
+    const ampm = hour >= 12 ? "PM" : "AM";
+    hour = hour % 12;
+    hour = hour ? hour : 12;
+    console.log("amppm: ", ampm)
+    return `${hour}:${minute} ${ampm}`;
+  }
   function renderTimeSlotsForDate(selectedDate, dataBooking, currentUserId, listDataService) {
     const container = $("#timeSlotsContainer");
     container.empty();
@@ -2711,10 +2721,22 @@ function animateHeight($el, isExpand) {
 
     const slots = generateTimeSlots(workingRange[0], workingRange[1]);
 
+    // slots.forEach(slot => {
+    //   const div = $(`
+    //     <div class="time-slot">
+    //       <span>${slot}</span>
+    //       <div class="circle">
+    //         <div class="dot"></div>
+    //       </div>
+    //     </div>
+    //   `);
+    //   container.append(div);
+    // });
+
     slots.forEach(slot => {
       const div = $(`
         <div class="time-slot">
-          <span>${slot}</span>
+          <span>${formatAMPM(slot)}</span>
           <div class="circle">
             <div class="dot"></div>
           </div>
@@ -2722,6 +2744,7 @@ function animateHeight($el, isExpand) {
       `);
       container.append(div);
     });
+
     container.off('click', '.time-slot');
     container.on("click", ".time-slot", function () {
       container.find(".time-slot").removeClass("selected");
@@ -4129,7 +4152,7 @@ $(document).ready(function () {
     if (isChecked) {
       // Tắt gift card
       $("#toggle-gift-card").prop("checked", false).trigger("change");
-      $(".banner, .wrap-advertise-page, .list-more, .show-list-info").addClass(
+      $(".banner, .wrap-advertise-page, .list-more, .show-list-info, .wrap-calendar-time").addClass(
         "hide"
       );
       const $wrapWeb = $(".wrap-web");
@@ -4150,7 +4173,7 @@ $(document).ready(function () {
       }, 0);
     } else {
       $(
-        ".banner, .wrap-advertise-page, .list-more, .show-list-info"
+        ".banner, .wrap-advertise-page, .list-more, .show-list-info, .wrap-calendar-time"
       ).removeClass("hide");
       $(".page-membership").remove();
       $("#page-membership").removeClass("active");
@@ -4184,7 +4207,7 @@ $(document).ready(function () {
       // Tắt Membership
       $("#toggle-membership").prop("checked", false).trigger("change");
 
-      $(".banner, .wrap-advertise-page, .list-more, .show-list-info").addClass(
+      $(".banner, .wrap-advertise-page, .list-more, .show-list-info, .wrap-calendar-time").addClass(
         "hide"
       );
       const $wrapWeb = $(".wrap-web");
@@ -4201,7 +4224,7 @@ $(document).ready(function () {
       }, 0);
     } else {
       $(
-        ".banner, .wrap-advertise-page, .list-more, .show-list-info"
+        ".banner, .wrap-advertise-page, .list-more, .show-list-info, .wrap-calendar-time"
       ).removeClass("hide");
       $(".page-giftcard").remove();
       $("#page-giftcard").removeClass("active");
@@ -4525,9 +4548,7 @@ $(document).ready(function () {
     //banner
     dataWeb.banner = dataBannerPage;
 
-    console.log("dataWeb: ", dataWeb);
     localStorage.setItem("dataTemplate", JSON.stringify(dataWeb));
-
     window.open('https://localhost:7033/templates/1');
   });
 });

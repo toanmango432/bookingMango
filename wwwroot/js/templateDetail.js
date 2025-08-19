@@ -1,4 +1,5 @@
 ﻿import { fetchAPI } from "./site.js";
+import {alertCustom} from "./site.js";
 
   const dataTemplate = JSON.parse(localStorage.getItem('dataTemplate'));
   let dataRelease = JSON.parse(JSON.stringify(dataTemplate));
@@ -20,7 +21,7 @@
   const typeBookingEnum = {
     GUESTS: 'GUESTS',
     ME: 'ME',
-    FAMILY: 'FAMILY',
+    // FAMILY: 'FAMILY',
   };
   const genderEnum = {
     OTHER: 'OTHER',
@@ -110,7 +111,7 @@
 
       }
       const getlistUserStaff = async () => {
-        const resTechFull = await fetchAPI.get('/api/tech/gettechinfoofsalon?rvcNo=339');
+        const resTechFull = await fetchAPI.get('/api/tech/gettechinfoofsalon?rvcNo=336');
         const staffDefault = {
           employeeID: 9999,
           imageFileName: '/assets/images/listUser/userAvailable.png',
@@ -309,15 +310,10 @@
     // Xóa tất cả ký tự không phải số
     const cleaned = phoneNumber.replace(/\D/g, '');
 
-    // Regex kiểm tra: bắt đầu bằng 0, đủ 10 chữ số
-    const regex = /^0\d{9}$/;
+    // Regex kiểm tra: đủ 10 chữ số
+    const regex = /^\d{10}$/;
 
     return regex.test(cleaned);
-  }
-  function updateBannerHeight() {
-    const $content = $('.banner .content-banner');
-    const contentHeight = $content.outerHeight(true); // tính cả margin
-    $('.banner').height(contentHeight);
   }
 
   function isValidEmail(email) {
@@ -329,6 +325,11 @@
     if (digits.length !== 10) return raw;
 
     return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+  }
+  // UNFORMAT PHONE NUMBER
+  function unFormatPhoneNumber(formatted) {
+    if (!formatted) return '';
+    return formatted.replace(/\D/g, '');
   }
   // SNAKE text error
   function shakeError($el) {
@@ -344,6 +345,14 @@
 
     isSnake && shakeError($error);
   }
+
+  function formatDateMMDDYYYY(d) {
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day   = String(d.getDate()).padStart(2, "0");
+    const year  = d.getFullYear();
+    return `${month}/${day}/${year}`;
+  }
+
 
   function clearInputError($input) {
     $input.siblings('.error-message').text('');
@@ -449,60 +458,6 @@
       return item.services.length > 0 && item.selectedDate && item.selectedTimeSlot;
     })
   }
-  function showScrollButton(selector) {
-    const $section = $(selector);
-
-    $('html, body').animate({
-      scrollTop: $section.offset().top - 100
-    }, 500);
-
-    // Hiển thị nút hoặc highlight section
-    $section.addClass('highlight');
-    setTimeout(() => $section.removeClass('highlight'), 2000);
-  }
-  // Hàm cấu hình nút scroll
-  function setupScrollButton({
-      triggerSelector,   // selector để kiểm tra hiển thị nút
-      targetSelector,    // selector block muốn scroll tới
-      text,              // text nút
-      iconClass          // class icon Font Awesome
-  }) {
-      const $btn = $('#scrollToTopBtn');
-      const $trigger = $(triggerSelector);
-      const $target = $(targetSelector);
-
-      // Cập nhật text & icon
-      $btn.find('.text-control-scroll').text(text);
-      $btn.find('.icon-control-scroll i')
-          .removeAttr('class')
-          .addClass(iconClass);
-
-      // Hàm kiểm tra trigger có trong viewport
-      function isInViewport($el) {
-          const rect = $el[0].getBoundingClientRect();
-          return rect.top < window.innerHeight && rect.bottom > 0;
-      }
-
-      // Lắng nghe scroll container
-      $('.wrap-home-templates').off('scroll.scrollBtn').on('scroll.scrollBtn', function () {
-          if (isInViewport($trigger)) {
-              $btn.fadeIn();
-          } else {
-              $btn.fadeOut();
-          }
-      });
-
-      // Click > scroll tới target
-      $btn.off('click.scrollBtn').on('click.scrollBtn', function () {
-          const $container = $('.wrap-home-templates');
-          const scrollTopValue = $target.position().top;
-
-          $container.animate({
-              scrollTop: scrollTopValue
-          }, 500);
-      });
-  }
-
 
   // startConfirmAnimation(loopCount, options)
   function startConfirmAnimation(loopCount, options = {}) {
@@ -813,7 +768,7 @@
             </p>
           </div>
           <div class="wrap-signin">
-            <div class="text-uppercase sign-in"
+            <div id="sign-in" class="text-uppercase sign-in"
                 style="
                   --bgColor-signin: ${buttonSignIn.bgColor};
                   --text-color-signin: ${buttonSignIn.color};
@@ -951,6 +906,7 @@
               placeholder="Required (*)"
               value="${firstName || ''}"
               id="firstname-banner"
+              ${isFirst ? 'readonly' : ''}
             />
             <p class="error-message"></p>
           </div>
@@ -960,6 +916,7 @@
               placeholder="${isFirst ? 'Required (*)' : 'Optional (*)'}"
               value="${lastName || ''}"
               id="lastname-banner"
+              ${isFirst ? 'readonly' : ''}
             />
             <p class="error-message"></p>
           </div>
@@ -969,6 +926,7 @@
               placeholder="${isFirst ? 'Required (*)' : 'Optional (*)'}"
               value="${emailPhone || ''}"
               id="emailPhone-banner"
+              ${isFirst ? 'readonly' : ''}
             />
             <p class="error-message"></p>
           </div>
@@ -1179,7 +1137,7 @@
         </div>
       `);
 
-      const $actions = renderActionButtons(idMoreItem, cardItem.id, dataBooking, currentUserId);
+      const $actions = renderActionButtons(idMoreItem, cardItem.id, dataBooking);
 
       $cardMore.append($top, $actions, $listUserStaff);
       return $cardMore;
@@ -1225,9 +1183,9 @@
       `;
     }
     // btn action
-    function renderActionButtons(idMoreItem, idCardItem, dataBooking, currentUserId) {
+    function renderActionButtons(idMoreItem, idCardItem, dataBooking) {
       // Kiểm tra có staff đã được chọn trong item service này hay không
-      const findUserCur = dataBooking.users.find((u) => u.id === currentUserId);
+      const findUserCur = dataBooking.users.find((u) => u.isChoosing);
       const findService = findUserCur.services.find((s) => s.idService == idMoreItem);
       const findItemService = findService && findService.itemService.find((is) => is.idItemService == idCardItem);
       const $wrap = $('<div class="add-more"></div>');
@@ -1474,7 +1432,6 @@
     // Kiểm tra chọn service xong mới hiện chọn time
     const userChoosing = dataBooking.users.find((u) => u.isChoosing);
     const isSelectedService = userChoosing.services.length > 0;
-    console.log("isSelcetedService: ", isSelectedService);
     return `
       <div class="calendar-timeslot">
         <div class="wrap-calendar-time"
@@ -1525,6 +1482,7 @@
             </div>
             <div class="timeslot">
               <h2 id="selectedDateTitle">August 14, 2025</h2>
+              <div id="comboBox"></div>
               <div id="timeSlotsContainer" class="time-slots"></div>
               <div class="text-scroll-more">
                 <h2>Scroll to see more time slots</h2>
@@ -1582,7 +1540,7 @@
     if (titleEl) titleEl.textContent = useDate.toDateString();
 
     // Render time slots cho ngày này (và sẽ chọn time slot nếu user.selectedTimeSlot tồn tại)
-    renderTimeSlotsForDate(useDate, dataBooking, currentUserId, listDataService);
+    renderTimeSlotsForDate(useDate, dataBooking, listDataService);
   }
   // render calender
   function renderCalendar(monthNames, dayNames, currentMonth, currentYear, fakeDataCalender, selectedDate, dataBooking, currentUserId, listDataService) {
@@ -1658,7 +1616,7 @@
           document.querySelectorAll(".day").forEach(d => d.classList.remove("active", "today"));
           day.classList.add("active");
           document.getElementById("selectedDateTitle").textContent = selectedDate.toDateString();
-          renderTimeSlotsForDate(selectedDate, dataBooking, currentUserId, listDataService);
+          renderTimeSlotsForDate(selectedDate, dataBooking, listDataService);
         });
       }
 
@@ -1673,7 +1631,7 @@
         user.selectedDate = selectedDate;
       }
       document.getElementById("selectedDateTitle").textContent = selectedDate.toDateString();
-      renderTimeSlotsForDate(selectedDate, dataBooking, currentUserId, listDataService);
+      renderTimeSlotsForDate(selectedDate, dataBooking, listDataService);
     }
 
   }
@@ -1697,9 +1655,111 @@
 
     return slots;
   }
-  function renderTimeSlotsForDate(selectedDate, dataBooking, currentUserId, listDataService) {
+  function getAMPM(timeStr) {
+    const [hourStr] = timeStr.split(":");
+    const hour = parseInt(hourStr, 10);
+    return hour >= 12 ? "PM" : "AM";
+  }
+  // tab chọn thợ để chọn time
+  function createTabTech({userChossing, data, key, callback, itemWidth = "200px" }) {
+    const container = document.getElementById("comboBox");
+    container.classList.add("tab-tech");
+
+    container.innerHTML = `
+      <div class="tab-list">
+        ${data.map(item => `
+          <div class="tab-item" data-id="${item[key]}" style="width:${itemWidth}">
+            ${item.staffNick}
+          </div>
+        `).join("")}
+      </div>
+    `;
+    console.log("userChoosing 1: ", userChossing)
+
+    const items = container.querySelectorAll(".tab-item");
+
+    items.forEach(itemEl => {
+      itemEl.addEventListener("click", () => {
+        // clear active
+        items.forEach(el => el.classList.remove("active"));
+
+        // set active
+        itemEl.classList.add("active");
+
+        const id = itemEl.dataset.id;
+        const selected = data.find(d => d[key] == id);
+        if (callback) callback(userChossing, selected);
+      });
+    });
+  }
+
+
+  function buildTechDataFromBooking(user) {
+    if (!user || !user.services) return [];
+
+    let rows = [];
+
+    user.services.forEach(svc => {
+      svc.itemService.forEach(item => {
+        rows.push({
+          id: item.selectedStaff.employeeID,       // key duy nhất
+          serviceTitle: item.title,                // cột 1: tên service
+          staffNick: item.selectedStaff.nickName,  // cột 2: nickname technician
+          staff: item.selectedStaff,               // object thợ
+          service: item                            // object service
+        });
+      });
+    });
+
+    // lọc unique theo id
+    const unique = [];
+    const seen = new Set();
+
+    rows.forEach(r => {
+      if (!seen.has(r.id)) {
+        seen.add(r.id);
+        unique.push(r);
+      }
+    });
+
+    return unique;
+  }
+
+  async function getTimeTechFrame(userChoosing, selected) {
+    const newDate = new Date();
+    const selectedDate = userChoosing.selectedDate;
+    const dateSer = formatDateMMDDYYYY(selectedDate || newDate)
+    const timeDuraSer = selected.service.duration;
+
+    const frameTimeFree = await fetchAPI.get(`/api/appointment/gettimebookonline?date=${dateSer}&duration=${timeDuraSer}&rvcno=336&empID=${selected.id}`)
+
+    renderTimeSlotsForTech(userChoosing, selectedDate, frameTimeFree.data);
+  }
+
+
+  function renderServiceTechCombo(dataBooking) {
+    const user = dataBooking.users.find(u => u.isChoosing); // lấy user đang chọn
+
+    if (!user) return;
+
+    const data = buildTechDataFromBooking(user);
+
+    createTabTech({
+      userChossing: user,
+      data,
+      key: "id",
+      itemWidth: "200px",
+      callback: getTimeTechFrame,
+    });
+  }
+
+
+  function renderTimeSlotsForDate(selectedDate, dataBooking, listDataService) {
     const container = $("#timeSlotsContainer");
     container.empty();
+
+    // render combobox cho user đang chọn
+    renderServiceTechCombo(dataBooking);
       //timeslot
     const workingHoursByWeekday = {
       0: [], // Chủ nhật - không làm
@@ -1725,6 +1785,7 @@
       const div = $(`
         <div class="time-slot">
           <span>${slot}</span>
+          <span>${getAMPM(slot)}</span>
           <div class="circle">
             <div class="dot"></div>
           </div>
@@ -1736,7 +1797,7 @@
     container.on("click", ".time-slot", function () {
       container.find(".time-slot").removeClass("selected");
       $(this).addClass("selected");
-      const user = dataBooking.users.find(u => u.id === currentUserId);
+      const user = dataBooking.users.find(u => u.isChoosing);
       if (user){
         user.selectedTimeSlot = $(this).find('span').text();
         user.selectedDate = selectedDate;
@@ -1756,7 +1817,7 @@
     });
 
     // Nếu user đã có selectedTimeSlot thì đánh dấu slot tương ứng
-    const user = dataBooking.users.find(u => u.id === currentUserId);
+    const user = dataBooking.users.find(u => u.isChoosing);
     if (user && user.selectedTimeSlot) {
       const match = container.find('.time-slot').filter(function() {
         return $(this).find('span').text().trim() === String(user.selectedTimeSlot).trim();
@@ -1772,15 +1833,80 @@
     }
   }
 
+  function renderTimeSlotsForTech(userChoosing, selectedDate, frameData) {
+    const container = $("#timeSlotsContainer");
+    container.empty();
+
+    if (!frameData || frameData.length === 0) {
+      container.append(`<div class="time-slot">Không có giờ trống hôm nay.</div>`);
+      return;
+    }
+
+    frameData.forEach(slot => {
+      const div = $(`
+        <div class="time-slot ${!slot.isEnable ? "disabled" : ""}">
+          <span>${slot.time}</span>
+          <span>${getAMPM(slot.time)}</span>
+          <div class="circle">
+            <div class="dot"></div>
+          </div>
+        </div>
+      `);
+
+      if (slot.isEnable) {
+        div.on("click", function () {
+          container.find(".time-slot").removeClass("selected");
+          $(this).addClass("selected");
+
+          userChoosing.selectedTimeSlot = slot.time;
+          userChoosing.selectedDate = selectedDate;
+
+          // Kiểm tra đủ điều kiện thì update scroll button
+          const isFinalBooking = showScrollToFinalBooking(userChoosing);
+          if (isFinalBooking) {
+            updateScrollButton({
+              target: "#section-booking",
+              trigger: "#trigger-booking",
+              triggerBanner: "#triggerBlockSumary",
+              text: "Continue Booking",
+              icon: "fa fa-hand-pointer down",
+              force: false
+            });
+          }
+
+          renderSumary(dataBooking, listDataService);
+        });
+      }
+
+      container.append(div);
+    });
+
+    // nếu user đã có selectedTimeSlot thì đánh dấu lại
+    if (userChoosing && userChoosing.selectedTimeSlot) {
+      const match = container.find(".time-slot").filter(function () {
+        return $(this).find("span").first().text().trim() === String(userChoosing.selectedTimeSlot).trim();
+      });
+      if (match.length) {
+        container.find(".time-slot").removeClass("selected");
+        match.first().addClass("selected");
+      }
+    }
+  }
+
+
   // render sumary
   function renderSumary (dataBooking, listDataService) {
     const $containerSumary = $('.wrap-sumary');
     $containerSumary.empty();
     // Kiểm tra có user nào chọn xong servce và timming
+    console.log("dataBooking: ", dataBooking.users)
     const someUChoosed = dataBooking.users.some(item => {
       return item.services.length > 0 && item.selectedDate && item.selectedTimeSlot;
     })
-    if(!someUChoosed) $containerSumary.append('');;
+    if(!someUChoosed){
+      $containerSumary.append('')
+      return;
+    };
 
     const isAllowConfirm = showScrollToFinalBooking(dataBooking);
     const owner = dataBooking.users[0];
@@ -2053,8 +2179,18 @@
           </div>
           <div class="container-verify-emailPhone">
             <input type="text" id="appointment-input" class="appointment-input" value="${emailOrPhone ? emailOrPhone : ''}" placeholder="Enter phone number or email">
-            <span class="clear-icon">&larr;</span>
+            <span class="clear-icon">
+              <i class="fa-solid fa-arrow-left"></i>
+            </span>
             <p class="error-message"></p>
+            <!--
+            <p class="register-nav">
+              <span class="text-ques-regis">
+                Don't have an account?
+              </span>
+              <span id="nav-tab-register" class="nav-tab-register">Sign up?</span>
+            </p>
+            -->
           </div>
           <div class="consent-container">
             <span class="wrap-icon-checked">
@@ -2087,6 +2223,7 @@
           <div class="otp-inputs">
             ${[...Array(6)].map((_, i) => `<input type="text" maxlength="1" class="otp-box" data-index="${i}" />`).join('')}
           </div>
+          <p class="error-message"></p>
 
           <div class="resend-wrapper">
             Didn’t get a code? <span class="resend-btn disabled">Send Again (<span class="countdown">00:59</span>)</span>
@@ -2103,7 +2240,10 @@
 
           <div class="button-container">
             <button class="btn-back-verify">Back</button>
-            <button class="btn-next-verify" disabled>Verify →</button>
+            <button class="btn-next-verify" disabled>
+            Verify
+            <i class="fa-solid fa-arrow-right"></i>
+            </button>
           </div>
         </div>
       `;
@@ -2132,7 +2272,7 @@
             <div class="form-input-phone">
               <label>
                 Phone
-                <p>${fieldEntered === typeInput.EMAIL ? '' : '*'}</p>
+                <p>${fieldEntered === typeInput.EMAIL  ? '' : '*'}</p>
               </label>
               <input
                 id="phone-register"
@@ -2191,7 +2331,7 @@
           </div>
           <div class="button-container">
             <button class="btn-back-verify-register">Back</button>
-            <button class="btn-next-verify-register" ${isDisabled ? '' : 'disabled'}>Sign In →</button>
+            <button class="btn-next-verify-register" ${isDisabled ? '' : 'disabled'}>Sign Up</button>
           </div>
         </div>
       `
@@ -2759,18 +2899,19 @@
       renderCountControls('.wrap-control', dataBooking);
       renderGuestInputs('.wrap-input-guests', dataBooking);
       $('.wrap-input-guests').removeClass('hidden');
-    } else if (banner.optionBooked === 'FAMILY') {
-      // Thay bằng data family
-      dataBooking.type = typeBookingEnum.FAMILY;
-      dataBooking.users = dataFamily;
-
-      // Default user đầu tiên isChoosing
-      dataBooking.users[0].isChoosing = true;
-
-      renderCountControls('.wrap-control', dataBooking);
-      renderGuestInputs('.wrap-input-guests', dataBooking);
-      $('.wrap-input-guests').removeClass('hidden');
     }
+    // else if (banner.optionBooked === 'FAMILY') {
+    //   // Thay bằng data family
+    //   dataBooking.type = typeBookingEnum.FAMILY;
+    //   dataBooking.users = dataFamily;
+
+    //   // Default user đầu tiên isChoosing
+    //   dataBooking.users[0].isChoosing = true;
+
+    //   renderCountControls('.wrap-control', dataBooking);
+    //   renderGuestInputs('.wrap-input-guests', dataBooking);
+    //   $('.wrap-input-guests').removeClass('hidden');
+    // }
     // init render list services
     renderListService(dataBlock.listDataService,'.list-more', dataBooking, dataBlock.currentUserId);
     // init render info shop
@@ -2833,20 +2974,12 @@
   }
 
   // hàm kiểm tra thợ làm có đủ thời gian handle
-  function fcTechEnoughTime (userChoosing,itemSelected, staffSelected) {
+  async function findTimeFramFreeTechs (timeFramFree, loToday, itemSelected, staffSelected, isCopySameTime) {
 
-    if (!userChoosing.services) return;
+    const timedura = itemSelected.timetext;
+    const idTech = staffSelected.employeeID;
 
-    // Lấy tất cả itemService có selectedStaff trùng employeeID
-    const matchingServices = userChoosing.services
-      .flatMap(svc => svc.itemService || [])
-      .filter(item => item.selectedStaff?.employeeID === staffSelected.employeeID);
-
-    // Tính tổng duration
-    const totalDuration = matchingServices.reduce((sum, item) => sum + (item.duration || 0), 0);
-
-    console.log(`Tổng duration cho staff ${staffSelected.employeeID}:`, totalDuration)
-    // tìm itemService của userChoosing, mà có selectedStaff có employeeID = employeeID, rồi tính tổng duration, log ra duration đó
+    const timeFree = await fetchAPI.get(`/api/appointment/gettimebookonline?date=${loToday}&duration=${timedura}&rvcno=336&empID=${idTech}`)
   }
 
 
@@ -2855,7 +2988,6 @@
     const { dataBooking, getDataListDataService, getlistUserStaff, dataCart,dataMe, dataGuest, dataFamily } = templateStore.load();
     const listDataService = await getDataListDataService();
     const listUserStaff  = await getlistUserStaff();
-    const timeFree = await fetchAPI.get('/api/appointment/gettimebookonline?date=08/14/2025&duration=31&rvcno=336&empID=3360005')
 
     let {banner} = dataRelease;
     // Khai báo currentUserId trước khi gọi renderBlockTemplate
@@ -2871,10 +3003,13 @@
     ];
     const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     const currentDate = new Date();
-
     let selectedDate = null;
     let currentMonth = currentDate.getMonth();
+    let currentDay = String(currentDate.getDate()).padStart(2, '0')
     let currentYear = currentDate.getFullYear();
+
+    let loToday = `${String(currentMonth + 1).padStart(2, '0')}/${currentDay}/${currentYear}`;
+    let timeFramFree = [];
 
     const fakeDataCalender = {
       8: [8, 9, 10, 12, 20, 22] // August: non-working days
@@ -2967,6 +3102,23 @@
 
               setTimeout(() => {$overlay.remove()}, 300); // chờ animation xong mới xóa DOM
             }
+          //Login
+          $(document).on('click', '#sign-in', function() {
+            // Verify trước khi gán dataBooking.users cho dataFamily
+            const htmlVerifyEmailPhone = renderVerifyEmailPhoneContent();
+            let height = 620;
+            let width = 560;
+            if(isMobile) {
+              height = 620;
+              width = '100%';
+            }
+            // const persistent = true;
+            const html = renderBasePopup(htmlVerifyEmailPhone, false, height, width);
+            $wrapHomeTemp.append(html);
+            setTimeout(() => {
+              $('.overlay-screen').addClass('show');
+            }, 10);
+          })
       // >> END: popup cart
       // << START: popup verify user
 
@@ -3073,24 +3225,24 @@
         $(document).on('click', '.btn-increase', function() {
           // max guest 6
           if(dataBooking.users.length >=6) return;
-          const maxId = dataBooking.users.reduce((max,i) => Math.max(max,i.id), 0);
-          const newId = maxId + 1;
-          dataBooking.users.push({
-            id: newId,
-            firstName: '',
-            lastName: '',
-            phoneNumber: '',
-            email: '',
-            gender: genderEnum.OTHER,
-            services: [
-            ],
-            selectedDate: null,
-            selectedTimeSlot: null,
-            isSelecting: false,
-            isChoosing: false,
-            isSelecting: false,
-            isChoosing: false,
-          });
+            const maxId = dataBooking.users.reduce((max,i) => Math.max(max,i.id), 0);
+            const newId = maxId + 1;
+            dataBooking.users.push({
+              id: newId,
+              firstName: '',
+              lastName: '',
+              phoneNumber: '',
+              email: '',
+              gender: genderEnum.OTHER,
+              services: [
+              ],
+              selectedDate: null,
+              selectedTimeSlot: null,
+              isSelecting: false,
+              isChoosing: false,
+              isSelecting: false,
+              isChoosing: false,
+            });
           updateGuestSection();
         });
 
@@ -3585,7 +3737,7 @@
       $wrap.toggleClass('collapsed');
     });
     // btn more
-    $(document).on('click', '.add-more .btn-add-more', function () {
+    $(document).on('click', '.add-more .btn-add-more', async function () {
       const $this = $(this);
       const $card = $this.closest('.card-more');
 
@@ -3609,6 +3761,7 @@
         } else {
           serviceItemExit = {
             idItemService,
+            title: itemSelected.title,
             duration: itemSelected.timetext,
             price: itemSelected.priceRental,
             selectedStaff: staffSelecting
@@ -3621,6 +3774,7 @@
           itemService: [
             {
               idItemService,
+              title: itemSelected.title,
               duration: itemSelected.timetext,
               price: itemSelected.priceRental,
               selectedStaff: staffSelecting
@@ -3629,8 +3783,13 @@
         };
         userChoosing.services.push(serviceExit);
       }
-      const $action = renderActionButtons(idService, idItemService, dataBooking, currentUserId);
+
+      // const timeDuraSer = $card.find('#service-duration').data('value');
+      // const frameTimeFree = await fetchAPI.get(`/api/appointment/gettimebookonline?date=08/19/2025&duration=${timeDuraSer}&rvcno=336&empID=${staffSelecting.employeeID}`)
+
+      const $action = renderActionButtons(idService, idItemService, dataBooking);
       $card.find('.add-more').replaceWith($action);
+      // to-do : will
 
       updateGuestSection(); // Cập nhật để hiển thị nút Copy Service
 
@@ -3655,6 +3814,10 @@
           force: false
         });
       }
+
+      // update calander
+      selectedDate = formatDateMMDDYYYY(userChoosing.selectedDate);
+      renderTimeSlotsForDate(selectedDate, dataBooking, listDataService);
 
       //Cập nhật table booking
       renderSumary(dataBooking, listDataService);
@@ -3699,7 +3862,7 @@
         userSelecting.services.splice(serviceDeleteIndex, 1);
       }
 
-      const $action = renderActionButtons(idService, idItemService, dataBooking, currentUserId);
+      const $action = renderActionButtons(idService, idItemService, dataBooking);
       $card.find('.add-more').replaceWith($action);
 
       // re-render list add on
@@ -3807,12 +3970,9 @@
       const itemSelected = serviceSelected && serviceSelected.listItem.find((is) => is.id === idItemService);
 
       if(idStaff !== 9999) {
-        const isTechEnoughTime = fcTechEnoughTime(userChoosing,itemSelected, staffSelecting)
+        findTimeFramFreeTechs(timeFramFree, loToday,itemSelected, staffSelecting, isCopySameTime)
+        console.log("timeFrameFree: ", timeFramFree);
 
-        if(!isTechEnoughTime){
-          // gọi hàm thông báo
-          // return;
-        } ;
       }
 
       if (serviceExit) {
@@ -3861,6 +4021,10 @@
           force: false
         });
       }
+
+      // update calander
+      selectedDate = formatDateMMDDYYYY(userChoosing.selectedDate);
+      renderTimeSlotsForDate(selectedDate, dataBooking, listDataService);
 
       //Cập nhật table booking
       renderSumary(dataBooking, listDataService);
@@ -3974,8 +4138,16 @@
         }
 
         isPhone = isValidPhoneNumber(val);
+        console.log("isPhone: ", isPhone)
         isEmail = isValidEmail(val);
       }
+      // clear input #appointment-input
+      $(document).on('click', '.clear-icon', function(){
+        const $inputAppt = $('#appointment-input');
+        $inputAppt.val('');
+        clearInputError($inputAppt);
+        $inputAppt.focus();
+      })
 
       // Cập nhật lỗi
       if (val === '') {
@@ -4006,46 +4178,112 @@
         // $('.btn-next-emailPhone').prop('disabled', true)
       }
     })
+    // Hàm dùng để gửi OTP (email hoặc phone)
+    async function sendOTP(inputValue, type) {
+      if (type == typeInput.PHONE) {
+        const phoneFormatVerify = inputValue;
+        dataBooking.users[0].phoneNumber = phoneFormatVerify;
+        dataBooking.users[0].email = '';
+
+        const phoneUnformat = unFormatPhoneNumber(phoneFormatVerify);
+        const resVerifyAccount = await fetchAPI.get(`/api/client/getcustomerfamily?RVCNo=336&key=${phoneUnformat}&ismail=false`);
+        console.log("check resV: ", resVerifyAccount)
+        if (resVerifyAccount.status === 201 || resVerifyAccount.status === 202) {
+          // chưa verify, cần gửi OTP
+          return await fetchAPI.get(`/api/user/verifycode?phone=${phoneUnformat}&portalCode=${encodeURIComponent('+84')}&isMail=false`);
+        }
+        else if (resVerifyAccount.status === 200) {
+          // tồn tại và verified
+          // Xử lý khi typeBooking đang là GUEST hay FAMILY
+          // Chưa có data FAMILY, tạm thời xử lý GUEST
+          const typeBooking = dataBooking.type;
+
+          dataBooking.users[0] = {
+            ...dataBooking.users[0],
+            email: resVerifyAccount?.data[0]?.email,
+            phoneNumber: resVerifyAccount?.data[0]?.contactPhone,
+            firstName: resVerifyAccount?.data[0]?.firstName,
+            lastName: resVerifyAccount?.data[0]?.lastName,
+            id: resVerifyAccount?.data[0]?.customerID,
+            isChoosing: true,
+            isVerify: true,
+          };
+
+          currentUserId = dataBooking.users[0].id;
+
+          if(typeBooking === typeBookingEnum.GUESTS){
+            // Add thêm 1 Guest rỗng
+            $('.btn-increase').trigger('click');
+          }
+          closePopupContainerTemplate();
+
+          if (dataBooking.type !== typeBookingEnum.ME) {
+            $('.wrap-input-guests').removeClass('hidden');
+            updateGuestSection();
+          }
+
+          $('.wrap-advertise-page').css({ display: 'none' });
+          return null; // Không cần OTP nữa
+        }
+      }
+      else if (type == typeInput.EMAIL) {
+        dataBooking.users[0].phoneNumber = '';
+        dataBooking.users[0].email = inputValue;
+
+        return await fetchAPI.get(`/api/user/sendotplogin?RVCNo=336&phone=${inputValue}&isMail=true`);
+      }
+    }
+
     // Xử lý sự kiện cho next verify
-    $(document).on('click', '.btn-next-emailPhone', function () {
-      // verify val input trước khi cho next
+    $(document).on('click', '.btn-next-emailPhone', async function () {
       const $appointInput = $('#appointment-input');
       const res = validateEmailPhoneInput($appointInput);
-      if(!res) return;
+      if (!res) return;
 
-      // Lưu lại vào dataBooking
-      if(res === "PHONE"){
-        dataBooking.users[0].phoneNumber = $appointInput.val();
-        dataBooking.users[0].email = '';
+      const value = $appointInput.val();
+      const resVerifyGetOtp = await sendOTP(value, res);
+
+      if (resVerifyGetOtp && resVerifyGetOtp.status === 200) {
+        const emailPhoneMasked = (res === "EMAIL" ? dataBooking.users[0].email : dataBooking.users[0].phoneNumber);
+        const htmlVerifyEmailPhoneMasked = renderVerifyCodeContent(emailPhoneMasked);
+
+        const persistent = true;
+        let height = 620, width = 560;
+        if (isMobile) {
+          height = 620;
+          width = '100%';
+        }
+
+        const html = renderBasePopup(htmlVerifyEmailPhoneMasked, persistent, height, width);
+        $wrapHomeTemp.append(html);
+
+        setTimeout(() => {
+          $('.overlay-screen').addClass('show');
+          $('.otp-box[data-index="0"]').focus();
+        }, 20);
+
+        resendCountdown = 59;
+        startResendTimer();
+      }else{
+        console.log("! 201")
       }
-      if(res === "EMAIL"){
-        dataBooking.users[0].phoneNumber = '';
-        dataBooking.users[0].email = $appointInput.val();
-      }
 
-      const emailPhoneMasked = res === "EMAIL" ? dataBooking.users[0].email : dataBooking.users[0].phoneNumber;
-      const htmlVerifyEmailPhoneMasked = renderVerifyCodeContent(emailPhoneMasked);
-      const persistent = true;
-      let height = 620;
-      let width = 560;
-      if(isMobile) {
-        height = 620;
-        width = '100%';
-      }
-      const html = renderBasePopup(htmlVerifyEmailPhoneMasked, persistent, height, width);
-
-      $wrapHomeTemp.append(html);
-      setTimeout(() => {
-        $('.overlay-screen').addClass('show');
-
-        // focus vào input đầu tiên trong opt
-        $('.otp-box[data-index="0"]').focus();
-
-      }, 20);
-
-      resendCountdown = 59;
-      startResendTimer();
     });
+    // resent verify otp
+    $(document).on('click', '.resent-btn', async function () {
+      const { email, phoneNumber } = dataBooking.users[0];
+      const type = email ? "EMAIL" : "PHONE";
+      const value = email || phoneNumber;
+
+      const resVerify = await sendOTP(value, type);
+
+      if (resVerify && resVerify.status === 200) {
+        resendCountdown = 59;
+        startResendTimer();
+      }
+    });
+
+
     // Xử lý back popup back
     $(document).on('click', '.btn-back-emailPhone', function () {
       dataBooking.users[0].email = '';
@@ -4068,6 +4306,12 @@
       const allFilled = $('.otp-box').toArray().every(input => $(input).val().length === 1);
       $('.btn-next-verify').prop('disabled', !allFilled);
     });
+    function getOtpCode() {
+      return $('.otp-box')
+        .toArray()
+        .map(input => $(input).val())
+        .join('');
+    }
     // Cho phép back bằng phím <-
     $(document).on('keydown', '.otp-box', function (e) {
       const $this = $(this);
@@ -4078,7 +4322,7 @@
       }
     });
     // next verify code
-    $(document).on('click', '.btn-next-verify',function () {
+    function nextFormRegister(dataBooking) {
       const user = dataBooking.users[0];
       const dataRegis = {};
       if (user.email?.trim()) {
@@ -4113,8 +4357,25 @@
 
       //clear interval time opt
       clearInterval(resendInterval);
+    }
+    $(document).on('click', '.btn-next-verify',async function () {
+      // Chỉ verify code lần đầu đăng ký, những lần sau không còn cần verify
+      const phoneVerify = unFormatPhoneNumber(JSON.parse(JSON.stringify(dataBooking.users[0].phoneNumber)));
+      const optCode = getOtpCode();
+
+      const resVerifyCode = await fetchAPI.get(`/api/user/checkdevice?phone=${phoneVerify}&verifyCode=${optCode}`);
+      if(resVerifyCode.status === 200) {
+        nextFormRegister(dataBooking);
+      }
+      else{
+        // Ngược lại input verify error shake
+
+      }
     })
-    //
+    // popup register
+    $(document).on('click', '#nav-tab-register', function(){
+      nextFormRegister(dataBooking);
+    })
     function startResendTimer() {
       $('.resend-btn').addClass('disabled');
 
@@ -4171,7 +4432,7 @@
       }, 10);
     });
       // next verify
-    $(document).on('click', '.btn-next-verify-register', function() {
+    $(document).on('click', '.btn-next-verify-register', async function() {
       const $this = $(this);
 
       // xử lý check lại toàn bộ form input, verify và snake text error
@@ -4245,13 +4506,35 @@
         return;
       }
 
+      // Đăng ký thành viên
+      const payloadRegis = {
+        firstName: valFirstRegis,
+        lastName: valLastRegis,
+        contactPhone: unFormatPhoneNumber(JSON.parse(JSON.stringify(valPhoneRegis))),
+        email: valEmailRegis,
+        isMail: valEmailRegis ? true : false,
+      }
+      const resRegis = await fetchAPI.post('/api/user/register', payloadRegis);
+      if(resRegis.status !== 200) {
+        // chưa biết response trả về gì
+        // to-do : will
+        return;
+      }
+      // token & refreshTokens
+      const token_bot = resRegis?.data?.token;
+      const refreshTokens_bot = resRegis?.data?.refreshTokens;
+      localStorage.setItem('token_bot', token_bot)
+      localStorage.setItem('refreshTokens_bot', refreshTokens_bot);
+
       // Lưu thông tin vào dataBooking
-      dataBooking.users[0].email = valEmailRegis;
-      dataBooking.users[0].phoneNumber = valPhoneRegis;
+      dataBooking.users[0].email = resRegis?.data?.email
+      dataBooking.users[0].phoneNumber = resRegis?.data?.phone;
+      dataBooking.users[0].id = resRegis?.data?.id;
+      // res chỉ trả về fullName
       dataBooking.users[0].firstName = valFirstRegis;
       dataBooking.users[0].lastName = valLastRegis;
 
-      // close và hiển thị gia đình
+      // close và hiển thị gia đình | guest
       // add thêm 1 thành viên rỗng nếu length dataBooking.users.length = 1
       const newU = {
         id: 2,
@@ -4272,6 +4555,19 @@
         dataBooking.users.push(newU);
       }
       closePopupContainerTemplate();
+
+      alertCustom({
+        type: "success",
+        isNoti: true,
+        notify: {
+          title: "Đăng ký thành công!",
+          position: "bottom-end",
+          timer: 3000,
+          toast: true,
+          showConfirmButton: false
+        }
+      });
+
       $('.wrap-input-guests').removeClass('hidden');
       updateGuestSection();
 
@@ -4391,11 +4687,27 @@
         && $('#lastname-register').val().trim();
 
       if($this.attr('id') === 'email-register'){
-        if($this.data('type') === typeRequire.REQUIRED){
-          const valEmail = $this.val().trim();
 
-          allFilled = allFilled && valEmail;
+        const valid = isValidEmail(val);
+
+        if($this.data('type') === typeRequire.REQUIRED){
+          allFilled = allFilled && val;
         }
+
+        // --- update phone required/not required ---
+        const $phone = $('#phone-register');
+        const $labelPhone = $('.form-input-phone label p');
+
+        if (valid && val !== '') {
+          // Email hợp lệ -> Phone không bắt buộc
+          $phone.attr('data-type', typeRequire.NOTREQUIRED);
+          $labelPhone.text('');
+        } else {
+          // Email rỗng/không hợp lệ -> Phone bắt buộc
+          $phone.attr('data-type', typeRequire.REQUIRED);
+          $labelPhone.text('*');
+        }
+
       }
       if($this.attr('id') === 'phone-register'){
         const $this = $(this);
@@ -4434,6 +4746,20 @@
         if($this.data('type') === typeRequire.REQUIRED){
           const valPhone = $this.val().trim();
           allFilled = allFilled && valPhone;
+        }
+
+        // --- update email required/not required ---
+        const $email = $('#email-register');
+        const $labelEmail = $('.form-input-email label p');
+
+        if (valid && phoneVal !== '') {
+          // Phone hợp lệ -> Email không bắt buộc
+          $email.attr('data-type', typeRequire.NOTREQUIRED);
+          $labelEmail.text('');
+        } else {
+          // Phone rỗng/không hợp lệ -> Email bắt buộc
+          $email.attr('data-type', typeRequire.REQUIRED);
+          $labelEmail.text('*');
         }
       }
 
@@ -4797,7 +5123,7 @@
         // Cập nhật tiêu đề ngày được chọn
         document.getElementById("selectedDateTitle").textContent = selectedDate.toDateString();
         // Hiển thị time slots cho ngày hôm nay
-        renderTimeSlotsForDate(selectedDate, dataBooking, currentUserId, listDataService);
+        renderTimeSlotsForDate(selectedDate, dataBooking, listDataService);
       }
     });
     $(document).on("click",'#next', function() {
@@ -4810,7 +5136,7 @@
         // Cập nhật tiêu đề ngày được chọn
         document.getElementById("selectedDateTitle").textContent = selectedDate.toDateString();
         // Hiển thị time slots cho ngày hôm nay
-        renderTimeSlotsForDate(selectedDate, dataBooking, currentUserId, listDataService);
+        renderTimeSlotsForDate(selectedDate, dataBooking, listDataService);
       }
     });
     // toggle copy same time
@@ -4844,7 +5170,7 @@
     // Cập nhật tiêu đề ngày được chọn
     document.getElementById("selectedDateTitle").textContent = selectedDate.toDateString();
     // Hiển thị time slots cho ngày hôm nay
-    renderTimeSlotsForDate(selectedDate, dataBooking, currentUserId, listDataService);
+    renderTimeSlotsForDate(selectedDate, dataBooking, listDataService);
 
     // confirm booking
     renderSumary(dataBooking, listDataService);
@@ -4955,11 +5281,9 @@
       }
     });
 
-    $(document).on('click', '#page-fag', async function () {
-      const dataServices = await fetchAPI.get('/api/category/getallitem?RVCNo=336');
 
-      const dataBookingTime = await fetchAPI.get('/api/appointment/gettimebookonline?date=08/15/2025&duration=31&rvcno=336');
-      console.log("dataBookingTime : ", dataBookingTime)
+    // click test api
+    $(document).on('click', '#page-fag', async function () {
 
 
     })
@@ -5005,7 +5329,7 @@
     -> 1.2: fill data user, gồm service gần nhất booking, chọn lại thợ và giờ
   */
   /*
-   - 1. Lấy ra thông tin tech cho service
+   - 1. Lấy ra thông tin tech cho service (payload: date, time, duration)
    - 2. Lấy ra time-frame phù hợp cho các service và tech đã chọn
    - 3. Copy service, chọn lại thợ -> (1)&(2)
    - 4. Khi copy service, kiểm tra có option copy time để copy time -> (1)&(2)

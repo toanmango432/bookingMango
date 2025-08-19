@@ -1257,6 +1257,7 @@ td td:last-child {
   min-height: 100%;
   max-width: 100%;
   max-height: 100%;
+  border-radius: 6px;
 }
 .wrap-item-promotion-page .item-promotion-page .left-promotion-item {
   display: flex;
@@ -3008,6 +3009,9 @@ td td:last-child {
   align-items: flex-start;
   gap: var(--px-24);
   padding: 24px;
+}
+.wrap-calendar-time.hide {
+  display: none;
 }
 .container-cal-time {
   width: 100%;
