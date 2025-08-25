@@ -36,6 +36,7 @@ import {alertCustom} from "./site.js";
     REQUIRED: 'REQUIRED',
     NOTREQUIRED: 'NOT-REQUIRED'
   }
+  const idStaffDefault = 9999;
 
   const templateStore = {
     load: () => {
@@ -58,68 +59,88 @@ import {alertCustom} from "./site.js";
             isChoosing: true,
           },
         ],
+        cardNumber: [
+        ]
       };
       // Danh sách người làm việc có quyền
       const getDataListDataService = async () => {
-        const dataCategories = await fetchAPI.get('/api/category/getallcategories?RVCNo=336');
-        const dataItemServices = await fetchAPI.get('/api/category/getallitem?RVCNo=336');
+        try {
+          const dataCategories = await fetchAPI.get('/api/category/getallcategories?RVCNo=336');
+          const dataItemServices = await fetchAPI.get('/api/category/getallitem?RVCNo=336');
 
-        const dataServices = [];
+          const dataServices = [];
 
-        dataCategories.forEach((itemCar) => {
-          const objCar = {};
-          const categoryID = itemCar.categoryID;
+          dataCategories.forEach((itemCar) => {
+            const objCar = {};
+            const categoryID = itemCar.categoryID;
 
-          objCar.item = {};
+            objCar.item = {};
 
-          objCar.item.id = categoryID;
-          objCar.item.value = itemCar.categoryName;
+            objCar.item.id = categoryID;
+            objCar.item.value = itemCar.categoryName;
 
-          const listItem = [];
-          dataItemServices.forEach((itemSer) => {
-            if(itemSer.categoryID === categoryID && itemSer.isActive && itemSer.isShowOB) {
-              const ser = {};
+            const listItem = [];
+            dataItemServices.forEach((itemSer) => {
+              if(itemSer.categoryID === categoryID && itemSer.isActive && itemSer.isShowOB) {
+                const ser = {};
 
-              ser.id = itemSer.itemID;
-              ser.title = itemSer.itemName;
-              ser.priceRental = itemSer.basePrice;
-              ser.timetext = itemSer.duration;
+                ser.id = itemSer.itemID;
+                ser.title = itemSer.itemName;
+                ser.priceRental = itemSer.basePrice;
+                ser.timetext = itemSer.duration;
 
-              // list add on
-              const itemAddOn = [];
-              if(itemSer.listAddOn.length >0) {
-                itemSer.listAddOn.forEach((iAdd) => {
-                  const objAddOn = {};
+                // list add on
+                const itemAddOn = [];
+                if(itemSer.listAddOn.length >0) {
+                  itemSer.listAddOn.forEach((iAdd) => {
+                    const objAddOn = {};
 
-                  objAddOn.id = iAdd.addOnID;
-                  objAddOn.title = iAdd.itemName;
-                  objAddOn.price = iAdd.price;
-                  objAddOn.timedura = iAdd.duration;
+                    objAddOn.id = iAdd.addOnID;
+                    objAddOn.title = iAdd.itemName;
+                    objAddOn.price = iAdd.price;
+                    objAddOn.timedura = iAdd.duration;
 
-                  itemAddOn.push(objAddOn);
-                })
+                    itemAddOn.push(objAddOn);
+                  })
+                }
+                ser.listOptionAddOn = itemAddOn;
+                listItem.push(ser);
               }
-              ser.listOptionAddOn = itemAddOn;
-              listItem.push(ser);
-            }
+            })
+            objCar.item.listItem = listItem;
+            dataServices.push(objCar);
           })
-          objCar.item.listItem = listItem;
-          dataServices.push(objCar);
-        })
-        return dataServices;
-        // check isActive && isShowOB true
+          return dataServices;
+        }catch(e){
+          console.error("[getDataListDataService]", {
+          message: e.message,
+          stack: e.stack,
+          name: e.name,
+          response: e.response || null
+        });
+        }
 
       }
       const getlistUserStaff = async () => {
-        const resTechFull = await fetchAPI.get('/api/tech/gettechinfoofsalon?rvcNo=336');
-        const staffDefault = {
-          employeeID: 9999,
-          imageFileName: '/assets/images/listUser/userAvailable.png',
-          nickName: 'Next Available',
+        try {
+          const resTechFull = await fetchAPI.get('/api/tech/gettechinfoofsalon?rvcNo=336');
+          const staffDefault = {
+            employeeID: idStaffDefault,
+            imageFileName: '/assets/images/listUser/userAvailable.png',
+            nickName: 'Next Available',
+          }
+          const dataTech = resTechFull.data.filter((item) => item.allowBookingOnline);
+          dataTech.unshift(staffDefault);
+          return dataTech || [];
+        }catch(e){
+          console.error(
+            "[getlistUserStaff]", {
+              message: e.message,
+              stack: e.stack,
+              name: e.name,
+            }
+          )
         }
-        const dataTech = resTechFull.data.filter((item) => item.allowBookingOnline);
-        dataTech.unshift(staffDefault);
-        return dataTech || [];
       }
 
       //
@@ -197,7 +218,7 @@ import {alertCustom} from "./site.js";
                 {
                   idItemService: 1,
                   selectedStaff: {
-                    employeeID: 9999,
+                    employeeID: idStaffDefault,
                     imageFileName: '/assets/images/listUser/userAvailable.png',
                     nickName: 'Next Available',
                   },
@@ -224,7 +245,7 @@ import {alertCustom} from "./site.js";
                 {
                   idItemService: 1,
                   selectedStaff: {
-                    employeeID: 9999,
+                    employeeID: idStaffDefault,
                     imageFileName: '/assets/images/listUser/userAvailable.png',
                     nickName: 'Next Available',
                   },
@@ -250,7 +271,7 @@ import {alertCustom} from "./site.js";
                 {
                   idItemService: 1,
                   selectedStaff: {
-                    employeeID: 9999,
+                    employeeID: idStaffDefault,
                     imageFileName: '/assets/images/listUser/userAvailable.png',
                     nickName: 'Next Available',
                   },
@@ -277,7 +298,7 @@ import {alertCustom} from "./site.js";
                 {
                   idItemService: 2,
                   selectedStaff: {
-                    employeeID: 9999,
+                    employeeID: idStaffDefault,
                     imageFileName: '/assets/images/listUser/userAvailable.png',
                     nickName: 'Next Available',
                   },
@@ -643,10 +664,85 @@ import {alertCustom} from "./site.js";
 
   }
 
+  // format card number
+  function formatCardNumber(value) {
+    const digits = value.replace(/\D/g, ''); // giữ lại số
+    return digits
+      .match(/.{1,4}/g)       // tách thành từng block 4 số
+      ?.join('-') || '';      // nối lại bằng dấu -
+  }
+  // unformat card number
+  function unformatCardNumber(value) {
+    return value.replace(/\D/g, ''); // xóa tất cả ký tự không phải số
+  }
+  // valid cardnumber
+  function isValidCardNumber(value) {
+    const digits = value.replace(/\D/g, '');   // xoá mọi ký tự không phải số
+    return /^\d{13,19}$/.test(digits);        // còn lại 13–19 số
+  }
+  // format date expired
+  function formatExpiryDate(value) {
+    return value
+      .replace(/\D/g, '')        // chỉ giữ số
+      .replace(/(\d{2})(\d{1,2})/, '$1/$2') // auto thêm /
+      .slice(0, 5);              // giới hạn 5 ký tự
+  }
+  // valid date expired
+  function isValidExpiryDate(value) {
+    if (!/^\d{2}\/\d{2}$/.test(value)) return false;
+
+    const [mm, yy] = value.split('/').map(Number);
+    if (mm < 1 || mm > 12) return false;
+
+    const now = new Date();
+    const currentYear = now.getFullYear() % 100; // lấy 2 số cuối
+    const currentMonth = now.getMonth() + 1;
+
+    // expired?
+    return (yy > currentYear) || (yy === currentYear && mm >= currentMonth);
+  }
+  // valid cvv
+  function isValidCVV(value) {
+    return /^\d{3,4}$/.test(value);
+  }
+  // Hàm dấu mã số thẻ
+  function maskCardNumber(cardNumber = '') {
+    if (!cardNumber) return '';
+    const digits = cardNumber.replace(/\D/g, '');
+    const last4 = digits.slice(-4);
+    // fake X cho đủ 12 số + nối 4 số cuối
+    const masked = 'X'.repeat(12) + last4;
+    // nhóm 4 số 1 block
+    return masked.match(/.{1,4}/g).join('-');
+  }
+
+
 
   // Function block element
-  function renderNavHeaderTemplates(dataHeaderNav) {
-    const { logo: logoWeb, itemNav, colorActiveNav, iconUser, buttonBooking, cart } = dataHeaderNav;
+  function renderCartUser (dataBooking, dataHeaderNav) {
+    const {cart} = dataHeaderNav;
+    const quantity = dataBooking.users.reduce((accUser, user) => {
+      const userCount = user.services.reduce((accService, service) => {
+        return accService + service.itemService.length;
+      }, 0)
+      return accUser + userCount;
+    }, 0)
+    return `
+        <button>
+          ${cart.icon}
+        </button>
+        <span class="quantity-prod"
+          style="
+            --bgColorQa: ${cart.bgColor};
+            --colorQua: ${cart.color};
+          "
+        >
+          ${quantity}
+        </span>
+    `
+  }
+  function renderNavHeaderTemplates(dataBooking, dataHeaderNav) {
+    const { logo: logoWeb, itemNav, colorActiveNav, iconUser, buttonBooking } = dataHeaderNav;
 
     return `
       <div class="nav-header-web" style="--color-active: ${colorActiveNav}">
@@ -713,17 +809,7 @@ import {alertCustom} from "./site.js";
                   ${buttonBooking.content}
               </button>
               <div class="cart-user">
-                <button>
-                  ${cart.icon}
-                </button>
-                <span class="quantity-prod"
-                  style="
-                    --bgColorQa: ${cart.bgColor};
-                    --colorQua: ${cart.color};
-                  "
-                >
-                  ${cart.quatity}
-                </span>
+                ${renderCartUser(dataBooking, dataHeaderNav)}
               </div>
               <button class="menu-toggle" aria-label="Toggle navigation">
                 <i class="fa-solid fa-bars"></i>
@@ -906,7 +992,6 @@ import {alertCustom} from "./site.js";
               placeholder="Required (*)"
               value="${firstName || ''}"
               id="firstname-banner"
-              ${isFirst ? 'readonly' : ''}
             />
             <p class="error-message"></p>
           </div>
@@ -916,7 +1001,6 @@ import {alertCustom} from "./site.js";
               placeholder="${isFirst ? 'Required (*)' : 'Optional (*)'}"
               value="${lastName || ''}"
               id="lastname-banner"
-              ${isFirst ? 'readonly' : ''}
             />
             <p class="error-message"></p>
           </div>
@@ -926,7 +1010,6 @@ import {alertCustom} from "./site.js";
               placeholder="${isFirst ? 'Required (*)' : 'Optional (*)'}"
               value="${emailPhone || ''}"
               id="emailPhone-banner"
-              ${isFirst ? 'readonly' : ''}
             />
             <p class="error-message"></p>
           </div>
@@ -1065,7 +1148,8 @@ import {alertCustom} from "./site.js";
   }
 
   // list services page
-    function renderListService(dataList, containerSelector = '.list-more', dataBooking, currentUserId) {
+    function renderListService(dataList, containerSelector = '.list-more', dataBooking, dataSetting) {
+
       const $container = $(containerSelector);
       $container.empty();
 
@@ -1079,7 +1163,7 @@ import {alertCustom} from "./site.js";
         $moreItem.append($expandTitle);
 
         //render card
-        const $listCards = item.listItem.map(cardItem => renderServiceCard(idMoreItem, cardItem, dataBooking, currentUserId));
+        const $listCards = item.listItem.map(cardItem => renderServiceCard(idMoreItem, cardItem, dataBooking, dataSetting));
 
         const $wrapper = $(`<div class="wrap-list-more"></div>`).append($listCards);
         const $ListAddOn = item.listItem.map(cardItem =>renderListAddOn(item, cardItem.id, dataBooking));
@@ -1108,7 +1192,8 @@ import {alertCustom} from "./site.js";
       return $title;
     }
     // item card service
-    function renderServiceCard(idMoreItem, cardItem, dataBooking, currentUserId) {
+    function renderServiceCard(idMoreItem, cardItem, dataBooking, dataSetting) {
+      const isHidePrice = dataSetting.HidePrice === "1";
       const $cardMore = $(`
           <div class="card-more" data-id="${cardItem.id}">
           </div>
@@ -1121,12 +1206,12 @@ import {alertCustom} from "./site.js";
             <p class="thin-mid-14">${cardItem.subTitle ? cardItem.subTitle :'Not subtitle'}</p>
           </div>
           <div class="right-card">
-            <p id="service-price" class="bold-medium-20">${cardItem.priceRental} $</p>
-            <p id="service-duration" class="bold-mid-12" data-value=${cardItem.timetext}>${cardItem.timetext} min</p>
+            ${isHidePrice ? '' : `<p id="service-price" class="bold-medium-20">${cardItem.priceRental} $</p>`}
+            <p id="service-duration" class="bold-mid-12 ${isHidePrice ? 'is-hide-price' : ''}" data-value=${cardItem.timetext}>${cardItem.timetext} min</p>
           </div>
         </div>
       `);
-      const user = dataBooking.users.find(u => u.id === currentUserId);
+      const user = dataBooking.users.find(u => u.isChoosing);
       const serviceCardMoreCurr = user.services.find((se) => se.idService === idMoreItem);
       const serviceCardItemCurr = serviceCardMoreCurr && serviceCardMoreCurr.itemService.find((si) => si.idItemService === cardItem.id);
       const staffUserSelected = serviceCardItemCurr && serviceCardItemCurr.selectedStaff;
@@ -1225,7 +1310,6 @@ import {alertCustom} from "./site.js";
     }
     // render list add on
     function renderListAddOn (dataItem, idItemChild, dataBooking, isFull=false) {
-
       const titleAddOnSelected = dataItem.value;
       const findItemChild = dataItem.listItem.find((i) => i.id === idItemChild);
       const listOptionAddOn = findItemChild.listOptionAddOn;
@@ -1503,7 +1587,6 @@ import {alertCustom} from "./site.js";
     currentYear,
     fakeDataCalender,
     selectedDateParam,
-    currentUserId,
     listDataService,
     isCopySameTime,
   ) {
@@ -1512,7 +1595,7 @@ import {alertCustom} from "./site.js";
     $wrapCalendarTimeslot.replaceWith(htmlTimeBooking);
 
     // Lấy user hiện tại
-    const user = dataBooking.users.find(u => u.id === currentUserId);
+    const user = dataBooking.users.find(u => u.isChoosing);
 
     // 1. Lấy selectedDate ưu tiên từ user, nếu là string -> new Date()
     let userSelected = user ? normalizeToDate(user.selectedDate) : null;
@@ -1533,7 +1616,7 @@ import {alertCustom} from "./site.js";
     currentYear = useDate.getFullYear();
 
     // Render calendar + time slots với ngày đã chọn
-    renderCalendar(monthNames, dayNames, currentMonth, currentYear, fakeDataCalender, useDate, dataBooking, currentUserId, listDataService);
+    renderCalendar(monthNames, dayNames, currentMonth, currentYear, fakeDataCalender, useDate, dataBooking, listDataService);
 
     // Cập nhật tiêu đề ngày
     const titleEl = document.getElementById("selectedDateTitle");
@@ -1543,7 +1626,7 @@ import {alertCustom} from "./site.js";
     renderTimeSlotsForDate(useDate, dataBooking, listDataService);
   }
   // render calender
-  function renderCalendar(monthNames, dayNames, currentMonth, currentYear, fakeDataCalender, selectedDate, dataBooking, currentUserId, listDataService) {
+  function renderCalendar(monthNames, dayNames, currentMonth, currentYear, fakeDataCalender, selectedDate, dataBooking, listDataService) {
     const daysEl = document.getElementById("days");
     const monthYearEl = document.getElementById("monthYear");
     daysEl.innerHTML = "";
@@ -1609,7 +1692,7 @@ import {alertCustom} from "./site.js";
       if (!isPast && !nonWorking) {
         day.addEventListener("click", () => {
           selectedDate = new Date(currentYear, currentMonth, date);
-          const user = dataBooking.users.find(u => u.id === currentUserId);
+          const user = dataBooking.users.find(u => u.isChoosing);
           if (user) {
             user.selectedDate = selectedDate;
           }
@@ -1626,7 +1709,7 @@ import {alertCustom} from "./site.js";
     // Nếu chưa có selectedDate, set selectedDate = nearestWorkingDate
     if (!hasSelectedDate && nearestWorkingDate) {
       selectedDate = new Date(currentYear, currentMonth, nearestWorkingDate);
-      const user = dataBooking.users.find(u => u.id === currentUserId);
+      const user = dataBooking.users.find(u => u.isChoosing);
       if (user) {
         user.selectedDate = selectedDate;
       }
@@ -1635,62 +1718,66 @@ import {alertCustom} from "./site.js";
     }
 
   }
-  //render timeslot
-  function generateTimeSlots(start, end, interval = 30) {
-    const slots = [];
-    let [h, m] = start.split(":").map(Number);
-    const [endH, endM] = end.split(":").map(Number);
 
-    while (h < endH || (h === endH && m <= endM)) {
-      const formatted = new Date(0, 0, 0, h, m)
-        .toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      slots.push(formatted);
-
-      m += interval;
-      if (m >= 60) {
-        m -= 60;
-        h++;
-      }
-    }
-
-    return slots;
-  }
   function getAMPM(timeStr) {
     const [hourStr] = timeStr.split(":");
     const hour = parseInt(hourStr, 10);
     return hour >= 12 ? "PM" : "AM";
   }
   // tab chọn thợ để chọn time
-  function createTabTech({userChossing, data, key, callback, itemWidth = "200px" }) {
+  function createTabTech({dataBooking, data, callback, listDataService, itemWidth = "200px" }) {
     const container = document.getElementById("comboBox");
     container.classList.add("tab-tech");
-
     container.innerHTML = `
       <div class="tab-list">
         ${data.map(item => `
-          <div class="tab-item" data-id="${item[key]}" style="width:${itemWidth}">
-            ${item.staffNick}
+          <div
+            class="tab-item ${item.staff.isChoosing ? "active" : ""}"
+            data-id="${item.staff.employeeID}"
+            style="width:${itemWidth}"
+          >
+            ${item.staff.nickName}
+
+            <p class="icon-mark-staff">
+              <i class="fa-solid fa-check"></i>
+            </p>
           </div>
         `).join("")}
       </div>
     `;
-    console.log("userChoosing 1: ", userChossing)
-
     const items = container.querySelectorAll(".tab-item");
 
     items.forEach(itemEl => {
       itemEl.addEventListener("click", () => {
         // clear active
         items.forEach(el => el.classList.remove("active"));
+        data.forEach(d => d.staff.isChoosing = false);
 
         // set active
         itemEl.classList.add("active");
 
         const id = itemEl.dataset.id;
-        const selected = data.find(d => d[key] == id);
-        if (callback) callback(userChossing, selected);
+        const selected = data.find(d => d.staff.employeeID == id);
+        if(selected){
+          selected.staff.isChoosing = true;
+        }
+        if (callback) callback(dataBooking, selected, listDataService);
       });
     });
+
+    // nếu chưa có tab nào active thì active tab đầu tiên
+    const activeEl = container.querySelector(".tab-item.active");
+    if (!activeEl && items.length > 0) {
+      const firstEl = items[0];
+      firstEl.classList.add("active");
+
+      const firstId = firstEl.dataset.id;
+      const firstSelected = data.find(d => d.staff.employeeID == firstId);
+      if (firstSelected) {
+        firstSelected.staff.isChoosing = true;
+      }
+      if (callback) callback(dataBooking, firstSelected, listDataService);
+    }
   }
 
 
@@ -1698,15 +1785,12 @@ import {alertCustom} from "./site.js";
     if (!user || !user.services) return [];
 
     let rows = [];
-
     user.services.forEach(svc => {
       svc.itemService.forEach(item => {
         rows.push({
           id: item.selectedStaff.employeeID,       // key duy nhất
-          serviceTitle: item.title,                // cột 1: tên service
-          staffNick: item.selectedStaff.nickName,  // cột 2: nickname technician
           staff: item.selectedStaff,               // object thợ
-          service: item                            // object service
+          itemService: item                        // object service
         });
       });
     });
@@ -1725,19 +1809,35 @@ import {alertCustom} from "./site.js";
     return unique;
   }
 
-  async function getTimeTechFrame(userChoosing, selected) {
-    const newDate = new Date();
-    const selectedDate = userChoosing.selectedDate;
-    const dateSer = formatDateMMDDYYYY(selectedDate || newDate)
-    const timeDuraSer = selected.service.duration;
+  function getTotalDuration(selected) {
+    const base = selected?.itemService?.duration || 0;
+    const addon = (selected?.itemService?.optionals || []).reduce((sum, opt) => sum + (opt.timedura || 0), 0);
+    return base + addon;
+  }
+  async function getTimeTechFrame(dataBooking, selectedTech, listDataService) {
+    try {
+      const userChoosing = dataBooking.users.find(u => u.isChoosing);
+      const selectedDate = userChoosing.selectedDate || new Date();
+      const dateSer = formatDateMMDDYYYY(selectedDate);
+      const duration = getTotalDuration(selectedTech);
+      const empID = selectedTech?.staff?.employeeID ?? selectedTech?.id;
 
-    const frameTimeFree = await fetchAPI.get(`/api/appointment/gettimebookonline?date=${dateSer}&duration=${timeDuraSer}&rvcno=336&empID=${selected.id}`)
+      const res = await fetchAPI.get(
+        `/api/appointment/gettimebookonline?date=${dateSer}&duration=${duration}&rvcno=336&empID=${empID}`
+      );
 
-    renderTimeSlotsForTech(userChoosing, selectedDate, frameTimeFree.data);
+      renderTimeSlotsForTech(dataBooking, selectedTech, selectedDate, listDataService, res.data);
+    }catch(e){
+      console.error("[getTimeTechFrame]", {
+        message: e.message,
+        stack: e.stack,
+        name: e.name,
+      })
+    }
   }
 
 
-  function renderServiceTechCombo(dataBooking) {
+  function renderServiceTechCombo(dataBooking, listDataService) {
     const user = dataBooking.users.find(u => u.isChoosing); // lấy user đang chọn
 
     if (!user) return;
@@ -1745,30 +1845,88 @@ import {alertCustom} from "./site.js";
     const data = buildTechDataFromBooking(user);
 
     createTabTech({
-      userChossing: user,
+      dataBooking,
       data,
-      key: "id",
       itemWidth: "200px",
       callback: getTimeTechFrame,
+      listDataService,
+    });
+
+    // Sau khi render tab, check lại staff nào đã có chọn time
+    user.services.forEach(svc => {
+      svc.itemService.forEach(item => {
+        if (item.selectedStaff) {
+          const empID = item.selectedStaff.employeeID;
+          const hasTime = !!item.selectedStaff.selectedTimeSlot;
+          updateTabMark(empID, hasTime);
+        }
+      });
     });
   }
 
+  // làm tròn phút lên mốc gần nhất (interval = 20 phút)
+  function roundUpToNearestInterval(date, interval = 20) {
+    const d = new Date(date);
+    const minutes = d.getMinutes();
+    const mod = minutes % interval;
+    if (mod !== 0) {
+      d.setMinutes(minutes + (interval - mod));
+    }
+    d.setSeconds(0, 0);
+    return d;
+  }
+
+  function generateTimeSlotsDynamic(selectedDate, start, end, interval = 20) {
+    const slots = [];
+
+    // lấy working hours
+    let [startH, startM] = start.split(":").map(Number);
+    let [endH, endM] = end.split(":").map(Number);
+
+    let startTime = new Date(selectedDate);
+    startTime.setHours(startH, startM, 0, 0);
+
+    let endTime = new Date(selectedDate);
+    endTime.setHours(endH, endM, 0, 0);
+
+    // clamp endTime <= 20:00
+    const hardEnd = new Date(selectedDate);
+    hardEnd.setHours(20, 0, 0, 0);
+    if (endTime > hardEnd) endTime = hardEnd;
+
+    // nếu hôm nay => lấy mốc gần nhất so với giờ hiện tại
+    const now = new Date();
+    if (selectedDate.toDateString() === now.toDateString()) {
+      const roundedNow = roundUpToNearestInterval(now, interval);
+      if (roundedNow > startTime) startTime = roundedNow;
+    }
+
+    // sinh slots
+    let cur = new Date(startTime);
+    while (cur <= endTime) {
+      const formatted = cur.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      slots.push(formatted);
+      cur.setMinutes(cur.getMinutes() + interval);
+    }
+
+    return slots;
+  }
 
   function renderTimeSlotsForDate(selectedDate, dataBooking, listDataService) {
     const container = $("#timeSlotsContainer");
     container.empty();
 
     // render combobox cho user đang chọn
-    renderServiceTechCombo(dataBooking);
+    renderServiceTechCombo(dataBooking, listDataService);
       //timeslot
     const workingHoursByWeekday = {
       0: [], // Chủ nhật - không làm
-      1: ["09:00", "15:00"], // Thứ 2
-      2: ["08:30", "16:00"], // Thứ 3
-      3: ["08:00", "17:00"], // Thứ 4
-      4: ["09:15", "17:30"], // Thứ 5
-      5: ["10:00", "15:30"], // Thứ 6
-      6: ["08:00", "12:00"], // Thứ 7
+      1: ["08:00", "20:00"], // Thứ 2
+      2: ["08:00", "20:00"], // Thứ 3
+      3: ["08:00", "20:00"], // Thứ 4
+      4: ["08:00", "20:00"], // Thứ 5
+      5: ["08:00", "20:00"], // Thứ 6
+      6: ["08:00", "20:00"], // Thứ 7
     };
 
     const weekday = selectedDate.getDay();
@@ -1779,7 +1937,7 @@ import {alertCustom} from "./site.js";
       return;
     }
 
-    const slots = generateTimeSlots(workingRange[0], workingRange[1]);
+    const slots = generateTimeSlotsDynamic(selectedDate, workingRange[0], workingRange[1]);
 
     slots.forEach(slot => {
       const div = $(`
@@ -1794,6 +1952,7 @@ import {alertCustom} from "./site.js";
       container.append(div);
     });
     container.off('click', '.time-slot');
+
     container.on("click", ".time-slot", function () {
       container.find(".time-slot").removeClass("selected");
       $(this).addClass("selected");
@@ -1813,6 +1972,9 @@ import {alertCustom} from "./site.js";
           force: false
         });
 
+      // Cập nhật đã chọn cho staff
+      renderServiceTechCombo(dataBooking, listDataService)
+      // Cập nhật sumary
       renderSumary(dataBooking, listDataService);
     });
 
@@ -1833,37 +1995,86 @@ import {alertCustom} from "./site.js";
     }
   }
 
-  function renderTimeSlotsForTech(userChoosing, selectedDate, frameData) {
+  function findItemsOfTech(userChoosing, empId) {
+    const items = [];
+    (userChoosing.services || []).forEach(svc => {
+      (svc.itemService || []).forEach(it => {
+        if (it.selectedStaff && String(it.selectedStaff.employeeID) === String(empId)) {
+          items.push(it);
+        }
+      });
+    });
+    return items;
+  }
+
+  // đánh dấu tech đã chọn
+  function updateTabMark(empID, hasTime) {
+    const el = document.querySelector(`.tab-list .tab-item[data-id="${empID}"]`);
+    if (!el) return;
+    el.classList.toggle("has-time", !!hasTime);
+  }
+
+  function renderTimeSlotsForTech(dataBooking, selectedTech, selectedDate, listDataService, frameData) {
     const container = $("#timeSlotsContainer");
     container.empty();
 
-    if (!frameData || frameData.length === 0) {
+    const userChoosing = dataBooking.users.find(u => u.isChoosing);
+    const empID = selectedTech?.staff?.employeeID ?? selectedTech?.id;
+
+    // các itemService đang gán cho đúng tech
+    const itemsOfTech = findItemsOfTech(userChoosing, empID);
+
+    // giờ đã lưu trước đó (nếu có) trong selectedStaff của tech này
+    const prevSlot =
+      itemsOfTech.find(it => it.selectedStaff && it.selectedStaff.selectedTimeSlot)?.selectedTimeSlot;
+
+    if (!frameData || !frameData.length) {
       container.append(`<div class="time-slot">Không có giờ trống hôm nay.</div>`);
+      // nếu trước đó có lưu giờ mà giờ không còn, xử lý xoá
+      if (prevSlot) {
+        alert(`Xin thông báo: giờ ${prevSlot} đã được chọn bởi người khác.`);
+        itemsOfTech.forEach(it => {
+          delete it.selectedStaff.selectedTimeSlot;
+          delete it.selectedStaff.selectedDate;
+          delete it.selectedStaff.isChoosing;
+        });
+        updateTabMark(empID, false);
+        renderSumary(dataBooking, listDataService);
+      }
       return;
     }
-
+    // render danh sách slot
     frameData.forEach(slot => {
       const div = $(`
         <div class="time-slot ${!slot.isEnable ? "disabled" : ""}">
           <span>${slot.time}</span>
           <span>${getAMPM(slot.time)}</span>
-          <div class="circle">
-            <div class="dot"></div>
-          </div>
+          <div class="circle"><div class="dot"></div></div>
         </div>
       `);
+
+      if (itemsOfTech.some(it => it.selectedStaff?.selectedTimeSlot === slot.time)) {
+        div.addClass("selected");
+      }
 
       if (slot.isEnable) {
         div.on("click", function () {
           container.find(".time-slot").removeClass("selected");
           $(this).addClass("selected");
 
-          userChoosing.selectedTimeSlot = slot.time;
-          userChoosing.selectedDate = selectedDate;
+          // lưu vào selectedStaff của tất cả itemService thuộc tech này
+          itemsOfTech.forEach(it => {
+            it.selectedStaff.selectedTimeSlot = slot.time;
+            it.selectedStaff.selectedDate = formatDateMMDDYYYY(selectedDate);
+          });
+          updateTabMark(empID, true);
 
-          // Kiểm tra đủ điều kiện thì update scroll button
-          const isFinalBooking = showScrollToFinalBooking(userChoosing);
-          if (isFinalBooking) {
+          // optional: vẫn có thể sync lên userChoosing nếu còn dùng nơi khác
+          userChoosing.selectedTimeSlot = slot.time;
+          userChoosing.selectedDate = formatDateMMDDYYYY(selectedDate);
+
+          const okToScroll = showScrollToFinalBooking(userChoosing);
+          if (okToScroll) {
             updateScrollButton({
               target: "#section-booking",
               trigger: "#trigger-booking",
@@ -1881,32 +2092,56 @@ import {alertCustom} from "./site.js";
       container.append(div);
     });
 
-    // nếu user đã có selectedTimeSlot thì đánh dấu lại
-    if (userChoosing && userChoosing.selectedTimeSlot) {
-      const match = container.find(".time-slot").filter(function () {
-        return $(this).find("span").first().text().trim() === String(userChoosing.selectedTimeSlot).trim();
-      });
-      if (match.length) {
-        container.find(".time-slot").removeClass("selected");
-        match.first().addClass("selected");
+    // Đánh dấu lại slot đã lưu trong staff (nếu còn hợp lệ)
+    if (prevSlot) {
+      const stillOk = frameData.some(s => s.time === prevSlot && s.isEnable);
+      if (stillOk) {
+        const match = container.find(".time-slot").filter(function () {
+          return $(this).find("span").first().text().trim() === String(prevSlot).trim();
+        });
+        if (match.length) {
+          container.find(".time-slot").removeClass("selected");
+          match.first().addClass("selected");
+        }
+        updateTabMark(empID, true);
+      } else {
+        alert(`Xin thông báo: giờ ${prevSlot} đã được chọn bởi người khác.`);
+        itemsOfTech.forEach(it => {
+          delete it.selectedStaff.selectedTimeSlot;
+          delete it.selectedStaff.selectedDate;
+        });
+        updateTabMark(empID, false);
+        renderSumary(dataBooking, listDataService);
       }
     }
   }
-
 
   // render sumary
   function renderSumary (dataBooking, listDataService) {
     const $containerSumary = $('.wrap-sumary');
     $containerSumary.empty();
-    // Kiểm tra có user nào chọn xong servce và timming
-    console.log("dataBooking: ", dataBooking.users)
-    const someUChoosed = dataBooking.users.some(item => {
-      return item.services.length > 0 && item.selectedDate && item.selectedTimeSlot;
-    })
-    if(!someUChoosed){
-      $containerSumary.append('')
+    // Kiểm tra có user tất cả user chọn xong servce và timming
+    const allSelected = dataBooking.users.every(user => {
+      return (
+        Array.isArray(user.services) &&
+        user.services.length > 0 &&
+        user.services.every(service =>
+          Array.isArray(service.itemService) &&
+          service.itemService.length > 0 &&
+          service.itemService.every(item =>
+            item.selectedStaff &&
+            item.selectedStaff.selectedDate &&
+            item.selectedStaff.selectedTimeSlot
+          )
+        )
+      );
+    });
+
+    if (!allSelected) {
+      $containerSumary.append('');
       return;
-    };
+    }
+
 
     const isAllowConfirm = showScrollToFinalBooking(dataBooking);
     const owner = dataBooking.users[0];
@@ -1943,6 +2178,8 @@ import {alertCustom} from "./site.js";
       return total.toFixed(2);
     }
 
+    let totalPayment = 0;
+
     const htmlSumary =  `
       <div id="section-booking" class="container-sumary">
         <div class="header-sumary">
@@ -1955,7 +2192,6 @@ import {alertCustom} from "./site.js";
           // tính tổng bản ghi, tổng tiền và tổng time
           let totalServices = 0;
           let totalMinutes = 0;
-          let totalPrice = 0;
 
           if (dataRefact.listServiceUser && Array.isArray(dataRefact.listServiceUser)) {
             dataRefact.listServiceUser.forEach(item => {
@@ -1971,10 +2207,12 @@ import {alertCustom} from "./site.js";
                 }, 0);
                 totalMinutes += optionalMins;
 
-                totalPrice += Number(getTotalPrice(is) || 0);
+                totalPayment += Number(getTotalPrice(is) || 0);
               });
             });
           }
+          // save total amount
+          dataBooking.totalAmount = totalPayment;
           return `
             <div class="item-sumary" data-id="${userBooking.id}">
               <div class="top-item-sumary">
@@ -2036,7 +2274,7 @@ import {alertCustom} from "./site.js";
               <div class="total-pay">
                 <p class="text-total-amount">Total (${totalServices})</p>
                 <p class="text-total-times">${totalMinutes} min</p>
-                <p class="text-total-price">$ ${totalPrice}</p>
+                <p class="text-total-price">$ ${totalPayment}</p>
                 <div class="action-item-ser"></div>
               </div>
             </div>
@@ -2051,6 +2289,9 @@ import {alertCustom} from "./site.js";
         </div>
       </div>
     `
+
+    // gán totalPayment cho dataBooking
+    dataBooking.totalPayment = totalPayment;
     $containerSumary.append(htmlSumary);
   }
 
@@ -2130,9 +2371,9 @@ import {alertCustom} from "./site.js";
 
 
     // content popup cart user
-    function renderCartContent(dataCart) {
+    function renderCartContent(dataCart, currency) {
       const { order, noneOrder, btnBack } = dataCart;
-
+      const imgBgCart = `url('/assets/images/background-cart-nail/bg-cart.png')`;
       return `
         <div class="popup-wrap-cart">
           <div class="title-select-services">
@@ -2143,10 +2384,28 @@ import {alertCustom} from "./site.js";
               order && order.length > 0
                 ? order.map((item) => {
                     return `
-                  <div class="list-order">
-                    Map order: ${item.name}
-                  </div>
-                `;
+                      <div class="item-order"
+                        style="
+                          --bg-image-cart: ${imgBgCart};
+                        "
+                      >
+                        <div class="top-item-order">
+                          <div class="title-item-order">
+                            <span>${item.title}</span>
+                          </div>
+                          <div class="right-item-order">
+                            <span class="price-item-order">${item.price + " " + currency}</span>
+                            <span class="dura-item-order">${item.duration + " " + currency}</span>
+                          </div>
+                        </div>
+                        <div class="staff-item-order">
+                          <img src="${item.selectedStaff.imageFileName}" alt="image staff" class="img-staff-order"/>
+                          <span>
+                            ${item.selectedStaff.nickName}
+                          </span>
+                        </div>
+                      </div>
+                    `;
                   }).join('')
                 : `<div class="image-order-none">
                   <img src="${noneOrder.image}" alt="Empty order" class="empty-img-order"/>
@@ -2337,7 +2596,7 @@ import {alertCustom} from "./site.js";
       `
     }
     // Content policies
-    function renderPoliciesForm(isTimeOff = false) {
+    function renderPoliciesForm(policySetting, isTimeOff = false) {
       return `
         <div class="wrap-popup-policies"
           style="
@@ -2348,18 +2607,11 @@ import {alertCustom} from "./site.js";
             <h2 class="title-policies text-uppercase">
               Salon Policies
             </h2>
-            <span class="timeoff ${isTimeOff ? '' : 'hidden'}">
-              5:00
+            <span class="popup-flow-countdown timeoff">
             </span>
           </div>
           <div class="content-policies">
-            This section applies specifically to the booking functions available on
-            this Website and Mobile App. When using Vietnam Airlines' online booking
-            facility to purchase tickets and add-on products, you accept and comply
-            with the instructions, terms, conditions, and notes available on the website
-            and app, including but not limited to the followings: If this is not your
-            intention and/or you disagree with any part of these applicable terms and
-            conditions, DO NOT USE Vietnam Airlines' online booking facility.
+            ${policySetting}
           </div>
           <div class="button-container">
             <button class="btn-back-policies">Back</button>
@@ -2369,7 +2621,8 @@ import {alertCustom} from "./site.js";
       `
     }
     // Form chọn phương thức thanh toán
-    function renderPaymentMethodsForm(selectedMethod = null) {
+    function renderPaymentMethodsForm(dataBooking, selectedMethod = null) {
+      const numberCard = dataBooking.cardNumber;
       return `
         <div
           class="wrap-popup-payment-methods"
@@ -2379,7 +2632,7 @@ import {alertCustom} from "./site.js";
         >
           <div class="header-popup-payment">
             <h2 class="title-payment text-uppercase">Payments</h2>
-            <span class="time-off">5:59</span>
+            <span class="popup-flow-countdown time-off"></span>
           </div>
           <div class="subtitle">
             <span class="subtitle-text">
@@ -2391,73 +2644,28 @@ import {alertCustom} from "./site.js";
             </span>
           </div>
           <div class="payment-methods-list">
-            <div class="payment-method-item">
-              <div class="wrap-name-method">
-                <div class="wrap-img-method">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="25" height="30" viewBox="0 0 25 30" fill="none">
-                    <path d="M7.16778 28.1027L7.66262 24.9596L6.56035 24.934H1.29688L4.95472 1.74087C4.96607 1.67086 5.00297 1.60557 5.05691 1.55921C5.11084 1.51285 5.17991 1.4873 5.25181 1.4873H14.1268C17.0731 1.4873 19.1064 2.10041 20.168 3.31055C20.6657 3.87824 20.9826 4.47149 21.1359 5.12433C21.2968 5.80935 21.2996 6.62778 21.1425 7.62598L21.1312 7.69883V8.33843L21.6289 8.62039C22.048 8.84273 22.3811 9.09725 22.6365 9.38867C23.0623 9.87405 23.3376 10.4909 23.454 11.2223C23.5742 11.9745 23.5344 12.8696 23.3376 13.8829C23.1105 15.0486 22.7434 16.0638 22.2476 16.8945C21.7916 17.66 21.2107 18.2948 20.5209 18.7868C19.8624 19.2543 19.0799 19.6091 18.1953 19.8361C17.338 20.0594 16.3607 20.172 15.2887 20.172H14.598C14.1041 20.172 13.6244 20.3499 13.2478 20.6688C12.8703 20.9942 12.6205 21.4389 12.5439 21.9253L12.4918 22.2082L11.6176 27.7479L11.5778 27.9513C11.5674 28.0157 11.5494 28.0478 11.5229 28.0696C11.4993 28.0895 11.4652 28.1027 11.4321 28.1027H7.16778Z" fill="#253B80"/>
-                    <path d="M22.1003 7.77148C22.0738 7.94085 22.0436 8.11399 22.0095 8.29187C20.8391 14.3009 16.835 16.3768 11.721 16.3768H9.11716C8.49175 16.3768 7.96474 16.8309 7.86729 17.4478L6.53415 25.9027L6.15664 28.2993C6.09324 28.7043 6.40548 29.0695 6.81422 29.0695H11.4324C11.9793 29.0695 12.4439 28.6721 12.53 28.1328L12.5754 27.8981L13.4449 22.3802L13.5007 22.0774C13.5859 21.5362 14.0514 21.1388 14.5983 21.1388H15.2889C19.7633 21.1388 23.266 19.3222 24.2897 14.0653C24.7174 11.8693 24.496 10.0356 23.3644 8.74603C23.0219 8.35716 22.5971 8.03452 22.1003 7.77148Z" fill="#179BD7"/>
-                    <path d="M20.8837 7.28728C20.7049 7.23524 20.5204 7.18793 20.3312 7.14536C20.141 7.10373 19.9461 7.06683 19.7455 7.03466C19.0434 6.92112 18.2742 6.86719 17.4501 6.86719H10.494C10.3227 6.86719 10.16 6.90598 10.0143 6.976C9.69351 7.13022 9.45508 7.43394 9.39737 7.80578L7.91758 17.1784L7.875 17.4519C7.97245 16.835 8.49946 16.3808 9.12487 16.3808H11.7287C16.8427 16.3808 20.8468 14.304 22.0172 8.29589C22.0522 8.11801 22.0816 7.94486 22.108 7.7755C21.8119 7.61844 21.4912 7.48408 21.1458 7.3696C21.0607 7.34121 20.9727 7.31377 20.8837 7.28728Z" fill="#222D65"/>
-                    <path d="M10.0101 6.97419C10.1568 6.90417 10.3186 6.86538 10.4898 6.86538H17.446C18.2701 6.86538 19.0393 6.91931 19.7413 7.03285C19.9419 7.06502 20.1368 7.10192 20.327 7.14355C20.5163 7.18613 20.7008 7.23343 20.8796 7.28547C20.9685 7.31197 21.0565 7.3394 21.1426 7.36684C21.488 7.48133 21.8087 7.61663 22.1049 7.77275C22.453 5.55211 22.102 4.04015 20.9013 2.67106C19.5777 1.16383 17.1886 0.518555 14.1316 0.518555H5.25662C4.63216 0.518555 4.09947 0.97271 4.00296 1.59055L0.306326 25.0221C0.233472 25.4858 0.591119 25.904 1.05852 25.904H6.53772L7.91343 17.1757L9.39322 7.80302C9.45094 7.43118 9.68937 7.12746 10.0101 6.97419Z" fill="#253B80"/>
-                  </svg>
+          ${numberCard && numberCard.map((item) => {
+
+            return `
+              <div data-id="${item.id}" class="payment-method-item">
+                <div class="wrap-name-method">
+                  <div class=""wrap-img-method>
+                  </div>
+                  <div class="name-numbercard">
+                    <span class="name-method">
+                      VISA
+                    </span>
+                    <span class="number-card">
+                      ${maskCardNumber(item.last4)}
+                    </span>
+                  </div>
                 </div>
-                <div class="name-numbercard">
-                  <span class="name-method">
-                    Paypal
-                  </span>
-                </div>
-              </div>
-              <div class="circle">
-                <div class="dot"></div>
-              </div>
-            </div>
-            <div class="payment-method-item">
-              <div class="wrap-name-method">
-                <div class=""wrap-img-method>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="30" height="31" viewBox="0 0 30 31" fill="none">
-                    <g clip-path="url(#clip0_787_142840)">
-                      <path d="M4.00476 11.3195C4.56726 11.367 5.12976 11.0345 5.48226 10.6107C5.82851 10.1782 6.05726 9.59195 6.00101 9.00195C5.49976 9.0257 4.88601 9.33445 4.53476 9.7682C4.20976 10.1382 3.93351 10.7482 4.00476 11.3195ZM2.61226 19.0595C3.23476 19.0357 3.47976 18.6507 4.22976 18.6507C4.98476 18.6507 5.20476 19.0595 5.86101 19.0507C6.54101 19.037 6.96726 18.4332 7.38351 17.8132C7.85601 17.1095 8.05351 16.4282 8.06351 16.3907C8.04976 16.377 6.75101 15.872 6.73601 14.3495C6.72226 13.0745 7.76351 12.4695 7.80851 12.432C7.22226 11.547 6.30851 11.452 5.98976 11.4282L5.99226 11.4295C5.17601 11.3807 4.47851 11.8995 4.09351 11.8995C3.69976 11.8995 3.10976 11.452 2.46226 11.4657C1.62476 11.4807 0.846011 11.962 0.419761 12.727C-0.461489 14.2632 0.189761 16.5332 1.04226 17.7845C1.45976 18.402 1.95601 19.0832 2.61226 19.0595ZM17.8123 14.2357H19.0923C19.1998 13.6645 19.7198 13.2882 20.4335 13.2882C21.301 13.2882 21.7885 13.697 21.7885 14.4532V14.967L20.0173 15.077C18.3723 15.177 17.481 15.862 17.481 17.0507C17.486 18.2495 18.4035 19.0482 19.721 19.0495C20.6123 19.0495 21.4373 18.5932 21.811 17.8657H21.8385V18.9795H23.151V14.3645C23.151 13.0282 22.096 12.162 20.4748 12.162C18.9698 12.162 17.856 13.0357 17.8123 14.2357ZM21.7935 16.4682C21.7935 17.3345 21.066 17.952 20.106 17.952C19.351 17.952 18.8685 17.5807 18.8685 17.0195C18.8685 16.4332 19.3323 16.097 20.2185 16.0445L21.7935 15.9445V16.4682ZM10.6973 9.7057V18.9782H12.1173V15.8095H14.081C15.876 15.8095 17.1323 14.5582 17.1323 12.7507C17.1323 10.9432 15.896 9.7057 14.1273 9.7057H10.6973ZM15.6898 12.7557C15.6898 13.9257 14.9873 14.602 13.7485 14.602H12.1173V10.9195H13.7535C14.986 10.9195 15.6898 11.5845 15.6898 12.7557Z" fill="black"/>
-                      <path d="M26.8609 17.727L25.1922 12.252H23.7109L26.1109 19.0032L25.9797 19.412C25.7634 20.1057 25.4122 20.3782 24.7847 20.3782C24.6722 20.3782 24.4572 20.3645 24.3672 20.3545V21.4682C24.4522 21.4882 24.8047 21.502 24.9122 21.502L24.9109 21.4995C26.2934 21.4995 26.9447 20.962 27.5134 19.3395L30.0022 12.252H28.5584L26.8897 17.727H26.8609Z" fill="black"/>
-                    </g>
-                    <defs>
-                      <clipPath id="clip0_787_142840">
-                        <rect width="30" height="30" fill="white" transform="translate(0 0.251953)"/>
-                      </clipPath>
-                    </defs>
-                  </svg>
-                </div>
-                <div class="name-numbercard">
-                  <span class="name-method">
-                    Apple Pay
-                  </span>
+                <div class="circle">
+                  <div class="dot"></div>
                 </div>
               </div>
-              <div class="circle">
-                <div class="dot"></div>
-              </div>
-            </div>
-            <div class="payment-method-item">
-              <div class="wrap-name-method">
-                <div class=""wrap-img-method>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="30" height="31" viewBox="0 0 30 31" fill="none">
-                    <path d="M14.6835 11.8137V14.4331H16.299C16.6837 14.4331 17.0019 14.3039 17.2538 14.0454C17.5125 13.7872 17.6418 13.4798 17.6416 13.1232C17.6416 12.7741 17.5123 12.4701 17.2538 12.2112C17.0018 11.9458 16.6835 11.8131 16.299 11.813H14.6835V11.8137ZM14.6835 15.3554V18.3939H13.7188V10.8916H16.2783C16.9287 10.8916 17.4809 11.1081 17.9348 11.5412C18.3971 11.9741 18.628 12.5015 18.6276 13.1232C18.6276 13.7592 18.3967 14.29 17.9348 14.7156C17.4874 15.142 16.9352 15.3551 16.2782 15.3548H14.6834L14.6835 15.3554ZM19.6025 16.822C19.6025 17.074 19.7092 17.2837 19.9226 17.451C20.1363 17.6183 20.3857 17.7022 20.6726 17.7022C21.0786 17.7022 21.4395 17.5518 21.7578 17.2517C22.0761 16.9516 22.2351 16.5989 22.2351 16.1942C21.9345 15.9562 21.515 15.8373 20.9765 15.8377C20.5849 15.8377 20.258 15.9321 19.996 16.121C19.7342 16.3095 19.6026 16.5425 19.6026 16.822H19.6025ZM20.8512 13.0923C21.5648 13.0923 22.1278 13.2827 22.5402 13.6634C22.9525 14.044 23.1587 14.566 23.1586 15.2294V18.3938H22.2357V17.6815H22.1937C21.7953 18.2679 21.264 18.5611 20.5999 18.5612C20.0335 18.5612 19.5597 18.3937 19.1783 18.0587C18.7968 17.7227 18.6062 17.3033 18.6063 16.8006C18.6063 16.27 18.8072 15.8476 19.209 15.5336C19.6108 15.2195 20.1476 15.0622 20.8192 15.0618C21.3924 15.0618 21.8644 15.1666 22.2352 15.376V15.1558C22.2352 14.8206 22.1024 14.536 21.8368 14.3022C21.5705 14.0679 21.2604 13.9514 20.9033 13.9514C20.3645 13.9514 19.938 14.1785 19.6239 14.6327L18.7738 14.0979C19.2431 13.4273 19.9356 13.092 20.8513 13.0921L20.8512 13.0923Z" fill="#231F20"/>
-                    <path d="M28.4523 13.2588L25.2315 20.6558H24.2353L25.4313 18.0679L23.3125 13.2588H24.3618L25.893 16.947H25.9137L27.4029 13.2588H28.4523Z" fill="#231F20"/>
-                    <path d="M10.7768 14.7C10.7772 14.4061 10.7524 14.1128 10.7026 13.8232H6.63281V15.4834H8.96369C8.86379 16.0247 8.56127 16.4854 8.10197 16.7934V17.8716H9.49313C10.3075 17.121 10.7771 16.0116 10.7771 14.7H10.7768Z" fill="#4285F4"/>
-                    <path d="M6.63709 18.9129C7.80175 18.9129 8.78221 18.5307 9.49741 17.8716L8.10655 16.7934C7.71937 17.0541 7.22065 17.2063 6.63739 17.2063C5.51185 17.2063 4.55647 16.4483 4.21471 15.4268H2.78125V16.5373C3.49147 17.9456 4.95115 18.9129 6.63709 18.9129Z" fill="#34A853"/>
-                    <path d="M4.21301 15.4267C4.03257 14.8915 4.03257 14.3119 4.21301 13.7767V12.666H2.77985C2.47769 13.2665 2.32031 13.9294 2.32031 14.6016C2.32031 15.2738 2.47769 15.9367 2.77985 16.5372L4.21301 15.4267Z" fill="#FABB05"/>
-                    <path d="M6.63709 11.9973C7.27309 11.9973 7.84309 12.2157 8.29261 12.6439V12.6445L9.52435 11.414C8.77627 10.718 7.80115 10.291 6.63709 10.291C4.95109 10.291 3.49147 11.2577 2.78125 12.6661L4.21441 13.7765C4.55641 12.755 5.51155 11.9973 6.63709 11.9973Z" fill="#E94235"/>
-                  </svg>
-                </div>
-                <div class="name-numbercard">
-                  <span class="name-method">
-                    Google Pay
-                  </span>
-                </div>
-              </div>
-              <div class="circle">
-                <div class="dot"></div>
-              </div>
-            </div>
+            `
+          }).join('')}
           </div>
           <div class="payment-summary">
             <div class="sub-deposit">
@@ -2465,7 +2673,7 @@ import {alertCustom} from "./site.js";
                 Total
               </span>
               <span class="sub-deposit-1l">
-                $200.00
+                ${dataBooking.currencyDeposit + dataBooking.totalAmount}
               </span>
             </div>
             <div class="cur-deposit">
@@ -2473,13 +2681,13 @@ import {alertCustom} from "./site.js";
                 Deposit
               </span>
               <span class="sub-deposit-2l">
-                $60.00
+                ${dataBooking.currencyDeposit + dataBooking.paymentDeposit}
               </span>
             </div>
           </div>
           <div class="button-container">
             <button class="btn-back-payment">Back</button>
-            <button class="btn-next-payment">Confirm</button>
+            <button class="btn-next-payment" disabled>Confirm</button>
           </div>
         </div>
       `;
@@ -2638,18 +2846,24 @@ import {alertCustom} from "./site.js";
           style="--color-cur-primary: ${colorPrimary};">
           <div class="header-popup-payment">
             <h2 class="title-payment text-uppercase">Payments</h2>
-            <span class="time-off">5:59</span>
+            <span class="popup-flow-countdown time-off"></span>
           </div>
           <div class="subtitle-card-new">
             <h3 class="subtitle">Add new card</h3>
           </div>
-          <div class="wrap-form-group-card-new">
+          <div id="form-add-card" class="wrap-form-group-card-new">
             <div class="form-group-card-new">
               <label>
                 Card Holder Name
                 <p class="mb-0">*</p>
               </label>
-              <input type="text" id="card-holder-name" placeholder="Card Holder Name">
+              <input
+                type="text"
+                id="card-holder-name"
+                placeholder="Card Holder Name"
+                data-type="${typeRequire.REQUIRED}"
+              >
+              <p class="error-message"></p>
             </div>
             <div class="form-group-card-new">
               <label>
@@ -2665,7 +2879,12 @@ import {alertCustom} from "./site.js";
                   MM/YY
                   <p class="mb-0">*</p>
                 </label>
-                <input type="text" id="card-expiry"placeholder="MM/YY">
+                <input
+                  type="text"
+                  id="card-expiry"
+                  placeholder="MM/YY"
+                  data-type="${typeRequire.REQUIRED}"
+                >
                 <p class="error-message"></p>
               </div>
               <div class="group-card-ccv">
@@ -2673,7 +2892,12 @@ import {alertCustom} from "./site.js";
                   CVV2
                   <p class="mb-0">*</p>
                 </label>
-                <input type="text" id="card-cvv" placeholder="CVV2">
+                <input
+                  type="text"
+                  id="card-cvv"
+                  placeholder="CVV2"
+                  data-type="${typeRequire.REQUIRED}"
+                >
                 <p class="error-message"></p>
               </div>
             </div>
@@ -2682,7 +2906,12 @@ import {alertCustom} from "./site.js";
                 Billing Address
                 <p class="mb-0">*</p>
               </label>
-              <input type="text" id="card-billing-address" placeholder="Billing Address">
+              <input
+                type="text"
+                id="billing-address"
+                placeholder="Billing Address"
+                data-type="${typeRequire.REQUIRED}"
+              >
               <p class="error-message"></p>
             </div>
             <div class="form-group-card-new">
@@ -2706,10 +2935,8 @@ import {alertCustom} from "./site.js";
             <div class="form-group-card-new">
               <label>
                 Zip
-                <p class="mb-0">*</p>
               </label>
               <input type="text" id="card-zip" placeholder="Zip">
-              <p class="error-message"></p>
             </div>
           </div>
           <div class="form-group-card-sub">
@@ -2841,7 +3068,7 @@ import {alertCustom} from "./site.js";
     const {promotion, policy, storeInfo, socialLink, socialIcon} = sideInfo;
 
     const $wrapWeb = $('.wrap-home-templates');
-    const htmlHeaderNav = renderNavHeaderTemplates(dataHeaderNav);
+    const htmlHeaderNav = renderNavHeaderTemplates(dataBlock.dataBooking, dataHeaderNav);
     const htmlAdvertise = renderAdvertisePage(advertises);
     const htmlBannerPage = renderBannerPage(banner);
     const htmlTimeBooking = renderTimeBooking(dataBlock.dataBooking, isCopySameTime);
@@ -2887,7 +3114,7 @@ import {alertCustom} from "./site.js";
       >
       </div>`
     );
-    const { dataBooking, dataMe, dataGuest, dataFamily } = dataBlock;
+    const { dataBooking, dataMe, dataGuest, dataFamily, dataSetting } = dataBlock;
     if (banner.optionBooked === 'GUESTS') {
       // Thay bằng data guest
       dataBooking.type = typeBookingEnum.GUESTS;
@@ -2913,7 +3140,7 @@ import {alertCustom} from "./site.js";
     //   $('.wrap-input-guests').removeClass('hidden');
     // }
     // init render list services
-    renderListService(dataBlock.listDataService,'.list-more', dataBooking, dataBlock.currentUserId);
+    renderListService(dataBlock.listDataService,'.list-more', dataBooking, dataSetting);
     // init render info shop
     if(promotion){
       if ($('.item-promotion-page').length > 0) {
@@ -2973,21 +3200,100 @@ import {alertCustom} from "./site.js";
     renderBookingOption('.wrap-book-for', banner.btnOptionBook, banner.optionBooked);
   }
 
-  // hàm kiểm tra thợ làm có đủ thời gian handle
-  async function findTimeFramFreeTechs (timeFramFree, loToday, itemSelected, staffSelected, isCopySameTime) {
+  // hàm chuyển đổi jsonToXLM
+  function jsonToXml(obj, rootTag = "root") {
+    function toXml(tag, val) {
+      if (val == null) return `<${tag}></${tag}>`;
 
-    const timedura = itemSelected.timetext;
-    const idTech = staffSelected.employeeID;
+      // array -> lặp tag
+      if (Array.isArray(val)) {
+        return val.map(v => toXml(tag, v)).join("");
+      }
 
-    const timeFree = await fetchAPI.get(`/api/appointment/gettimebookonline?date=${loToday}&duration=${timedura}&rvcno=336&empID=${idTech}`)
+      // object -> duyệt key
+      if (typeof val === "object") {
+        let attrs = "";
+        let inner = "";
+
+        // Đặc biệt với Detail: ApptIndex thành attribute
+        if (tag === "Detail" && Object.prototype.hasOwnProperty.call(val, "ApptIndex")) {
+          attrs += ` ApptIndex="${val.ApptIndex}"`;
+        }
+
+        for (const [k, v] of Object.entries(val)) {
+          if (tag === "Detail" && k === "ApptIndex") continue; // đã lên attr
+          inner += toXml(k, v);
+        }
+
+        return `<${tag}${attrs}>${inner}</${tag}>`;
+      }
+
+      // primitive
+      return `<${tag}>${val}</${tag}>`;
+    }
+
+    // root: render từng key top-level đúng 1 lần, tránh lồng lặp
+    const inner = Object.entries(obj).map(([k, v]) => toXml(k, v)).join("");
+    return `<${rootTag}>${inner}</${rootTag}>`;
   }
-
 
   $(document).ready(async function () {
     const $wrapHomeTemp = $('.wrap-home-templates');
     const { dataBooking, getDataListDataService, getlistUserStaff, dataCart,dataMe, dataGuest, dataFamily } = templateStore.load();
-    const listDataService = await getDataListDataService();
-    const listUserStaff  = await getlistUserStaff();
+    let listDataService;
+    let listUserStaff;
+    try{
+      listDataService = await getDataListDataService();
+    }catch(e){
+      console.error('[const listDataService]', {
+        message: e.message,
+        stack: e.stack,
+        name: e.name,
+      })
+    }
+    try{
+      listUserStaff = await getlistUserStaff();
+    }catch(e){
+      console.error('[const listUserStaff]', {
+        message: e.message,
+        stack: e.stack,
+        name: e.name,
+      })
+    }
+    // Lấy thông tin setting tiệm
+    let dataSetting;
+    let paymentDeposit;
+    // to-do: Tham số trả trước, còn nhiều trường hợp chưa xử lý
+    let isDeposit;
+    // Tham số đơn vị tiền tệ : $, VNĐ, ...
+    let currencyDeposit;
+    // Tham số html chính sách điều khoản booking
+    let policySetting;
+    // Tham số cho phép chọn nhiều thợ
+    let isBookMultipleTech = true;
+
+    try {
+      const rcvNo = 336;
+      const resSetting = await fetchAPI.get(`/api/store/getsettingonlinebook?RVCNo=${rcvNo}`);
+      dataSetting = resSetting?.data;
+      policySetting = dataSetting.Policy;
+
+      const DepositData = dataSetting.Deposit;
+      const parts = DepositData.split('|');
+      isDeposit = parts[0] === "1";
+      currencyDeposit = parts[1];
+      paymentDeposit = parts[2];
+      dataBooking.currencyDeposit = currencyDeposit;
+      dataBooking.paymentDeposit = paymentDeposit;
+      isBookMultipleTech = dataSetting.BookMultipleTech === "1";
+
+    }catch(e){
+      console.error('[const resSetting]', {
+        message: e.message,
+        stack: e.stack,
+        name: e.name,
+      })
+    }
 
     let {banner} = dataRelease;
     // Khai báo currentUserId trước khi gọi renderBlockTemplate
@@ -3003,13 +3309,9 @@ import {alertCustom} from "./site.js";
     ];
     const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     const currentDate = new Date();
-    let selectedDate = null;
+    let selectedDate = new Date();
     let currentMonth = currentDate.getMonth();
-    let currentDay = String(currentDate.getDate()).padStart(2, '0')
     let currentYear = currentDate.getFullYear();
-
-    let loToday = `${String(currentMonth + 1).padStart(2, '0')}/${currentDay}/${currentYear}`;
-    let timeFramFree = [];
 
     const fakeDataCalender = {
       8: [8, 9, 10, 12, 20, 22] // August: non-working days
@@ -3024,7 +3326,51 @@ import {alertCustom} from "./site.js";
     // Kiểm tra mobile
     const isMobile = $(window).width() <= 768;
 
-    renderBlockTemplate({listDataService, listUserStaff, dataBooking,dataMe,  dataGuest, dataFamily, currentUserId, isCopySameTime});
+    // biến countdown interval
+    let popupFlowCountdownInterval = null;
+    let popupFlowRemaining = 0;
+
+    function formatTime(seconds) {
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      return `${m}:${s < 10 ? '0' + s : s}`;
+    }
+    function startPopupFlowCountdown(seconds = 1800) {
+      popupFlowRemaining = seconds;
+
+      // clear nếu đang chạy
+      if (popupFlowCountdownInterval) {
+        clearInterval(popupFlowCountdownInterval);
+      }
+
+      updatePopupFlowCountdownUI(popupFlowRemaining);
+
+      popupFlowCountdownInterval = setInterval(() => {
+        popupFlowRemaining--;
+
+        updatePopupFlowCountdownUI(popupFlowRemaining);
+
+        if (popupFlowRemaining <= 0) {
+          clearInterval(popupFlowCountdownInterval);
+          popupFlowCountdownInterval = null;
+
+          // hết giờ -> đóng tất cả popup
+          closePopupContainerTemplate();
+        }
+      }, 1000);
+    }
+    function updatePopupFlowCountdownUI(remaining) {
+      const $countdown = $('.popup-flow-countdown');
+      if ($countdown.length) {
+        $countdown.text(formatTime(remaining));
+      }
+    }
+
+    renderBlockTemplate({
+      listDataService, listUserStaff,
+      dataBooking,dataMe,  dataGuest, dataFamily,
+      currentUserId, isCopySameTime, dataSetting
+    });
 
     // Các sự kiện tương tác trên header
       // << START: dropdown option header
@@ -3060,14 +3406,27 @@ import {alertCustom} from "./site.js";
 
       // << START: popup cart
         // Mở popup cart
+
         $wrapHomeTemp.on('click', '.cart-user button', function (e) {
           e.stopPropagation();
-          let width = 560;
+          let width = 720;
           let height = 620;
           if(isMobile){
             width = '100%'
           }
-          const htmlPopupCartContent = renderCartContent(dataCart);
+          const isItemOrder = dataBooking.users.some((user) =>
+            user.services.some((service) =>
+              service.itemService.length > 0
+          ))
+          // Nếu có item service được chọn
+          if(isItemOrder){
+            dataCart.order = dataBooking.users.map((user) => {
+              return user.services.map((service) => {
+                return service.itemService;
+              })
+            }).flat(Infinity);
+          }
+          const htmlPopupCartContent = renderCartContent(dataCart, dataBooking.currencyDeposit);
           const html = renderBasePopup(htmlPopupCartContent, false, height, width);
           $wrapHomeTemp.append(html);
 
@@ -3159,28 +3518,27 @@ import {alertCustom} from "./site.js";
           // Render lại component option
           renderBookingOption('.wrap-book-for', banner.btnOptionBook, banner.optionBooked);
           // Hiện ô nhập thêm nếu là guests hoặc family
-          // if (selectedType === typeBookingEnum.GUESTS){
-          //   dataBooking.type = typeBookingEnum.GUESTS;
-          //   dataBooking.users = dataGuest;
-          //   dataBooking.users[0].isChoosing = true;
-          // }
+          if (selectedType === typeBookingEnum.GUESTS){
+            dataBooking.type = typeBookingEnum.GUESTS;
+            dataBooking.users = dataGuest;
+            dataBooking.users[0].isChoosing = true;
+          }
           if (selectedType !== typeBookingEnum.ME) {
-            // console.log("selectedText: ", selectedText)
             dataBooking.type = selectedType;
             // Verify trước khi gán dataBooking.users cho dataFamily
-            const htmlVerifyEmailPhone = renderVerifyEmailPhoneContent();
-            let height = 620;
-            let width = 560;
-            if(isMobile) {
-              height = 620;
-              width = '100%';
-            }
+            // const htmlVerifyEmailPhone = renderVerifyEmailPhoneContent();
+            // let height = 620;
+            // let width = 560;
+            // if(isMobile) {
+            //   height = 620;
+            //   width = '100%';
+            // }
             // const persistent = true;
-            const html = renderBasePopup(htmlVerifyEmailPhone, false, height, width);
-            $wrapHomeTemp.append(html);
-            setTimeout(() => {
-              $('.overlay-screen').addClass('show');
-            }, 10);
+            // const html = renderBasePopup(htmlVerifyEmailPhone, false, height, width);
+            // $wrapHomeTemp.append(html);
+            // setTimeout(() => {
+            //   $('.overlay-screen').addClass('show');
+            // }, 10);
             // Vì chưa đăng nhập nên dataFamily khởi tạo là một mảng users:[]
             const tempData = [
                 {
@@ -3198,6 +3556,21 @@ import {alertCustom} from "./site.js";
                   isSelecting: false,
                   isChoosing: true,
                 },
+                {
+                  id: 2,
+                  firstName: '',
+                  lastName: '',
+                  phoneNumber: '',
+                  email: '',
+                  gender: genderEnum.MALE,
+                  services: [
+
+                  ],
+                  selectedDate: null,
+                  selectedTimeSlot: null,
+                  isSelecting: false,
+                  isChoosing: false,
+                },
               ]
             dataBooking.users = tempData;
           }
@@ -3209,16 +3582,16 @@ import {alertCustom} from "./site.js";
 
           // show or hide cả 2
           if (dataBooking.type !== typeBookingEnum.ME) {
+            $('.wrap-input-guests').removeClass('hidden');
+            updateGuestSection();
+          } else {
             $('.wrap-input-guests').addClass('hidden');
             $('.wrap-control').empty();
             $('.wrap-input-guests').empty();
-          } else {
-            $('.wrap-input-guests').removeClass('hidden');
-            updateGuestSection();
           }
 
           // render lại list service
-          renderListService(listDataService, '.list-more', dataBooking, currentUserId);
+          renderListService(listDataService, '.list-more', dataBooking);
 
         });
         // Tăng số lượng khách
@@ -3630,13 +4003,13 @@ import {alertCustom} from "./site.js";
             icon: `<i class="fa-solid fa-chevron-up rotate-transition"></i>`
           };
           renderCopyServiceOption('.copy-options-wrapper',optionCopyService )
-          renderListService(listDataService, '.list-more', dataBooking, currentUserId);
+          renderListService(listDataService, '.list-more', dataBooking);
 
           // render lại timming để cập timming đã chọn
           renderContainerTiming(
             dataBooking, currentDate, monthNames,
             dayNames, currentMonth, currentYear,
-            fakeDataCalender, nextUser.selectedDate || selectedDate, currentUserId,
+            fakeDataCalender, nextUser.selectedDate || selectedDate,
             listDataService,
             isCopySameTime,
           );
@@ -3680,13 +4053,14 @@ import {alertCustom} from "./site.js";
         renderContainerTiming(
           dataBooking, currentDate, monthNames,
           dayNames, currentMonth, currentYear,
-          fakeDataCalender, selectedDate, currentUserId,
+          fakeDataCalender, selectedDate,
           listDataService,
           isCopySameTime,
         );
       })
       // Copy service
       $(document).on('click', '.btn-copy-service', function () {
+        // to-do: chỉ copy service, sau đó scroll chọn thợ next availble, mặc định gán thợ 9999
         const userChoosing = dataBooking.users.find((u) => u.isChoosing);
         const userSelectedCopy = dataBooking.users.find((u) => u.isSelecting);
 
@@ -3700,13 +4074,13 @@ import {alertCustom} from "./site.js";
           userChoosing.selectedTimeSlot = JSON.parse(JSON.stringify(userSelectedCopy.selectedTimeSlot));
         }
         // upadate lại list service
-        renderListService(listDataService, '.list-more', dataBooking, currentUserId);
+        renderListService(listDataService, '.list-more', dataBooking);
 
         // render lại timming để show timming vừa copy
         renderContainerTiming(
           dataBooking, currentDate, monthNames,
           dayNames, currentMonth, currentYear,
-          fakeDataCalender, userChoosing.selectedDate, currentUserId,
+          fakeDataCalender, userChoosing.selectedDate,
           listDataService,
           isCopySameTime
         );
@@ -3737,12 +4111,34 @@ import {alertCustom} from "./site.js";
       $wrap.toggleClass('collapsed');
     });
     // btn more
+      // Kiểm tra có thợ nào được chọn chưa
+      function techSelect(dataBooking) {
+        const userChoosing = dataBooking.users.find((user) => user.isChoosing);
+        const services = userChoosing.services;
+        const findTechOnly = services.find((ser) => {
+          return ser.itemService.find((itemSer) => {
+            return itemSer && itemSer.selectedStaff && itemSer.selectedStaff.employeeID !== idStaffDefault;
+          })
+        })
+        return findTechOnly;
+      }
     $(document).on('click', '.add-more .btn-add-more', async function () {
       const $this = $(this);
       const $card = $this.closest('.card-more');
 
-      // Thêm staff id defult vào user
-      const staffSelecting = listUserStaff.find((st) => st.employeeID == 9999);
+      /*
+        @Author: NK.Toan 22/8/2025
+        - Thêm staff id defult vào user trong trường hợp cho phép chọn nhiều thợ
+        - Trường hợp chỉ chọn 1 thợ (isBookMultipleTech === false) thì kiểm tra trong dataBooking userChoosing đã chọn thợ chưa,
+        nếu đã chọn thợ thì mặc định chọn thợ đó cho các service sau
+      */
+     console.log("dataBooking :")
+     if(!isBookMultipleTech) {
+      const techOnly = techSelect(dataBooking);
+      console.log("techOnly: ", techOnly);
+     }
+
+      const staffSelecting = listUserStaff.find((st) => st.employeeID == idStaffDefault);
       const idService = $this.closest('.more-item').data('id');
       const idItemService = $card.data('id');
       const userChoosing = dataBooking.users.find((u) => u.isChoosing === true);
@@ -3816,8 +4212,15 @@ import {alertCustom} from "./site.js";
       }
 
       // update calander
-      selectedDate = formatDateMMDDYYYY(userChoosing.selectedDate);
-      renderTimeSlotsForDate(selectedDate, dataBooking, listDataService);
+      // selectedDate = (userChoosing.selectedDate);
+      // renderTimeSlotsForDate(selectedDate, dataBooking, listDataService);
+      renderServiceTechCombo(dataBooking, listDataService);
+
+      // update cart user
+      const $cardUser = $('.cart-user');
+      const htmlCartUser = renderCartUser(dataBooking, dataRelease.dataHeaderNav);
+      $cardUser.empty();
+      $cardUser.append(htmlCartUser);
 
       //Cập nhật table booking
       renderSumary(dataBooking, listDataService);
@@ -3960,7 +4363,6 @@ import {alertCustom} from "./site.js";
 
       const userChoosing = dataBooking.users.find((u) => u.isChoosing === true);
 
-
       // nếu khong tìm thấy idService trong userChoosing thì thêm mới
       let serviceExit = userChoosing.services.find((item) => item.idService === idService);
       let serviceItemExit = serviceExit && serviceExit.itemService.find(item => item.idItemService ===idItemService);
@@ -3968,13 +4370,7 @@ import {alertCustom} from "./site.js";
       // lấy thông tin service vừa chọn
       const serviceSelected = listDataService.find(({item}) => item.id == idService)?.item;
       const itemSelected = serviceSelected && serviceSelected.listItem.find((is) => is.id === idItemService);
-
-      if(idStaff !== 9999) {
-        findTimeFramFreeTechs(timeFramFree, loToday,itemSelected, staffSelecting, isCopySameTime)
-        console.log("timeFrameFree: ", timeFramFree);
-
-      }
-
+      // Phòng trường hợp cho chọn thợ ngay khi bấm +, tạm để logic
       if (serviceExit) {
         if (serviceItemExit) {
           serviceItemExit.selectedStaff = staffSelecting;
@@ -4023,8 +4419,10 @@ import {alertCustom} from "./site.js";
       }
 
       // update calander
-      selectedDate = formatDateMMDDYYYY(userChoosing.selectedDate);
-      renderTimeSlotsForDate(selectedDate, dataBooking, listDataService);
+      // selectedDate = (userChoosing.selectedDate);
+      // renderTimeSlotsForDate(selectedDate, dataBooking, listDataService);
+      renderServiceTechCombo(dataBooking, listDataService);
+
 
       //Cập nhật table booking
       renderSumary(dataBooking, listDataService);
@@ -4063,6 +4461,7 @@ import {alertCustom} from "./site.js";
 
       const serviceCur = listDataService.find(({ item }) => item.id == idService)?.item;
       const itemService = serviceCur?.listItem.find((item) => item.id == idItemService);
+
       const itemAddOn = itemService?.listOptionAddOn.find((item) => {
         return item.id == idItemAddOn;
       });
@@ -4082,6 +4481,9 @@ import {alertCustom} from "./site.js";
       if (!itemServiceInUser) {
         itemServiceInUser = {
           idItemService,
+          title: itemService.title,
+          price: itemService.priceRental,
+          duration: itemService.timetext,
           selectedStaff: null,
           optionals: [] // dùng mảng
         };
@@ -4138,7 +4540,6 @@ import {alertCustom} from "./site.js";
         }
 
         isPhone = isValidPhoneNumber(val);
-        console.log("isPhone: ", isPhone)
         isEmail = isValidEmail(val);
       }
       // clear input #appointment-input
@@ -4178,6 +4579,49 @@ import {alertCustom} from "./site.js";
         // $('.btn-next-emailPhone').prop('disabled', true)
       }
     })
+    // Build payload locktime
+    function buildLocktimePayload(user) {
+      const payloads = [];
+
+      user.services.forEach(service => {
+        service.itemService.forEach(item => {
+          const staff = item.selectedStaff;
+          if (!staff || !staff.employeeID) return;
+
+          // start time
+          const startMoment = moment(
+            `${staff.selectedDate} ${staff.selectedTimeSlot}`,
+            "MM/DD/YYYY HH:mm"
+          );
+
+          // tính tổng duration
+          let totalDuration = item.duration || 0;
+          if (item.optionals && item.optionals.length > 0) {
+            totalDuration += item.optionals.reduce(
+              (sum, opt) => sum + (opt.timedura || 0),
+              0
+            );
+          }
+
+          // end time
+          const endMoment = startMoment.clone().add(totalDuration, "minutes");
+
+          // build payload
+          const payload = {
+            EmployeeID: staff.employeeID.toString(),
+            FromTime: startMoment.format("MM-DD-YYYY hh:mm A"),
+            EndTime: endMoment.format("MM-DD-YYYY hh:mm A"),
+            Key: `${user.id}|${moment().utc().format("MMDDYYYYhhmmss")}`,
+            RVCNo: "336"
+          };
+
+          payloads.push(payload);
+        });
+      });
+
+      return payloads;
+    }
+
     // Hàm dùng để gửi OTP (email hoặc phone)
     async function sendOTP(inputValue, type) {
       if (type == typeInput.PHONE) {
@@ -4185,52 +4629,112 @@ import {alertCustom} from "./site.js";
         dataBooking.users[0].phoneNumber = phoneFormatVerify;
         dataBooking.users[0].email = '';
 
-        const phoneUnformat = unFormatPhoneNumber(phoneFormatVerify);
-        const resVerifyAccount = await fetchAPI.get(`/api/client/getcustomerfamily?RVCNo=336&key=${phoneUnformat}&ismail=false`);
-        console.log("check resV: ", resVerifyAccount)
-        if (resVerifyAccount.status === 201 || resVerifyAccount.status === 202) {
-          // chưa verify, cần gửi OTP
-          return await fetchAPI.get(`/api/user/verifycode?phone=${phoneUnformat}&portalCode=${encodeURIComponent('+84')}&isMail=false`);
-        }
-        else if (resVerifyAccount.status === 200) {
-          // tồn tại và verified
-          // Xử lý khi typeBooking đang là GUEST hay FAMILY
-          // Chưa có data FAMILY, tạm thời xử lý GUEST
-          const typeBooking = dataBooking.type;
-
-          dataBooking.users[0] = {
-            ...dataBooking.users[0],
-            email: resVerifyAccount?.data[0]?.email,
-            phoneNumber: resVerifyAccount?.data[0]?.contactPhone,
-            firstName: resVerifyAccount?.data[0]?.firstName,
-            lastName: resVerifyAccount?.data[0]?.lastName,
-            id: resVerifyAccount?.data[0]?.customerID,
-            isChoosing: true,
-            isVerify: true,
-          };
-
-          currentUserId = dataBooking.users[0].id;
-
-          if(typeBooking === typeBookingEnum.GUESTS){
-            // Add thêm 1 Guest rỗng
-            $('.btn-increase').trigger('click');
+        try {
+          const phoneUnformat = unFormatPhoneNumber(phoneFormatVerify);
+          const resVerifyAccount = await fetchAPI.get(`/api/client/getcustomerfamily?RVCNo=336&key=${phoneUnformat}&ismail=false`);
+          if (resVerifyAccount.status === 201 || resVerifyAccount.status === 202) {
+            // chưa verify, cần gửi OTP
+            return await fetchAPI.get(`/api/user/verifycode?phone=${phoneUnformat}&portalCode=${encodeURIComponent('+84')}&isMail=false`);
           }
-          closePopupContainerTemplate();
+          else if (resVerifyAccount.status === 200) {
+            // tồn tại và verified
+            // Xử lý khi typeBooking đang là GUEST hay FAMILY
+            // Chưa có data FAMILY, tạm thời xử lý GUEST
+            const typeBooking = dataBooking.type;
 
-          if (dataBooking.type !== typeBookingEnum.ME) {
-            $('.wrap-input-guests').removeClass('hidden');
-            updateGuestSection();
+            dataBooking.users[0] = {
+              ...dataBooking.users[0],
+              email: resVerifyAccount?.data[0]?.email,
+              phoneNumber: resVerifyAccount?.data[0]?.contactPhone,
+              firstName: resVerifyAccount?.data[0]?.firstName,
+              lastName: resVerifyAccount?.data[0]?.lastName,
+              id: resVerifyAccount?.data[0]?.customerID,
+              rcpCustomer: resVerifyAccount?.data[0]?.rcpCustomer,
+              isChoosing: true,
+              isVerify: true,
+            };
+
+            currentUserId = dataBooking.users[0].id;
+
+            if(typeBooking === typeBookingEnum.GUESTS){
+              // Add thêm 1 Guest rỗng
+              $('.btn-increase').trigger('click');
+            }
+
+            // lấy listcard authorized tại đây
+            const owner = dataBooking.users[0];
+            const customerID = owner.id;
+            const rcpCustomer = owner.rcpCustomer
+
+            // locktime thợ đã chọn
+            for(const user of dataBooking.users){
+              const listPayload = buildLocktimePayload(user);
+              for (const payload of listPayload) {
+                try {
+                  await fetchAPI.post("/api/appointment/createlocktime", payload);
+                }catch(e) {
+                  console.error("[sendOTP - locktime tech]", payload, e);
+                }
+              }
+            }
+
+            // get list card authorized
+            try {
+              const listCardAuthorized = await fetchAPI.post(`/api/card/getlistcardauthorize?RCPCustomer=${rcpCustomer}&CustomerID=${customerID}&RVCNo=336&TypeAuthorize=1`)
+              if(listCardAuthorized.data) dataBooking.cardNumber = listCardAuthorized.data;
+              else return;
+            }catch(e){
+              console.error('[sendOTP - list card authorized]', e.error);
+            }
+
+            const contentPolicies = renderPoliciesForm(policySetting);
+            let height = 768;
+            let width = 886;
+            if(isMobile) {
+              height = 700;
+              width = '100%'
+            }
+            const persistent = true;
+            const html = renderBasePopup(contentPolicies, persistent, height, width);
+
+            $wrapHomeTemp.append(html);
+            // count downtime
+            if (!popupFlowCountdownInterval) {
+              startPopupFlowCountdown(1800);
+            }
+
+            setTimeout(() => {
+              $('.overlay-screen').addClass('show');
+            }, 10);
+
+            if (dataBooking.type !== typeBookingEnum.ME) {
+              $('.wrap-input-guests').removeClass('hidden');
+              updateGuestSection();
+            }
+
+            $('.wrap-advertise-page').css({ display: 'none' });
+            return null; // Không cần OTP nữa
           }
-
-          $('.wrap-advertise-page').css({ display: 'none' });
-          return null; // Không cần OTP nữa
+        }catch(e){
+          console.error('[sendOTP]: error', {
+            message: e.message,
+            stack: e.stack,
+            name: e.name,
+          })
         }
       }
       else if (type == typeInput.EMAIL) {
         dataBooking.users[0].phoneNumber = '';
         dataBooking.users[0].email = inputValue;
-
-        return await fetchAPI.get(`/api/user/sendotplogin?RVCNo=336&phone=${inputValue}&isMail=true`);
+        try {
+          return await fetchAPI.get(`/api/user/sendotplogin?RVCNo=336&phone=${inputValue}&isMail=true`);
+        }catch(e) {
+          console.error('[sendOTP]', {
+            message: e.message,
+            stack: e.stack,
+            name: e.name,
+          })
+        }
       }
     }
 
@@ -4265,7 +4769,7 @@ import {alertCustom} from "./site.js";
         resendCountdown = 59;
         startResendTimer();
       }else{
-        console.log("! 201")
+        console.log("! status 200")
       }
 
     });
@@ -4362,14 +4866,20 @@ import {alertCustom} from "./site.js";
       // Chỉ verify code lần đầu đăng ký, những lần sau không còn cần verify
       const phoneVerify = unFormatPhoneNumber(JSON.parse(JSON.stringify(dataBooking.users[0].phoneNumber)));
       const optCode = getOtpCode();
-
-      const resVerifyCode = await fetchAPI.get(`/api/user/checkdevice?phone=${phoneVerify}&verifyCode=${optCode}`);
-      if(resVerifyCode.status === 200) {
-        nextFormRegister(dataBooking);
-      }
-      else{
-        // Ngược lại input verify error shake
-
+      try {
+        const resVerifyCode = await fetchAPI.get(`/api/user/checkdevice?phone=${phoneVerify}&verifyCode=${optCode}`);
+        if(resVerifyCode.status === 200) {
+          nextFormRegister(dataBooking);
+        }
+        else{
+          // to-do: Ngược lại input verify error shake
+        }
+      }catch(e) {
+        console.error("[on.btn-next-verify]: ", {
+          message: e.message,
+          stack: e.stack,
+          name: e.name,
+        });
       }
     })
     // popup register
@@ -4514,59 +5024,67 @@ import {alertCustom} from "./site.js";
         email: valEmailRegis,
         isMail: valEmailRegis ? true : false,
       }
-      const resRegis = await fetchAPI.post('/api/user/register', payloadRegis);
-      if(resRegis.status !== 200) {
-        // chưa biết response trả về gì
-        // to-do : will
-        return;
-      }
-      // token & refreshTokens
-      const token_bot = resRegis?.data?.token;
-      const refreshTokens_bot = resRegis?.data?.refreshTokens;
-      localStorage.setItem('token_bot', token_bot)
-      localStorage.setItem('refreshTokens_bot', refreshTokens_bot);
-
-      // Lưu thông tin vào dataBooking
-      dataBooking.users[0].email = resRegis?.data?.email
-      dataBooking.users[0].phoneNumber = resRegis?.data?.phone;
-      dataBooking.users[0].id = resRegis?.data?.id;
-      // res chỉ trả về fullName
-      dataBooking.users[0].firstName = valFirstRegis;
-      dataBooking.users[0].lastName = valLastRegis;
-
-      // close và hiển thị gia đình | guest
-      // add thêm 1 thành viên rỗng nếu length dataBooking.users.length = 1
-      const newU = {
-        id: 2,
-        firstName: '',
-        lastName: '',
-        phoneNumber: '',
-        email: '',
-        gender: genderEnum.MALE,
-        services: [
-
-        ],
-        selectedDate: null,
-        selectedTimeSlot: null,
-        isSelecting: false,
-        isChoosing: false,
-      };
-      if(dataBooking.users.length <2 ) {
-        dataBooking.users.push(newU);
-      }
-      closePopupContainerTemplate();
-
-      alertCustom({
-        type: "success",
-        isNoti: true,
-        notify: {
-          title: "Đăng ký thành công!",
-          position: "bottom-end",
-          timer: 3000,
-          toast: true,
-          showConfirmButton: false
+      try {
+        const resRegis = await fetchAPI.post('/api/user/register', payloadRegis);
+        if(resRegis.status !== 200) {
+          // chưa biết response trả về gì
+          // to-do : will
+          return;
         }
-      });
+        // token & refreshTokens
+        const token_bot = resRegis?.data?.token;
+        const refreshTokens_bot = resRegis?.data?.refreshTokens;
+        localStorage.setItem('token_bot', token_bot)
+        localStorage.setItem('refreshTokens_bot', refreshTokens_bot);
+
+        // Lưu thông tin vào dataBooking
+        dataBooking.users[0].email = resRegis?.data?.email
+        dataBooking.users[0].phoneNumber = resRegis?.data?.phone;
+        dataBooking.users[0].id = resRegis?.data?.id;
+        // res chỉ trả về fullName
+        dataBooking.users[0].firstName = valFirstRegis;
+        dataBooking.users[0].lastName = valLastRegis;
+
+        // close và hiển thị gia đình | guest
+        // add thêm 1 thành viên rỗng nếu length dataBooking.users.length = 1
+        const newU = {
+          id: 2,
+          firstName: '',
+          lastName: '',
+          phoneNumber: '',
+          email: '',
+          gender: genderEnum.MALE,
+          services: [
+
+          ],
+          selectedDate: null,
+          selectedTimeSlot: null,
+          isSelecting: false,
+          isChoosing: false,
+        };
+        if(dataBooking.users.length <2 ) {
+          dataBooking.users.push(newU);
+        }
+        closePopupContainerTemplate();
+
+        alertCustom({
+          type: "success",
+          isNoti: true,
+          notify: {
+            title: "Đăng ký thành công!",
+            position: "bottom-end",
+            timer: 3000,
+            toast: true,
+            showConfirmButton: false
+          }
+        });
+      }catch(e){
+        console.error("[on.next-verify-register]", {
+          message: e.message,
+          stack: e.stack,
+          name: e.name,
+        });
+      }
 
       $('.wrap-input-guests').removeClass('hidden');
       updateGuestSection();
@@ -4574,29 +5092,13 @@ import {alertCustom} from "./site.js";
     })
     // back form policies
     $(document).on('click', '.btn-back-policies', function() {
-      // const dataRegis = {
-      //   firstName: dataBooking.users[0].firstName,
-      //   lastName: dataBooking.users[0].lastName,
-      //   email: dataBooking.users[0].email,
-      //   phoneNumber: dataBooking.users[0].phoneNumber
-      // };
 
-      // const contentFormRegis = renderRegisterForm(dataRegis, fieldEntered);
-      // const html = renderBasePopup(contentFormRegis, 762, 886);
-
-      // $wrapHomeTemp.append(html);
-      // setTimeout(() => {
-      //   $('.overlay-screen').addClass('show');
-      // }, 10);
-
-      // document.getElementById("phone-register").readOnly = (fieldEntered === typeInput.PHONE);
-      // document.getElementById("email-register").readOnly = (fieldEntered === typeInput.EMAIL);
       closePopupContainerTemplate();
       // clear time nếu có
     })
     // next form policies
     $(document).on('click', '.btn-next-policies', function() {
-      const contentPaymentMethod = renderPaymentMethodsForm();
+      const contentPaymentMethod = renderPaymentMethodsForm(dataBooking);
       let height = 776;
       let width = 886;
       if(isMobile) {
@@ -4628,7 +5130,7 @@ import {alertCustom} from "./site.js";
         height = 776;;
         width = '100%';
       }
-      const htmlPaymentMethod = renderPaymentMethodsForm();
+      const htmlPaymentMethod = renderPaymentMethodsForm(dataBooking);
       const html = renderBasePopup(htmlPaymentMethod,false, height, width);
 
       $wrapHomeTemp.append(html);
@@ -4639,7 +5141,7 @@ import {alertCustom} from "./site.js";
     })
     // back select payment
     $(document).on('click', '.btn-back-payment', function() {
-      const htmlPoliciesForm = renderPoliciesForm();
+      const htmlPoliciesForm = renderPoliciesForm(policySetting);
       let height = 768;
       let width = 886;
       if(isMobile) {
@@ -4656,7 +5158,331 @@ import {alertCustom} from "./site.js";
       // settime close
     })
     // Confirm payment final
-    $(document).on('click', '.btn-next-payment', function () {
+    $(document).on('click', '.btn-next-payment', async function () {
+      // Chọn thẻ
+      const cardChoosing = dataBooking.cardNumber.find((card) => card.isChoosing);
+      const userChoosing = dataBooking.users[0];
+
+      const rcpCustomer = userChoosing.rcpCustomer;
+      const appointmentID = 0;
+      const customerID = userChoosing.id;
+      const cardAuthorize = cardChoosing.cardAuthorize;
+      const totalAmount = dataBooking.totalAmount || 0;
+      const rcvNo = 336;
+      const typeAuth = 1;
+      const idCard = cardChoosing.id;
+      let dataAddDeposit;
+      try {
+        const urlAddDeposit =`/api/card/adddeposit
+        ?RCPCustomer=${rcpCustomer}&AppointmentID=${appointmentID}
+        &CustomerID=${customerID}&AuthorizeCardID=${cardAuthorize}
+        &Amount=${totalAmount}&RVCNo=${rcvNo}&TypeAuthorize=${typeAuth}&ID=${idCard}`
+        .replace(/\s+/g, "");
+
+        dataAddDeposit = await fetchAPI.get(urlAddDeposit);
+      }catch(e){
+        console.error('[on.btn-next-payment]', {
+          message: e.message,
+          stack: e.stack,
+          name: e.name,
+        });
+      }
+      // book now
+      const list_appointmentSubject = new Set();
+      dataBooking.users.forEach(user => {
+        user.services.forEach(service => {
+          service.itemService.forEach(item => {
+            list_appointmentSubject.add(item.title);
+          });
+        });
+      });
+      const result_list_appointmentSubject = Array.from(list_appointmentSubject).join(", ");
+
+      const serviceDateTimeSet = new Set();
+
+      dataBooking.users.forEach(user => {
+        user.services.forEach(service => {
+          service.itemService.forEach(item => {
+            const staff = item.selectedStaff;
+            if (staff && staff.selectedDate && staff.selectedTimeSlot) {
+              // Ghép lại thành "MM-DD-YYYY HH:mm:ss"
+              const dateTime = `${staff.selectedDate} ${staff.selectedTimeSlot}:00`;
+
+              // Thêm vào Set để loại bỏ trùng lặp
+              serviceDateTimeSet.add(dateTime);
+            }
+          });
+        });
+      });
+
+      const uniqueSelectedDates = Array.from(serviceDateTimeSet); // dùng cho cả ServiceDate và StartTime
+
+      // EndTime
+        // help function
+      function buildUniqueEndTimes(dataBooking) {
+        const seen = new Set();
+        const results = [];
+
+        dataBooking.users.forEach(user => {
+          user.services.forEach(service => {
+            service.itemService.forEach(item => {
+              const staff = item.selectedStaff;
+              if (!staff?.selectedDate || !staff?.selectedTimeSlot) return;
+
+              // start time
+              const [month, day, year] = staff.selectedDate.split("/"); // "08/21/2025"
+              const [hour, minute] = staff.selectedTimeSlot.split(":"); // "16:20"
+              const start = new Date(`${year}-${month}-${day}T${hour.padStart(2, "0")}:${minute.padStart(2, "0")}:00`);
+
+              // tổng duration = chính + optional
+              let totalDuration = item.duration || 0;
+              if (item.optionals && item.optionals.length > 0) {
+                totalDuration += item.optionals.reduce((sum, opt) => sum + (opt.timedura || 0), 0);
+              }
+
+              // end time = start + duration
+              const end = new Date(start.getTime() + totalDuration * 60000);
+
+              // format: MM-DD-YYYY HH:mm:ss
+              const formatted = `${month}-${day}-${year} ${String(end.getHours()).padStart(2, "0")}:${String(end.getMinutes()).padStart(2, "0")}:${String(end.getSeconds()).padStart(2, "0")}`;
+
+              // loại bỏ trùng lặp
+              if (!seen.has(formatted)) {
+                seen.add(formatted);
+                results.push(formatted);
+              }
+            });
+          });
+        });
+
+        return results;
+      }
+      const endTimes = buildUniqueEndTimes(dataBooking);
+
+      // nickName thợ
+      const uniqueNicknames = new Set();
+      dataBooking.users.forEach(user => {
+        user.services.forEach(service => {
+          service.itemService.forEach(item => {
+            if (item.selectedStaff && item.selectedStaff.nickName) {
+              uniqueNicknames.add(item.selectedStaff.nickName);
+            }
+          });
+        });
+      });
+
+      const staffNickNames = Array.from(uniqueNicknames);
+
+      // list id thợ
+      const uniqueEmployeeID = new Set();
+      dataBooking.users.forEach(user => {
+        user.services.forEach(service => {
+          service.itemService.forEach(item => {
+            if (item.selectedStaff && item.selectedStaff.id) {
+              uniqueEmployeeID.add(item.selectedStaff.id);
+            }
+          });
+        });
+      });
+
+      const listUniqueEmID = Array.from(uniqueEmployeeID);
+
+      // Tổng duration book
+      function calcTotalDuration(dataBooking) {
+        let totalDuration = 0;
+
+        dataBooking.users.forEach(user => {
+          user.services.forEach(service => {
+            service.itemService.forEach(item => {
+              // thời lượng chính của service
+              let itemDuration = item.duration || 0;
+
+              // cộng thêm các optional (nếu có)
+              if (item.optionals && item.optionals.length > 0) {
+                item.optionals.forEach(opt => {
+                  itemDuration += opt.timedura || 0;
+                });
+              }
+
+              totalDuration += itemDuration;
+            });
+          });
+        });
+
+        return totalDuration;
+      }
+
+      const totalTimeDuration = calcTotalDuration(dataBooking);
+      // help calc end time
+      function calcEndTime(startDateTime, duration) {
+        const [date, time] = startDateTime.split(" ");
+        // tách bằng cả "/" và "-"
+        const [month, day, year] = date.includes("/")
+          ? date.split("/").map(Number)
+          : date.split("-").map(Number);
+
+        const [h, m, s] = time.split(":").map(Number);
+
+        const dt = new Date(year, month - 1, day, h, m, s || 0);
+        dt.setMinutes(dt.getMinutes() + duration);
+
+        const MM = String(dt.getMonth() + 1).padStart(2, "0");
+        const DD = String(dt.getDate()).padStart(2, "0");
+        const YYYY = dt.getFullYear();
+        const HH = String(dt.getHours()).padStart(2, "0");
+        const mm = String(dt.getMinutes()).padStart(2, "0");
+        const SS = String(dt.getSeconds()).padStart(2, "0");
+
+        return `${MM}-${DD}-${YYYY} ${HH}:${mm}:${SS}`;
+      }
+
+      function buildItemList(dataBooking) {
+        let index = 0;
+        const listItemDetail = [];
+
+        dataBooking.users.forEach((user) => {
+          user.services.forEach((service) => {
+            service.itemService.forEach((itemService) => {
+              const staff = itemService.selectedStaff;
+
+              // Tính tổng price + duration (cả optional nếu có)
+              let totalPrice = parseFloat(itemService.price) || 0;
+              let totalDuration = parseInt(itemService.duration) || 0;
+
+              if (itemService.optionals && Array.isArray(itemService.optionals)) {
+                itemService.optionals.forEach((opt) => {
+                  totalPrice += parseFloat(opt.price) || 0;
+                  totalDuration += parseInt(opt.timeDuration) || 0;
+                });
+              }
+
+              const startTime = `${staff.selectedDate} ${staff.selectedTimeSlot}:00`;
+              const endTime = calcEndTime(startTime, totalDuration);
+
+              listItemDetail.push({
+                Index: index++,
+                ParentAddon: -1,
+                ItemID: itemService.idItemService,
+                ItemName: itemService.title,
+                ItemPrice: totalPrice.toFixed(2),
+                Duration: totalDuration,
+                EmployeeID: staff.employeeID,
+                EmployeeName: staff.nickName,
+                Type: 1,
+                IsCategory: 0,
+                IsRequestTech: 1,
+                StartTime: startTime,
+                EndTime: endTime,
+                DurationItem: totalDuration,
+                IsChangeTime: 0,
+                ProductCharge: 0,
+                Turn: 0,
+                Comission: 0,
+                IDCombo: 0,
+                AddonId: 0,
+              });
+            });
+          });
+        });
+
+        return listItemDetail;
+      }
+      // item detail
+      const listItemDetail = buildItemList(dataBooking);
+
+      const bookXLM = {
+          Appointment: {
+            AppointmentID: "0",
+            CustomerID: userChoosing.id,
+            CustomerName: userChoosing.firstName + userChoosing.lastName,
+            CustomerPhone: userChoosing.phoneNumber.slice(1),
+            AppointmentSubject: result_list_appointmentSubject,
+            ServiceDate: uniqueSelectedDates,
+            StartTime: uniqueSelectedDates,
+            EndTime: endTimes,
+            AppointmentStatusID: "1",
+            EmployeeID: listUniqueEmID,
+            GroupEmployeeName: staffNickNames,
+            AptComment: "",
+            TotalAmount: dataBooking.totalAmount,
+            DepositAmount: dataBooking.paymentDeposit,
+            CrearteBy: "0",
+            IsBookOnline: "1",
+            IsConfirmOB: "0",
+            BarcodeTicket: "",
+            TotalDuration: totalTimeDuration,
+            IDParty: "0",
+            IsStartAllSameTime: "0",
+            ApptIndex: "0",
+            Detail: {
+              ApptIndex: "0",
+                Item: listItemDetail,
+            }
+          }
+        }
+      // Dùng cho bookXLM
+      const xmlString = jsonToXml(bookXLM, "root");
+      const payloadBookXLM = {
+        RVCNo: "336",
+        xml: xmlString,
+        isConfirm: '0',
+        CustomerID: userChoosing.id.toString(),
+      }
+
+      // book now
+      let dataBookXLM;
+      try{
+        dataBookXLM = await fetchAPI.post('/api/appointment/bookAptXML',payloadBookXLM);
+      }catch(e){
+        console.error('[dataBookXLM]', {
+          message: e.message,
+          stack: e.stack,
+          name: e.name,
+        })
+      }
+
+      if(dataBookXLM.appointmentID){
+        // send manualNotify
+        const RVCNo = 336;
+        const keyOnline = "OnlineBookingConfirm";
+        const keyTech = "OB.NotifyTech";
+        const type = "sms";
+        const appointmentID = dataBookXLM.appointmentID;
+
+        let resManualNotiOnline;
+        try {
+          resManualNotiOnline = await fetchAPI.get(`/api/appointment/SendManualNotify?RVCNo=${RVCNo}&key=${keyOnline}&type=${type}&appointmentID=${appointmentID}`)
+        }catch(e) {
+          console.error('[resManualNotiOnline]', {
+            message: e.message,
+            stack: e.stack,
+            name: e.name,
+          })
+        }
+        if(resManualNotiOnline.status !== 200) return;
+
+        let resManualNotiTech;
+        try {
+          resManualNotiTech = await fetchAPI.get(`/api/appointment/SendManualNotify?RVCNo=${RVCNo}&key=${keyTech}&type=${type}&appointmentID=${appointmentID}`)
+        }catch(e) {
+          console.error('[resManualNotiTech]', {
+            message: e.message,
+            stack: e.stack,
+            name: e.name,
+          })
+        }
+        if(resManualNotiTech.status !== 200) return;
+
+        // add log deposit
+
+
+        // invoke hub
+        // const dataInvokeHub = await
+
+
+      }else {
+        console.log("Not res appointmentID")
+      }
       const contentSuccessPayment = renderPaymentConfirmationForm();
       const html = renderBasePopup(contentSuccessPayment,false, 920, 886);
 
@@ -4672,6 +5498,23 @@ import {alertCustom} from "./site.js";
           buttonSelector: '.wrap-popup-payment-confirmation .btn-request-another'
         });
       }, 50);
+    })
+    // Chọn thẻ thanh toán
+    $(document).on('click', '.payment-method-item', function() {
+      const $this = $(this);
+      $('.payment-method-item').removeClass('selected');
+
+      $this.addClass('selected');
+      const idCard = $this.data('id');
+      let cardChoosing = {};
+      dataBooking.cardNumber.forEach((item) =>{
+        if(item.id == idCard) {
+          item.isChoosing = true;
+          cardChoosing = item;
+        }
+      })
+      // bật nút Confirm
+      $('.btn-next-payment').prop('disabled', false);
     })
     // Sự kiện trên popup register
      // Kiểm tra và disable btn verify form register
@@ -4815,7 +5658,7 @@ import {alertCustom} from "./site.js";
     })
     // Sự kiện mở form phương thức thanh toán
     $(document).on('click', '.btn-open-payment', function () {
-      const htmlPaymentMethod = renderPaymentMethodsForm();
+      const htmlPaymentMethod = renderPaymentMethodsForm(dataBooking);
       let height = 776;
       let width = 886;
       if(isMobile) {
@@ -4837,15 +5680,9 @@ import {alertCustom} from "./site.js";
 
     // Lưu thẻ mới và quay lại form phương thức thanh toán
     $(document).on('click', '.btn-save-card', function () {
-      // Giả lập lưu card (ở call API thật)
-      const newCard = {
-        type: 'Visa',
-        number: '**** 1234',
-        exp: '12/28'
-      };
 
       // Render lại form chọn phương thức với thẻ mới tick sẵn
-      const htmlPaymentMethod = renderPaymentMethodsForm(newCard);
+      const htmlPaymentMethod = renderPaymentMethodsForm(dataBooking);
       let height = 776;
       let width = 886;
       if(isMobile) {
@@ -5059,7 +5896,7 @@ import {alertCustom} from "./site.js";
             }
 
             const userChoosing = dataBooking.users.find((user) => user.isChoosing);
-            renderListService(listDataService, '.list-more', dataBooking, userChoosing?.id);
+            renderListService(listDataService, '.list-more', dataBooking);
             // re-render sumary
             renderSumary(dataBooking, listDataService);
           }
@@ -5113,50 +5950,303 @@ import {alertCustom} from "./site.js";
           })
 
     // START: Xử lý option trên banner
-    $(document).on("click",'#prev', function() {
+    // Hàm fetch ngày nghỉ thật từ tiệm 336
+    async function fetchStoreOffDays(rvcNo, month, year) {
+      const beginDate = `${month + 1}/01/${year}`;
+      const endDate = `${month + 1}/30/${year}`;
+      const url = `/api/store/getstoreoffday?rvcNo=${rvcNo}&beginDate=${encodeURIComponent(beginDate)}&endDate=${encodeURIComponent(endDate)}`;
+
+      try {
+        const res = await fetchAPI.get(url);
+        if (res.status === 0 && Array.isArray(res.data)) {
+          return res.data.map(item => new Date(item.dateOff).getDate());
+        }
+        return [];
+      } catch (e) {
+        console.error("[fetchStoreOffDays]", {
+          message: e.message,
+          stack: e.stack,
+          name: e.name,
+        });
+        return [];
+      }
+    }
+
+
+    // Hàm cập nhật dữ liệu fakeDataCalender theo tháng
+    function updateCalendarData(month, year, rvcNo, callback) {
+      fetchStoreOffDays(rvcNo, month, year).then(daysOff => {
+        fakeDataCalender[month + 1] = daysOff; // lưu lại theo key tháng
+        if (typeof callback === "function") callback();
+      });
+    }
+
+    $(document).on("click", '#prev', function () {
       if (currentMonth > 0) {
         currentMonth--;
-        // Khởi tạo ngày hôm nay làm selectedDate
         selectedDate = new Date(currentYear, currentMonth, currentDate.getDate());
 
-        renderCalendar(monthNames, dayNames, currentMonth, currentYear, fakeDataCalender, selectedDate, dataBooking, currentUserId, listDataService);
-        // Cập nhật tiêu đề ngày được chọn
-        document.getElementById("selectedDateTitle").textContent = selectedDate.toDateString();
-        // Hiển thị time slots cho ngày hôm nay
-        renderTimeSlotsForDate(selectedDate, dataBooking, listDataService);
+        updateCalendarData(currentMonth, currentYear, 336, () => {
+          renderCalendar(monthNames, dayNames, currentMonth, currentYear, fakeDataCalender, selectedDate, dataBooking, listDataService);
+          document.getElementById("selectedDateTitle").textContent = selectedDate.toDateString();
+          renderTimeSlotsForDate(selectedDate, dataBooking, listDataService);
+        });
       }
     });
-    $(document).on("click",'#next', function() {
+
+    $(document).on("click", '#next', function () {
       if (currentMonth < 11) {
         currentMonth++;
-        // Khởi tạo ngày hôm nay làm selectedDate
         selectedDate = new Date(currentYear, currentMonth, currentDate.getDate());
 
-        renderCalendar(monthNames, dayNames, currentMonth, currentYear, fakeDataCalender, selectedDate, dataBooking, currentUserId, listDataService);
-        // Cập nhật tiêu đề ngày được chọn
-        document.getElementById("selectedDateTitle").textContent = selectedDate.toDateString();
-        // Hiển thị time slots cho ngày hôm nay
-        renderTimeSlotsForDate(selectedDate, dataBooking, listDataService);
+        updateCalendarData(currentMonth, currentYear, 336, () => {
+          renderCalendar(monthNames, dayNames, currentMonth, currentYear, fakeDataCalender, selectedDate, dataBooking, listDataService);
+          document.getElementById("selectedDateTitle").textContent = selectedDate.toDateString();
+          renderTimeSlotsForDate(selectedDate, dataBooking, listDataService);
+        });
       }
     });
+    // === START: VALID SESSION CREDIT
+    function validateField($input, showError = true) {
+      const id = $input.attr('id');
+      const value = $input.val().trim();
+      let valid = true;
+
+      switch (id) {
+        case 'card-holder-name':
+          if (!value) {
+            if (showError) showInputError($input, 'Card holder is required');
+            valid = false;
+          } else {
+            clearInputError($input);
+          }
+          break;
+
+        case 'card-number':
+          if (!isValidCardNumber(value)) {
+            if (showError) showInputError($input, 'Invalid card number');
+            valid = false;
+          } else {
+            clearInputError($input);
+          }
+          break;
+
+        case 'card-expiry':
+          if (!isValidExpiryDate(value)) {
+            if (showError) showInputError($input, 'Invalid expiry date');
+            valid = false;
+          } else {
+            clearInputError($input);
+          }
+          break;
+
+        case 'card-cvv':
+          if (!isValidCVV(value)) {
+            if (showError) showInputError($input, 'Invalid CVV');
+            valid = false;
+          } else {
+            clearInputError($input);
+          }
+          break;
+
+        case 'billing-address':
+          if (!value) {
+            if (showError) showInputError($input, 'Billing address is required');
+            valid = false;
+          } else {
+            clearInputError($input);
+          }
+          break;
+      }
+
+      return valid;
+    }
+
+    function checkAllFormAddCard() {
+      let isValid = true;
+      $('#form-add-card input').each(function () {
+      if (!validateField($(this), false)) {
+          isValid = false;
+        }
+      });
+
+      const $btnAdd = $('#form-add-card .btn-add-card');
+      if (isValid) {
+        $btnAdd.prop('disabled', false).removeClass('disabled');
+      } else {
+        $btnAdd.prop('disabled', true).addClass('disabled');
+      }
+    }
+    // Check từng field khi blur
+    $(document).on('blur', '#form-add-card input', function () {
+      validateField($(this), true);
+      checkAllFormAddCard();
+    });
+
+    // Check toàn bộ khi input change
+    $(document).on('input change', '#form-add-card input', function () {
+      const $this = $(this);
+      if($this.attr('id') === 'card-number'){
+        $this.val(formatCardNumber($this.val()));
+      }
+      if ($this.attr('id') === 'card-expiry') {
+        $this.val(formatExpiryDate($this.val())); // auto format expiry date
+      }
+      checkAllFormAddCard();
+    });
+
+    // Helper: lấy value theo id
+    function getVal($wrap, selector) {
+      return $wrap.find(selector).val().trim();
+    }
+    async function fillNewCard($wrapFormAddCard, dataBooking) {
+      // map key trong object <=> id trong form
+      const fieldMap = {
+        cardHolderName: '#card-holder-name',
+        cardNumber:     '#card-number',
+        mmyy:           '#card-expiry',
+        ccv2:           '#card-cvv',
+        billingAddress: '#billing-address',
+        street:         '#card-street',
+        city:           '#card-city',
+        state:          '#card-state',
+        zip:            '#card-zip',
+      };
+
+      let newCard = {};
+
+      // gán giá trị cho newCard theo mapping
+      Object.entries(fieldMap).forEach(([key, selector]) => {
+        newCard[key] = getVal($wrapFormAddCard, selector);
+      });
+
+      const mmyy = newCard.mmyy || ""; // dạng "12/34"
+      let expiryMonth = "";
+      let expiryYear = "";
+
+      if (mmyy.includes("/")) {
+        const [mm, yy] = mmyy.split("/");
+        expiryMonth = mm.trim();
+        expiryYear = yy.trim();
+      }
+
+      const owner = dataBooking.users[0];
+      const phoneNumberOwner = owner.phoneNumber;
+      const emailOwner = owner.email;
+      const customerID = owner.id;
+      const rcpCustomer = owner.rcpCustomer
+
+      // add new card
+      const payloadNewCard = {
+        // Card info
+        number: unformatCardNumber(newCard.cardNumber),
+        expiryMonth: expiryMonth,
+        expiryYear: expiryYear,
+        cvv: newCard.ccv2,
+        isDefault: true,
+        magstripe: "",
+        code: "",
+
+        // Holder info
+        firstName: newCard.cardHolderName,
+        lastName: newCard.cardHolderName,
+        name: "",
+        alias: "",
+
+        // Contact
+        phoneNumber: phoneNumberOwner,
+        email: emailOwner,
+        company: "",
+        faxNumber: "",
+
+        // Billing address
+        address: newCard.billingAddress,
+        avsStreet: newCard.billingAddress,
+        avsZip: "",
+        city: newCard.city,
+        state: newCard.state,
+        zip: newCard.zip,
+        country: ""
+      };
+      try{
+        const url = `/api/card/createcardcustomer?RCPCustomer=${rcpCustomer}&CustomerID=${customerID}&RVCNo=336&TypeAuthorize=1`
+        await fetchAPI.post(url, payloadNewCard)
+      }catch(e){
+        console.error("[fillNewCard - add new card]", {
+          message: e.message,
+          stack: e.stack,
+          name: e.name,
+        });
+      }
+      // get list card authorized
+      try {
+        const listCardAuthorized = await fetchAPI.post(`/api/card/getlistcardauthorize?RCPCustomer=${rcpCustomer}&CustomerID=${customerID}&RVCNo=336&TypeAuthorize=1`)
+
+        if(listCardAuthorized.data) owner.cardNumber = listCardAuthorized.data;
+      }catch(e){
+        console.error('[fillNewCard - get list card]', {
+          message: e.message,
+          stack: e.stack,
+          name: e.name,
+        });
+      }
+
+    }
+    $(document).on('click', '.btn-add-card', function() {
+      const $this = $(this);
+      const $wrapFormAddCard = $this.closest('.wrap-popup-add-card');
+      const $inputs = $wrapFormAddCard.find('input');
+
+      let isValid = true;
+      $inputs.each(function () {
+        if (!validateField($(this), true)) {
+          isValid = false;
+          shakeError($(this));
+        }
+      });
+
+      if (!isValid) {
+        return; // stop add card
+      }
+
+      fillNewCard($wrapFormAddCard, dataBooking);
+
+      // to-do : valid các input
+
+      const contentPaymentMethod = renderPaymentMethodsForm(dataBooking);
+      let height = 776;
+      let width = 886;
+      if(isMobile) {
+        height = 776;;
+        width = '100%';
+      }
+      const html = renderBasePopup(contentPaymentMethod,false, height, width);
+      $wrapHomeTemp.append(html);
+      setTimeout(() => {
+        $('.overlay-screen').addClass('show');
+      }, 10);
+    })
+
+    // === END: VALID SESSION CREDIT
+
     // toggle copy same time
     $(document).on('change', '#select-banner-pm', function() {
       const $this = $(this);
       isCopySameTime = $this.prop('checked');
     })
 
+
     // START: confirm booking
     $(document).on('click', '.btn-confirm-booking', function() {
-      const contentPolicies = renderPoliciesForm();
-      let height = 768;
-      let width = 886;
+      const htmlVerifyEmailPhone = renderVerifyEmailPhoneContent();
+      let height = 620;
+      let width = 560;
       if(isMobile) {
-        height = 700;
-        width = '100%'
+        height = 620;
+        width = '100%';
       }
-      const persistent = true;
-      const html = renderBasePopup(contentPolicies, persistent, height, width);
-
+      // const persistent = true;
+      const html = renderBasePopup(htmlVerifyEmailPhone, false, height, width);
       $wrapHomeTemp.append(html);
       setTimeout(() => {
         $('.overlay-screen').addClass('show');
@@ -5164,13 +6254,26 @@ import {alertCustom} from "./site.js";
     })
 
 
-    renderCalendar(monthNames, dayNames, currentMonth, currentYear, fakeDataCalender, selectedDate, dataBooking, currentUserId, listDataService);
-    // Khởi tạo ngày hôm nay làm selectedDate và gán ngày hôm nay cho selectedDate user nếu selectedDate chưa có
-    selectedDate = new Date(currentYear, currentMonth, currentDate.getDate());
-    // Cập nhật tiêu đề ngày được chọn
-    document.getElementById("selectedDateTitle").textContent = selectedDate.toDateString();
-    // Hiển thị time slots cho ngày hôm nay
-    renderTimeSlotsForDate(selectedDate, dataBooking, listDataService);
+    // lần đầu load: fetch ngày nghỉ của tháng hiện tại
+    updateCalendarData(currentMonth, currentYear, 336, () => {
+      renderCalendar(
+        monthNames,
+        dayNames,
+        currentMonth,
+        currentYear,
+        fakeDataCalender,
+        selectedDate,
+        dataBooking,
+        listDataService
+      );
+
+      // cập nhật tiêu đề ngày được chọn
+      document.getElementById("selectedDateTitle").textContent =
+        selectedDate.toDateString();
+
+      // hiển thị time slots cho ngày hôm nay
+      renderTimeSlotsForDate(selectedDate, dataBooking, listDataService);
+    });
 
     // confirm booking
     renderSumary(dataBooking, listDataService);
@@ -5284,7 +6387,6 @@ import {alertCustom} from "./site.js";
 
     // click test api
     $(document).on('click', '#page-fag', async function () {
-
 
     })
 

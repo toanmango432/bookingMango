@@ -221,6 +221,7 @@
   --px-700: calc(700px * var(--scale) / 100);
   --px-706: calc(706px * var(--scale) / 100);
   --px-710: calc(710px * var(--scale) / 100);
+  --px-720: calc(720px * var(--scale) / 100);
   --px-800: calc(800px * var(--scale) / 100);
   --px-820: calc(820px * var(--scale) / 100);
   --px-900: calc(900px * var(--scale) / 100);

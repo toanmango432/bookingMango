@@ -295,9 +295,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  overflow-y: hidden;
+  overflow-y: scroll;
+  padding: 0px 8px;
 }
-.list-order {
+/* .item-order {
   width: 100%;
   height: 100%;
   overflow-y: scroll;
@@ -306,7 +307,83 @@
   justify-content: center;
   align-items: center;
   gap: var(--px-12);
+} */
+.item-order {
+  width: 100%;
+  background-image: var(--bg-image-cart);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  border-radius: 12px;
+  /* background: #fff; */
+  border: 0.5px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.06);
+  padding: 14px;
+  transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+  will-change: transform, box-shadow;
+  margin-bottom: 12px;
+  background-color: rgba(255, 255, 255, 0.4);
+  background-position: center -76px;
+  background-blend-mode: lighten;
+  /* cursor: pointer; */
 }
+.item-order:hover {
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.1), 0 2px 6px rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.top-item-order {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Tiêu đề dịch vụ */
+.title-item-order span {
+  font: normal normal 600 var(--s-24);
+}
+
+/* Khối bên phải (giá + duration) */
+.right-item-order {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.price-item-order {
+  font: normal normal 600 var(--s-20);
+}
+
+.dura-item-order {
+  font: normal normal 500 var(--s-16);
+}
+
+/* Thông tin nhân viên */
+.staff-item-order {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.staff-item-order .img-staff-order {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #ddd;
+}
+
+.staff-item-order span {
+  font: normal normal 600 var(--s-18);
+}
+
 .image-order-none {
   width: var(--px-204);
   height: var(--px-204);
@@ -982,6 +1059,9 @@ select {
   color: #fff;
   font: normal normal 600 var(--s-20);
 }
+.btn-next-payment:disabled {
+  cursor: not-allowed;
+}
 .btn-back-payment:hover,
 .btn-next-payment:hover {
   filter: brightness(0.95);
@@ -1018,10 +1098,11 @@ select {
   padding-right: var(--px-8);
 }
 .form-group-card-new {
-  width: 100%;
+  width: 96%;
   display: flex;
   flex-direction: column;
   gap: var(--px-8);
+  margin-left: 4px;
 }
 .form-group-card-new label,
 .group-card-ex label,
@@ -1045,9 +1126,10 @@ select {
   background: rgba(255, 255, 255, 0.9);
 }
 .form-row-card-new {
-  width: 100%;
+  width: 96%;
   display: flex;
   justify-content: space-between;
+  margin-left: 4px;
 }
 .form-row-card-new .group-card-ex {
   width: 35%;
@@ -2387,7 +2469,7 @@ select {
   gap: var(--px-12);
   max-height: 0;
   transition: max-height 0.6s ease;
-  max-height: 1500px;
+  max-height: 3000px;
   opacity: 1;
   transform: scaleY(1);
   overflow-y: scroll;
@@ -2418,6 +2500,14 @@ select {
   width: 100%;
   display: flex;
   justify-content: space-between;
+}
+.wrap-service-infoshop
+  .list-more
+  .more-item
+  .card-more
+  .right-card
+  .is-hide-price {
+  font: normal normal 600 var(--s-20) !important;
 }
 .show-more-info {
   display: none;
@@ -2892,6 +2982,12 @@ select {
 
 /* Dot bên trong khi selected */
 .time-slot.selected .circle .dot {
+  width: var(--px-12); /* 20 - 2*border - 2*padding = ~12 */
+  height: var(--px-12);
+  background-color: var(--color-cur-primary);
+  border-radius: 50%;
+}
+.payment-method-item.selected .circle .dot {
   width: var(--px-12); /* 20 - 2*border - 2*padding = ~12 */
   height: var(--px-12);
   background-color: var(--color-cur-primary);
@@ -3825,6 +3921,33 @@ select {
   background: #f9f9f9;
   transition: all 0.2s ease;
   white-space: nowrap;
+  position: relative;
+}
+.tab-item .icon-mark-staff {
+  height: 20px;
+  width: 20px;
+  display: none;
+  position: absolute;
+  right: 8px;
+  top: 10px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 100%;
+  background-color: white;
+}
+.tab-item.has-time:not(.active) .icon-mark-staff {
+  background-color: var(--bs-main);
+}
+.tab-item.has-time .icon-mark-staff {
+  display: flex;
+}
+
+.tab-item.has-time .icon-mark-staff i {
+  color: var(--bs-main);
+  font-size: 12px;
+}
+.tab-item.has-time:not(.active) .icon-mark-staff i {
+  color: white;
 }
 
 .tab-tech .tab-item:hover {
@@ -3836,4 +3959,3 @@ select {
   color: white;
   border-color: #ecb155;
 }
-
