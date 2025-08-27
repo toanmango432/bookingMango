@@ -136,7 +136,7 @@ export const fetchAPI = {
   },
 
   request: async (method, url, data, queryParams) => {
-    const domain_api = 'https://uat-clientapp.enrichcous.com:4443'
+    const domain_api = "https://uat-clientapp.enrichcous.com:4443";
     try {
       let headers = {
         "Access-Control-Allow-Origin": "*",
@@ -2476,9 +2476,9 @@ function animateHeight($el, isExpand) {
 }
 
 // render timming
-  function renderTimeBooking(dataBooking, isCopySameTime) {
-    // const userCopyTime = dataBooking.users.find((u) => u.isSelecting && !u.isChoosing);
-    return `
+function renderTimeBooking(dataBooking, isCopySameTime) {
+  // const userCopyTime = dataBooking.users.find((u) => u.isSelecting && !u.isChoosing);
+  return `
       <div class="calendar-timeslot">
         <div class="wrap-calendar-time"
         >
@@ -2530,211 +2530,266 @@ function animateHeight($el, isExpand) {
           </div>
         </div>
       </div>
-    `
-  }
+    `;
+}
 
-  // render container time-booking && select time
-  function renderContainerTiming(
-    dataBooking,
-    currentDate,
+// render container time-booking && select time
+function renderContainerTiming(
+  dataBooking,
+  currentDate,
+  monthNames,
+  dayNames,
+  currentMonth,
+  currentYear,
+  fakeDataCalender,
+  selectedDateParam,
+  currentUserId,
+  listDataService,
+  isCopySameTime
+) {
+  const $wrapCalendarTimeslot = $(".calendar-timeslot");
+  const htmlTimeBooking = renderTimeBooking(dataBooking, isCopySameTime);
+  $wrapCalendarTimeslot.replaceWith(htmlTimeBooking);
+
+  // Lấy user hiện tại
+  const user = dataBooking.users.find((u) => u.id === currentUserId);
+
+  // 1. Lấy selectedDate ưu tiên từ user, nếu là string -> new Date()
+  let userSelected = user ? normalizeToDate(user.selectedDate) : null;
+
+  // 2. Nếu không có userSelected => chọn selectedDateParam hoặc today
+  let useDate =
+    userSelected || normalizeToDate(selectedDateParam) || new Date();
+
+  // 3. Không để date ở quá khứ (so với today) — nếu quá khứ dùng today
+  const today = new Date();
+  const todayOnly = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate()
+  );
+  if (useDate < todayOnly) useDate = todayOnly;
+
+  // 4. Nếu ngày rơi vào non-working, tìm ngày làm việc tiếp theo
+  useDate = findNextWorkingDate(useDate, fakeDataCalender);
+
+  // 5. đồng bộ month/year với useDate
+  currentMonth = useDate.getMonth();
+  currentYear = useDate.getFullYear();
+
+  // Render calendar + time slots với ngày đã chọn
+  renderCalendar(
     monthNames,
     dayNames,
     currentMonth,
     currentYear,
     fakeDataCalender,
-    selectedDateParam,
+    useDate,
+    dataBooking,
     currentUserId,
-    listDataService,
-    isCopySameTime,
-  ) {
-    const $wrapCalendarTimeslot = $('.calendar-timeslot');
-    const htmlTimeBooking = renderTimeBooking(dataBooking, isCopySameTime);
-    $wrapCalendarTimeslot.replaceWith(htmlTimeBooking);
+    listDataService
+  );
 
-    // Lấy user hiện tại
-    const user = dataBooking.users.find(u => u.id === currentUserId);
+  // Cập nhật tiêu đề ngày
+  const titleEl = document.getElementById("selectedDateTitle");
+  if (titleEl) titleEl.textContent = useDate.toDateString();
 
-    // 1. Lấy selectedDate ưu tiên từ user, nếu là string -> new Date()
-    let userSelected = user ? normalizeToDate(user.selectedDate) : null;
+  // Render time slots cho ngày này (và sẽ chọn time slot nếu user.selectedTimeSlot tồn tại)
+  renderTimeSlotsForDate(useDate, dataBooking, currentUserId, listDataService);
+}
+// render calender
+function renderCalendar(
+  monthNames,
+  dayNames,
+  currentMonth,
+  currentYear,
+  fakeDataCalender,
+  selectedDate,
+  dataBooking,
+  currentUserId,
+  listDataService
+) {
+  const daysEl = document.getElementById("days");
+  const monthYearEl = document.getElementById("monthYear");
+  daysEl.innerHTML = "";
+  monthYearEl.textContent = `${monthNames[currentMonth]}, ${currentYear}`;
 
-    // 2. Nếu không có userSelected => chọn selectedDateParam hoặc today
-    let useDate = userSelected || normalizeToDate(selectedDateParam) || new Date();
+  const today = new Date();
+  const todayDate = today.getDate();
+  const todayMonth = today.getMonth();
+  const todayYear = today.getFullYear();
 
-    // 3. Không để date ở quá khứ (so với today) — nếu quá khứ dùng today
-    const today = new Date();
-    const todayOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    if (useDate < todayOnly) useDate = todayOnly;
+  const hasSelectedDate = !!selectedDate;
 
-    // 4. Nếu ngày rơi vào non-working, tìm ngày làm việc tiếp theo
-    useDate = findNextWorkingDate(useDate, fakeDataCalender);
+  // Render day names
+  dayNames.forEach((day) => {
+    const dayName = document.createElement("div");
+    dayName.className = "day-name";
+    dayName.textContent = day;
+    daysEl.appendChild(dayName);
+  });
 
-    // 5. đồng bộ month/year với useDate
-    currentMonth = useDate.getMonth();
-    currentYear = useDate.getFullYear();
+  const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
 
-    // Render calendar + time slots với ngày đã chọn
-    renderCalendar(monthNames, dayNames, currentMonth, currentYear, fakeDataCalender, useDate, dataBooking, currentUserId, listDataService);
-
-    // Cập nhật tiêu đề ngày
-    const titleEl = document.getElementById("selectedDateTitle");
-    if (titleEl) titleEl.textContent = useDate.toDateString();
-
-    // Render time slots cho ngày này (và sẽ chọn time slot nếu user.selectedTimeSlot tồn tại)
-    renderTimeSlotsForDate(useDate, dataBooking, currentUserId, listDataService);
+  for (let i = 0; i < firstDay; i++) {
+    const empty = document.createElement("div");
+    daysEl.appendChild(empty);
   }
-  // render calender
-  function renderCalendar(monthNames, dayNames, currentMonth, currentYear, fakeDataCalender, selectedDate, dataBooking, currentUserId, listDataService) {
-    const daysEl = document.getElementById("days");
-    const monthYearEl = document.getElementById("monthYear");
-    daysEl.innerHTML = "";
-    monthYearEl.textContent = `${monthNames[currentMonth]}, ${currentYear}`;
 
-    const today = new Date();
-    const todayDate = today.getDate();
-    const todayMonth = today.getMonth();
-    const todayYear = today.getFullYear();
+  let nearestWorkingDate = null;
 
-    const hasSelectedDate = !! selectedDate;
+  for (let date = 1; date <= daysInMonth; date++) {
+    const day = document.createElement("div");
+    day.className = "day";
+    day.textContent = date;
 
-    // Render day names
-    dayNames.forEach(day => {
-      const dayName = document.createElement("div");
-      dayName.className = "day-name";
-      dayName.textContent = day;
-      daysEl.appendChild(dayName);
+    const isToday =
+      date === todayDate &&
+      currentMonth === todayMonth &&
+      currentYear === todayYear;
+    const isSelected =
+      selectedDate &&
+      date === selectedDate.getDate() &&
+      currentMonth === selectedDate.getMonth() &&
+      currentYear === selectedDate.getFullYear();
+    const nonWorking = fakeDataCalender[currentMonth + 1]?.includes(date);
+
+    const isPast =
+      currentYear < todayYear ||
+      (currentYear === todayYear && currentMonth < todayMonth) ||
+      (currentYear === todayYear &&
+        currentMonth === todayMonth &&
+        date < todayDate);
+
+    if (nonWorking) {
+      day.classList.add("inactive");
+    } else if (isPast) {
+      day.classList.add("past");
+    } else {
+      // Nếu chưa có selectedDate và chưa tìm nearestWorkingDate
+      if (!hasSelectedDate && !nearestWorkingDate) {
+        nearestWorkingDate = date;
+      }
+
+      if (isSelected) {
+        day.classList.add("active");
+      } else if (!hasSelectedDate && nearestWorkingDate === date) {
+        day.classList.add("active");
+      }
+    }
+
+    // Gán select
+    if (!isPast && !nonWorking) {
+      day.addEventListener("click", () => {
+        selectedDate = new Date(currentYear, currentMonth, date);
+        document
+          .querySelectorAll(".day")
+          .forEach((d) => d.classList.remove("active", "today"));
+        day.classList.add("active");
+        document.getElementById("selectedDateTitle").textContent =
+          selectedDate.toDateString();
+        renderTimeSlotsForDate(
+          selectedDate,
+          dataBooking,
+          currentUserId,
+          listDataService
+        );
+      });
+    }
+
+    daysEl.appendChild(day);
+  }
+
+  // Nếu chưa có selectedDate, set selectedDate = nearestWorkingDate
+  if (!hasSelectedDate && nearestWorkingDate) {
+    selectedDate = new Date(currentYear, currentMonth, nearestWorkingDate);
+    document.getElementById("selectedDateTitle").textContent =
+      selectedDate.toDateString();
+    renderTimeSlotsForDate(
+      selectedDate,
+      dataBooking,
+      currentUserId,
+      listDataService
+    );
+  }
+}
+//render timeslot
+function generateTimeSlots(start, end, interval = 30) {
+  const slots = [];
+  let [h, m] = start.split(":").map(Number);
+  const [endH, endM] = end.split(":").map(Number);
+
+  while (h < endH || (h === endH && m <= endM)) {
+    const formatted = new Date(0, 0, 0, h, m).toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
     });
+    slots.push(formatted);
 
-    const firstDay = new Date(currentYear, currentMonth, 1).getDay();
-    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-
-    for (let i = 0; i < firstDay; i++) {
-      const empty = document.createElement("div");
-      daysEl.appendChild(empty);
+    m += interval;
+    if (m >= 60) {
+      m -= 60;
+      h++;
     }
-
-    let nearestWorkingDate = null;
-
-    for (let date = 1; date <= daysInMonth; date++) {
-      const day = document.createElement("div");
-      day.className = "day";
-      day.textContent = date;
-
-      const isToday = date === todayDate && currentMonth === todayMonth && currentYear === todayYear;
-      const isSelected = selectedDate && date === selectedDate.getDate() && currentMonth === selectedDate.getMonth() && currentYear === selectedDate.getFullYear();
-      const nonWorking = fakeDataCalender[currentMonth + 1]?.includes(date);
-
-      const isPast =
-            currentYear < todayYear ||
-            (currentYear === todayYear && currentMonth < todayMonth) ||
-            (currentYear === todayYear && currentMonth === todayMonth && date < todayDate);
-
-      if (nonWorking) {
-        day.classList.add("inactive");
-      } else if (isPast) {
-        day.classList.add("past");
-      } else {
-        // Nếu chưa có selectedDate và chưa tìm nearestWorkingDate
-        if (!hasSelectedDate && !nearestWorkingDate) {
-          nearestWorkingDate = date;
-        }
-
-        if (isSelected) {
-          day.classList.add("active");
-        } else if (!hasSelectedDate && nearestWorkingDate === date) {
-          day.classList.add("active");
-        }
-      }
-
-      // Gán select
-      if (!isPast && !nonWorking) {
-        day.addEventListener("click", () => {
-          selectedDate = new Date(currentYear, currentMonth, date);
-          document.querySelectorAll(".day").forEach(d => d.classList.remove("active", "today"));
-          day.classList.add("active");
-          document.getElementById("selectedDateTitle").textContent = selectedDate.toDateString();
-          renderTimeSlotsForDate(selectedDate, dataBooking, currentUserId, listDataService);
-        });
-      }
-
-      daysEl.appendChild(day);
-    }
-
-    // Nếu chưa có selectedDate, set selectedDate = nearestWorkingDate
-    if (!hasSelectedDate && nearestWorkingDate) {
-      selectedDate = new Date(currentYear, currentMonth, nearestWorkingDate);
-      document.getElementById("selectedDateTitle").textContent = selectedDate.toDateString();
-      renderTimeSlotsForDate(selectedDate, dataBooking, currentUserId, listDataService);
-    }
-
-  }
-  //render timeslot
-  function generateTimeSlots(start, end, interval = 30) {
-    const slots = [];
-    let [h, m] = start.split(":").map(Number);
-    const [endH, endM] = end.split(":").map(Number);
-
-    while (h < endH || (h === endH && m <= endM)) {
-      const formatted = new Date(0, 0, 0, h, m)
-        .toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      slots.push(formatted);
-
-      m += interval;
-      if (m >= 60) {
-        m -= 60;
-        h++;
-      }
-    }
-
-    return slots;
   }
 
-  function formatAMPM(timeStr) {
-    const [hourStr, minute] = timeStr.split(":");
-    let hour = parseInt(hourStr, 10);
-    const ampm = hour >= 12 ? "PM" : "AM";
-    hour = hour % 12;
-    hour = hour ? hour : 12;
-    console.log("amppm: ", ampm)
-    return `${hour}:${minute} ${ampm}`;
+  return slots;
+}
+
+function formatAMPM(timeStr) {
+  const [hourStr, minute] = timeStr.split(":");
+  let hour = parseInt(hourStr, 10);
+  const ampm = hour >= 12 ? "PM" : "AM";
+  hour = hour % 12;
+  hour = hour ? hour : 12;
+  return `${hour}:${minute} ${ampm}`;
+}
+function renderTimeSlotsForDate(
+  selectedDate,
+  dataBooking,
+  currentUserId,
+  listDataService
+) {
+  const container = $("#timeSlotsContainer");
+  container.empty();
+  //timeslot
+  const workingHoursByWeekday = {
+    0: [], // Chủ nhật - không làm
+    1: ["09:00", "15:00"], // Thứ 2
+    2: ["08:30", "16:00"], // Thứ 3
+    3: ["08:00", "17:00"], // Thứ 4
+    4: ["09:15", "17:30"], // Thứ 5
+    5: ["10:00", "15:30"], // Thứ 6
+    6: ["08:00", "12:00"], // Thứ 7
+  };
+
+  const weekday = selectedDate.getDay();
+  const workingRange = workingHoursByWeekday[weekday];
+
+  if (!workingRange || workingRange.length === 0) {
+    container.append(
+      `<div class="time-slot">Không có giờ làm việc hôm nay.</div>`
+    );
+    return;
   }
-  function renderTimeSlotsForDate(selectedDate, dataBooking, currentUserId, listDataService) {
-    const container = $("#timeSlotsContainer");
-    container.empty();
-      //timeslot
-    const workingHoursByWeekday = {
-      0: [], // Chủ nhật - không làm
-      1: ["09:00", "15:00"], // Thứ 2
-      2: ["08:30", "16:00"], // Thứ 3
-      3: ["08:00", "17:00"], // Thứ 4
-      4: ["09:15", "17:30"], // Thứ 5
-      5: ["10:00", "15:30"], // Thứ 6
-      6: ["08:00", "12:00"], // Thứ 7
-    };
 
-    const weekday = selectedDate.getDay();
-    const workingRange = workingHoursByWeekday[weekday];
+  const slots = generateTimeSlots(workingRange[0], workingRange[1]);
 
-    if (!workingRange || workingRange.length === 0) {
-      container.append(`<div class="time-slot">Không có giờ làm việc hôm nay.</div>`);
-      return;
-    }
+  // slots.forEach(slot => {
+  //   const div = $(`
+  //     <div class="time-slot">
+  //       <span>${slot}</span>
+  //       <div class="circle">
+  //         <div class="dot"></div>
+  //       </div>
+  //     </div>
+  //   `);
+  //   container.append(div);
+  // });
 
-    const slots = generateTimeSlots(workingRange[0], workingRange[1]);
-
-    // slots.forEach(slot => {
-    //   const div = $(`
-    //     <div class="time-slot">
-    //       <span>${slot}</span>
-    //       <div class="circle">
-    //         <div class="dot"></div>
-    //       </div>
-    //     </div>
-    //   `);
-    //   container.append(div);
-    // });
-
-    slots.forEach(slot => {
-      const div = $(`
+  slots.forEach((slot) => {
+    const div = $(`
         <div class="time-slot">
           <span>${formatAMPM(slot)}</span>
           <div class="circle">
@@ -2742,18 +2797,17 @@ function animateHeight($el, isExpand) {
           </div>
         </div>
       `);
-      container.append(div);
-    });
+    container.append(div);
+  });
 
-    container.off('click', '.time-slot');
-    container.on("click", ".time-slot", function () {
-      container.find(".time-slot").removeClass("selected");
-      $(this).addClass("selected");
-    });
+  container.off("click", ".time-slot");
+  container.on("click", ".time-slot", function () {
+    container.find(".time-slot").removeClass("selected");
+    $(this).addClass("selected");
+  });
 
-    // Nếu user đã có selectedTimeSlot thì đánh dấu slot tương ứng
-
-  }
+  // Nếu user đã có selectedTimeSlot thì đánh dấu slot tương ứng
+}
 
 // ============= *BEGIN function template popup detail
 function showTemplatePopup(
@@ -2764,7 +2818,7 @@ function showTemplatePopup(
   dataBannerPage,
   listDataService,
   colorPrimary,
-  dataTimming,
+  dataTimming
 ) {
   // Lấy dữ liệu template từ dataTemplates dựa trên id
   const template = dataTemplates.find((item) => item.id === id);
@@ -2974,30 +3028,38 @@ function showTemplatePopup(
   $wrapWeb.prepend(
     `<div class="wrap-header">${htmlHeaderNav}</div>`,
     `<div class="wrap-advertise-page">${htmlAdvertise}</div>`,
-    `<div class="wrap-banner-page">${htmlBannerPage}</div>`,
-
+    `<div class="wrap-banner-page">${htmlBannerPage}</div>`
   );
   $wrapWeb.append(
     `<div id="section-date-time" class="wrap-calendar-timeslot"
       style="
         --color-cur-primary: ${colorPrimary.color}
       "
-    >${htmlTimeBooking}</div>`,
-  )
+    >${htmlTimeBooking}</div>`
+  );
 
   renderCalendar(
-    dataTimming.monthNames, dataTimming.dayNames,
-    dataTimming.currentMonth, dataTimming.currentYear,
-    dataTimming.fakeDataCalender, dataTimming.selectedDate,
-    {}, '', {}
+    dataTimming.monthNames,
+    dataTimming.dayNames,
+    dataTimming.currentMonth,
+    dataTimming.currentYear,
+    dataTimming.fakeDataCalender,
+    dataTimming.selectedDate,
+    {},
+    "",
+    {}
   );
   // Khởi tạo ngày hôm nay làm selectedDate và gán ngày hôm nay cho selectedDate user nếu selectedDate chưa có
-  dataTimming.selectedDate = new Date(dataTimming.currentYear, dataTimming.currentMonth, dataTimming.currentDate.getDate());
+  dataTimming.selectedDate = new Date(
+    dataTimming.currentYear,
+    dataTimming.currentMonth,
+    dataTimming.currentDate.getDate()
+  );
   // Cập nhật tiêu đề ngày được chọn
-  document.getElementById("selectedDateTitle").textContent = dataTimming.selectedDate.toDateString();
+  document.getElementById("selectedDateTitle").textContent =
+    dataTimming.selectedDate.toDateString();
   // Hiển thị time slots cho ngày hôm nay
-  renderTimeSlotsForDate(dataTimming.selectedDate, {}, '', {});
-
+  renderTimeSlotsForDate(dataTimming.selectedDate, {}, "", {});
 
   //render service list
   renderListService(listDataService);
@@ -3019,7 +3081,6 @@ function renderListService(dataList, containerSelector = ".list-more") {
     $moreItem.append($expandTitle);
 
     const $listCards = item.listItem.map(renderServiceCard);
-    console.log(item.listItem.length);
     const $wrapper = $(`<div class="wrap-list-more"></div>`).append($listCards);
     $moreItem.append($wrapper);
 
@@ -3139,7 +3200,6 @@ function renderAdvertisePage(dataAdvertise) {
 function renderBannerPage(dataBannerPage) {
   const { greeting, brand, title, desc, bookFor, btnOptionBook, image } =
     dataBannerPage;
-  console.log("banner 2");
   return `
     <div class="banner">
       <div class="content-banner">
@@ -3555,8 +3615,18 @@ $(document).ready(function () {
 
   // Biến xử lý chọn ngày đặt lịch
   const monthNames = [
-      "January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
   ];
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const currentDate = new Date();
@@ -3566,7 +3636,7 @@ $(document).ready(function () {
   let currentYear = currentDate.getFullYear();
 
   const fakeDataCalender = {
-    8: [8, 9, 10, 12, 20, 22] // August: non-working days
+    8: [8, 9, 10, 12, 20, 22], // August: non-working days
   };
 
   const dataTimming = {
@@ -3576,8 +3646,8 @@ $(document).ready(function () {
     selectedDate,
     fakeDataCalender,
     currentMonth,
-    currentYear
-  }
+    currentYear,
+  };
 
   const $wrapList = $(".wrap-list-templates");
   const $wrapContainerDeploy = $(".container-deploy");
@@ -3595,7 +3665,7 @@ $(document).ready(function () {
         dataBannerPage,
         listDataService,
         colorPrimary,
-        dataTimming,
+        dataTimming
       );
     }
   });
@@ -3788,46 +3858,43 @@ $(document).ready(function () {
 
       $socialLink.replaceWith(htmlSocialLinkPage);
     }
-  }
+  };
   const updateColorSecondary = (item) => {
     //advertise
     dataAdvertise.bgAdvertise2.bgColor = item.color;
 
     const htmlAdvertisePage = renderAdvertisePage(dataAdvertise);
     $(".wrap-advertise-page").html(htmlAdvertisePage);
-  }
+  };
   $(document).on("click", ".item-theme", function () {
-
     const index = $(this).data("index");
     const item = configThemeColor.colorTheme[index];
-    if(item.active && !item.selected){
+    if (item.active && !item.selected) {
       const removedType = getRemovedType();
       item.selected = true;
       item.type = removedType;
 
-      if(removedType === "PRIMARY"){
+      if (removedType === "PRIMARY") {
         updateColorPrimary(item);
-
-      }else {
+      } else {
         updateColorSecondary(item);
       }
-    }else if (item.selected || item.active) {
+    } else if (item.selected || item.active) {
       // Bỏ chọn khi click lại vào item đã chọn
       delete item.type;
       item.selected = !item.selected;
       const removedType = getRemovedType();
-      if(removedType === "PRIMARY"){
-        colorPrimary = '#00bed6';
+      if (removedType === "PRIMARY") {
+        colorPrimary = "#00bed6";
         const itemDefaultPrimary = {
-          color: '#00bed6'
-        }
+          color: "#00bed6",
+        };
         updateColorPrimary(itemDefaultPrimary);
-
-      }else {
-        colorSecondary = '#E27303';
+      } else {
+        colorSecondary = "#E27303";
         const itemDefaultSecond = {
-          color: '#E27303'
-        }
+          color: "#E27303",
+        };
         updateColorSecondary(itemDefaultSecond);
       }
     } else if (!item.active) {
@@ -3845,7 +3912,6 @@ $(document).ready(function () {
             (item) => item.type === "PRIMARY"
           );
           updateColorPrimary(item);
-
         } else if (removedType === "SECONDARY") {
           // Cập nhật màu
           colorSecondary = configThemeColor.colorTheme.find(
@@ -4152,9 +4218,9 @@ $(document).ready(function () {
     if (isChecked) {
       // Tắt gift card
       $("#toggle-gift-card").prop("checked", false).trigger("change");
-      $(".banner, .wrap-advertise-page, .list-more, .show-list-info, .wrap-calendar-time").addClass(
-        "hide"
-      );
+      $(
+        ".banner, .wrap-advertise-page, .list-more, .show-list-info, .wrap-calendar-time"
+      ).addClass("hide");
       const $wrapWeb = $(".wrap-web");
       // append layout memmbership
       const $membership = renderPageMembership(dataPageMembership);
@@ -4207,9 +4273,9 @@ $(document).ready(function () {
       // Tắt Membership
       $("#toggle-membership").prop("checked", false).trigger("change");
 
-      $(".banner, .wrap-advertise-page, .list-more, .show-list-info, .wrap-calendar-time").addClass(
-        "hide"
-      );
+      $(
+        ".banner, .wrap-advertise-page, .list-more, .show-list-info, .wrap-calendar-time"
+      ).addClass("hide");
       const $wrapWeb = $(".wrap-web");
       const $giftCard = renderPageGiftCard(dataPageGiftCard);
       $wrapWeb.append($giftCard);
@@ -4505,33 +4571,55 @@ $(document).ready(function () {
       );
     }
   });
-      // START: Xử lý option trên banner
-    $(document).on("click",'#prev', function() {
-      if (currentMonth > 0) {
-        currentMonth--;
-        // Khởi tạo ngày hôm nay làm selectedDate
-        selectedDate = new Date(currentYear, currentMonth, currentDate.getDate());
+  // START: Xử lý option trên banner
+  $(document).on("click", "#prev", function () {
+    if (currentMonth > 0) {
+      currentMonth--;
+      // Khởi tạo ngày hôm nay làm selectedDate
+      selectedDate = new Date(currentYear, currentMonth, currentDate.getDate());
 
-        renderCalendar(monthNames, dayNames, currentMonth, currentYear, fakeDataCalender, selectedDate, {}, '', {});
-        // Cập nhật tiêu đề ngày được chọn
-        document.getElementById("selectedDateTitle").textContent = selectedDate.toDateString();
-        // Hiển thị time slots cho ngày hôm nay
-        renderTimeSlotsForDate(selectedDate, {}, '', {});
-      }
-    });
-    $(document).on("click",'#next', function() {
-      if (currentMonth < 11) {
-        currentMonth++;
-        // Khởi tạo ngày hôm nay làm selectedDate
-        selectedDate = new Date(currentYear, currentMonth, currentDate.getDate());
+      renderCalendar(
+        monthNames,
+        dayNames,
+        currentMonth,
+        currentYear,
+        fakeDataCalender,
+        selectedDate,
+        {},
+        "",
+        {}
+      );
+      // Cập nhật tiêu đề ngày được chọn
+      document.getElementById("selectedDateTitle").textContent =
+        selectedDate.toDateString();
+      // Hiển thị time slots cho ngày hôm nay
+      renderTimeSlotsForDate(selectedDate, {}, "", {});
+    }
+  });
+  $(document).on("click", "#next", function () {
+    if (currentMonth < 11) {
+      currentMonth++;
+      // Khởi tạo ngày hôm nay làm selectedDate
+      selectedDate = new Date(currentYear, currentMonth, currentDate.getDate());
 
-        renderCalendar(monthNames, dayNames, currentMonth, currentYear, fakeDataCalender, selectedDate, {}, '', {});
-        // Cập nhật tiêu đề ngày được chọn
-        document.getElementById("selectedDateTitle").textContent = selectedDate.toDateString();
-        // Hiển thị time slots cho ngày hôm nay
-        renderTimeSlotsForDate(selectedDate, {}, '', {});
-      }
-    });
+      renderCalendar(
+        monthNames,
+        dayNames,
+        currentMonth,
+        currentYear,
+        fakeDataCalender,
+        selectedDate,
+        {},
+        "",
+        {}
+      );
+      // Cập nhật tiêu đề ngày được chọn
+      document.getElementById("selectedDateTitle").textContent =
+        selectedDate.toDateString();
+      // Hiển thị time slots cho ngày hôm nay
+      renderTimeSlotsForDate(selectedDate, {}, "", {});
+    }
+  });
 
   // ===== *END TEMPLATE NGOÀI
 
@@ -4549,6 +4637,6 @@ $(document).ready(function () {
     dataWeb.banner = dataBannerPage;
 
     localStorage.setItem("dataTemplate", JSON.stringify(dataWeb));
-    window.open('https://localhost:7033/templates/1');
+    window.open("https://localhost:7033/templates/1");
   });
 });
