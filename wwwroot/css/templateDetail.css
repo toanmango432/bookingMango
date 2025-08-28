@@ -2933,6 +2933,8 @@ select {
 .time-slots {
   display: grid;
   grid-template-columns: repeat(5, 1fr); /* 5 cột bằng nhau */
+  grid-auto-rows: max-content;
+  gap: 16px;
   gap: 8px; /* khoảng cách giữa các ô */
   padding: 8px 16px;
   overflow-y: auto;
@@ -2946,7 +2948,7 @@ select {
 }
 
 .time-slot {
-  width: 100px;
+  max-width: 200px;
   height: 48px;
   display: flex;
   align-items: center;
