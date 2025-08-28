@@ -154,7 +154,7 @@ export function generateTimeSlotsDynamic(
 ) {
   const slots = [];
 
-  // lấy working hours
+  // lấy working hours từ tham số
   let [startH, startM] = start.split(":").map(Number);
   let [endH, endM] = end.split(":").map(Number);
 
@@ -164,13 +164,19 @@ export function generateTimeSlotsDynamic(
   let endTime = new Date(selectedDate);
   endTime.setHours(endH, endM, 0, 0);
 
-  // clamp endTime <= 20:00
+  // clamp start ≥ 08:00 và end ≤ 20:00
+  const hardStart = new Date(selectedDate);
+  hardStart.setHours(8, 0, 0, 0);
+
   const hardEnd = new Date(selectedDate);
   hardEnd.setHours(20, 0, 0, 0);
+
+  if (startTime < hardStart) startTime = hardStart;
   if (endTime > hardEnd) endTime = hardEnd;
 
-  // nếu hôm nay => lấy mốc gần nhất so với giờ hiện tại
   const now = new Date();
+
+  // nếu chọn hôm nay => lấy mốc gần nhất >= giờ hiện tại
   if (selectedDate.toDateString() === now.toDateString()) {
     const roundedNow = roundUpToNearestInterval(now, interval);
     if (roundedNow > startTime) startTime = roundedNow;
@@ -189,6 +195,7 @@ export function generateTimeSlotsDynamic(
 
   return slots;
 }
+
 export function getTotalDuration(selected) {
   const base = selected?.itemService?.duration || 0;
   const addon = (selected?.itemService?.optionals || []).reduce(
@@ -397,6 +404,7 @@ export function renderServiceTechCombo(
 export function renderTimeSlotsForDate(dataBooking, slotTimeForSelect = {}) {
   const container = $("#timeSlotsContainer");
   container.empty();
+  console.log("check: ");
   //timeslot khi chưa chọn thợ
   const workingHoursByWeekday = {
     0: [], // Chủ nhật - không làm
@@ -407,7 +415,9 @@ export function renderTimeSlotsForDate(dataBooking, slotTimeForSelect = {}) {
     5: ["08:00", "20:00"], // Thứ 6
     6: ["08:00", "20:00"], // Thứ 7
   };
-  let selectedDate = new Date();
+  let selectedDate = templateStore
+    .getState()
+    .dataBooking.users.find((u) => u.isChoosing).selectedDate;
   const weekday = selectedDate.getDay();
   const workingRange = workingHoursByWeekday[weekday];
   if (!workingRange || workingRange.length === 0) {
@@ -416,6 +426,7 @@ export function renderTimeSlotsForDate(dataBooking, slotTimeForSelect = {}) {
     );
     return;
   }
+  console.log("selectedDate: ", selectedDate);
   let slots = generateTimeSlotsDynamic(
     selectedDate,
     workingRange[0],
