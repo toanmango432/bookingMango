@@ -1053,16 +1053,32 @@ select {
 }
 .btn-next-payment {
   display: flex;
+  position: relative;
   padding: var(--px-12) var(--px-24);
   justify-content: center;
-  align-items: flex-start;
-  gap: var(--px-4);
+  align-items: center;
+  gap: var(--px-8);
   flex: 1 0 0;
   border-radius: var(--px-12);
   border: 1px solid var(--color-cur-primary);
   background: var(--color-cur-primary);
   color: #fff;
   font: normal normal 600 var(--s-20);
+}
+
+.btn-next-payment .btn-loader {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #fff;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 .btn-next-payment:disabled {
   cursor: not-allowed;

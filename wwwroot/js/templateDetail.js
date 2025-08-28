@@ -691,6 +691,17 @@ $(document).ready(async function () {
   });
   // Confirm payment final
   $(document).on("click", ".btn-next-payment", async function () {
+    const $btn = $(this);
+    // tránh bấm nhiều lần
+    if ($btn.hasClass("loading")) return;
+
+    // set trạng thái loading
+    $btn.addClass("loading").prop("disabled", true);
+
+    // thêm loader (nếu chưa có)
+    if ($btn.find(".btn-loader").length === 0) {
+      $btn.prepend('<span class="btn-loader"></span>');
+    }
     const dataBooking = templateStore.getState().dataBooking;
     // Chọn thẻ
     const cardChoosing = dataBooking.cardNumber.find((card) => card.isChoosing);
@@ -1048,6 +1059,10 @@ $(document).ready(async function () {
         stack: e.stack,
         name: e.name,
       });
+    } finally {
+      // bỏ loading
+      $btn.removeClass("loading").prop("disabled", false);
+      $btn.find(".btn-loader").remove(); // xoá loader
     }
     if (dataBookXLM.appointmentID) {
       // send manualNotify
