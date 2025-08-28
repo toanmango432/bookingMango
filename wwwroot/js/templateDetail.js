@@ -1677,6 +1677,8 @@ $(document).ready(async function () {
         templateStore.setState({ dataBooking });
         document.getElementById("selectedDateTitle").textContent =
           selectedDate.toDateString();
+
+        $("#timeSlotsContainer").empty();
         renderTimeSlotsForDate(dataBooking);
       });
     }
@@ -1704,6 +1706,8 @@ $(document).ready(async function () {
         templateStore.setState({ dataBooking });
         document.getElementById("selectedDateTitle").textContent =
           selectedDate.toDateString();
+
+        $("#timeSlotsContainer").empty();
         renderTimeSlotsForDate(dataBooking);
       });
     }
@@ -1980,6 +1984,7 @@ $(document).ready(async function () {
       selectedDate.toDateString();
 
     // hiển thị time slots cho ngày hôm nay
+    $("#timeSlotsContainer").empty();
     renderTimeSlotsForDate(dataBooking);
   });
 

@@ -1169,6 +1169,7 @@ $(document).ready(async function () {
     }
 
     // update calander
+    $("#timeSlotsContainer").empty();
     renderTimeSlotsForDate(newBooking, possibleTimeSlot);
 
     // update cart user
@@ -1488,6 +1489,7 @@ $(document).ready(async function () {
       });
     }
     // update calander
+    $("#timeSlotsContainer").empty();
     renderTimeSlotsForDate(newBooking, possibleTimeSlot);
 
     //Cập nhật table booking

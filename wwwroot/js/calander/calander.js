@@ -99,6 +99,8 @@ export function renderCalendar(
         day.classList.add("active");
         document.getElementById("selectedDateTitle").textContent =
           selectedDate.toDateString();
+
+        $("#timeSlotsContainer").empty();
         renderTimeSlotsForDate(dataBooking);
       });
     }
@@ -115,6 +117,8 @@ export function renderCalendar(
     }
     document.getElementById("selectedDateTitle").textContent =
       selectedDate.toDateString();
+
+    $("#timeSlotsContainer").empty();
     renderTimeSlotsForDate(dataBooking);
   }
 }

@@ -58,5 +58,6 @@ export function renderContainerTiming(
   if (titleEl) titleEl.textContent = useDate.toDateString();
 
   // Render time slots cho ngày này (và sẽ chọn time slot nếu user.selectedTimeSlot tồn tại)
+  $("#timeSlotsContainer").empty();
   renderTimeSlotsForDate(dataBooking);
 }
