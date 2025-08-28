@@ -2931,15 +2931,14 @@ select {
   padding: var(--px-12);
 }
 .time-slots {
-  /* max-height: 300px; */
-  overflow-y: auto;
-  /* border-top: 1px solid #ddd; */
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* 5 cột bằng nhau */
+  gap: 8px; /* khoảng cách giữa các ô */
   padding: 8px 16px;
-  flex: 1 0 0;
+  overflow-y: auto;
+  flex: 1 0 0; /* có thể bỏ nếu không cần flex trong parent */
 }
+
 .time-slots h2 {
   text-align: center;
   padding: var(--px-12);
