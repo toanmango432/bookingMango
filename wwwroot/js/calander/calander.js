@@ -1,5 +1,5 @@
 // render calender
-export function renderCalendar(
+export async function renderCalendar(
   monthNames,
   dayNames,
   currentMonth,
@@ -81,7 +81,7 @@ export function renderCalendar(
 
     // Gán select
     if (!isPast && !nonWorking) {
-      day.addEventListener("click", () => {
+      day.addEventListener("click", async () => {
         selectedDate = new Date(currentYear, currentMonth, date);
 
         document
@@ -101,7 +101,31 @@ export function renderCalendar(
           selectedDate.toDateString();
 
         $("#timeSlotsContainer").empty();
-        renderTimeSlotsForDate(dataBooking);
+
+        // khi chọn ngày khác kiểm tra đã chọn tech chưa, nếu chọn tech rồi lấy ra slot cho tech
+        // danh sách ID thợ không trùng lặp
+        const uniqueEmployeeID = new Set();
+        dataBooking.users.forEach((user) => {
+          user.services.forEach((service) => {
+            service.itemService.forEach((item) => {
+              if (item.selectedStaff && item.selectedStaff.employeeID) {
+                uniqueEmployeeID.add(item.selectedStaff.employeeID);
+              }
+            });
+          });
+        });
+
+        const listUniqueEmID = Array.from(uniqueEmployeeID);
+        // lọc lại thời gian cho ngày mới
+        for (const item of listUniqueEmID) {
+          await fetchStaffTimeSlots({
+            dataBooking,
+            itemSelected: {},
+            empID: item,
+          });
+        }
+        const slotTimeForSelect = templateStore.getState().slotTimeForSelect;
+        renderTimeSlotsForDate(dataBooking, slotTimeForSelect);
       });
     }
 
@@ -123,5 +147,9 @@ export function renderCalendar(
   }
 }
 
-import { renderTimeSlotsForDate } from "../time-slots/time-slots.js";
+import {
+  findItemsOfTech,
+  renderTimeSlotsForDate,
+} from "../time-slots/time-slots.js";
 import { templateStore } from "../store/template-store.js";
+import { fetchStaffTimeSlots } from "../layout-template/layout.js";

@@ -215,7 +215,6 @@ export async function getTimeTechFrame(
     const dateSer = formatDateMMDDYYYY(selectedDate);
     const duration = getTotalDuration(selectedTech);
     const empID = selectedTech?.staff?.employeeID ?? selectedTech?.id;
-    console.log("dateSer: ", dateSer);
     const res = await fetchAPI.get(
       `/api/appointment/gettimebookonline?date=${dateSer}&duration=${duration}&rvcno=336&empID=${empID}`
     );
@@ -404,7 +403,6 @@ export function renderServiceTechCombo(
 export function renderTimeSlotsForDate(dataBooking, slotTimeForSelect = {}) {
   const container = $("#timeSlotsContainer");
   container.empty();
-  console.log("check: ");
   //timeslot khi chưa chọn thợ
   const workingHoursByWeekday = {
     0: [], // Chủ nhật - không làm
@@ -426,7 +424,6 @@ export function renderTimeSlotsForDate(dataBooking, slotTimeForSelect = {}) {
     );
     return;
   }
-  console.log("selectedDate: ", selectedDate);
   let slots = generateTimeSlotsDynamic(
     selectedDate,
     workingRange[0],

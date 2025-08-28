@@ -30,7 +30,7 @@ $(document).ready(async function () {
 
   // get data store
   // cart user open popup
-  $wrapHomeTemp.on("click", ".cart-user button", async function (e) {
+  $wrapHomeTemp.on("click", ".cart-user", async function (e) {
     await templateStore.getState().getDataSetting();
     const { dataBooking, dataCart, currencyDeposit } = templateStore.getState();
     e.stopPropagation();

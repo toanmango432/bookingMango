@@ -403,7 +403,9 @@ export function renderActionButtons(idMoreItem, idCardItem, dataBooking) {
           <div class="icon-checked">
             <i class="fa-solid fa-check"></i>
           </div>
-          <div class="toggle-select">
+          <div class="toggle-select" data-id="${
+            findItemService && findItemService.selectedStaff.employeeID
+          }">
             <span id="full-name-selected">${
               (findItemService && findItemService.selectedStaff.nickName) ||
               "Next Available"
@@ -795,6 +797,105 @@ export function renderBlockTemplate(dataBlock, isCopySameTime) {
   );
 }
 
+export async function fetchStaffTimeSlots({
+  dataBooking,
+  itemSelected,
+  empID,
+  oldEmpID = null, // tham số khi đổi staff
+}) {
+  try {
+    // 1. Lấy user đang chọn
+    const userChoosing = dataBooking.users.find((u) => u.isChoosing === true);
+    if (!userChoosing) return [];
+
+    // 2. Tính tổng duration cho thợ empID
+    let totalDuration = 0;
+
+    // ---- A. Các service đã có trong dataBooking ----
+    for (const sv of userChoosing.services) {
+      for (const item of sv.itemService) {
+        if (item.selectedStaff && item.selectedStaff.employeeID === empID) {
+          // cộng duration chính
+          totalDuration += item.duration || 0;
+
+          // cộng optionals nếu có
+          if (Array.isArray(item.optionals) && item.optionals.length) {
+            totalDuration += item.optionals.reduce(
+              (sum, opt) => sum + (opt.timedura || 0),
+              0
+            );
+          }
+        }
+      }
+    }
+
+    // ---- B. Service vừa chọn (chưa có trong dataBooking) ----
+    if (itemSelected) {
+      totalDuration += itemSelected.timetext || 0;
+    }
+
+    if (totalDuration === 0) {
+      console.warn("Chưa có dịch vụ nào gán cho thợ:", empID);
+      return [];
+    }
+
+    // 3. Lấy ngày
+    const dateSer =
+      formatDateMMDDYYYY(userChoosing.selectedDate) ||
+      formatDateMMDDYYYY(new Date());
+
+    // 4. Call API
+    const res = await fetchAPI.get(
+      `/api/appointment/gettimebookonline?date=${dateSer}&duration=${totalDuration}&rvcno=336&empID=${empID}`
+    );
+
+    const techID = empID;
+    let slotTimeMultiTech = templateStore.getState().slotTimeMultiTech;
+
+    // --- Clone mảng ---
+    let techs = [...slotTimeMultiTech.techs];
+    let durations = [...slotTimeMultiTech.durations];
+
+    // --- Nếu có oldEmpID thì remove thợ cũ trước ---
+    if (oldEmpID) {
+      techs = techs.filter((t) => t.techID !== oldEmpID);
+      durations = durations.filter((d) => d.techID !== oldEmpID);
+    }
+
+    // --- Update techs ---
+    let idxTech = techs.findIndex((t) => t.techID === techID);
+    if (idxTech >= 0) {
+      techs[idxTech] = { ...techs[idxTech], timeSlotTech: res?.data };
+    } else {
+      techs.push({ techID, timeSlotTech: res?.data });
+    }
+
+    // --- Update durations ---
+    let idxDur = durations.findIndex((d) => d.techID === techID);
+    if (idxDur >= 0) {
+      durations[idxDur] = { techID, totalDuration };
+    } else {
+      durations.push({ techID, totalDuration });
+    }
+
+    // --- Update store ---
+    slotTimeMultiTech = { techs, durations };
+    templateStore.setState({ slotTimeMultiTech });
+
+    // lọc slot time (multi tech)
+    const possibleTimeSlot = findMultiTechStarts(slotTimeMultiTech);
+    templateStore.setState({ slotTimeForSelect: possibleTimeSlot });
+
+    return {
+      timeSlotTech: res?.data || [],
+      duration: totalDuration,
+    };
+  } catch (e) {
+    console.error("Lỗi lấy time slots:", e);
+    return [];
+  }
+}
+
 // import api
 import { fetchAPI } from "../site.js";
 // import store
@@ -836,7 +937,6 @@ $(document).ready(async function () {
   await templateStore.load();
   await templateStore.getState().getDataSetting();
 
-  let slotTimeMultiTech = templateStore.getState().slotTimeMultiTech;
   let dataSetting = templateStore.getState().dataSetting;
   let listDataService = await templateStore.getState().getListDataService();
   let listUserStaff = await templateStore.getState().getListUserStaff();
@@ -941,65 +1041,6 @@ $(document).ready(async function () {
     return null;
   }
 
-  async function fetchStaffTimeSlots({ dataBooking, itemSelected, empID }) {
-    try {
-      // 1. Lấy user đang chọn
-      const userChoosing = dataBooking.users.find((u) => u.isChoosing === true);
-      if (!userChoosing) return [];
-
-      // 2. Tính tổng duration cho thợ empID
-      let totalDuration = 0;
-
-      // ---- A. Các service đã có trong dataBooking ----
-      for (const sv of userChoosing.services) {
-        for (const item of sv.itemService) {
-          if (item.selectedStaff && item.selectedStaff.employeeID === empID) {
-            // cộng duration chính
-            totalDuration += item.duration || 0;
-
-            // cộng optionals nếu có
-            if (Array.isArray(item.optionals) && item.optionals.length) {
-              totalDuration += item.optionals.reduce(
-                (sum, opt) => sum + (opt.timedura || 0),
-                0
-              );
-            }
-          }
-        }
-      }
-
-      // ---- B. Service vừa chọn (chưa có trong dataBooking) ----
-      if (itemSelected) {
-        totalDuration += itemSelected.timetext || 0;
-      }
-
-      if (totalDuration === 0) {
-        console.warn("Chưa có dịch vụ nào gán cho thợ:", empID);
-        return [];
-      }
-
-      // 3. Lấy ngày
-      const dateSer =
-        formatDateMMDDYYYY(userChoosing.selectedDate) ||
-        formatDateMMDDYYYY(new Date());
-
-      // 4. Call API
-      console.log("dateSer: ", dateSer);
-
-      const res = await fetchAPI.get(
-        `/api/appointment/gettimebookonline?date=${dateSer}&duration=${totalDuration}&rvcno=336&empID=${empID}`
-      );
-
-      return {
-        timeSlotTech: res?.data || [],
-        duration: totalDuration,
-      };
-    } catch (e) {
-      console.error("Lỗi lấy time slots:", e);
-      return [];
-    }
-  }
-
   $(document).on("click", ".add-more .btn-add-more", async function () {
     const $this = $(this);
     const updateDataBooking = templateStore.getState().dataBooking;
@@ -1057,30 +1098,6 @@ $(document).ready(async function () {
       itemSelected,
       empID: staffSelecting.employeeID,
     });
-    const { duration, timeSlotTech } = timeSlots;
-    const techID = staffSelecting.employeeID;
-
-    // --- Cập nhật techs ---
-    let techs = [...slotTimeMultiTech.techs];
-    let idxTech = techs.findIndex((t) => t.techID === techID);
-    if (idxTech >= 0) {
-      techs[idxTech] = { ...techs[idxTech], timeSlotTech };
-    } else {
-      techs.push({ techID, timeSlotTech });
-    }
-
-    // --- Cập nhật durations ---
-    let durations = [...slotTimeMultiTech.durations];
-    let idxDur = durations.findIndex((d) => d.techID === techID);
-    if (idxDur >= 0) {
-      durations[idxDur] = { techID, duration };
-    } else {
-      durations.push({ techID, duration });
-    }
-
-    // --- Update store ---
-    slotTimeMultiTech = { techs, durations };
-    templateStore.setState({ slotTimeMultiTech });
 
     if (serviceExit) {
       if (serviceItemExit) {
@@ -1124,11 +1141,6 @@ $(document).ready(async function () {
       ),
     };
     templateStore.setState({ dataBooking: newBooking });
-
-    // lọc slot time
-    const possibleTimeSlot = findMultiTechStarts(slotTimeMultiTech);
-    // --- Update store ---
-    templateStore.setState({ slotTimeForSelect: possibleTimeSlot });
     /*
       @Author: NK.Toan 22/8/2025
       - Thêm staff id defult vào user trong trường hợp cho phép chọn nhiều thợ
@@ -1171,7 +1183,8 @@ $(document).ready(async function () {
 
     // update calander
     $("#timeSlotsContainer").empty();
-    renderTimeSlotsForDate(newBooking, possibleTimeSlot);
+    const slotTimeForSelect = templateStore.getState().slotTimeForSelect;
+    renderTimeSlotsForDate(newBooking, slotTimeForSelect);
 
     // update cart user
     const $cardUser = $(".cart-user");
@@ -1349,6 +1362,8 @@ $(document).ready(async function () {
     e.stopPropagation();
     const $this = $(this);
     const idStaff = $this.data("id");
+    const $cardMore = $this.closest(".card-more");
+    const oldEmpID = $cardMore.find(".toggle-select").data("id");
 
     const staffSelecting = listUserStaff.find((st) => st.employeeID == idStaff);
 
@@ -1389,35 +1404,13 @@ $(document).ready(async function () {
       serviceSelected.listItem.find((is) => is.id === idItemService);
 
     // Fetch khung giờ khả dụng
+    // Xử lý khi chọn lại thợ cho service
     const timeSlots = await fetchStaffTimeSlots({
       dataBooking: updateDataBooking,
       itemSelected: {},
       empID: staffSelecting.employeeID,
+      oldEmpID,
     });
-    const { duration, timeSlotTech } = timeSlots;
-    const techID = staffSelecting.employeeID;
-
-    // --- Cập nhật techs ---
-    let techs = [...slotTimeMultiTech.techs];
-    let idxTech = techs.findIndex((t) => t.techID === techID);
-    if (idxTech >= 0) {
-      techs[idxTech] = { ...techs[idxTech], timeSlotTech };
-    } else {
-      techs.push({ techID, timeSlotTech });
-    }
-
-    // --- Cập nhật durations ---
-    let durations = [...slotTimeMultiTech.durations];
-    let idxDur = durations.findIndex((d) => d.techID === techID);
-    if (idxDur >= 0) {
-      durations[idxDur] = { techID, duration };
-    } else {
-      durations.push({ techID, duration });
-    }
-
-    // --- Update store ---
-    slotTimeMultiTech = { techs, durations };
-    templateStore.setState({ slotTimeMultiTech });
 
     // Phòng trường hợp cho chọn thợ ngay khi bấm +, tạm để logic
     if (serviceExit) {
@@ -1462,10 +1455,6 @@ $(document).ready(async function () {
 
     templateStore.setState({ dataBooking: newBooking });
 
-    const possibleTimeSlot = findMultiTechStarts(slotTimeMultiTech);
-    // --- Update store ---
-    templateStore.setState({ slotTimeForSelect: possibleTimeSlot });
-
     const name = $(this).find(".full-name").text();
     const $wrap = $(this).closest(".card-more");
 
@@ -1491,7 +1480,8 @@ $(document).ready(async function () {
     }
     // update calander
     $("#timeSlotsContainer").empty();
-    renderTimeSlotsForDate(newBooking, possibleTimeSlot);
+    const slotTimeForSelect = templateStore.getState().slotTimeForSelect;
+    renderTimeSlotsForDate(newBooking, slotTimeForSelect);
 
     //Cập nhật table booking
     renderSumary(newBooking, listDataService);

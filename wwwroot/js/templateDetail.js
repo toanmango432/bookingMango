@@ -865,8 +865,8 @@ $(document).ready(async function () {
     dataBooking.users.forEach((user) => {
       user.services.forEach((service) => {
         service.itemService.forEach((item) => {
-          if (item.selectedStaff && item.selectedStaff.id) {
-            uniqueEmployeeID.add(item.selectedStaff.id);
+          if (item.selectedStaff && item.selectedStaff.employeeID) {
+            uniqueEmployeeID.add(item.selectedStaff.employeeID);
           }
         });
       });
