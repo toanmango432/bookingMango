@@ -208,7 +208,7 @@ export async function getTimeTechFrame(
     const dateSer = formatDateMMDDYYYY(selectedDate);
     const duration = getTotalDuration(selectedTech);
     const empID = selectedTech?.staff?.employeeID ?? selectedTech?.id;
-
+    console.log("dateSer: ", dateSer);
     const res = await fetchAPI.get(
       `/api/appointment/gettimebookonline?date=${dateSer}&duration=${duration}&rvcno=336&empID=${empID}`
     );

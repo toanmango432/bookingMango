@@ -979,9 +979,12 @@ $(document).ready(async function () {
 
       // 3. Lấy ngày
       const dateSer =
-        userChoosing.selectedDate || formatDateMMDDYYYY(new Date());
+        formatDateMMDDYYYY(userChoosing.selectedDate) ||
+        formatDateMMDDYYYY(new Date());
 
       // 4. Call API
+      console.log("dateSer: ", dateSer);
+
       const res = await fetchAPI.get(
         `/api/appointment/gettimebookonline?date=${dateSer}&duration=${totalDuration}&rvcno=336&empID=${empID}`
       );
