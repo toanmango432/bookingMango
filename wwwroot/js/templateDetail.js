@@ -758,73 +758,92 @@ $(document).ready(async function () {
       });
     });
 
-    const uniqueSelectedDates = Array.from(serviceDateTimeSet); // dùng cho cả ServiceDate và StartTime
-    console.log("unit: ", uniqueSelectedDates);
+    const uniqueSelectedDates = Array.from(serviceDateTimeSet);
+    //Lấy mốc thời gian start là mốc nhỏ nhất,  dùng cho cả ServiceDate và StartTime
+    // Chuyển về đối tượng Date để so sánh
+    const parsedDates = uniqueSelectedDates.map((dt) => new Date(dt));
+    // Tìm mốc nhỏ nhất
+    const minDate = new Date(Math.min(...parsedDates));
+    // Format lại (MM/DD/YYYY HH:mm:ss)
+    const minDateStr = `${formatDateMMDDYYYY(minDate)} ${String(
+      minDate.getHours()
+    ).padStart(2, "0")}:${String(minDate.getMinutes()).padStart(2, "0")}:00`;
+
     // EndTime
-    // help function
-    function buildUniqueEndTimes(dataBooking) {
-      const seen = new Set();
+    function buildUserEndTimes(dataBooking) {
       const results = [];
+
       dataBooking.users.forEach((user) => {
+        let earliestStart = null;
+        let totalDuration = 0;
+
         user.services.forEach((service) => {
           service.itemService.forEach((item) => {
             const staff = item.selectedStaff;
             if (!staff?.selectedDate || !staff?.selectedTimeSlot) return;
 
-            // start time
+            // Parse ngày
             const [month, day, year] = formatDateMMDDYYYY(
-              staff?.selectedDate
-            )?.split("/"); // "08/21/2025"
+              staff.selectedDate
+            ).split("/");
 
-            let timeStr = staff.selectedTimeSlot.trim(); // "08:20PM" hoặc "16:20"
-
+            // Parse giờ
+            let timeStr = staff.selectedTimeSlot.trim();
             if (timeStr.endsWith("AM") || timeStr.endsWith("PM")) {
-              timeStr.slice(-2); // "AM" hoặc "PM"
-              timeStr = timeStr.slice(0, -2); // "08:20"
+              timeStr = timeStr.slice(0, -2); // bỏ AM/PM
             }
-
-            let [hour, minute] = timeStr.split(":"); // ["08", "20"]
+            let [hour, minute] = timeStr.split(":");
 
             const start = new Date(
-              `${year}-${month}-${day}T${hour.padStart(
-                2,
-                "0"
-              )}:${minute.padStart(2, "0")}:00`
+              parseInt(year),
+              parseInt(month) - 1,
+              parseInt(day),
+              parseInt(hour),
+              parseInt(minute),
+              0
             );
-            console.log("start: ", start);
 
-            // tổng duration = chính + optional
-            let totalDuration = item.duration || 0;
-            if (item.optionals && item.optionals.length > 0) {
-              totalDuration += item.optionals.reduce(
+            // Lấy start nhỏ nhất
+            if (!earliestStart || start < earliestStart) {
+              earliestStart = start;
+            }
+
+            // Cộng duration
+            let itemDuration = item.duration || 0;
+            if (item.optionals?.length > 0) {
+              itemDuration += item.optionals.reduce(
                 (sum, opt) => sum + (opt.timedura || 0),
                 0
               );
             }
-
-            // end time = start + duration
-            const end = new Date(start.getTime() + totalDuration * 60000);
-            console.log("end: ", end);
-            // format: MM-DD-YYYY HH:mm:ss
-            const formatted = `${month}-${day}-${year} ${String(
-              end.getHours()
-            ).padStart(2, "0")}:${String(end.getMinutes()).padStart(
-              2,
-              "0"
-            )}:${String(end.getSeconds()).padStart(2, "0")}`;
-
-            // loại bỏ trùng lặp
-            if (!seen.has(formatted)) {
-              seen.add(formatted);
-              results.push(formatted);
-            }
+            totalDuration += itemDuration;
           });
         });
+
+        if (earliestStart) {
+          const end = new Date(earliestStart.getTime() + totalDuration * 60000);
+
+          const formatted = `${String(end.getMonth() + 1).padStart(
+            2,
+            "0"
+          )}/${String(end.getDate()).padStart(
+            2,
+            "0"
+          )}/${end.getFullYear()} ${String(end.getHours()).padStart(
+            2,
+            "0"
+          )}:${String(end.getMinutes()).padStart(2, "0")}:${String(
+            end.getSeconds()
+          ).padStart(2, "0")}`;
+
+          results.push(formatted);
+        }
       });
 
       return results;
     }
-    const endTimes = buildUniqueEndTimes(dataBooking);
+
+    const endTimes = buildUserEndTimes(dataBooking);
 
     // nickName thợ
     const uniqueNicknames = new Set();
@@ -909,10 +928,12 @@ $(document).ready(async function () {
 
       dataBooking.users.forEach((user) => {
         user.services.forEach((service) => {
-          service.itemService.forEach((itemService) => {
+          let prevEndTime = null; // mốc giờ kết thúc trước đó
+
+          service.itemService.forEach((itemService, idx) => {
             const staff = itemService.selectedStaff;
 
-            // Tính tổng price + duration (cả optional nếu có)
+            // Tổng price + duration (kể cả optional)
             let totalPrice = parseFloat(itemService.price) || 0;
             let totalDuration = parseInt(itemService.duration) || 0;
 
@@ -922,16 +943,25 @@ $(document).ready(async function () {
                 totalDuration += parseInt(opt.timeDuration) || 0;
               });
             }
-            let timeStr = staff.selectedTimeSlot.trim();
-            if (timeStr.endsWith("AM") || timeStr.endsWith("PM")) {
-              timeStr.slice(-2); // "AM" hoặc "PM"
-              timeStr = timeStr.slice(0, -2); // "08:20"
+
+            let startTime;
+            if (prevEndTime) {
+              // Nếu đã có endTime trước -> start = end trước
+              startTime = prevEndTime;
+            } else {
+              // Item đầu tiên thì lấy từ staff.selectedTimeSlot
+              let timeStr = staff.selectedTimeSlot.trim();
+              if (timeStr.endsWith("AM") || timeStr.endsWith("PM")) {
+                timeStr = timeStr.slice(0, -2); // bỏ AM/PM
+              }
+
+              startTime = `${formatDateMMDDYYYY(
+                staff.selectedDate
+              )} ${timeStr}:00`;
             }
-            const startTime = `${formatDateMMDDYYYY(
-              staff.selectedDate
-            )} ${timeStr}:00`;
 
             const endTime = calcEndTime(startTime, totalDuration);
+            prevEndTime = endTime; // cập nhật cho item sau
 
             listItemDetail.push({
               Index: index++,
@@ -961,6 +991,7 @@ $(document).ready(async function () {
 
       return listItemDetail;
     }
+
     // item detail
     const listItemDetail = buildItemList(dataBooking);
 
@@ -971,8 +1002,8 @@ $(document).ready(async function () {
         CustomerName: userChoosing.firstName + userChoosing.lastName,
         CustomerPhone: userChoosing.phoneNumber.slice(1),
         AppointmentSubject: result_list_appointmentSubject,
-        ServiceDate: uniqueSelectedDates,
-        StartTime: uniqueSelectedDates,
+        ServiceDate: minDateStr,
+        StartTime: minDateStr,
         EndTime: endTimes,
         AppointmentStatusID: "1",
         EmployeeID: listUniqueEmID,
@@ -994,6 +1025,7 @@ $(document).ready(async function () {
         },
       },
     };
+    console.log("bookingXLM: ", bookXLM);
     // Dùng cho bookXLM
     const xmlString = jsonToXml(bookXLM, "root");
     const payloadBookXLM = {
