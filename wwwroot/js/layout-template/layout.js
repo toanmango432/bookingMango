@@ -1284,13 +1284,11 @@ $(document).ready(async function () {
 
     const $wrap = $this.closest(".card-more");
     const $optionList = $wrap.find(".option-select-staff");
-    console.log("optionList: ", $optionList.children());
 
     const $iconChecked = $parentN.find(".icon-checked");
 
     // Nếu chưa render
     if ($optionList.children().length === 0) {
-      console.log("listUser: ", listUserStaff);
       const html = renderUserOptions(listUserStaff);
       $optionList.html(html);
     }

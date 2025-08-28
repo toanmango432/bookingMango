@@ -33,7 +33,6 @@ $(document).ready(async function () {
   $wrapHomeTemp.on("click", ".cart-user button", async function (e) {
     await templateStore.getState().getDataSetting();
     const { dataBooking, dataCart, currencyDeposit } = templateStore.getState();
-    console.log("dataBooking test: ", dataBooking);
     e.stopPropagation();
     let width = 720;
     let height = 620;

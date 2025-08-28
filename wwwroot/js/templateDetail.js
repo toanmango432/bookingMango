@@ -248,7 +248,7 @@ $(document).ready(async function () {
       resendCountdown = 59;
       startResendTimer();
     } else {
-      console.log("! status 200");
+      // console.log("! status 200");
     }
   });
   // resent verify otp
@@ -1026,7 +1026,6 @@ $(document).ready(async function () {
         },
       },
     };
-    console.log("bookingXLM: ", bookXLM);
     // Dùng cho bookXLM
     const xmlString = jsonToXml(bookXLM, "root");
     const payloadBookXLM = {
@@ -1050,7 +1049,6 @@ $(document).ready(async function () {
         name: e.name,
       });
     }
-    console.log("dataBookXLM: ", dataBookXLM);
     if (dataBookXLM.appointmentID) {
       // send manualNotify
       const RVCNo = 336;
@@ -1094,7 +1092,6 @@ $(document).ready(async function () {
     } else {
       console.log("Not res appointmentID");
     }
-    console.log("dataBooking: ", dataBooking);
     const findCardChoosing = dataBooking.cardNumber.find((c) => c.isChoosing);
     const dataBill = {
       image: "/assets/images/payment-success/img-succes-payment.png",
@@ -1676,7 +1673,6 @@ $(document).ready(async function () {
           dataBooking,
           listDataService
         );
-        console.log("dataBooking test day: ", dataBooking);
         // update store
         templateStore.setState({ dataBooking });
         document.getElementById("selectedDateTitle").textContent =
@@ -1948,7 +1944,6 @@ $(document).ready(async function () {
   // START: confirm booking
   $(document).on("click", ".btn-confirm-booking", function () {
     const dataBooking = templateStore.getState().dataBooking;
-    console.log("dataBooking: ", dataBooking);
     const htmlVerifyEmailPhone = renderVerifyEmailPhoneContent(
       "",
       colorPrimary
@@ -1979,7 +1974,6 @@ $(document).ready(async function () {
       dataBooking,
       listDataService
     );
-    console.log("dataBooking test day: ", dataBooking);
 
     // cập nhật tiêu đề ngày được chọn
     document.getElementById("selectedDateTitle").textContent =

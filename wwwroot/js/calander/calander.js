@@ -88,14 +88,12 @@ export function renderCalendar(
           .querySelectorAll(".day")
           .forEach((d) => d.classList.remove("active", "today"));
 
-        console.log("selectedDate: ", selectedDate);
         dataBooking.users.forEach((u) => {
           if (u.isChoosing) {
             u.selectedDate = selectedDate;
             return;
           }
         });
-        console.log("dataBooking: ", dataBooking);
         templateStore.setState({ dataBooking });
 
         day.classList.add("active");
