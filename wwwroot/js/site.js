@@ -2686,6 +2686,8 @@ function renderCalendar(
         document
           .querySelectorAll(".day")
           .forEach((d) => d.classList.remove("active", "today"));
+
+        console.log("selectedDate: ", selectedDate);
         day.classList.add("active");
         document.getElementById("selectedDateTitle").textContent =
           selectedDate.toDateString();

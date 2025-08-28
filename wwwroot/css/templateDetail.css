@@ -3449,6 +3449,10 @@ select {
 
 /* Khi màn nhỏ (<= 768px) */
 @media (max-width: 768px) {
+  .wrap-home-templates {
+    -ms-overflow-style: none; /* IE & Edge */
+    scrollbar-width: none; /* Firefox */
+  }
   .wrap-header {
     padding: 0px 8px;
   }
@@ -3678,7 +3682,9 @@ select {
     flex-wrap: none;
   }
   .wrap-service-infoshop .list-more .more-item .wrap-list-more {
-    max-height: 1500px;
+    max-height: 2500px;
+    overflow-x: hidden;
+    padding-right: 8px;
   }
   .wrap-list-addOn {
     flex-direction: column;
@@ -3709,6 +3715,13 @@ select {
   #monthYear,
   #selectedDateTitle {
     font: normal normal 500 var(--s-20);
+  }
+  .time-slots {
+    grid-template-columns: repeat(3, 1fr); /* mobile: 3 cột */
+  }
+  .wrap-home-templates .timeslot {
+    width: 100%;
+    height: 400px;
   }
   .day-name {
     min-width: 48px;
@@ -3900,6 +3913,13 @@ select {
   .form-input-firstname-register,
   .form-input-lastname-register {
     width: 100%;
+  }
+  .popup-container-template {
+  }
+  .wrap-popup-payment-confirmation {
+    height: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
   }
 }
 .tab-tech {

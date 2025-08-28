@@ -89,6 +89,7 @@ import {
   formatExpiryDate,
   isValidExpiryDate,
   isValidCVV,
+  maskCardNumber,
 } from "./helper/format-card.js";
 import { sendOTP } from "./helper/send-otp.js";
 
@@ -628,7 +629,7 @@ $(document).ready(async function () {
     let height = 776;
     let width = 886;
     if (isMobile) {
-      height = 776;
+      height = 676;
       width = "100%";
     }
     const html = renderBasePopup(contentPaymentMethod, false, height, width);
@@ -653,7 +654,7 @@ $(document).ready(async function () {
     let height = 776;
     let width = 886;
     if (isMobile) {
-      height = 776;
+      height = 676;
       width = "100%";
     }
     const htmlPaymentMethod = renderPaymentMethodsForm(
@@ -1093,11 +1094,32 @@ $(document).ready(async function () {
     } else {
       console.log("Not res appointmentID");
     }
+    console.log("dataBooking: ", dataBooking);
+    const findCardChoosing = dataBooking.cardNumber.find((c) => c.isChoosing);
+    const dataBill = {
+      image: "/assets/images/payment-success/img-succes-payment.png",
+      ticketNumber: dataBookXLM.appointmentID,
+      dateTime: dataBookXLM.bookedDate,
+      paymentMethodLabel: findCardChoosing.cardType,
+      paymentMethodMasked: maskCardNumber(findCardChoosing.last4),
+      deposit: dataBooking.paymentDeposit,
+      remaining:
+        dataBooking.totalAmount - parseFloat(dataBooking.paymentDeposit),
+      requestAnotherCount: 5,
+      currencyDeposit: dataBooking.currencyDeposit,
+    };
+
     const contentSuccessPayment = renderPaymentConfirmationForm(
-      {},
+      dataBill,
       colorPrimary
     );
-    const html = renderBasePopup(contentSuccessPayment, false, 920, 886);
+    let height = 976;
+    let width = 886;
+    if (isMobile) {
+      height = 676;
+      width = "100%";
+    }
+    const html = renderBasePopup(contentSuccessPayment, false, height, width);
 
     $wrapHomeTemp.append(html);
     setTimeout(() => {
@@ -1290,7 +1312,7 @@ $(document).ready(async function () {
     let height = 776;
     let width = 886;
     if (isMobile) {
-      height = 776;
+      height = 676;
       width = "100%";
     }
     const html = renderBasePopup(htmlPaymentMethod, false, height, width);
@@ -1316,7 +1338,7 @@ $(document).ready(async function () {
     let height = 776;
     let width = 886;
     if (isMobile) {
-      height = 776;
+      height = 676;
       width = "100%";
     }
     const html = renderBasePopup(htmlPaymentMethod, false, height, width);
@@ -1339,7 +1361,13 @@ $(document).ready(async function () {
       paymentInfo,
       colorPrimary
     );
-    const html = renderBasePopup(htmlPaymentConfirm, false, 762, 886);
+    let height = 976;
+    let width = 886;
+    if (isMobile) {
+      height = 676;
+      width = "100%";
+    }
+    const html = renderBasePopup(htmlPaymentConfirm, false, height, width);
     $wrapHomeTemp.html(html);
     setTimeout(() => $(".overlay-screen").addClass("show"), 10);
   });
@@ -1631,6 +1659,8 @@ $(document).ready(async function () {
   }
 
   $(document).on("click", "#prev", function () {
+    const dataBooking = templateStore.getState().dataBooking;
+
     if (currentMonth > 0) {
       currentMonth--;
       selectedDate = new Date(currentYear, currentMonth, currentDate.getDate());
@@ -1646,6 +1676,9 @@ $(document).ready(async function () {
           dataBooking,
           listDataService
         );
+        console.log("dataBooking test day: ", dataBooking);
+        // update store
+        templateStore.setState({ dataBooking });
         document.getElementById("selectedDateTitle").textContent =
           selectedDate.toDateString();
         renderTimeSlotsForDate(dataBooking);
@@ -1654,6 +1687,8 @@ $(document).ready(async function () {
   });
 
   $(document).on("click", "#next", function () {
+    const dataBooking = templateStore.getState().dataBooking;
+
     if (currentMonth < 11) {
       currentMonth++;
       selectedDate = new Date(currentYear, currentMonth, currentDate.getDate());
@@ -1669,6 +1704,8 @@ $(document).ready(async function () {
           dataBooking,
           listDataService
         );
+        // update store
+        templateStore.setState({ dataBooking });
         document.getElementById("selectedDateTitle").textContent =
           selectedDate.toDateString();
         renderTimeSlotsForDate(dataBooking);
@@ -1890,7 +1927,7 @@ $(document).ready(async function () {
     let height = 776;
     let width = 886;
     if (isMobile) {
-      height = 776;
+      height = 676;
       width = "100%";
     }
     const html = renderBasePopup(contentPaymentMethod, false, height, width);
@@ -1910,7 +1947,8 @@ $(document).ready(async function () {
 
   // START: confirm booking
   $(document).on("click", ".btn-confirm-booking", function () {
-    const updateDataBooking = templateStore.getState().dataBooking;
+    const dataBooking = templateStore.getState().dataBooking;
+    console.log("dataBooking: ", dataBooking);
     const htmlVerifyEmailPhone = renderVerifyEmailPhoneContent(
       "",
       colorPrimary
@@ -1941,6 +1979,7 @@ $(document).ready(async function () {
       dataBooking,
       listDataService
     );
+    console.log("dataBooking test day: ", dataBooking);
 
     // cập nhật tiêu đề ngày được chọn
     document.getElementById("selectedDateTitle").textContent =

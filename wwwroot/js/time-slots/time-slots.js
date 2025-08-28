@@ -476,13 +476,13 @@ $(function () {
     $slot.addClass("selected");
     (async () => {
       const updateDataBooking = templateStore.getState().dataBooking;
-      const { selectedDate, getListDataService } = templateStore.getState();
+      const { getListDataService } = templateStore.getState();
       const listDataService = await getListDataService();
       const userChoosing = updateDataBooking.users.find((u) => u.isChoosing);
 
       if (userChoosing) {
         userChoosing.selectedTimeSlot = $(this).find("span").text();
-        userChoosing.selectedDate = selectedDate;
+        const selectedDateCur = userChoosing.selectedDate;
 
         // Cập nhật trong staff
         userChoosing.services = userChoosing.services.map((svc) => {
@@ -494,7 +494,7 @@ $(function () {
                 selectedStaff: {
                   ...item.selectedStaff,
                   selectedTimeSlot: $(this).find("span").text(),
-                  selectedDate: selectedDate,
+                  selectedDate: selectedDateCur,
                 },
               };
             }),

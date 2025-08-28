@@ -23,7 +23,7 @@ export const templateStore = {
           email: "jessica.hanson@gmail.com",
           gender: genderEnum.MALE,
           services: [],
-          selectedDate: null,
+          selectedDate: new Date(),
           selectedTimeSlot: null,
           isSelecting: false,
           isChoosing: true,

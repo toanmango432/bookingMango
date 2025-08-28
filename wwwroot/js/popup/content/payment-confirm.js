@@ -9,6 +9,7 @@ export function renderPaymentConfirmationForm(data = {}, colorPrimary) {
     deposit = "60.00",
     remaining = "60.00",
     requestAnotherCount = 5,
+    currencyDeposit = "$",
   } = data;
 
   return `
@@ -70,13 +71,15 @@ export function renderPaymentConfirmationForm(data = {}, colorPrimary) {
 
                     <div class="row">
                       <div class="label">Deposit Paid</div>
-                      <div class="value">$${deposit}</div>
+                      <div class="value">${currencyDeposit + deposit}</div>
                     </div>
                   </div>
 
                   <div class="remaining-wrapper">
                     <div class="remaining-label">Remaining Balance</div>
-                    <div class="remaining-amount">$${remaining}</div>
+                    <div class="remaining-amount">${
+                      currencyDeposit + remaining
+                    }</div>
                   </div>
                 </div>
                 </div>

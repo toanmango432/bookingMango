@@ -83,13 +83,21 @@ export function renderCalendar(
     if (!isPast && !nonWorking) {
       day.addEventListener("click", () => {
         selectedDate = new Date(currentYear, currentMonth, date);
-        const user = dataBooking.users.find((u) => u.isChoosing);
-        if (user) {
-          user.selectedDate = selectedDate;
-        }
+
         document
           .querySelectorAll(".day")
           .forEach((d) => d.classList.remove("active", "today"));
+
+        console.log("selectedDate: ", selectedDate);
+        dataBooking.users.forEach((u) => {
+          if (u.isChoosing) {
+            u.selectedDate = selectedDate;
+            return;
+          }
+        });
+        console.log("dataBooking: ", dataBooking);
+        templateStore.setState({ dataBooking });
+
         day.classList.add("active");
         document.getElementById("selectedDateTitle").textContent =
           selectedDate.toDateString();
@@ -114,3 +122,4 @@ export function renderCalendar(
 }
 
 import { renderTimeSlotsForDate } from "../time-slots/time-slots.js";
+import { templateStore } from "../store/template-store.js";

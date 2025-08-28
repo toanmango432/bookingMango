@@ -229,7 +229,6 @@ export function renderListService(
   dataBooking,
   dataSetting
 ) {
-  console.log("dataBooking: ", dataBooking);
   const $container = $(containerSelector);
   $container.empty();
 
@@ -366,7 +365,6 @@ export function renderUserOptions(staff) {
 }
 // hiển thị staff đã được chọn
 export function renderSelectedStaff(selectedStaff) {
-  console.log("selectedStaff: ", Object.keys(selectedStaff).length === 0);
   if (!selectedStaff || Object.keys(selectedStaff).length === 0) return "";
 
   const { name = "Name user", image = "" } = selectedStaff;
