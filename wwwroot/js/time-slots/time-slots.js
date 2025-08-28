@@ -415,9 +415,9 @@ export function renderTimeSlotsForDate(dataBooking, slotTimeForSelect = {}) {
     5: ["08:00", "20:00"], // Thứ 6
     6: ["08:00", "20:00"], // Thứ 7
   };
-  let selectedDate = templateStore
-    .getState()
-    .dataBooking.users.find((u) => u.isChoosing).selectedDate;
+  let selectedDate =
+    templateStore.getState().dataBooking.users.find((u) => u.isChoosing)
+      .selectedDate || new Date();
   const weekday = selectedDate.getDay();
   const workingRange = workingHoursByWeekday[weekday];
   if (!workingRange || workingRange.length === 0) {
