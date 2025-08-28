@@ -436,10 +436,14 @@ export function renderTimeSlotsForDate(dataBooking, slotTimeForSelect = {}) {
   if (Object.keys(slotTimeForSelect).length > 0) {
     slots = slotTimeForSelect.map((item) => item.time);
   }
+  function removeAmPm(timeStr = "") {
+    if (typeof timeStr !== "string") return timeStr;
+    return timeStr.replace(/\s?(AM|PM)$/i, "").trim();
+  }
   slots.forEach((slot) => {
     const div = $(`
         <div class="time-slot">
-          <span>${slot}</span>
+          <span>${removeAmPm(slot)}</span>
           <span>${getAMPM(slot)}</span>
           <div class="circle">
             <div class="dot"></div>
