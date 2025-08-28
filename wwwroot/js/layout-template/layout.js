@@ -67,7 +67,7 @@ export function renderAdvertisePage(dataAdvertise) {
                 .join("")}
             </p>
           </div>
-          <div class="wrap-signin">
+          <!-- <div class="wrap-signin">
             <div id="sign-in" class="text-uppercase sign-in"
                 style="
                   --bgColor-signin: ${buttonSignIn.bgColor};
@@ -78,6 +78,7 @@ export function renderAdvertisePage(dataAdvertise) {
             >
               ${buttonSignIn.content}
             </div>
+          -->
           </div>
         </div>
       </div>

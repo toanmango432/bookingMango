@@ -1895,7 +1895,7 @@ select {
   top: var(--px-84);
   z-index: 999990;
   background-color: white;
-  display: none;
+  /* display: none; */
   overflow: hidden;
 }
 
