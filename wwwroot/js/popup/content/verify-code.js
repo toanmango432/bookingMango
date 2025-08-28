@@ -1,5 +1,8 @@
 // content popup verify code
-export function renderVerifyCodeContent(emailPhoneMasked = "(+84) 124 2149") {
+export function renderVerifyCodeContent(
+  emailPhoneMasked = "(+84) 124 2149",
+  colorPrimary
+) {
   return `
         <div class="popup-wrap-verify-code"
           style="

@@ -21,6 +21,51 @@ const findAbout = dataRelease.dataHeaderNav.itemNav.find(
 if (findAbout) {
   findAbout.optionItems = optionItems;
 }
+
+export function nextFormRegister(dataBooking, colorPrimary) {
+  let fieldEntered;
+  const isMobile = $(window).width() <= 768;
+  const $wrapHomeTemp = $(".wrap-home-templates");
+
+  const user = dataBooking.users[0];
+  const dataRegis = {};
+  if (user.email?.trim()) {
+    fieldEntered = typeInput.EMAIL;
+    dataRegis.email = user.email.trim();
+    user.phoneNumber = "";
+    user.firstName = "";
+    user.lastName = "";
+  } else if (user.phoneNumber?.trim()) {
+    fieldEntered = typeInput.PHONE;
+    dataRegis.phoneNumber = user.phoneNumber.trim();
+    user.email = "";
+    user.firstName = "";
+    user.lastName = "";
+  }
+
+  const htmlFormRegis = renderRegisterForm(
+    dataRegis,
+    fieldEntered,
+    colorPrimary
+  );
+  const persistent = true;
+  let height = 762;
+  let width = 886;
+  if (isMobile) {
+    height = 800;
+    width = "100%";
+  }
+  const html = renderBasePopup(htmlFormRegis, persistent, height, width);
+  $wrapHomeTemp.append(html);
+  setTimeout(() => {
+    $(".overlay-screen").addClass("show");
+  }, 10);
+  document.getElementById("phone-register").readOnly =
+    fieldEntered === typeInput.PHONE;
+  document.getElementById("email-register").readOnly =
+    fieldEntered === typeInput.EMAIL;
+}
+
 // import store
 import { templateStore } from "./store/template-store.js";
 // import constant
@@ -71,6 +116,11 @@ import {
   isValidEmail,
 } from "./helper/input/valid-form.js";
 import { formatDateMMDDYYYY } from "./helper/format-day.js";
+import { buildLocktimePayload } from "./helper/build-lock-time.js";
+import {
+  validateEmailFormRegister,
+  validatePhoneFormRegister,
+} from "./helper/input/valid-form.js";
 import {
   isValidPhoneNumber,
   formatPhoneNumber,
@@ -111,7 +161,6 @@ $(document).ready(async function () {
   // fake time , sẽ xử lý thêm close form
   let resendCountdown = 59;
   let resendInterval;
-  let fieldEntered;
   // Biến xử lý chọn ngày đặt lịch
   const currentDate = new Date();
   let selectedDate = new Date();
@@ -210,19 +259,41 @@ $(document).ready(async function () {
   });
   // Xử lý sự kiện cho next verify
   $(document).on("click", ".btn-next-emailPhone", async function () {
+    const dataBooking = templateStore.getState().dataBooking;
     const $appointInput = $("#appointment-input");
     const res = validateEmailPhoneInput($appointInput);
     if (!res) return;
 
     const value = $appointInput.val();
     const resVerifyGetOtp = await sendOTP(value, res);
+
     if (resVerifyGetOtp && resVerifyGetOtp.status === 200) {
+      const extraData = resVerifyGetOtp.extraData;
+      console.log("extraData: ", extraData);
+      dataBooking.users[0] = {
+        ...dataBooking.users[0],
+        email: extraData?.mail,
+        phoneNumber: extraData?.contactPhone,
+        firstName: extraData?.firstName,
+        lastName: extraData?.lastName,
+        rcpCustomer: extraData?.rcpCustomer,
+        isChoosing: true,
+        isVerify: true,
+      };
+      // update store
+      templateStore.setState({
+        dataBooking,
+      });
+
       const emailPhoneMasked =
-        res === "EMAIL"
+        res === typeInput.EMAIL
           ? dataBooking.users[0].email
           : dataBooking.users[0].phoneNumber;
-      const htmlVerifyEmailPhoneMasked =
-        renderVerifyCodeContent(emailPhoneMasked);
+
+      const htmlVerifyEmailPhoneMasked = renderVerifyCodeContent(
+        emailPhoneMasked,
+        colorPrimary
+      );
 
       const persistent = true;
       let height = 620,
@@ -247,6 +318,41 @@ $(document).ready(async function () {
 
       resendCountdown = 59;
       startResendTimer();
+
+      const typeBooking = dataBooking.type;
+      if (typeBooking === typeBookingEnum.GUESTS) {
+        // Add thêm 1 Guest rỗng
+        $(".btn-increase").trigger("click");
+      }
+
+      // lấy listcard authorized tại đây
+      const owner = dataBooking.users[0];
+      const customerID = owner.id;
+      const rcpCustomer = owner.rcpCustomer;
+
+      // locktime thợ đã chọn
+      for (const user of dataBooking.users) {
+        const listPayload = buildLocktimePayload(user);
+        for (const payload of listPayload) {
+          try {
+            await fetchAPI.post("/api/appointment/createlocktime", payload);
+          } catch (e) {
+            console.error("[sendOTP - locktime tech]", payload, e);
+          }
+        }
+      }
+
+      // get list card authorized
+      try {
+        const listCardAuthorized = await fetchAPI.post(
+          `/api/card/getlistcardauthorize?RCPCustomer=${rcpCustomer}&CustomerID=${customerID}&RVCNo=336&TypeAuthorize=1`
+        );
+        if (listCardAuthorized.data)
+          dataBooking.cardNumber = listCardAuthorized.data;
+        else return;
+      } catch (e) {
+        console.error("[sendOTP - list card authorized]", e.error);
+      }
     } else {
       // console.log("! status 200");
     }
@@ -308,57 +414,55 @@ $(document).ready(async function () {
       $(`.otp-box[data-index="${index - 1}"]`).focus();
     }
   });
-  // next verify code
-  function nextFormRegister(dataBooking) {
-    const user = dataBooking.users[0];
-    const dataRegis = {};
-    if (user.email?.trim()) {
-      fieldEntered = typeInput.EMAIL;
-      dataRegis.email = user.email.trim();
-      user.phoneNumber = "";
-      user.firstName = "";
-      user.lastName = "";
-    } else if (user.phoneNumber?.trim()) {
-      fieldEntered = typeInput.PHONE;
-      dataRegis.phoneNumber = user.phoneNumber.trim();
-      user.email = "";
-      user.firstName = "";
-      user.lastName = "";
-    }
-
-    const htmlFormRegis = renderRegisterForm(dataRegis, fieldEntered);
-    const persistent = true;
-    let height = 762;
-    let width = 886;
-    if (isMobile) {
-      height = 800;
-      width = "100%";
-    }
-    const html = renderBasePopup(htmlFormRegis, persistent, height, width);
-    $wrapHomeTemp.append(html);
-    setTimeout(() => {
-      $(".overlay-screen").addClass("show");
-    }, 10);
-    document.getElementById("phone-register").readOnly =
-      fieldEntered === typeInput.PHONE;
-    document.getElementById("email-register").readOnly =
-      fieldEntered === typeInput.EMAIL;
-
-    //clear interval time opt
-    clearInterval(resendInterval);
-  }
   $(document).on("click", ".btn-next-verify", async function () {
+    const policySetting = templateStore.getState().policySetting;
+    const dataBooking = templateStore.getState().dataBooking;
+    const currencyDeposit = templateStore.getState().currencyDeposit;
+    const paymentDeposit = templateStore.getState().paymentDeposit;
     // Chỉ verify code lần đầu đăng ký, những lần sau không còn cần verify
     const phoneVerify = unFormatPhoneNumber(
-      JSON.parse(JSON.stringify(dataBooking.users[0].phoneNumber))
+      JSON.parse(JSON.stringify(dataBooking.users[0]?.phoneNumber || ""))
     );
+    dataBooking.currencyDeposit = currencyDeposit;
+    dataBooking.paymentDeposit = paymentDeposit;
+    templateStore.setState({ dataBooking });
+
+    const emailVerify = dataBooking.users[0].email;
+
     const optCode = getOtpCode();
     try {
       const resVerifyCode = await fetchAPI.get(
-        `/api/user/checkdevice?phone=${phoneVerify}&verifyCode=${optCode}`
+        `/api/user/checkverifycode?phone=${
+          phoneVerify || emailVerify
+        }&verifyCode=${optCode}`
       );
       if (resVerifyCode.status === 200) {
-        nextFormRegister(dataBooking);
+        const htmlPoliciesForm = renderPoliciesForm(
+          policySetting,
+          colorPrimary
+        );
+        let height = 768;
+        let width = 886;
+        if (isMobile) {
+          height = 700;
+          width = "100%";
+        }
+        const persistent = true;
+        const html = renderBasePopup(
+          htmlPoliciesForm,
+          persistent,
+          height,
+          width
+        );
+
+        $wrapHomeTemp.append(html);
+        setTimeout(() => {
+          $(".overlay-screen").addClass("show");
+        }, 10);
+      } else if (resVerifyCode.status === 201) {
+        // Chưa đăng ký
+        nextFormRegister(dataBooking, colorPrimary);
+        clearInterval(resendInterval);
       } else {
         // to-do: Ngược lại input verify error shake
       }
@@ -372,7 +476,8 @@ $(document).ready(async function () {
   });
   // popup register
   $(document).on("click", "#nav-tab-register", function () {
-    nextFormRegister(dataBooking);
+    nextFormRegister(dataBooking, colorPrimary);
+    clearInterval(resendInterval);
   });
   function startResendTimer() {
     $(".resend-btn").addClass("disabled");
@@ -551,10 +656,11 @@ $(document).ready(async function () {
       isMail: valEmailRegis ? true : false,
     };
     try {
+      // /api/card/createauthorize
       const resRegis = await fetchAPI.post("/api/user/register", payloadRegis);
       if (resRegis.status !== 200) {
-        // chưa biết response trả về gì
-        // to-do : will
+        const $errorRes = $(".regis-message-error");
+        $errorRes.text();
         return;
       }
       // token & refreshTokens
@@ -1905,7 +2011,43 @@ $(document).ready(async function () {
         `/api/card/getlistcardauthorize?RCPCustomer=${rcpCustomer}&CustomerID=${customerID}&RVCNo=336&TypeAuthorize=1`
       );
 
-      if (listCardAuthorized.data) owner.cardNumber = listCardAuthorized.data;
+      if (listCardAuthorized.data) {
+        const newDataBooking = {
+          ...dataBooking,
+          cardNumber: listCardAuthorized.data,
+        };
+
+        templateStore.setState({ dataBooking: newDataBooking });
+
+        setTimeout(() => {
+          const currentBooking = templateStore.getState().dataBooking;
+          console.log("newDataBooking: ", currentBooking);
+
+          const contentPaymentMethod = renderPaymentMethodsForm(
+            currentBooking,
+            colorPrimary
+          );
+
+          let height = 776;
+          let width = 886;
+          if (isMobile) {
+            height = 676;
+            width = "100%";
+          }
+
+          const html = renderBasePopup(
+            contentPaymentMethod,
+            false,
+            height,
+            width
+          );
+          $wrapHomeTemp.append(html);
+
+          setTimeout(() => {
+            $(".overlay-screen").addClass("show");
+          }, 10);
+        }, 0);
+      }
     } catch (e) {
       console.error("[fillNewCard - get list card]", {
         message: e.message,
@@ -1914,7 +2056,8 @@ $(document).ready(async function () {
       });
     }
   }
-  $(document).on("click", ".btn-add-card", function () {
+  $(document).on("click", ".btn-add-card", async function () {
+    const dataBooking = templateStore.getState().dataBooking;
     const $this = $(this);
     const $wrapFormAddCard = $this.closest(".wrap-popup-add-card");
     const $inputs = $wrapFormAddCard.find("input");
@@ -1934,22 +2077,6 @@ $(document).ready(async function () {
     fillNewCard($wrapFormAddCard, dataBooking);
 
     // to-do : valid các input
-
-    const contentPaymentMethod = renderPaymentMethodsForm(
-      dataBooking,
-      colorPrimary
-    );
-    let height = 776;
-    let width = 886;
-    if (isMobile) {
-      height = 676;
-      width = "100%";
-    }
-    const html = renderBasePopup(contentPaymentMethod, false, height, width);
-    $wrapHomeTemp.append(html);
-    setTimeout(() => {
-      $(".overlay-screen").addClass("show");
-    }, 10);
   });
 
   // === END: VALID SESSION CREDIT

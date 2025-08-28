@@ -1,6 +1,10 @@
 // Content popup register
 import { typeRequire, typeInput } from "../../constants/template-online.js";
-export function renderRegisterForm(dataRegis, fieldEntered = null) {
+export function renderRegisterForm(
+  dataRegis,
+  fieldEntered = null,
+  colorPrimary
+) {
   const valCheckDis =
     fieldEntered === typeInput.EMAIL ? dataRegis.email : dataRegis.phoneNumber;
   const isDisabled = dataRegis.firstName && dataRegis.lastName && valCheckDis;
@@ -89,6 +93,7 @@ export function renderRegisterForm(dataRegis, fieldEntered = null) {
               <p class="error-message"></p>
             </div>
           </div>
+          <div class="regis-message-error"></div>
           <div class="button-container">
             <button class="btn-back-verify-register">Back</button>
             <button class="btn-next-verify-register" ${
