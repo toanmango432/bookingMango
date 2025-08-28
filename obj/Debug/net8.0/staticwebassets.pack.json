@@ -317,6 +317,14 @@
       "PackagePath": "staticwebassets/js/helper/format-phone.js"
     },
     {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/helper/free-time/slot-time-available.js",
+      "PackagePath": "staticwebassets/js/helper/free-time/slot-time-available.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/helper/input/valid-form.js",
+      "PackagePath": "staticwebassets/js/helper/input/valid-form.js"
+    },
+    {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/helper/send-otp.js",
       "PackagePath": "staticwebassets/js/helper/send-otp.js"
     },
@@ -327,14 +335,6 @@
     {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/helper/tabtime-mark.js",
       "PackagePath": "staticwebassets/js/helper/tabtime-mark.js"
-    },
-    {
-      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/helper/valid-email.js",
-      "PackagePath": "staticwebassets/js/helper/valid-email.js"
-    },
-    {
-      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/helper/valid-input.js",
-      "PackagePath": "staticwebassets/js/helper/valid-input.js"
     },
     {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/helper/xlm-to-json.js",

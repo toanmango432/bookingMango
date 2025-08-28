@@ -466,63 +466,66 @@ import { renderSumary } from "../sumary/sumary.js";
 import { formatDateMMDDYYYY } from "../helper/format-day.js";
 import { fetchAPI } from "../site.js";
 import { templateStore } from "../store/template-store.js";
-$("#timeSlotsContainer").ready(async function () {
-  const $container = $("#timeSlotsContainer");
-
+$(function () {
   $(document).on("click", "#timeSlotsContainer .time-slot", async function () {
-    const updateDataBooking = templateStore.getState().dataBooking;
-    const { selectedDate, getListDataService } = templateStore.getState();
-    const listDataService = await getListDataService();
+    const $slot = $(this);
+    const $wrap = $slot.closest("#timeSlotsContainer");
 
-    $container.find(".time-slot").removeClass("selected");
-    $(this).addClass("selected");
-    const userChoosing = updateDataBooking.users.find((u) => u.isChoosing);
+    // UI update ngay lập tức
+    $wrap.find(".time-slot.selected").removeClass("selected");
+    $slot.addClass("selected");
+    (async () => {
+      const updateDataBooking = templateStore.getState().dataBooking;
+      const { selectedDate, getListDataService } = templateStore.getState();
+      const listDataService = await getListDataService();
+      const userChoosing = updateDataBooking.users.find((u) => u.isChoosing);
 
-    if (userChoosing) {
-      userChoosing.selectedTimeSlot = $(this).find("span").text();
-      userChoosing.selectedDate = selectedDate;
+      if (userChoosing) {
+        userChoosing.selectedTimeSlot = $(this).find("span").text();
+        userChoosing.selectedDate = selectedDate;
 
-      // Cập nhật trong staff
-      userChoosing.services = userChoosing.services.map((svc) => {
-        return {
-          ...svc,
-          itemService: svc.itemService.map((item) => {
-            return {
-              ...item,
-              selectedStaff: {
-                ...item.selectedStaff,
-                selectedTimeSlot: $(this).find("span").text(),
-                selectedDate: selectedDate,
-              },
-            };
-          }),
-        };
-      });
-    }
-    // Cập nhật store
-    const newBooking = {
-      ...updateDataBooking,
-      users: updateDataBooking.users.map((u) =>
-        u.id === userChoosing.id ? userChoosing : u
-      ),
-    };
+        // Cập nhật trong staff
+        userChoosing.services = userChoosing.services.map((svc) => {
+          return {
+            ...svc,
+            itemService: svc.itemService.map((item) => {
+              return {
+                ...item,
+                selectedStaff: {
+                  ...item.selectedStaff,
+                  selectedTimeSlot: $(this).find("span").text(),
+                  selectedDate: selectedDate,
+                },
+              };
+            }),
+          };
+        });
+      }
+      // Cập nhật store
+      const newBooking = {
+        ...updateDataBooking,
+        users: updateDataBooking.users.map((u) =>
+          u.id === userChoosing.id ? userChoosing : u
+        ),
+      };
 
-    templateStore.setState({ dataBooking: newBooking });
-    // Kiểm tra userChoosing đã được chọn time và service đầy đủ chưa, đã đủ thì ẩn btn scroll
-    const isFinalBooking = showScrollToFinalBooking(userChoosing);
-    isFinalBooking &&
-      updateScrollButton({
-        target: "#section-booking",
-        trigger: "#trigger-booking",
-        triggerBanner: "#triggerBlockSumary",
-        text: "Continue Booking",
-        icon: "fa fa-hand-pointer down",
-        force: false,
-      });
+      templateStore.setState({ dataBooking: newBooking });
+      // Kiểm tra userChoosing đã được chọn time và service đầy đủ chưa, đã đủ thì ẩn btn scroll
+      const isFinalBooking = showScrollToFinalBooking(userChoosing);
+      isFinalBooking &&
+        updateScrollButton({
+          target: "#section-booking",
+          trigger: "#trigger-booking",
+          triggerBanner: "#triggerBlockSumary",
+          text: "Continue Booking",
+          icon: "fa fa-hand-pointer down",
+          force: false,
+        });
 
-    // Cập nhật đã chọn cho staff
-    // renderServiceTechCombo(newBooking, listDataService);
-    // Cập nhật sumary
-    renderSumary(newBooking, listDataService);
+      // Cập nhật đã chọn cho staff
+      // renderServiceTechCombo(newBooking, listDataService);
+      // Cập nhật sumary
+      renderSumary(newBooking, listDataService);
+    })();
   });
 });
