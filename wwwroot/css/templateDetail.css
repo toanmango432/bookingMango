@@ -2961,6 +2961,9 @@ select {
 .time-slot:hover {
   border: 1px solid var(--color-cur-primary);
 }
+.time-slot span:first-child {
+  font: normal normal 500 var(--s-15);
+}
 .time-slot span {
   font: normal normal 400 var(--s-15);
 }

@@ -3163,6 +3163,9 @@ td td:last-child {
   border-bottom: 1px solid #eee;
   cursor: pointer;
 }
+.time-slot span:first-child {
+  font: normal normal 500 var(--s-15);
+}
 .time-slot span {
   font: normal normal 400 var(--s-15);
 }
