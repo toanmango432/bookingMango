@@ -211,12 +211,13 @@ export async function getTimeTechFrame(
 ) {
   try {
     const userChoosing = dataBooking.users.find((u) => u.isChoosing);
+    const RVCNo = templateStore.getState().RVCNo;
     const selectedDate = userChoosing.selectedDate || new Date();
     const dateSer = formatDateMMDDYYYY(selectedDate);
     const duration = getTotalDuration(selectedTech);
     const empID = selectedTech?.staff?.employeeID ?? selectedTech?.id;
     const res = await fetchAPI.get(
-      `/api/appointment/gettimebookonline?date=${dateSer}&duration=${duration}&rvcno=336&empID=${empID}`
+      `/api/appointment/gettimebookonline?date=${dateSer}&duration=${duration}&rvcno=${RVCNo}&empID=${empID}`
     );
 
     renderTimeSlotsForTech(
@@ -478,6 +479,7 @@ import { renderSumary } from "../sumary/sumary.js";
 import { formatDateMMDDYYYY } from "../helper/format-day.js";
 import { fetchAPI } from "../site.js";
 import { templateStore } from "../store/template-store.js";
+import { showScrollToTarget } from "../scroll-quickly/scroll-quickly.js";
 $(function () {
   $(document).on("click", "#timeSlotsContainer .time-slot", async function () {
     const $slot = $(this);
@@ -522,9 +524,21 @@ $(function () {
       };
 
       templateStore.setState({ dataBooking: newBooking });
-      // Kiểm tra userChoosing đã được chọn time và service đầy đủ chưa, đã đủ thì ẩn btn scroll
-      const isFinalBooking = showScrollToFinalBooking(userChoosing);
-      isFinalBooking &&
+      // Trường hợp JUST ME: Kiểm tra userChoosing đã được chọn time và service đầy đủ chưa, đã đủ thì ẩn btn scroll
+      const isFinalBooking = showScrollToFinalBooking(newBooking);
+      if (!isFinalBooking) {
+        const isSeTi = showScrollToTarget(newBooking, true);
+        if (!isSeTi) {
+          updateScrollButton({
+            target: "#targetBlockBanner",
+            trigger: "#triggerBlockSumary",
+            text: "Scroll to choose user",
+            icon: "fa fa-hand-pointer",
+            triggerBanner: "#triggerBlockSumary",
+            force: false,
+          });
+        }
+      } else {
         updateScrollButton({
           target: "#section-booking",
           trigger: "#trigger-booking",
@@ -533,11 +547,14 @@ $(function () {
           icon: "fa fa-hand-pointer down",
           force: false,
         });
+      }
 
       // Cập nhật đã chọn cho staff
       // renderServiceTechCombo(newBooking, listDataService);
       // Cập nhật sumary
+      console.log("newBooking: ", newBooking);
       renderSumary(newBooking, listDataService);
+      // Trường hợp GUEST hoặc FAMILY
     })();
   });
 });

@@ -1,12 +1,11 @@
 // render container time-booking && select time
 export function renderContainerTiming(
   dataBooking,
-  currentDate,
   monthNames,
   dayNames,
   currentMonth,
   currentYear,
-  fakeDataCalender,
+  daysOffNail,
   selectedDateParam,
   listDataService,
   isCopySameTime
@@ -35,7 +34,7 @@ export function renderContainerTiming(
   if (useDate < todayOnly) useDate = todayOnly;
 
   // 4. Nếu ngày rơi vào non-working, tìm ngày làm việc tiếp theo
-  useDate = findNextWorkingDate(useDate, fakeDataCalender);
+  useDate = findNextWorkingDate(useDate, daysOffNail);
 
   // 5. đồng bộ month/year với useDate
   currentMonth = useDate.getMonth();
@@ -47,10 +46,9 @@ export function renderContainerTiming(
     dayNames,
     currentMonth,
     currentYear,
-    fakeDataCalender,
+    daysOffNail,
     useDate,
-    dataBooking,
-    listDataService
+    dataBooking
   );
 
   // Cập nhật tiêu đề ngày

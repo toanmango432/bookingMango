@@ -70,7 +70,7 @@ export function renderSumary(dataBooking, listDataService) {
       )
     );
   });
-
+  console.log("allSelected: ", allSelected);
   if (!allSelected) {
     $containerSumary.append("");
     return;

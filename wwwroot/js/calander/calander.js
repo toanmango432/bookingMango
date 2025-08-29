@@ -4,10 +4,9 @@ export async function renderCalendar(
   dayNames,
   currentMonth,
   currentYear,
-  fakeDataCalender,
-  selectedDate,
-  dataBooking,
-  listDataService
+  daysOffNail, // dữ liệu ngày làm việc của thợ
+  selectedDate, // ngày đã chọn nếu có
+  dataBooking
 ) {
   const daysEl = document.getElementById("days");
   const monthYearEl = document.getElementById("monthYear");
@@ -53,7 +52,7 @@ export async function renderCalendar(
       date === selectedDate.getDate() &&
       currentMonth === selectedDate.getMonth() &&
       currentYear === selectedDate.getFullYear();
-    const nonWorking = fakeDataCalender[currentMonth + 1]?.includes(date);
+    const nonWorking = daysOffNail[currentMonth + 1]?.includes(date);
 
     const isPast =
       currentYear < todayYear ||
@@ -141,10 +140,8 @@ export async function renderCalendar(
     }
     document.getElementById("selectedDateTitle").textContent =
       selectedDate.toDateString();
-
-    $("#timeSlotsContainer").empty();
-    renderTimeSlotsForDate(dataBooking);
   }
+  renderTimeSlotsForDate(dataBooking);
 }
 
 import {

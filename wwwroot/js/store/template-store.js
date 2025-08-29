@@ -11,6 +11,7 @@ export const templateStore = {
   _listeners: [],
 
   async load() {
+    let RVCNo = 336;
     // --- DATA BOOKING mặc định ---
     let dataBooking = {
       type: typeBookingEnum.ME,
@@ -36,10 +37,10 @@ export const templateStore = {
     const getListDataService = async () => {
       try {
         const dataCategories = await fetchAPI.get(
-          "/api/category/getallcategories?RVCNo=336"
+          `/api/category/getallcategories?RVCNo=${RVCNo}`
         );
         const dataItemServices = await fetchAPI.get(
-          "/api/category/getallitem?RVCNo=336"
+          `/api/category/getallitem?RVCNo=${RVCNo}`
         );
 
         const dataServices = [];
@@ -82,10 +83,11 @@ export const templateStore = {
     };
 
     // --- API: Staff ---
+    let listStaffUser;
     const getListUserStaff = async () => {
       try {
         const resTechFull = await fetchAPI.get(
-          "/api/tech/gettechinfoofsalon?rvcNo=336"
+          `/api/tech/gettechinfoofsalon?rvcNo=${RVCNo}`
         );
         const staffDefault = {
           employeeID: idStaffDefault,
@@ -96,6 +98,7 @@ export const templateStore = {
           (item) => item.allowBookingOnline
         );
         dataTech.unshift(staffDefault);
+        templateStore.setState({ listStaffUser: dataTech || [] });
         return dataTech || [];
       } catch (e) {
         console.error("[getlistUserStaff]", e);
@@ -138,7 +141,7 @@ export const templateStore = {
         email: null,
         gender: null,
         services: [],
-        selectedDate: null,
+        selectedDate: new Date(),
         selectedTimeSlot: null,
         isSelecting: false,
         isChoosing: false,
@@ -151,7 +154,7 @@ export const templateStore = {
         email: null,
         gender: null,
         services: [],
-        selectedDate: null,
+        selectedDate: new Date(),
         selectedTimeSlot: null,
         isSelecting: false,
         isChoosing: false,
@@ -279,7 +282,7 @@ export const templateStore = {
     const getDataSetting = async () => {
       try {
         const resSetting = await fetchAPI.get(
-          `/api/store/getsettingonlinebook?RVCNo=336`
+          `/api/store/getsettingonlinebook?RVCNo=${RVCNo}`
         );
         // dataSetting = resSetting?.data;
 
@@ -312,8 +315,14 @@ export const templateStore = {
     };
     let slotTimeForSelect = [];
 
+    // ngày nghỉ của tiệm
+    let daysOffNail = {
+      8: [8, 9, 10, 12, 20, 22], // August: non-working days
+    };
+
     // --- SET STATE ---
     this._state = {
+      RVCNo,
       dataBooking,
       dataCart,
       dataMe,
@@ -321,6 +330,7 @@ export const templateStore = {
       dataFamily,
       getListDataService,
       getListUserStaff,
+      listStaffUser,
       getDataSetting,
       dataSetting,
       paymentDeposit,
@@ -333,6 +343,9 @@ export const templateStore = {
       // slots time
       slotTimeMultiTech,
       slotTimeForSelect,
+
+      // day off
+      daysOffNail,
     };
     this._notify();
     return this._state;

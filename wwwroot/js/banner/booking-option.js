@@ -45,7 +45,11 @@ export function renderBookingOption(
 import { templateStore } from "../store/template-store.js";
 import { dataRelease } from "../templateDetail.js";
 // import constant
-import { typeBookingEnum, genderEnum } from "../constants/template-online.js";
+import {
+  typeBookingEnum,
+  genderEnum,
+  idStaffDefault,
+} from "../constants/template-online.js";
 // --------
 import { renderSumary } from "../sumary/sumary.js";
 import {
@@ -69,6 +73,11 @@ import {
   isValidEmail,
   checkValInputs,
 } from "../helper/input/valid-form.js";
+import { formatAutoFirstName } from "../helper/find-work.js";
+import { renderInfoUser } from "../layout-template/layout.js";
+import { renderCopyServiceOption } from "./copy-service-option.js";
+import { renderCopyServiceBtn } from "../layout-template/layout.js";
+import { showScrollToFinalBooking } from "../scroll-quickly/scroll-quickly.js";
 
 $(document).ready(async function () {
   let dataBooking = templateStore.getState().dataBooking;
@@ -98,6 +107,9 @@ $(document).ready(async function () {
   });
   //
   $(document).on("click", ".option-item-booking", async function (e) {
+    const dataBooking = templateStore.getState().dataBooking;
+    const dataMe = templateStore.getState().dataMe;
+
     e.stopPropagation();
     const selectedType = $(this).data("type");
     const selectedText = $(this).text().trim();
@@ -118,38 +130,21 @@ $(document).ready(async function () {
     }
     if (selectedType !== typeBookingEnum.ME) {
       dataBooking.type = selectedType;
-      const tempData = [
-        {
-          id: 1,
-          firstName: "",
-          lastName: "",
-          phoneNumber: "",
-          email: "",
-          gender: genderEnum.MALE,
-          services: [],
-          selectedDate: null,
-          selectedTimeSlot: null,
-          isSelecting: false,
-          isChoosing: true,
-        },
-        {
-          id: 2,
-          firstName: "",
-          lastName: "",
-          phoneNumber: "",
-          email: "",
-          gender: genderEnum.MALE,
-          services: [],
-          selectedDate: null,
-          selectedTimeSlot: null,
-          isSelecting: false,
-          isChoosing: false,
-        },
-      ];
+      const tempData = templateStore.getState().dataGuest;
       dataBooking.users = tempData;
+
+      // update store
+      templateStore.setState({
+        dataBooking: { ...dataBooking },
+      });
     } else {
       dataBooking.type = typeBookingEnum.ME;
       dataBooking.users = dataMe;
+
+      // update store
+      templateStore.setState({
+        dataBooking: { ...dataBooking },
+      });
     }
 
     // show or hide cả 2
@@ -226,6 +221,8 @@ $(document).ready(async function () {
   // Cập nhật data khi onChange input
   // firstname
   $(document).on("input", "#firstname-banner", function () {
+    const dataBooking = templateStore.getState().dataBooking;
+
     const $this = $(this);
     const $parent = $this.closest(".wrap-input-guests");
     const userCur = dataBooking.users.find((u) => u.isChoosing);
@@ -258,9 +255,13 @@ $(document).ready(async function () {
     }
     // Update data user
     userCur.firstName = val;
+
+    templateStore.setState({ dataBooking: { ...dataBooking } });
   });
   //  lastName
   $(document).on("input", "#lastname-banner", function () {
+    const dataBooking = templateStore.getState().dataBooking;
+
     const $this = $(this);
     const userCur = dataBooking.users.find((u) => u.isChoosing);
     const isFirst = dataBooking.users[0].id === userCur.id;
@@ -286,9 +287,13 @@ $(document).ready(async function () {
 
     // Update data user
     userCur.lastName = val;
+
+    templateStore.setState({ dataBooking: { ...dataBooking } });
   });
   //  phone or email
   $(document).on("input", "#emailPhone-banner", function () {
+    const dataBooking = templateStore.getState().dataBooking;
+
     const $this = $(this);
     const userCur = dataBooking.users.find((u) => u.isChoosing);
     const isFirst = dataBooking.users[0].id === userCur.id;
@@ -341,6 +346,8 @@ $(document).ready(async function () {
     // Update data user
     userCur.email = isEmail ? val : "";
     userCur.phoneNumber = isPhone ? digits : "";
+
+    templateStore.setState({ dataBooking: { ...dataBooking } });
   });
   // input firstName và blur
   $(document).on("input blur", "#firstname-banner", function () {
@@ -358,12 +365,15 @@ $(document).ready(async function () {
 
   //focus onput ( xử lý active như tab)
   $(document).on("focus", ".input-fullname", async function () {
+    const dataBooking = templateStore.getState().dataBooking;
+
     const $this = $(this);
     const idFocus = $this.data("id");
     const $container = $this.closest(".wrap-input-guests");
     const idNext = +$container.find(".guest-input").data("id");
 
     const currentUser = dataBooking.users.find((u) => u.isChoosing);
+    const currentUserId = currentUser.id;
     const firstUser = dataBooking.users[0];
 
     // Lấy giá trị đang nhập của tab hiện tại
@@ -458,8 +468,7 @@ $(document).ready(async function () {
       user.isChoosing = user.id === idFocus;
     });
 
-    currentUserId = idFocus;
-    const nextUser = dataBooking.users.find((u) => u.id === currentUserId);
+    const nextUser = dataBooking.users.find((u) => u.isChoosing);
     // Nếu next tab được thì kiểm tra firstName của user khác user owner thì format firstName user owner + G + id
     if (!nextUser.firstName) {
       let nextNameUser = formatAutoFirstName(
@@ -486,20 +495,6 @@ $(document).ready(async function () {
     };
     renderCopyServiceOption(".copy-options-wrapper", optionCopyService);
     renderListService(listDataService, ".list-more", dataBooking);
-
-    // render lại timming để cập timming đã chọn
-    renderContainerTiming(
-      dataBooking,
-      currentDate,
-      monthNames,
-      dayNames,
-      currentMonth,
-      currentYear,
-      fakeDataCalender,
-      nextUser.selectedDate || selectedDate,
-      listDataService,
-      isCopySameTime
-    );
   });
 
   // Xử lý chọn user để copy
@@ -537,60 +532,58 @@ $(document).ready(async function () {
     const optionCopyService = { dataUser: dataBooking.users };
     renderCopyServiceBtn(".copy-btn-wrapper");
     renderCopyServiceOption(".copy-options-wrapper", optionCopyService);
-
-    // render lại timming để cập nút copy
-    renderContainerTiming(
-      dataBooking,
-      currentDate,
-      monthNames,
-      dayNames,
-      currentMonth,
-      currentYear,
-      fakeDataCalender,
-      selectedDate,
-      listDataService,
-      isCopySameTime
-    );
   });
   // Copy service
   $(document).on("click", ".btn-copy-service", async function () {
+    const dataBooking = templateStore.getState().dataBooking;
+    const listStaffUser = templateStore.getState().listStaffUser;
     // to-do: chỉ copy service, sau đó scroll chọn thợ next availble, mặc định gán thợ 9999
     const userChoosing = dataBooking.users.find((u) => u.isChoosing);
     const userSelectedCopy = dataBooking.users.find((u) => u.isSelecting);
 
+    // lấy staffDefault trong listStaffUser
+    const staffDefault = listStaffUser.find(
+      (s) => s.employeeID === idStaffDefault
+    );
     // copy service
-    if (userChoosing !== userSelectedCopy) {
+    if (userChoosing && userSelectedCopy && userChoosing !== userSelectedCopy) {
       userChoosing.services = JSON.parse(
         JSON.stringify(userSelectedCopy.services)
       );
+
+      // thay toàn bộ selectedStaff = staffDefault, cho trường hợp này, nhiều trường hợp khác sẽ xử lý sau
+      userChoosing.services.forEach((svc) => {
+        svc.itemService.forEach((item) => {
+          if (item.selectedStaff) {
+            item.selectedStaff = { ...staffDefault };
+          }
+        });
+      });
+      // copy thêm cả selectedDate cho tiện guest chọn
+      userChoosing.selectedDate = userSelectedCopy.selectedDate || null;
     }
     // kiểm tra nếu action copy datetime on thì copy cả timming
-    if (isCopySameTime) {
-      userChoosing.selectedDate = JSON.parse(
-        JSON.stringify(userSelectedCopy.selectedDate)
-      );
-      userChoosing.selectedTimeSlot = JSON.parse(
-        JSON.stringify(userSelectedCopy.selectedTimeSlot)
-      );
-    }
+    // if (isCopySameTime) {
+    //   userChoosing.selectedDate = JSON.parse(
+    //     JSON.stringify(userSelectedCopy.selectedDate)
+    //   );
+    //   userChoosing.selectedTimeSlot = JSON.parse(
+    //     JSON.stringify(userSelectedCopy.selectedTimeSlot)
+    //   );
+    // }
+    // update store
+    templateStore.setState({ dataBooking: { ...dataBooking } });
+
     // upadate lại list service
     renderListService(listDataService, ".list-more", dataBooking);
-
-    // render lại timming để show timming vừa copy
-    renderContainerTiming(
-      dataBooking,
-      currentDate,
-      monthNames,
-      dayNames,
-      currentMonth,
-      currentYear,
-      fakeDataCalender,
-      userChoosing.selectedDate,
-      listDataService,
-      isCopySameTime
-    );
+    // update lại calander
 
     const isFinalBooking = showScrollToFinalBooking(dataBooking);
+    console.log("dataBooking: , ", dataBooking);
+    if (!isFinalBooking) {
+      const isSeTi = showScrollToTarget(dataBooking, true);
+      // chắc chắn lúc này phải scroll chọn time, còn chọn thợ service thì tuỳ xử lý sau
+    }
     isFinalBooking &&
       updateScrollButton({
         target: "#section-booking",

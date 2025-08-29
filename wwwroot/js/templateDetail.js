@@ -65,7 +65,39 @@ export function nextFormRegister(dataBooking, colorPrimary) {
   document.getElementById("email-register").readOnly =
     fieldEntered === typeInput.EMAIL;
 }
+// Hàm fetch ngày nghỉ thật từ tiệm RVCNo
+export async function fetchStoreOffDays(rvcNo, month, year) {
+  console.log("RC: ", rvcNo);
+  const beginDate = `${month + 1}/01/${year}`;
+  const endDate = `${month + 1}/30/${year}`;
+  const url = `/api/store/getstoreoffday?rvcNo=${rvcNo}&beginDate=${encodeURIComponent(
+    beginDate
+  )}&endDate=${encodeURIComponent(endDate)}`;
 
+  try {
+    const res = await fetchAPI.get(url);
+    if (res.status === 0 && Array.isArray(res.data)) {
+      return res.data.map((item) => new Date(item.dateOff).getDate());
+    }
+    return [];
+  } catch (e) {
+    console.error("[fetchStoreOffDays]", {
+      message: e.message,
+      stack: e.stack,
+      name: e.name,
+    });
+    return [];
+  }
+}
+// Hàm cập nhật dữ liệu daysOffNail theo tháng
+export function updateCalendarData(month, year, rvcNo, daysOffNail, callback) {
+  fetchStoreOffDays(rvcNo, month, year).then((daysOff) => {
+    daysOffNail[month + 1] = daysOff; // lưu lại theo key tháng
+    // update store
+    templateStore.setState({ daysOffNail: { ...daysOffNail } });
+    if (typeof callback === "function") callback();
+  });
+}
 // import store
 import { templateStore } from "./store/template-store.js";
 // import constant
@@ -151,6 +183,7 @@ $(document).ready(async function () {
   let dataFamily = templateStore.getState().dataFamily;
   let dataSetting = templateStore.getState().dataSetting;
   let policySetting = templateStore.getState().policySetting;
+  const RVCNo = templateStore.getState().RVCNo;
 
   let listDataService = await templateStore.getState().getListDataService();
   let listUserStaff = await templateStore.getState().getListUserStaff();
@@ -167,9 +200,7 @@ $(document).ready(async function () {
   let currentMonth = currentDate.getMonth();
   let currentYear = currentDate.getFullYear();
 
-  const fakeDataCalender = {
-    8: [8, 9, 10, 12, 20, 22], // August: non-working days
-  };
+  const daysOffNail = templateStore.getState().daysOffNail;
 
   // hiện nút scroll
   let forceShowScrollBtn = false;
@@ -260,6 +291,8 @@ $(document).ready(async function () {
   // Xử lý sự kiện cho next verify
   $(document).on("click", ".btn-next-emailPhone", async function () {
     const dataBooking = templateStore.getState().dataBooking;
+    const RVCNo = templateStore.getState().RVCNo;
+
     const $appointInput = $("#appointment-input");
     const res = validateEmailPhoneInput($appointInput);
     if (!res) return;
@@ -345,7 +378,7 @@ $(document).ready(async function () {
       // get list card authorized
       try {
         const listCardAuthorized = await fetchAPI.post(
-          `/api/card/getlistcardauthorize?RCPCustomer=${rcpCustomer}&CustomerID=${customerID}&RVCNo=336&TypeAuthorize=1`
+          `/api/card/getlistcardauthorize?RCPCustomer=${rcpCustomer}&CustomerID=${customerID}&RVCNo=${RVCNo}&TypeAuthorize=1`
         );
         if (listCardAuthorized.data)
           dataBooking.cardNumber = listCardAuthorized.data;
@@ -818,7 +851,7 @@ $(document).ready(async function () {
     const customerID = userChoosing.id;
     const cardAuthorize = cardChoosing.cardAuthorize;
     const totalAmount = dataBooking.totalAmount || 0;
-    const rcvNo = 336;
+    const rcvNo = templateStore.getState().RVCNo;
     const typeAuth = 1;
     const idCard = cardChoosing.id;
     let dataAddDeposit;
@@ -1146,7 +1179,7 @@ $(document).ready(async function () {
     // Dùng cho bookXLM
     const xmlString = jsonToXml(bookXLM, "root");
     const payloadBookXLM = {
-      RVCNo: "336",
+      RVCNo: templateStore.getState().RVCNo,
       xml: xmlString,
       isConfirm: "0",
       CustomerID: userChoosing.id.toString(),
@@ -1172,7 +1205,7 @@ $(document).ready(async function () {
     }
     if (dataBookXLM.appointmentID) {
       // send manualNotify
-      const RVCNo = 336;
+      const RVCNo = templateStore.getState().RVCNo;
       const keyOnline = "OnlineBookingConfirm";
       const keyTech = "OB.NotifyTech";
       const type = "sms";
@@ -1744,92 +1777,51 @@ $(document).ready(async function () {
   });
 
   // START: Xử lý option trên banner
-  // Hàm fetch ngày nghỉ thật từ tiệm 336
-  async function fetchStoreOffDays(rvcNo, month, year) {
-    const beginDate = `${month + 1}/01/${year}`;
-    const endDate = `${month + 1}/30/${year}`;
-    const url = `/api/store/getstoreoffday?rvcNo=${rvcNo}&beginDate=${encodeURIComponent(
-      beginDate
-    )}&endDate=${encodeURIComponent(endDate)}`;
-
-    try {
-      const res = await fetchAPI.get(url);
-      if (res.status === 0 && Array.isArray(res.data)) {
-        return res.data.map((item) => new Date(item.dateOff).getDate());
-      }
-      return [];
-    } catch (e) {
-      console.error("[fetchStoreOffDays]", {
-        message: e.message,
-        stack: e.stack,
-        name: e.name,
-      });
-      return [];
-    }
-  }
-
-  // Hàm cập nhật dữ liệu fakeDataCalender theo tháng
-  function updateCalendarData(month, year, rvcNo, callback) {
-    fetchStoreOffDays(rvcNo, month, year).then((daysOff) => {
-      fakeDataCalender[month + 1] = daysOff; // lưu lại theo key tháng
-      if (typeof callback === "function") callback();
-    });
-  }
 
   $(document).on("click", "#prev", function () {
     const dataBooking = templateStore.getState().dataBooking;
+    const RVCNo = templateStore.getState().RVCNo;
 
     if (currentMonth > 0) {
       currentMonth--;
       selectedDate = new Date(currentYear, currentMonth, currentDate.getDate());
 
-      updateCalendarData(currentMonth, currentYear, 336, () => {
+      updateCalendarData(currentMonth, currentYear, RVCNo, daysOffNail, () => {
         renderCalendar(
           monthNames,
           dayNames,
           currentMonth,
           currentYear,
-          fakeDataCalender,
+          daysOffNail,
           selectedDate,
-          dataBooking,
-          listDataService
+          dataBooking
         );
         // update store
         templateStore.setState({ dataBooking });
-        document.getElementById("selectedDateTitle").textContent =
-          selectedDate.toDateString();
-
-        $("#timeSlotsContainer").empty();
-        renderTimeSlotsForDate(dataBooking);
       });
     }
   });
 
   $(document).on("click", "#next", function () {
     const dataBooking = templateStore.getState().dataBooking;
+    const RVCNo = templateStore.getState().RVCNo;
 
     if (currentMonth < 11) {
       currentMonth++;
       selectedDate = new Date(currentYear, currentMonth, currentDate.getDate());
 
-      updateCalendarData(currentMonth, currentYear, 336, () => {
+      updateCalendarData(currentMonth, currentYear, RVCNo, daysOffNail, () => {
         renderCalendar(
           monthNames,
           dayNames,
           currentMonth,
           currentYear,
-          fakeDataCalender,
+          daysOffNail,
           selectedDate,
-          dataBooking,
-          listDataService
+          dataBooking
         );
         // update store
         templateStore.setState({ dataBooking });
-        document.getElementById("selectedDateTitle").textContent =
-          selectedDate.toDateString();
-
-        $("#timeSlotsContainer").empty();
-        renderTimeSlotsForDate(dataBooking);
       });
     }
   });
@@ -1996,7 +1988,7 @@ $(document).ready(async function () {
       country: "",
     };
     try {
-      const url = `/api/card/createcardcustomer?RCPCustomer=${rcpCustomer}&CustomerID=${customerID}&RVCNo=336&TypeAuthorize=1`;
+      const url = `/api/card/createcardcustomer?RCPCustomer=${rcpCustomer}&CustomerID=${customerID}&RVCNo=${RVCNo}&TypeAuthorize=1`;
       await fetchAPI.post(url, payloadNewCard);
     } catch (e) {
       console.error("[fillNewCard - add new card]", {
@@ -2008,7 +2000,7 @@ $(document).ready(async function () {
     // get list card authorized
     try {
       const listCardAuthorized = await fetchAPI.post(
-        `/api/card/getlistcardauthorize?RCPCustomer=${rcpCustomer}&CustomerID=${customerID}&RVCNo=336&TypeAuthorize=1`
+        `/api/card/getlistcardauthorize?RCPCustomer=${rcpCustomer}&CustomerID=${customerID}&RVCNo=${RVCNo}&TypeAuthorize=1`
       );
 
       if (listCardAuthorized.data) {
@@ -2090,6 +2082,7 @@ $(document).ready(async function () {
   // START: confirm booking
   $(document).on("click", ".btn-confirm-booking", function () {
     const dataBooking = templateStore.getState().dataBooking;
+    const RVCNo = templateStore.getState().RVCNo;
     const htmlVerifyEmailPhone = renderVerifyEmailPhoneContent(
       "",
       colorPrimary
@@ -2109,25 +2102,16 @@ $(document).ready(async function () {
   });
 
   // lần đầu load: fetch ngày nghỉ của tháng hiện tại
-  updateCalendarData(currentMonth, currentYear, 336, () => {
+  updateCalendarData(currentMonth, currentYear, RVCNo, daysOffNail, () => {
     renderCalendar(
       monthNames,
       dayNames,
       currentMonth,
       currentYear,
-      fakeDataCalender,
+      daysOffNail,
       selectedDate,
-      dataBooking,
-      listDataService
+      dataBooking
     );
-
-    // cập nhật tiêu đề ngày được chọn
-    document.getElementById("selectedDateTitle").textContent =
-      selectedDate.toDateString();
-
-    // hiển thị time slots cho ngày hôm nay
-    $("#timeSlotsContainer").empty();
-    renderTimeSlotsForDate(dataBooking);
   });
 
   // confirm booking
@@ -2164,6 +2148,7 @@ $(document).ready(async function () {
 
   // Lắng nghe scroll container
   $(".wrap-home-templates").on("scroll", function () {
+    const dataBooking = templateStore.getState().dataBooking;
     if (forceShowScrollBtn) return;
 
     const $trigger = $($mainScrollBtn.data("triggerBanner"));

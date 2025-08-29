@@ -1,5 +1,6 @@
 // Build payload locktime
 export function buildLocktimePayload(user) {
+  const RVCNo = templateStore.getState().RVCNo;
   const payloads = [];
 
   user.services.forEach((service) => {
@@ -31,7 +32,7 @@ export function buildLocktimePayload(user) {
         FromTime: startMoment.format("MM-DD-YYYY hh:mm A"),
         EndTime: endMoment.format("MM-DD-YYYY hh:mm A"),
         Key: `${user.id}|${moment().utc().format("MMDDYYYYhhmmss")}`,
-        RVCNo: "336",
+        RVCNo: RVCNo,
       };
 
       payloads.push(payload);
@@ -40,3 +41,5 @@ export function buildLocktimePayload(user) {
 
   return payloads;
 }
+
+import { templateStore } from "../store/template-store.js";

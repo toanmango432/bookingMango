@@ -1,4 +1,5 @@
 export function renderTimeBooking(dataBooking, colorPrimary, isCopySameTime) {
+  // xử lý lại copy time là khi người dùng chọn 2 service và 2 thợ khác nhau thì cho phép copy same time , tại đây cần check thời gian đó 2 thợ có rảnh không, case mid
   const userCopyTime = dataBooking.users.find(
     (u) => u.isSelecting && !u.isChoosing
   );

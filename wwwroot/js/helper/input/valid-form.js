@@ -1,7 +1,10 @@
 import { isValidPhoneNumber } from "../format-phone.js";
+import { templateStore } from "../../store/template-store.js";
 
 // BLUR firstName
 export function validateFirstNameInput($input) {
+  const dataBooking = templateStore.getState().dataBooking;
+
   const $parent = $input.closest(".wrap-input-guests");
   const userCur = dataBooking.users.find((u) => u.isChoosing);
   const $findInputFullname = $parent.find(
@@ -23,6 +26,8 @@ export function validateFirstNameInput($input) {
 }
 // BLUR lastname
 export function validateLastNameInput($input) {
+  const dataBooking = templateStore.getState().dataBooking;
+
   const userCur = dataBooking.users.find((u) => u.isChoosing);
   const isFirst = dataBooking.users[0].id === userCur.id;
   const $error = $input.next(".error-message");
@@ -40,6 +45,7 @@ export function validateLastNameInput($input) {
 }
 // BLUR phone&email banner
 export function validateEmailPhoneInputBanner($input) {
+  const dataBooking = templateStore.getState().dataBooking;
   const userCur = dataBooking.users.find((u) => u.isChoosing);
   const isFirst = dataBooking.users[0].id === userCur.id;
   const val = $input.val().trim();

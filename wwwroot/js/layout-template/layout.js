@@ -846,7 +846,7 @@ export async function fetchStaffTimeSlots({
 
     // 4. Call API
     const res = await fetchAPI.get(
-      `/api/appointment/gettimebookonline?date=${dateSer}&duration=${totalDuration}&rvcno=336&empID=${empID}`
+      `/api/appointment/gettimebookonline?date=${dateSer}&duration=${totalDuration}&rvcno=${RVCNo}&empID=${empID}`
     );
 
     const techID = empID;
@@ -963,7 +963,6 @@ $(document).ready(async function () {
       isSelecting: false,
       isChoosing: false,
       isSelecting: false,
-      isChoosing: false,
     });
     updateGuestSection(dataBooking);
   });
@@ -1044,7 +1043,6 @@ $(document).ready(async function () {
   $(document).on("click", ".add-more .btn-add-more", async function () {
     const $this = $(this);
     const updateDataBooking = templateStore.getState().dataBooking;
-
     const $card = $this.closest(".card-more");
 
     const idService = $this.closest(".more-item").data("id");
@@ -1150,6 +1148,7 @@ $(document).ready(async function () {
     if (!isBookMultipleTech) {
       const selectedTech = techSelect(newBooking);
       // Tại thời điểm này chỉ có 1 thợ có thể khác các thợ còn lại hoặc có các next available
+
       assignTech(selectedTech, newBooking);
     }
     const $action = renderActionButtons(idService, idItemService, newBooking);
@@ -1484,6 +1483,7 @@ $(document).ready(async function () {
     renderTimeSlotsForDate(newBooking, slotTimeForSelect);
 
     //Cập nhật table booking
+    console.log("newDataBooking :", newBooking);
     renderSumary(newBooking, listDataService);
   });
   // toggle addOn service

@@ -36,10 +36,8 @@ export function showScrollToTarget(dataBooking, directUp = false) {
       force: false,
     });
     return true;
-  }
-
-  // Nếu chưa chọn date hoặc time slot
-  if (!currentUser.selectedDate || !currentUser.selectedTimeSlot) {
+  } // Nếu chưa chọn date hoặc time slot
+  else if (!currentUser.selectedDate || !currentUser.selectedTimeSlot) {
     updateScrollButton({
       target: "#section-date-time",
       trigger: "#trigger-date-time",
@@ -50,8 +48,8 @@ export function showScrollToTarget(dataBooking, directUp = false) {
     });
     return true;
   }
-  // kiểm tra các user đã chọn service, time
-  // to-do
+  // Vì các user cần lần lượt chọn đầy đủ trước khi qua tab nên không cần check các user khác
+  // trả về false để scroll chọn user
   return false;
 }
 // function kiểm tra dataBooking đã chọn đầy đủ service và timming all users, show scroll continue

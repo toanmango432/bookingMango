@@ -13,6 +13,8 @@ import { templateStore } from "../store/template-store.js";
 import { nextFormRegister } from "../templateDetail.js";
 // Hàm dùng để gửi OTP (email hoặc phone)
 export async function sendOTP(inputValue, type) {
+  const RVCNo = templateStore.getState().RVCNo;
+
   const isMobile = $(window).width() <= 768;
   const $wrapHomeTemp = $(".wrap-home-templates");
 
@@ -42,17 +44,16 @@ export async function sendOTP(inputValue, type) {
     try {
       const phoneUnformat = unFormatPhoneNumber(phoneFormatVerify);
       const resVerifyAccount = await fetchAPI.get(
-        `/api/client/getcustomerfamily?RVCNo=336&key=${phoneUnformat}&ismail=false`
+        `/api/client/getcustomerfamily?RVCNo=${RVCNo}&key=${phoneUnformat}&ismail=false`
       );
       // check exit authorized accout
       const resExitAccount = await fetchAPI.get(
-        `/api/card/checkexistaccountauthorize?CustomerID=${resVerifyAccount?.data[0]?.customerID}&RVCNo=336&TypeAuthorize=0`
+        `/api/card/checkexistaccountauthorize?CustomerID=${resVerifyAccount?.data[0]?.customerID}&RVCNo=${RVCNo}&TypeAuthorize=0`
       );
       // Nếu chưa exits create bằng form register
       if (resExitAccount.data === false) {
         // create authorized
         const zipCode = "84101";
-        const RVCNo = 336;
         const FirstName = resVerifyAccount.data[0].firstName;
         const LastName = resVerifyAccount.data[0].lastName;
         const Email = resVerifyAccount.data[0].email;
@@ -91,7 +92,7 @@ export async function sendOTP(inputValue, type) {
         // chưa đăng ký account
         try {
           return await fetchAPI.get(
-            `/api/user/sendotplogin?RVCNo=336&phone=${phoneUnformat}&isMail=false`
+            `/api/user/sendotplogin?RVCNo=${RVCNo}&phone=${phoneUnformat}&isMail=false`
           );
         } catch (e) {
           console.error("[sendOTP]", {
@@ -148,7 +149,7 @@ export async function sendOTP(inputValue, type) {
         // get list card authorized
         try {
           const listCardAuthorized = await fetchAPI.post(
-            `/api/card/getlistcardauthorize?RCPCustomer=${rcpCustomer}&CustomerID=${customerID}&RVCNo=336&TypeAuthorize=1`
+            `/api/card/getlistcardauthorize?RCPCustomer=${rcpCustomer}&CustomerID=${customerID}&RVCNo=${RVCNo}&TypeAuthorize=1`
           );
           if (listCardAuthorized.data)
             newDataBooking.cardNumber = listCardAuthorized.data;
@@ -202,19 +203,18 @@ export async function sendOTP(inputValue, type) {
     dataBooking.users[0].email = emailVerify;
     try {
       const resVerifyAccount = await fetchAPI.get(
-        `/api/client/getcustomerfamily?RVCNo=336&key=${emailVerify}&ismail=true`
+        `/api/client/getcustomerfamily?RVCNo=${RVCNo}&key=${emailVerify}&ismail=true`
       );
 
       // check exit accout
       const resExitAccount = await fetchAPI.get(
-        `/api/card/checkexistaccountauthorize?CustomerID=${resVerifyAccount?.data[0]?.customerID}&RVCNo=336&TypeAuthorize=0`
+        `/api/card/checkexistaccountauthorize?CustomerID=${resVerifyAccount?.data[0]?.customerID}&RVCNo=${RVCNo}&TypeAuthorize=0`
       );
       // Nếu chưa exits create authorized
       if (resExitAccount.data === false) {
         if (resExitAccount.data === false) {
           // create authorized
           const zipCode = "84101";
-          const RVCNo = 336;
           const FirstName = resVerifyAccount.data[0].firstName;
           const LastName = resVerifyAccount.data[0].lastName;
           const Email = resVerifyAccount.data[0].email;
@@ -256,7 +256,7 @@ export async function sendOTP(inputValue, type) {
         // chưa đăng ký account
         try {
           return await fetchAPI.get(
-            `/api/user/sendotplogin?RVCNo=336&phone=${emailVerify}&isMail=true`
+            `/api/user/sendotplogin?RVCNo=${RVCNo}&phone=${emailVerify}&isMail=true`
           );
         } catch (e) {
           console.error("[sendOTP]", {
@@ -313,7 +313,7 @@ export async function sendOTP(inputValue, type) {
         // get list card authorized
         try {
           const listCardAuthorized = await fetchAPI.post(
-            `/api/card/getlistcardauthorize?RCPCustomer=${rcpCustomer}&CustomerID=${customerID}&RVCNo=336&TypeAuthorize=1`
+            `/api/card/getlistcardauthorize?RCPCustomer=${rcpCustomer}&CustomerID=${customerID}&RVCNo=${RVCNo}&TypeAuthorize=1`
           );
           if (listCardAuthorized.data)
             newDataBooking.cardNumber = listCardAuthorized.data;
