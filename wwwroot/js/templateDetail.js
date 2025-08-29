@@ -901,18 +901,19 @@ $(document).ready(async function () {
     ).join(", ");
 
     // Tạo danh sách thời gian đặt dịch vụ
+    // nếu
     const serviceDateTimeSet = new Set();
     dataBooking.users.forEach((user) => {
       user.services.forEach((service) => {
         service.itemService.forEach((item) => {
           const staff = item.selectedStaff;
-          if (staff && staff.selectedDate && staff.selectedTimeSlot) {
-            let timeStr = staff.selectedTimeSlot.trim();
+          if (staff && user.selectedDate && user.selectedTimeSlot) {
+            let timeStr = user.selectedTimeSlot.trim();
             if (timeStr.endsWith("AM") || timeStr.endsWith("PM")) {
               timeStr = timeStr.slice(0, -2);
             }
             const dateTime = `${formatDateMMDDYYYY(
-              staff.selectedDate
+              user.selectedDate
             )} ${timeStr}:00`;
             serviceDateTimeSet.add(dateTime);
           }
@@ -937,12 +938,12 @@ $(document).ready(async function () {
         user.services.forEach((service) => {
           service.itemService.forEach((item) => {
             const staff = item.selectedStaff;
-            if (!staff?.selectedDate || !staff?.selectedTimeSlot) return;
+            if (!user?.selectedDate || !user?.selectedTimeSlot) return;
 
             const [month, day, year] = formatDateMMDDYYYY(
-              staff.selectedDate
+              user.selectedDate
             ).split("/");
-            let timeStr = staff.selectedTimeSlot.trim();
+            let timeStr = user.selectedTimeSlot.trim();
             if (timeStr.endsWith("AM") || timeStr.endsWith("PM")) {
               timeStr = timeStr.slice(0, -2);
             }
@@ -1087,12 +1088,12 @@ $(document).ready(async function () {
           if (prevEndTime) {
             startTime = prevEndTime;
           } else {
-            let timeStr = staff.selectedTimeSlot.trim();
+            let timeStr = user.selectedTimeSlot.trim();
             if (timeStr.endsWith("AM") || timeStr.endsWith("PM")) {
               timeStr = timeStr.slice(0, -2);
             }
             startTime = `${formatDateMMDDYYYY(
-              staff.selectedDate
+              user.selectedDate
             )} ${timeStr}:00`;
           }
 
@@ -1176,13 +1177,13 @@ $(document).ready(async function () {
         user.services.forEach((service) => {
           service.itemService.forEach((item) => {
             const staff = item.selectedStaff;
-            if (staff && staff.selectedDate && staff.selectedTimeSlot) {
-              let timeStr = staff.selectedTimeSlot.trim();
+            if (staff && user.selectedDate && user.selectedTimeSlot) {
+              let timeStr = user.selectedTimeSlot.trim();
               if (timeStr.endsWith("AM") || timeStr.endsWith("PM")) {
                 timeStr = timeStr.slice(0, -2);
               }
               const dateTime = `${formatDateMMDDYYYY(
-                staff.selectedDate
+                user.selectedDate
               )} ${timeStr}:00`;
               userServiceDateTimeSet.add(dateTime);
             }

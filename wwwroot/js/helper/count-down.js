@@ -12,7 +12,7 @@ function updatePopupFlowCountdownUI(remaining) {
     $countdown.text(formatTime(remaining));
   }
 }
-export async function startPopupFlowCountdown(seconds = 1800) {
+export async function startPopupFlowCountdown(seconds = 300) {
   let popupFlowRemaining = 0;
   let popupFlowCountdownInterval =
     templateStore.getState().popupFlowCountdownInterval;
