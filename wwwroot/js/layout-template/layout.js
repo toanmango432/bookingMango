@@ -806,6 +806,7 @@ export async function fetchStaffTimeSlots({
   try {
     // 1. Lấy user đang chọn
     const userChoosing = dataBooking.users.find((u) => u.isChoosing === true);
+    const RVCNo = templateStore.getState().RVCNo;
     if (!userChoosing) return [];
 
     // 2. Tính tổng duration cho thợ empID
