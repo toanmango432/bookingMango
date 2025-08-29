@@ -43,10 +43,6 @@ export async function renderCalendar(
     day.className = "day";
     day.textContent = date;
 
-    const isToday =
-      date === todayDate &&
-      currentMonth === todayMonth &&
-      currentYear === todayYear;
     const isSelected =
       selectedDate &&
       date === selectedDate.getDate() &&

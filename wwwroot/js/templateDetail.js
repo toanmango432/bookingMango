@@ -67,9 +67,12 @@ export function nextFormRegister(dataBooking, colorPrimary) {
 }
 // Hàm fetch ngày nghỉ thật từ tiệm RVCNo
 export async function fetchStoreOffDays(rvcNo, month, year) {
-  console.log("RC: ", rvcNo);
   const beginDate = `${month + 1}/01/${year}`;
-  const endDate = `${month + 1}/30/${year}`;
+
+  // Lấy số ngày cuối tháng
+  const lastDayOfMonth = new Date(year, month + 1, 0).getDate();
+  const endDate = `${month + 1}/${lastDayOfMonth}/${year}`;
+
   const url = `/api/store/getstoreoffday?rvcNo=${rvcNo}&beginDate=${encodeURIComponent(
     beginDate
   )}&endDate=${encodeURIComponent(endDate)}`;
@@ -89,6 +92,7 @@ export async function fetchStoreOffDays(rvcNo, month, year) {
     return [];
   }
 }
+
 // Hàm cập nhật dữ liệu daysOffNail theo tháng
 export function updateCalendarData(month, year, rvcNo, daysOffNail, callback) {
   fetchStoreOffDays(rvcNo, month, year).then((daysOff) => {
@@ -134,7 +138,6 @@ import {
 // import sumary
 import { renderSumary } from "./sumary/sumary.js";
 // import time-slots
-import { renderTimeSlotsForDate } from "./time-slots/time-slots.js";
 import { renderCalendar } from "./calander/calander.js";
 // import layout
 import {
@@ -182,8 +185,10 @@ $(document).ready(async function () {
   let dataGuest = templateStore.getState().dataGuest;
   let dataFamily = templateStore.getState().dataFamily;
   let dataSetting = templateStore.getState().dataSetting;
-  let policySetting = templateStore.getState().policySetting;
   const RVCNo = templateStore.getState().RVCNo;
+  let selectedDate = templateStore.getState().selectedDate;
+  let currentMonth = templateStore.getState().currentMonth;
+  let currentYear = templateStore.getState().currentYear;
 
   let listDataService = await templateStore.getState().getListDataService();
   let listUserStaff = await templateStore.getState().getListUserStaff();
@@ -196,10 +201,6 @@ $(document).ready(async function () {
   let resendInterval;
   // Biến xử lý chọn ngày đặt lịch
   const currentDate = new Date();
-  let selectedDate = new Date();
-  let currentMonth = currentDate.getMonth();
-  let currentYear = currentDate.getFullYear();
-
   const daysOffNail = templateStore.getState().daysOffNail;
 
   // hiện nút scroll
@@ -302,7 +303,6 @@ $(document).ready(async function () {
 
     if (resVerifyGetOtp && resVerifyGetOtp.status === 200) {
       const extraData = resVerifyGetOtp.extraData;
-      console.log("extraData: ", extraData);
       dataBooking.users[0] = {
         ...dataBooking.users[0],
         email: extraData?.mail,
@@ -831,39 +831,50 @@ $(document).ready(async function () {
   // Confirm payment final
   $(document).on("click", ".btn-next-payment", async function () {
     const $btn = $(this);
-    // tránh bấm nhiều lần
+    // Tránh bấm nhiều lần
     if ($btn.hasClass("loading")) return;
 
-    // set trạng thái loading
+    // Set trạng thái loading
     $btn.addClass("loading").prop("disabled", true);
 
-    // thêm loader (nếu chưa có)
+    // Thêm loader (nếu chưa có)
     if ($btn.find(".btn-loader").length === 0) {
       $btn.prepend('<span class="btn-loader"></span>');
     }
+
     const dataBooking = templateStore.getState().dataBooking;
+    console.log("dataBooking: ", dataBooking);
+
     // Chọn thẻ
     const cardChoosing = dataBooking.cardNumber.find((card) => card.isChoosing);
-    const userChoosing = dataBooking.users[0];
 
-    const rcpCustomer = userChoosing.rcpCustomer;
+    // Tìm user0 (user có phone hoặc email)
+    const user0 = dataBooking.users.find(
+      (user) => user.phoneNumber || user.email
+    );
+    if (!user0) {
+      console.error("Không tìm thấy user có phone hoặc email");
+      $btn.removeClass("loading").prop("disabled", false);
+      $btn.find(".btn-loader").remove();
+      return;
+    }
+
+    const rcpCustomer = user0.rcpCustomer;
     const appointmentID = 0;
-    const customerID = userChoosing.id;
+    const customerID = user0.id;
     const cardAuthorize = cardChoosing.cardAuthorize;
-    const totalAmount = dataBooking.totalAmount || 0;
+    const totalAmount = dataBooking.totalAmount || 0; // để tính remaining cho bill
     const rcvNo = templateStore.getState().RVCNo;
     const typeAuth = 1;
     const idCard = cardChoosing.id;
+
     let dataAddDeposit;
     try {
-      const urlAddDeposit = `/api/card/adddeposit
-        ?RCPCustomer=${rcpCustomer}&AppointmentID=${appointmentID}
-        &CustomerID=${customerID}&AuthorizeCardID=${cardAuthorize}
-        &Amount=${totalAmount}&RVCNo=${rcvNo}&TypeAuthorize=${typeAuth}&ID=${idCard}`.replace(
-        /\s+/g,
-        ""
-      );
-
+      const urlAddDeposit =
+        `/api/card/adddeposit?RCPCustomer=${rcpCustomer}&AppointmentID=${appointmentID}&CustomerID=${customerID}&AuthorizeCardID=${cardAuthorize}&Amount=${totalAmount}&RVCNo=${rcvNo}&TypeAuthorize=${typeAuth}&ID=${idCard}`.replace(
+          /\s+/g,
+          ""
+        );
       dataAddDeposit = await fetchAPI.get(urlAddDeposit);
     } catch (e) {
       console.error("[on.btn-next-payment]", {
@@ -871,8 +882,12 @@ $(document).ready(async function () {
         stack: e.stack,
         name: e.name,
       });
+      $btn.removeClass("loading").prop("disabled", false);
+      $btn.find(".btn-loader").remove();
+      return;
     }
-    // book now
+
+    // Tạo danh sách AppointmentSubject
     const list_appointmentSubject = new Set();
     dataBooking.users.forEach((user) => {
       user.services.forEach((service) => {
@@ -885,8 +900,8 @@ $(document).ready(async function () {
       list_appointmentSubject
     ).join(", ");
 
+    // Tạo danh sách thời gian đặt dịch vụ
     const serviceDateTimeSet = new Set();
-
     dataBooking.users.forEach((user) => {
       user.services.forEach((service) => {
         service.itemService.forEach((item) => {
@@ -894,15 +909,11 @@ $(document).ready(async function () {
           if (staff && staff.selectedDate && staff.selectedTimeSlot) {
             let timeStr = staff.selectedTimeSlot.trim();
             if (timeStr.endsWith("AM") || timeStr.endsWith("PM")) {
-              timeStr.slice(-2); // "AM" hoặc "PM"
-              timeStr = timeStr.slice(0, -2); // "08:20"
+              timeStr = timeStr.slice(0, -2);
             }
-            // Ghép lại thành "MM-DD-YYYY HH:mm:ss"
             const dateTime = `${formatDateMMDDYYYY(
               staff.selectedDate
             )} ${timeStr}:00`;
-
-            // Thêm vào Set để loại bỏ trùng lặp
             serviceDateTimeSet.add(dateTime);
           }
         });
@@ -910,20 +921,15 @@ $(document).ready(async function () {
     });
 
     const uniqueSelectedDates = Array.from(serviceDateTimeSet);
-    //Lấy mốc thời gian start là mốc nhỏ nhất,  dùng cho cả ServiceDate và StartTime
-    // Chuyển về đối tượng Date để so sánh
     const parsedDates = uniqueSelectedDates.map((dt) => new Date(dt));
-    // Tìm mốc nhỏ nhất
     const minDate = new Date(Math.min(...parsedDates));
-    // Format lại (MM/DD/YYYY HH:mm:ss)
     const minDateStr = `${formatDateMMDDYYYY(minDate)} ${String(
       minDate.getHours()
     ).padStart(2, "0")}:${String(minDate.getMinutes()).padStart(2, "0")}:00`;
 
-    // EndTime
+    // Hàm tính EndTime cho mỗi user
     function buildUserEndTimes(dataBooking) {
       const results = [];
-
       dataBooking.users.forEach((user) => {
         let earliestStart = null;
         let totalDuration = 0;
@@ -933,15 +939,12 @@ $(document).ready(async function () {
             const staff = item.selectedStaff;
             if (!staff?.selectedDate || !staff?.selectedTimeSlot) return;
 
-            // Parse ngày
             const [month, day, year] = formatDateMMDDYYYY(
               staff.selectedDate
             ).split("/");
-
-            // Parse giờ
             let timeStr = staff.selectedTimeSlot.trim();
             if (timeStr.endsWith("AM") || timeStr.endsWith("PM")) {
-              timeStr = timeStr.slice(0, -2); // bỏ AM/PM
+              timeStr = timeStr.slice(0, -2);
             }
             let [hour, minute] = timeStr.split(":");
 
@@ -954,12 +957,10 @@ $(document).ready(async function () {
               0
             );
 
-            // Lấy start nhỏ nhất
             if (!earliestStart || start < earliestStart) {
               earliestStart = start;
             }
 
-            // Cộng duration
             let itemDuration = item.duration || 0;
             if (item.optionals?.length > 0) {
               itemDuration += item.optionals.reduce(
@@ -973,7 +974,6 @@ $(document).ready(async function () {
 
         if (earliestStart) {
           const end = new Date(earliestStart.getTime() + totalDuration * 60000);
-
           const formatted = `${String(end.getMonth() + 1).padStart(
             2,
             "0"
@@ -986,17 +986,17 @@ $(document).ready(async function () {
           )}:${String(end.getMinutes()).padStart(2, "0")}:${String(
             end.getSeconds()
           ).padStart(2, "0")}`;
-
           results.push(formatted);
+        } else {
+          results.push(minDateStr); // Dự phòng nếu không có thời gian
         }
       });
-
       return results;
     }
 
     const endTimes = buildUserEndTimes(dataBooking);
 
-    // nickName thợ
+    // Tạo danh sách nickName thợ
     const uniqueNicknames = new Set();
     dataBooking.users.forEach((user) => {
       user.services.forEach((service) => {
@@ -1007,10 +1007,9 @@ $(document).ready(async function () {
         });
       });
     });
-
     const staffNickNames = Array.from(uniqueNicknames);
 
-    // list id thợ
+    // Tạo danh sách ID thợ
     const uniqueEmployeeID = new Set();
     dataBooking.users.forEach((user) => {
       user.services.forEach((service) => {
@@ -1021,43 +1020,34 @@ $(document).ready(async function () {
         });
       });
     });
-
     const listUniqueEmID = Array.from(uniqueEmployeeID);
 
-    // Tổng duration book
+    // Tính tổng duration
     function calcTotalDuration(dataBooking) {
       let totalDuration = 0;
-
       dataBooking.users.forEach((user) => {
         user.services.forEach((service) => {
           service.itemService.forEach((item) => {
-            // thời lượng chính của service
             let itemDuration = item.duration || 0;
-
-            // cộng thêm các optional (nếu có)
             if (item.optionals && item.optionals.length > 0) {
               item.optionals.forEach((opt) => {
                 itemDuration += opt.timedura || 0;
               });
             }
-
             totalDuration += itemDuration;
           });
         });
       });
-
       return totalDuration;
     }
-
     const totalTimeDuration = calcTotalDuration(dataBooking);
-    // help calc end time
+
+    // Hàm tính EndTime
     function calcEndTime(startDateTime, duration) {
       const [date, time] = startDateTime.split(" ");
-      // tách bằng cả "/" và "-"
       const [month, day, year] = date.includes("/")
         ? date.split("/").map(Number)
         : date.split("-").map(Number);
-
       const [h, m, s] = time.split(":").map(Number);
 
       const dt = new Date(year, month - 1, day, h, m, s || 0);
@@ -1073,69 +1063,63 @@ $(document).ready(async function () {
       return `${MM}-${DD}-${YYYY} ${HH}:${mm}:${SS}`;
     }
 
-    function buildItemList(dataBooking) {
+    // Hàm tạo danh sách Item cho mỗi user
+    function buildItemListForUser(user, apptIndex) {
       let index = 0;
       const listItemDetail = [];
+      let prevEndTime = null;
 
-      dataBooking.users.forEach((user) => {
-        user.services.forEach((service) => {
-          let prevEndTime = null; // mốc giờ kết thúc trước đó
+      user.services.forEach((service) => {
+        service.itemService.forEach((itemService) => {
+          const staff = itemService.selectedStaff;
 
-          service.itemService.forEach((itemService, idx) => {
-            const staff = itemService.selectedStaff;
+          let totalPrice = parseFloat(itemService.price) || 0;
+          let totalDuration = parseInt(itemService.duration) || 0;
 
-            // Tổng price + duration (kể cả optional)
-            let totalPrice = parseFloat(itemService.price) || 0;
-            let totalDuration = parseInt(itemService.duration) || 0;
-
-            if (itemService.optionals && Array.isArray(itemService.optionals)) {
-              itemService.optionals.forEach((opt) => {
-                totalPrice += parseFloat(opt.price) || 0;
-                totalDuration += parseInt(opt.timeDuration) || 0;
-              });
-            }
-
-            let startTime;
-            if (prevEndTime) {
-              // Nếu đã có endTime trước -> start = end trước
-              startTime = prevEndTime;
-            } else {
-              // Item đầu tiên thì lấy từ staff.selectedTimeSlot
-              let timeStr = staff.selectedTimeSlot.trim();
-              if (timeStr.endsWith("AM") || timeStr.endsWith("PM")) {
-                timeStr = timeStr.slice(0, -2); // bỏ AM/PM
-              }
-
-              startTime = `${formatDateMMDDYYYY(
-                staff.selectedDate
-              )} ${timeStr}:00`;
-            }
-
-            const endTime = calcEndTime(startTime, totalDuration);
-            prevEndTime = endTime; // cập nhật cho item sau
-
-            listItemDetail.push({
-              Index: index++,
-              ParentAddon: -1,
-              ItemID: itemService.idItemService,
-              ItemName: itemService.title,
-              ItemPrice: totalPrice.toFixed(2),
-              Duration: totalDuration,
-              EmployeeID: staff.employeeID,
-              EmployeeName: staff.nickName,
-              Type: 1,
-              IsCategory: 0,
-              IsRequestTech: 1,
-              StartTime: startTime,
-              EndTime: endTime,
-              DurationItem: totalDuration,
-              IsChangeTime: 0,
-              ProductCharge: 0,
-              Turn: 0,
-              Comission: 0,
-              IDCombo: 0,
-              AddonId: 0,
+          if (itemService.optionals && Array.isArray(itemService.optionals)) {
+            itemService.optionals.forEach((opt) => {
+              totalPrice += parseFloat(opt.price) || 0;
+              totalDuration += parseInt(opt.timedura) || 0;
             });
+          }
+
+          let startTime;
+          if (prevEndTime) {
+            startTime = prevEndTime;
+          } else {
+            let timeStr = staff.selectedTimeSlot.trim();
+            if (timeStr.endsWith("AM") || timeStr.endsWith("PM")) {
+              timeStr = timeStr.slice(0, -2);
+            }
+            startTime = `${formatDateMMDDYYYY(
+              staff.selectedDate
+            )} ${timeStr}:00`;
+          }
+
+          const endTime = calcEndTime(startTime, totalDuration);
+          prevEndTime = endTime;
+
+          listItemDetail.push({
+            Index: index++,
+            ParentAddon: -1,
+            ItemID: itemService.idItemService,
+            ItemName: itemService.title,
+            ItemPrice: totalPrice.toFixed(2),
+            Duration: totalDuration,
+            EmployeeID: staff.employeeID,
+            EmployeeName: staff.nickName,
+            Type: 1,
+            IsCategory: 0,
+            IsRequestTech: 1,
+            StartTime: startTime,
+            EndTime: endTime,
+            DurationItem: totalDuration,
+            IsChangeTime: 0,
+            ProductCharge: 0,
+            Turn: 0,
+            Comission: 0,
+            IDCombo: 0,
+            AddonId: 0,
           });
         });
       });
@@ -1143,49 +1127,145 @@ $(document).ready(async function () {
       return listItemDetail;
     }
 
-    // item detail
-    const listItemDetail = buildItemList(dataBooking);
+    // Hàm tạo danh sách Appointment
+    function buildAppointments(dataBooking, user0) {
+      const appointments = [];
+      let apptIndex = 0;
 
+      const customerName = `${user0.firstName || ""} ${
+        user0.lastName || ""
+      }`.trim();
+      const customerPhone = user0.phoneNumber ? user0.phoneNumber.slice(1) : "";
+
+      dataBooking.users.forEach((user, userIndex) => {
+        const listItemDetail = buildItemListForUser(user, apptIndex);
+
+        // Tính TotalAmount cho user này
+        let userTotalAmount = 0;
+        listItemDetail.forEach((item) => {
+          userTotalAmount += parseFloat(item.ItemPrice) || 0;
+        });
+
+        // Tạo danh sách EmployeeID và GroupEmployeeName cho user này
+        const userEmployeeIDs = new Set();
+        const userNickNames = new Set();
+        user.services.forEach((service) => {
+          service.itemService.forEach((item) => {
+            if (item.selectedStaff && item.selectedStaff.employeeID) {
+              userEmployeeIDs.add(item.selectedStaff.employeeID);
+            }
+            if (item.selectedStaff && item.selectedStaff.nickName) {
+              userNickNames.add(item.selectedStaff.nickName);
+            }
+          });
+        });
+
+        // Tạo AppointmentSubject cho user này
+        const userAppointmentSubject = new Set();
+        user.services.forEach((service) => {
+          service.itemService.forEach((item) => {
+            userAppointmentSubject.add(item.title);
+          });
+        });
+        const userAppointmentSubjectStr = Array.from(
+          userAppointmentSubject
+        ).join(", ");
+
+        // Tính ServiceDate và StartTime cho user này
+        const userServiceDateTimeSet = new Set();
+        user.services.forEach((service) => {
+          service.itemService.forEach((item) => {
+            const staff = item.selectedStaff;
+            if (staff && staff.selectedDate && staff.selectedTimeSlot) {
+              let timeStr = staff.selectedTimeSlot.trim();
+              if (timeStr.endsWith("AM") || timeStr.endsWith("PM")) {
+                timeStr = timeStr.slice(0, -2);
+              }
+              const dateTime = `${formatDateMMDDYYYY(
+                staff.selectedDate
+              )} ${timeStr}:00`;
+              userServiceDateTimeSet.add(dateTime);
+            }
+          });
+        });
+        const userSelectedDates = Array.from(userServiceDateTimeSet);
+        const userParsedDates = userSelectedDates.map((dt) => new Date(dt));
+        const userMinDate =
+          userParsedDates.length > 0
+            ? new Date(Math.min(...userParsedDates))
+            : minDate;
+        const userMinDateStr = `${formatDateMMDDYYYY(userMinDate)} ${String(
+          userMinDate.getHours()
+        ).padStart(2, "0")}:${String(userMinDate.getMinutes()).padStart(
+          2,
+          "0"
+        )}:00`;
+
+        // Tính tổng duration cho user này
+        let userTotalDuration = 0;
+        user.services.forEach((service) => {
+          service.itemService.forEach((item) => {
+            let itemDuration = item.duration || 0;
+            if (item.optionals && item.optionals.length > 0) {
+              item.optionals.forEach((opt) => {
+                itemDuration += opt.timedura || 0;
+              });
+            }
+            userTotalDuration += itemDuration;
+          });
+        });
+
+        const appointment = {
+          AppointmentID: "0",
+          CustomerID: customerID,
+          CustomerName: customerName,
+          CustomerPhone: customerPhone,
+          AppointmentSubject: userAppointmentSubjectStr,
+          ServiceDate: userMinDateStr,
+          StartTime: userMinDateStr,
+          EndTime: endTimes[userIndex] || userMinDateStr,
+          AppointmentStatusID: "1",
+          EmployeeID: Array.from(userEmployeeIDs),
+          GroupEmployeeName: Array.from(userNickNames),
+          AptComment: "",
+          TotalAmount: userTotalAmount.toFixed(2), // Tổng tiền của user này
+          DepositAmount: dataBooking.paymentDeposit || 0,
+          CrearteBy: "0",
+          IsBookOnline: "1",
+          IsConfirmOB: "0",
+          BarcodeTicket: "",
+          TotalDuration: userTotalDuration,
+          IDParty: "0",
+          IsStartAllSameTime: "0",
+          ApptIndex: String(apptIndex),
+          Detail: {
+            ApptIndex: String(apptIndex),
+            Item: listItemDetail,
+          },
+        };
+
+        appointments.push(appointment);
+        apptIndex++;
+      });
+
+      return appointments;
+    }
+
+    // Tạo bookXLM
+    const appointments = buildAppointments(dataBooking, user0);
     const bookXLM = {
-      Appointment: {
-        AppointmentID: "0",
-        CustomerID: userChoosing.id,
-        CustomerName: userChoosing.firstName + userChoosing.lastName,
-        CustomerPhone: userChoosing.phoneNumber.slice(1),
-        AppointmentSubject: result_list_appointmentSubject,
-        ServiceDate: minDateStr,
-        StartTime: minDateStr,
-        EndTime: endTimes,
-        AppointmentStatusID: "1",
-        EmployeeID: listUniqueEmID,
-        GroupEmployeeName: staffNickNames,
-        AptComment: "",
-        TotalAmount: dataBooking.totalAmount,
-        DepositAmount: dataBooking.paymentDeposit,
-        CrearteBy: "0",
-        IsBookOnline: "1",
-        IsConfirmOB: "0",
-        BarcodeTicket: "",
-        TotalDuration: totalTimeDuration,
-        IDParty: "0",
-        IsStartAllSameTime: "0",
-        ApptIndex: "0",
-        Detail: {
-          ApptIndex: "0",
-          Item: listItemDetail,
-        },
-      },
+      Appointment: appointments.length > 1 ? appointments : appointments[0],
     };
-    // Dùng cho bookXLM
     const xmlString = jsonToXml(bookXLM, "root");
+
     const payloadBookXLM = {
       RVCNo: templateStore.getState().RVCNo,
       xml: xmlString,
       isConfirm: "0",
-      CustomerID: userChoosing.id.toString(),
+      CustomerID: customerID.toString(),
     };
 
-    // book now
+    // Book now
     let dataBookXLM;
     try {
       dataBookXLM = await fetchAPI.post(
@@ -1199,12 +1279,11 @@ $(document).ready(async function () {
         name: e.name,
       });
     } finally {
-      // bỏ loading
       $btn.removeClass("loading").prop("disabled", false);
-      $btn.find(".btn-loader").remove(); // xoá loader
+      $btn.find(".btn-loader").remove();
     }
+
     if (dataBookXLM.appointmentID) {
-      // send manualNotify
       const RVCNo = templateStore.getState().RVCNo;
       const keyOnline = "OnlineBookingConfirm";
       const keyTech = "OB.NotifyTech";
@@ -1238,14 +1317,10 @@ $(document).ready(async function () {
         });
       }
       if (resManualNotiTech.status !== 200) return;
-
-      // add log deposit
-
-      // invoke hub
-      // const dataInvokeHub = await
     } else {
       console.log("Not res appointmentID");
     }
+
     const findCardChoosing = dataBooking.cardNumber.find((c) => c.isChoosing);
     const dataBill = {
       image: "/assets/images/payment-success/img-succes-payment.png",
@@ -1277,13 +1352,30 @@ $(document).ready(async function () {
       $(".overlay-screen").addClass("show");
     }, 10);
 
-    // start animation 5 vòng (fake 5s)
     setTimeout(() => {
       startConfirmAnimation(1, {
         selector: ".wrap-popup-payment-confirmation .check-circle",
         buttonSelector: ".wrap-popup-payment-confirmation .btn-request-another",
       });
-    }, 50);
+      // Thêm đếm ngược 5 giây
+      let countdownSeconds = 10;
+      const countdownElement = $(
+        ".wrap-popup-payment-confirmation .countdown-seconds"
+      );
+      console.log("countdownElement: ", countdownElement);
+      const countdownInterval = setInterval(() => {
+        countdownSeconds -= 1;
+        countdownElement.text(countdownSeconds);
+
+        if (countdownSeconds <= 0) {
+          clearInterval(countdownInterval);
+          // Đóng popup
+          closePopupContainerTemplate();
+          // Reload trang
+          window.location.reload();
+        }
+      }, 1000);
+    }, 100);
   });
   // Chọn thẻ thanh toán
   $(document).on("click", ".payment-method-item", function () {
@@ -2013,8 +2105,6 @@ $(document).ready(async function () {
 
         setTimeout(() => {
           const currentBooking = templateStore.getState().dataBooking;
-          console.log("newDataBooking: ", currentBooking);
-
           const contentPaymentMethod = renderPaymentMethodsForm(
             currentBooking,
             colorPrimary
@@ -2082,9 +2172,16 @@ $(document).ready(async function () {
   // START: confirm booking
   $(document).on("click", ".btn-confirm-booking", function () {
     const dataBooking = templateStore.getState().dataBooking;
+    // GUEST
+    const userHavePhone = dataBooking.users.find(
+      (u) => u.phoneNumber || u.email
+    );
+    console.log("userHavePhone: ", userHavePhone);
     const RVCNo = templateStore.getState().RVCNo;
+    const phoneEmailOrNull =
+      userHavePhone?.phoneNumber || userHavePhone?.email || "";
     const htmlVerifyEmailPhone = renderVerifyEmailPhoneContent(
-      "",
+      phoneEmailOrNull,
       colorPrimary
     );
     let height = 620;

@@ -62,14 +62,13 @@ import {
   isValidPhoneNumber,
 } from "../helper/format-phone.js";
 import { shakeError } from "../helper/shake-error.js";
+import { updateCalendarData } from "../templateDetail.js";
+import { renderCalendar } from "../calander/calander.js";
 
 import {
   validateFirstNameInput,
   validateLastNameInput,
   validateEmailPhoneInputBanner,
-  validateEmailPhoneInput,
-  validatePhoneFormRegister,
-  validateEmailFormRegister,
   isValidEmail,
   checkValInputs,
 } from "../helper/input/valid-form.js";
@@ -78,11 +77,17 @@ import { renderInfoUser } from "../layout-template/layout.js";
 import { renderCopyServiceOption } from "./copy-service-option.js";
 import { renderCopyServiceBtn } from "../layout-template/layout.js";
 import { showScrollToFinalBooking } from "../scroll-quickly/scroll-quickly.js";
+import { monthNames, dayNames } from "../constants/days-weeks.js";
 
 $(document).ready(async function () {
   let dataBooking = templateStore.getState().dataBooking;
   let dataGuest = templateStore.getState().dataGuest;
   let listDataService = await templateStore.getState().getListDataService();
+  let currentMonth = templateStore.getState().currentMonth;
+  let currentYear = templateStore.getState().currentYear;
+  let daysOffNail = templateStore.getState().daysOffNail;
+  let selectedDate = templateStore.getState().selectedDate;
+  let RVCNo = templateStore.getState().RVCNo;
 
   let { banner } = dataRelease;
 
@@ -493,6 +498,8 @@ $(document).ready(async function () {
       color: "#E28B01",
       icon: `<i class="fa-solid fa-chevron-up rotate-transition"></i>`,
     };
+    // update store
+    templateStore.setState({ dataBooking: { ...dataBooking } });
     renderCopyServiceOption(".copy-options-wrapper", optionCopyService);
     renderListService(listDataService, ".list-more", dataBooking);
   });
@@ -577,9 +584,20 @@ $(document).ready(async function () {
     // upadate lại list service
     renderListService(listDataService, ".list-more", dataBooking);
     // update lại calander
-
+    updateCalendarData(currentMonth, currentYear, RVCNo, daysOffNail, () => {
+      renderCalendar(
+        monthNames,
+        dayNames,
+        currentMonth,
+        currentYear,
+        daysOffNail,
+        selectedDate,
+        dataBooking
+      );
+      // update store
+      templateStore.setState({ dataBooking });
+    });
     const isFinalBooking = showScrollToFinalBooking(dataBooking);
-    console.log("dataBooking: , ", dataBooking);
     if (!isFinalBooking) {
       const isSeTi = showScrollToTarget(dataBooking, true);
       // chắc chắn lúc này phải scroll chọn time, còn chọn thợ service thì tuỳ xử lý sau

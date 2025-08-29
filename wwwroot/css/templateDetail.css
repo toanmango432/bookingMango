@@ -1384,6 +1384,11 @@ select {
   color: #ea001e;
   font: normal normal 700 var(--s-24);
 }
+.wrap-btn-request-another {
+  width: 100%;
+  position: relative;
+  margin-top: 8px;
+}
 
 .btn-request-another {
   width: 100%;
@@ -1399,6 +1404,12 @@ select {
 }
 .btn-request-another:hover {
   filter: brightness(0.98);
+}
+.countdown-timer {
+  position: absolute;
+  top: 16px;
+  right: 10px;
+  color: white;
 }
 .dotted-sep {
   width: 100%;

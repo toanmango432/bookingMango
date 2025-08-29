@@ -908,10 +908,10 @@ import {
   idStaffDefault,
   genderEnum,
 } from "../constants/template-online.js";
+import { monthNames, dayNames } from "../constants/days-weeks.js";
 // import scroll quickly
 import {
   updateScrollButton,
-  showScrollToTarget,
   showScrollToFinalBooking,
 } from "../scroll-quickly/scroll-quickly.js";
 // time slots
@@ -931,12 +931,19 @@ import { renderTimeBooking } from "../time-slots/time-booking.js";
 import { renderBookingOption } from "../banner/booking-option.js";
 // import help
 import { findMultiTechStarts } from "../helper/free-time/slot-time-available.js";
+import { updateCalendarData } from "../templateDetail.js";
+import { renderCalendar } from "../calander/calander.js";
 
 $(document).ready(async function () {
   let mainTech = null;
   // Load store lần đầu tiên
   await templateStore.load();
   await templateStore.getState().getDataSetting();
+  let currentMonth = templateStore.getState().currentMonth;
+  let currentYear = templateStore.getState().currentYear;
+  let daysOffNail = templateStore.getState().daysOffNail;
+  let selectedDate = templateStore.getState().selectedDate;
+  let RVCNo = templateStore.getState().RVCNo;
 
   let dataSetting = templateStore.getState().dataSetting;
   let listDataService = await templateStore.getState().getListDataService();
@@ -1359,6 +1366,7 @@ $(document).ready(async function () {
   // gắn staff selected cho user
   $(document).on("click", ".item-staff", async function (e) {
     const updateDataBooking = templateStore.getState().dataBooking;
+
     e.stopPropagation();
     const $this = $(this);
     const idStaff = $this.data("id");
@@ -1373,14 +1381,13 @@ $(document).ready(async function () {
     const userChoosing = updateDataBooking.users.find(
       (u) => u.isChoosing === true
     );
+    console.log("userChoosing: ", userChoosing);
     // Nếu chỉ cho phép 1 thợ (single tech mode)
     if (!isBookMultipleTech) {
-      // Gán tất cả service trước đó thành staff mới chọn
-      updateDataBooking.users.forEach((u) => {
-        u.services.forEach((svc) => {
-          svc.itemService.forEach((it) => {
-            it.selectedStaff = staffSelecting;
-          });
+      // Gán tất cả service trước đó thành staff mới chọn của userChoosing
+      userChoosing.services.forEach((svc) => {
+        svc.itemService.forEach((it) => {
+          it.selectedStaff = staffSelecting;
         });
       });
     }
@@ -1467,6 +1474,18 @@ $(document).ready(async function () {
 
     updateGuestSection(newBooking); // Cập nhật để hiển thị nút Copy Service
 
+    // update lại calander
+    updateCalendarData(currentMonth, currentYear, RVCNo, daysOffNail, () => {
+      renderCalendar(
+        monthNames,
+        dayNames,
+        currentMonth,
+        currentYear,
+        daysOffNail,
+        selectedDate,
+        newBooking
+      );
+    });
     // show nút scroll to choose time-slots nếu chưa chọn time-slots
     if (!userChoosing.selectedDate || !userChoosing.selectedTimeSlot) {
       updateScrollButton({
@@ -1484,7 +1503,6 @@ $(document).ready(async function () {
     renderTimeSlotsForDate(newBooking, slotTimeForSelect);
 
     //Cập nhật table booking
-    console.log("newDataBooking :", newBooking);
     renderSumary(newBooking, listDataService);
   });
   // toggle addOn service

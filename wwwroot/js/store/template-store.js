@@ -12,16 +12,20 @@ export const templateStore = {
 
   async load() {
     let RVCNo = 336;
+    let selectedDate = new Date();
+    let currentMonth = selectedDate.getMonth();
+    let currentYear = selectedDate.getFullYear();
+
     // --- DATA BOOKING mặc định ---
     let dataBooking = {
       type: typeBookingEnum.ME,
       users: [
         {
           id: 1,
-          firstName: "Shane",
-          lastName: "Fox",
-          phoneNumber: "0230203023",
-          email: "jessica.hanson@gmail.com",
+          firstName: "",
+          lastName: "",
+          phoneNumber: "",
+          email: "",
           gender: genderEnum.MALE,
           services: [],
           selectedDate: new Date(),
@@ -120,10 +124,10 @@ export const templateStore = {
     let dataMe = [
       {
         id: 1,
-        firstName: "Shane",
-        lastName: "Fox",
-        phoneNumber: "0230203023",
-        email: "jessica.hanson@gmail.com",
+        firstName: "",
+        lastName: "",
+        phoneNumber: "",
+        email: "",
         gender: genderEnum.MALE,
         services: [],
         selectedDate: null,
@@ -307,7 +311,6 @@ export const templateStore = {
 
     // --- countdown ---
     let popupFlowCountdownInterval = null;
-    let selectedDate = new Date();
     // biến lưu các slot-time và duration của tech
     let slotTimeMultiTech = {
       techs: [],
@@ -323,6 +326,10 @@ export const templateStore = {
     // --- SET STATE ---
     this._state = {
       RVCNo,
+      selectedDate,
+      currentMonth,
+      currentYear,
+
       dataBooking,
       dataCart,
       dataMe,
@@ -339,7 +346,6 @@ export const templateStore = {
       policySetting,
       isBookMultipleTech,
       popupFlowCountdownInterval,
-      selectedDate,
       // slots time
       slotTimeMultiTech,
       slotTimeForSelect,

@@ -1,4 +1,13 @@
 // Form xác nhận thanh toán
+function extractAfterTripleZero(ticketNumber) {
+  const numStr = String(ticketNumber);
+  const idx = numStr.indexOf("000");
+  if (idx !== -1) {
+    return numStr.slice(idx + 3); // lấy sau "000"
+  }
+  return numStr; // fallback nếu không có "000"
+}
+
 export function renderPaymentConfirmationForm(data = {}, colorPrimary) {
   const {
     image = "/assets/images/payment-success/img-succes-payment.png",
@@ -8,7 +17,7 @@ export function renderPaymentConfirmationForm(data = {}, colorPrimary) {
     paymentMethodMasked = "Xxx Xxx Xxx 4008",
     deposit = "60.00",
     remaining = "60.00",
-    requestAnotherCount = 5,
+    requestAnotherCount = 50,
     currencyDeposit = "$",
   } = data;
 
@@ -53,7 +62,9 @@ export function renderPaymentConfirmationForm(data = {}, colorPrimary) {
                   <div class="appointment-rows">
                     <div class="row">
                       <div class="label">Ticket Number</div>
-                      <div class="value">#${ticketNumber}</div>
+                      <div class="value">#${extractAfterTripleZero(
+                        ticketNumber
+                      )}</div>
                     </div>
 
                     <div class="row">
@@ -82,8 +93,15 @@ export function renderPaymentConfirmationForm(data = {}, colorPrimary) {
                     }</div>
                   </div>
                 </div>
+                <div class="wrap-btn-request-another text-uppercase">
+                  <button class="btn-request-another text-uppercase">
+                    <span class="text-uppercase">REQUEST ANOTHER APPOINTMENT </span>
+                  </button>
+                  <p class="countdown-timer" style="margin-left: 10px; font-size: 16px;">
+                    <span class="countdown-seconds">10</span>s
+                  </p>
                 </div>
-              <button class="btn-request-another text-uppercase">REQUEST ANOTHER APPOINTMENT (${requestAnotherCount})</button>
+              </div>
             </div>
           </div>
 
@@ -133,7 +151,7 @@ export function renderPaymentConfirmationForm(data = {}, colorPrimary) {
               </div>
             </div>
 
-            <p class="legal">
+            <div class="legal">
               <p class="mb-0">
                 Apple and the Apple logo are trademarks of Apple Inc.,
                 registered in the U.S. and other countries.
@@ -144,7 +162,7 @@ export function renderPaymentConfirmationForm(data = {}, colorPrimary) {
               <p class="mb-0">
                 Google Play is a trademark of Google Inc.
               </p>
-            </p>
+            </div>
           </div>
         </div>
       `;

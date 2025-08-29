@@ -70,7 +70,6 @@ export function renderSumary(dataBooking, listDataService) {
       )
     );
   });
-  console.log("allSelected: ", allSelected);
   if (!allSelected) {
     $containerSumary.append("");
     return;
@@ -131,6 +130,7 @@ export function renderSumary(dataBooking, listDataService) {
             // tính tổng bản ghi, tổng tiền và tổng time
             let totalServices = 0;
             let totalMinutes = 0;
+            let userTotalPayment = 0;
 
             if (
               dataRefact.listServiceUser &&
@@ -152,12 +152,14 @@ export function renderSumary(dataBooking, listDataService) {
                   );
                   totalMinutes += optionalMins;
 
-                  totalPayment += Number(getTotalPrice(is) || 0);
+                  // cộng tiền service + optionals
+                  userTotalPayment += Number(getTotalPrice(is) || 0);
                 });
               });
             }
             // save total amount
-            dataBooking.totalAmount = totalPayment;
+            // cộng dồn vào tổng của cả booking
+            totalPayment += userTotalPayment;
             return `
             <div class="item-sumary" data-id="${userBooking.id}">
               <div class="top-item-sumary">
@@ -242,7 +244,7 @@ export function renderSumary(dataBooking, listDataService) {
               <div class="total-pay">
                 <p class="text-total-amount">Total (${totalServices})</p>
                 <p class="text-total-times">${totalMinutes} min</p>
-                <p class="text-total-price">$ ${totalPayment.toFixed(2)}</p>
+                <p class="text-total-price">$ ${userTotalPayment.toFixed(2)}</p>
                 <div class="action-item-ser"></div>
               </div>
             </div>
@@ -262,6 +264,6 @@ export function renderSumary(dataBooking, listDataService) {
     `;
 
   // gán totalPayment cho dataBooking
-  dataBooking.totalPayment = totalPayment;
+  dataBooking.totalAmount = totalPayment;
   $containerSumary.append(htmlSumary);
 }
