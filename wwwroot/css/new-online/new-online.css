@@ -1,0 +1,77 @@
+.wrap-content-salon {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.header-salon {
+  display: flex;
+  height: 72px;
+  padding: 10px 24px;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+  align-self: stretch;
+  border-radius: 9px 9px 0 0;
+  background: #fff;
+}
+.header-salon button {
+  display: flex;
+  gap: 8px;
+  border: none;
+  background: transparent;
+  align-items: center;
+  justify-content: center;
+}
+.header-salon button span {
+  color: var(--text-colo-primary);
+  font: normal normal 600 var(--s-18);
+}
+
+/* header chung khi đã chọn salon */
+
+.header-sertech {
+  height: 72px;
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 5px;
+  border-radius: 9px 9px 0 0;
+  background: #fff;
+}
+.header-sertech .content {
+  width: 210px;
+  display: flex;
+  gap: 5px;
+  margin-right: 20px;
+}
+.header-sertech .content .wrap-avt {
+}
+
+.header-sertech .content .infor {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.header-sertech .content .infor .name {
+  color: var(--text-colo-primary);
+  font: normal normal 500 var(--s-16);
+}
+
+.header-sertech .content .infor .phone {
+  gap: 5px;
+  border-radius: 8px;
+  border: 1px solid var(--Gray-Neutral-95, #f3f3f3);
+  background: var(--Gray-Neutral-100, #fff);
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);
+  display: flex;
+  padding: 6px 8px 4px 8px;
+  align-items: flex-start;
+  gap: 4px;
+  align-self: stretch;
+  font: normal normal 500 var(--s-14);
+  color: var(--bs-main);
+}

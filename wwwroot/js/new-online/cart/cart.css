@@ -1,0 +1,94 @@
+.overlay-nav-cart {
+  position: absolute; /* để phủ toàn màn hình */
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 76px; /* mặc định đóng */
+  background: transparent;
+  transition: background 0.1s ease, width 0.3s ease;
+  z-index: 1000;
+  justify-content: flex-end;
+}
+.overlay-nav-cart.open {
+  width: 100%;
+  background: #d3d3d3c4;
+}
+.wrap-cart {
+  position: relative;
+  height: 100%;
+}
+.wrap-cart .cart {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 1001; /* luôn nằm trên content */
+  transition: right 0.3s ease;
+}
+.overlay-nav-cart.open .cart {
+  right: 300px;
+}
+.wrap-cart .content-cart {
+  position: absolute;
+  top: 0;
+  right: -312px; /* trượt ra ngoài */
+  height: 100%;
+  width: 300px;
+  background: white;
+  transition: right 0.3s ease; /* hiệu ứng mượt */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+  border-top: solid 1px #eb5781;
+  border-left: solid 1px #eb5781;
+}
+
+.overlay-nav-cart.open .content-cart {
+  right: 0; /* trượt vào */
+}
+.cart button {
+  display: flex;
+  width: 40px;
+  height: 40px;
+  padding: 0 4px;
+  align-items: center;
+  gap: 10px;
+  border-radius: 8px;
+  background: #eb5781;
+  border: none;
+}
+.overlay-nav-cart.open .cart button {
+  border-radius: 8px 0px 0px 8px;
+}
+.cart button svg {
+  margin-left: 6px;
+  color: white;
+}
+.cart .quantity {
+  position: absolute;
+  top: -8px;
+  background: white;
+  border-radius: 50%;
+  left: -12px;
+  width: 20px;
+}
+.end-cart {
+  width: 100%;
+  position: absolute;
+  bottom: 0px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+}
+.total-cash,
+.total-card {
+  display: flex;
+  justify-content: space-between;
+}
+
+.total-cash .left {
+  font: normal normal 500 var(--s-16);
+  color: #e3066a;
+}
+.total-cash .text-price-cash {
+  font: normal normal 600 var(--s-18);
+  color: #e3066a;
+}

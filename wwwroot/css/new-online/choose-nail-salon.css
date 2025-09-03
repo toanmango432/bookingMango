@@ -1,0 +1,141 @@
+.content-salon {
+  flex: 1 0 0;
+}
+.slider-booking {
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+.slider-booking .slider-track-salon {
+  height: 100%;
+  display: flex;
+  transition: transform 0.3s ease;
+  will-change: transform;
+  gap: var(--px-16);
+}
+.list-salon {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: flex-start;
+  align-items: flex-end;
+  align-content: flex-start;
+  gap: 32px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  background: #eceef0;
+  padding: 20px 80px;
+}
+.item-salon {
+  display: flex;
+  width: 400px;
+  height: 208px;
+  padding: 20px;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 32px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  border: 2px solid var(--bs-main);
+  background: linear-gradient(74deg, #fff 0.14%, #fff 99.86%);
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.15);
+}
+.infor-salon {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  flex: 1 0 0;
+  align-self: stretch;
+}
+.wrap-avt {
+  width: 64px;
+  height: 64px;
+  aspect-ratio: 1/1;
+  border-radius: 360px;
+  border: 2px solid var(--White-Transparent-50, rgba(255, 255, 255, 0.5));
+  background: url(<path-to-image>) lightgray 50% / cover no-repeat;
+  display: flex;
+  flex-shrink: 0;
+}
+.avt-salon {
+}
+.salon-address h1 {
+  align-self: stretch;
+  color: #eb5781;
+
+  /* Medium/Bold */
+  font-family: Montserrat;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 24px; /* 120% */
+}
+.salon-address {
+}
+.address {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  align-self: stretch;
+}
+.address .icon-address {
+  width: 24px;
+  height: 24px;
+}
+.address .text-address {
+  flex: 1 0 0;
+  color: var(--text-colo-primary);
+  font: normal normal 500 var(--s-16);
+}
+.book-now {
+}
+.book-now .book-salon {
+  flex: 1 0 0;
+  font: normal normal 600 var(--s-16);
+  display: flex;
+  padding: 12px 16px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  background: #fff;
+  border: none;
+  color: var(--bs-main);
+  text-align: center;
+  border-radius: 8px;
+  background: var(--Gray-Neutral-100, #fff);
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.25);
+
+  transition: background-color 0.3s ease, border 0.1s ease;
+}
+.book-now .book-salon:hover {
+  border: 1px solid var(--bs-main);
+  background-color: var(--bs-main-100);
+}
+
+.slider-btn-booking {
+  width: var(--px-40);
+  height: var(--px-40);
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  background: rgba(0, 0, 0, 0.2);
+  border: none;
+  border-radius: 100%;
+  padding: 8px 12px;
+  cursor: pointer;
+  color: var(--text-color-primary);
+  background: linear-gradient(to right, #fdfdfd 0%, #eceef0 100%);
+  border: none;
+  border-radius: 12px;
+  padding: 10px;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.slider-btn-booking.prev {
+  left: 24px;
+}
+.slider-btn-booking.next {
+  right: 24px;
+}

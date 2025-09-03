@@ -201,6 +201,10 @@
       "PackagePath": "staticwebassets/css/montserrat/JTUSjIg1_i6t8kCHKm459Wlhyw.woff2"
     },
     {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/css/new-online/new-online.css",
+      "PackagePath": "staticwebassets/css/new-online/new-online.css"
+    },
+    {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/css/paddingmargin.css",
       "PackagePath": "staticwebassets/css/paddingmargin.css"
     },
@@ -363,6 +367,10 @@
     {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/momenttimezone.js",
       "PackagePath": "staticwebassets/js/momenttimezone.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/new-online.js",
+      "PackagePath": "staticwebassets/js/new-online/new-online.js"
     },
     {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/popup/base.js",

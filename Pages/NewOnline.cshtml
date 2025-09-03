@@ -1,0 +1,30 @@
+@page "/new-online/{id:int}"
+@model OnlineStore.Pages.NewOnlineModel
+@{
+    ViewData["Title"] = "New Online Booking";
+    var id = Model.NewOnlineId;
+}
+
+<link rel="stylesheet" href="~/css/all.min.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/paddingmargin.css" asp-append-version="true"/>
+<link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+@* css *@
+@section Styles {
+    <link rel="stylesheet" href="~/css/new-online/new-online.css" />
+    <link rel="stylesheet" href="~/css/new-online/choose-nail-salon.css" />
+    <link rel="stylesheet" href="~/css/new-online/sertech.css" />
+    <link rel="stylesheet" href="~/js/new-online/screen-choose-sertech/screen-choose-sertech.css">
+    <link rel="stylesheet" href="~/js/new-online/cart/cart.css" />
+
+}
+
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+@section Scripts {
+    <script type="module" src="@Url.Content("~/js/new-online/new-online.js")"></script>
+}
+
+<div class="wrap-newonline">
+
+</div>

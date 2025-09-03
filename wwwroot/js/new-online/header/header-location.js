@@ -1,0 +1,12 @@
+export function HeaderLocation() {
+  return `
+    <button>
+        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
+            <path d="M2.79004 7.77998V17.51C2.79004 19.41 4.14004 20.19 5.78004 19.25L8.13004 17.91C8.64004 17.62 9.49004 17.59 10.02 17.86L15.27 20.49C15.8 20.75 16.65 20.73 17.16 20.44L21.49 17.96C22.04 17.64 22.5 16.86 22.5 16.22V6.48998C22.5 4.58998 21.15 3.80998 19.51 4.74998L17.16 6.08998C16.65 6.37998 15.8 6.40998 15.27 6.13998L10.02 3.51998C9.49004 3.25998 8.64004 3.27998 8.13004 3.56998L3.80004 6.04998C3.24004 6.36998 2.79004 7.14998 2.79004 7.77998Z" stroke="#2E2E2E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M9.06006 4V17" stroke="#2E2E2E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M16.23 6.62012V20.0001" stroke="#2E2E2E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="text-uppercase">Locations</span>
+    </button>
+    `;
+}

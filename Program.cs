@@ -1,7 +1,11 @@
+using Westwind.AspNetCore.LiveReload;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddLiveReload();
 
 var app = builder.Build();
 
@@ -15,7 +19,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+app.UseLiveReload();
 app.UseRouting();
 
 app.UseAuthorization();

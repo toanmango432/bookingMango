@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "vJgzsleOBf0=",
+  "dgSpecHash": "+VP+d0Ck7TU=",
   "success": true,
   "projectFilePath": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/OnlineStore.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "/Users/nguyenkhactoan/.nuget/packages/westwind.aspnetcore.livereload/0.5.2/westwind.aspnetcore.livereload.0.5.2.nupkg.sha512"
+  ],
   "logs": []
 }

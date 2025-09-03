@@ -92,3 +92,6 @@ C:/Users/Dev-Pos/Desktop/Templates/bookingMango/obj/Debug/net8.0/ref/OnlineStore
 /Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/obj/Debug/net8.0/OnlineStore.pdb
 /Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/obj/Debug/net8.0/OnlineStore.genruntimeconfig.cache
 /Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/obj/Debug/net8.0/ref/OnlineStore.dll
+/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/bin/Debug/net8.0/Westwind.AspNetCore.LiveReload.dll
+/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/obj/Debug/net8.0/OnlineStore.csproj.AssemblyReference.cache
+/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/obj/Debug/net8.0/OnlineSt.916B8FA7.Up2Date

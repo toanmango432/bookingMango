@@ -3,7 +3,7 @@ import { alertCustom } from "./site.js";
 
 const dataTemplate = JSON.parse(localStorage.getItem("dataTemplate"));
 export let dataRelease = JSON.parse(JSON.stringify(dataTemplate));
-console.log("dataPage ", dataRelease);
+// console.log("dataPage ", dataRelease);
 export const colorPrimary = dataRelease?.color?.bgPrimary || "#00bed6";
 export const colorSecondary = dataRelease?.color?.bgSecondary || "#1cdef4";
 // Thêm option vào item id = "page-about"
