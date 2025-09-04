@@ -6,6 +6,6 @@ import { ChooseNailSalon } from "./choose-nail-salon/choose-nail-salon.js";
 $(document).ready(async function () {
   const $wrapNewOnline = $(".wrap-newonline");
 
-  const contentSalon = ChooseNailSalon();
+  const contentSalon = await ChooseNailSalon();
   $wrapNewOnline.append(contentSalon);
 });

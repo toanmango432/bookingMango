@@ -1,59 +1,104 @@
 export function Cart() {
-  return `
-        <div class="overlay-nav-cart">
-            <div class="wrap-cart">
-                <div class="cart">
-                    <button>
-                        <span class="quantity">
-                            0
-                        </span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                            <g clip-path="url(#clip0_3619_309697)">
-                                <path d="M23.0624 7.12332H19.7724L14.8185 0.382475C14.7456 0.283224 14.6538 0.199312 14.5484 0.135532C14.4431 0.0717513 14.3262 0.0293511 14.2044 0.0107531C14.0826 -0.00784498 13.9584 -0.00227748 13.8388 0.0271385C13.7192 0.0565545 13.6065 0.109244 13.5073 0.182196C13.4081 0.25502 13.3242 0.34668 13.2604 0.451941C13.1967 0.557202 13.1543 0.673998 13.1357 0.795652C13.1171 0.917306 13.1226 1.04143 13.152 1.16094C13.1814 1.28044 13.2341 1.39298 13.307 1.49212L17.4449 7.12526H6.58951L10.7286 1.49212C10.8755 1.2917 10.9368 1.04119 10.8991 0.795595C10.8615 0.55 10.7279 0.329389 10.5277 0.182196C10.4286 0.10928 10.316 0.0566159 10.1965 0.0272176C10.077 -0.00218064 9.9529 -0.00773837 9.83125 0.0108619C9.7096 0.0294621 9.59279 0.0718569 9.48753 0.135621C9.38227 0.199384 9.29061 0.283267 9.21779 0.382475L4.26391 7.12332H0.938856C0.815721 7.12324 0.693788 7.14742 0.580003 7.19448C0.466217 7.24154 0.362823 7.31056 0.275724 7.3976C0.188625 7.48464 0.119524 7.58799 0.0723831 7.70174C0.0252421 7.8155 0.000976533 7.93742 0.000976563 8.06056V11.8108C0.000976562 12.0595 0.0997967 12.2981 0.275684 12.474C0.451572 12.6499 0.690113 12.7487 0.938856 12.7487H1.57081L2.52295 20.6951C2.63244 21.6061 3.0718 22.4454 3.75801 23.0545C4.44422 23.6635 5.32975 24.0001 6.24727 24.0007H17.8318C18.754 24.0015 19.644 23.662 20.3316 23.0475C21.0191 22.4329 21.4558 21.5863 21.5581 20.6698C21.5719 20.5474 21.5614 20.4235 21.5273 20.3051C21.4932 20.1868 21.4361 20.0763 21.3593 19.98C21.2825 19.8837 21.1875 19.8035 21.0797 19.7439C20.9719 19.6843 20.8534 19.6466 20.731 19.6328C20.6086 19.619 20.4847 19.6294 20.3663 19.6635C20.248 19.6976 20.1375 19.7547 20.0412 19.8315C19.9449 19.9083 19.8647 20.0033 19.8051 20.1111C19.7455 20.2189 19.7077 20.3374 19.694 20.4598C19.6428 20.918 19.4245 21.3413 19.0808 21.6486C18.7371 21.9559 18.2922 22.1257 17.8312 22.1256H6.24403C5.78605 22.125 5.34414 21.9568 5.00159 21.6528C4.65905 21.3488 4.43954 20.93 4.38447 20.4754L3.45696 12.7493L3.14973 10.8742H1.87545V8.99909H22.1239V10.8742H21.6054C21.3747 10.8739 21.1521 10.9587 20.9801 11.1124C20.8081 11.2661 20.6989 11.4779 20.6733 11.7071L20.1853 16.0549C20.1714 16.1774 20.1818 16.3013 20.2158 16.4197C20.2499 16.5381 20.307 16.6486 20.3838 16.7449C20.4606 16.8413 20.5557 16.9215 20.6635 16.981C20.7714 17.0406 20.8899 17.0783 21.0123 17.092C21.0472 17.0959 21.0822 17.0979 21.1173 17.0978C21.3476 17.0974 21.5697 17.0123 21.7414 16.8587C21.913 16.7051 22.0222 16.4938 22.0481 16.2649L22.4428 12.75H23.0586C23.3073 12.75 23.5459 12.6512 23.7217 12.4753C23.8976 12.2994 23.9964 12.0608 23.9964 11.8121V8.06185C23.9966 7.81367 23.8984 7.57554 23.7234 7.39962C23.5483 7.22371 23.3106 7.12435 23.0624 7.12332Z" fill="currentColor"/>
-                            </g>
-                            <defs>
-                                <clipPath id="clip0_3619_309697">
-                                <rect width="24" height="24.0006" fill="white"/>
-                                </clipPath>
-                            </defs>
-                        </svg>
-                    </button>
+  const store = salonStore.getState();
+  const dataBooking = store.dataBooking;
+  const user = dataBooking.users.find((u) => u.isChoosing);
+
+  let totalCash = 0;
+  let totalCard = 0;
+
+  // render từng user
+  const userHtml = user.services
+    .map((cate) => {
+      return cate.itemService
+        .map((srv) => {
+          const staffName = srv.selectedStaff?.nickName || "Select Tech";
+          const price = srv.price || 0;
+          const duration = srv.duration || 0;
+
+          totalCash += price;
+          totalCard += price;
+
+          // render optionals
+          const optionalsHtml = srv.optionals
+            .map((opt) => {
+              const optPrice = opt.price || 0;
+              const priceAfterDiscount = opt.priceDiscount
+                ? optPrice - opt.priceDiscount
+                : optPrice;
+
+              totalCash += priceAfterDiscount;
+              totalCard += optPrice;
+
+              return `
+                  <div class="cart-addon">
+                    <span class="addon-title">${opt.title}</span>
+                    <span class="addon-price">
+                      <span class="cash">$${priceAfterDiscount.toFixed(
+                        2
+                      )}</span> |
+                      <span class="card">$${optPrice.toFixed(2)}</span>
+                    </span>
+                    ${
+                      opt.priceDiscount
+                        ? `<div class="addon-discount">Discount ($${opt.priceDiscount})</div>`
+                        : ""
+                    }
+                  </div>
+                `;
+            })
+            .join("");
+
+          return `
+              <div class="cart-item">
+                <div class="cart-item-header">
+                  <div class="cart-title">${srv.title}</div>
+                  <div class="cart-prices">
+                    <span class="cash">$${price.toFixed(2)}</span> |
+                    <span class="card">$${price.toFixed(2)}</span>
+                  </div>
                 </div>
-                <div class="content-cart">
-                    <div class="end-cart">
-                        <div class="total-cash">
-                            <span class="left">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                    <path d="M18.5 12.6484V16.3484C18.5 19.4684 15.59 21.9984 12 21.9984C8.41 21.9984 5.5 19.4684 5.5 16.3484V12.6484C5.5 15.7684 8.41 17.9984 12 17.9984C15.59 17.9984 18.5 15.7684 18.5 12.6484Z" stroke="#E3066A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M18.5 7.65C18.5 8.56 18.25 9.4 17.81 10.12C16.74 11.88 14.54 13 12 13C9.46 13 7.26 11.88 6.19 10.12C5.75 9.4 5.5 8.56 5.5 7.65C5.5 6.09 6.22999 4.68 7.39999 3.66C8.57999 2.63 10.2 2 12 2C13.8 2 15.42 2.63 16.6 3.65C17.77 4.68 18.5 6.09 18.5 7.65Z" stroke="#E3066A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M18.5 7.65V12.65C18.5 15.77 15.59 18 12 18C8.41 18 5.5 15.77 5.5 12.65V7.65C5.5 4.53 8.41 2 12 2C13.8 2 15.42 2.63 16.6 3.65C17.77 4.68 18.5 6.09 18.5 7.65Z" stroke="#E3066A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                                Total Cash:
-                            </span>
-                            <span class="text-price-cash">
-                                $99.50
-                            </span>
-                        </div>
-                        <div class="total-card">
-                            <span class="left">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                    <path d="M3.92969 15.8797L15.8797 3.92969" stroke="#747474" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M11.1016 18.2781L12.3016 17.0781" stroke="#747474" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M13.793 15.5892L16.183 13.1992" stroke="#747474" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M3.60127 10.2375L10.2413 3.59754C12.3613 1.47754 13.4213 1.46754 15.5213 3.56754L20.4313 8.47754C22.5313 10.5775 22.5213 11.6375 20.4013 13.7575L13.7613 20.3975C11.6413 22.5175 10.5813 22.5275 8.48127 20.4275L3.57127 15.5175C1.47127 13.4175 1.47127 12.3675 3.60127 10.2375Z" stroke="#747474" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M2 22H22" stroke="#747474" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                                Total Cash:
-                            </span>
-                            <span class="text-price-card">
-                                $100
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                <div class="cart-staff">${staffName}</div>
+                ${optionalsHtml}
+                <button class="btn-addons">+ ADD-ONS</button>
+              </div>
+            `;
+        })
+        .join("");
+    })
+    .join("");
+
+  const totalItems = (user?.services || []).reduce(
+    (sum, cate) => sum + (cate.itemService?.length || 0),
+    0
+  );
+  const htmlCart = `
+    <div class="overlay-nav-cart">
+      <div class="wrap-cart">
+        <div class="cart">
+          <button>
+            <span class="quantity">${totalItems || 0}</span>
+            <i class="fa-solid fa-cart-shopping"></i>
+          </button>
         </div>
-    `;
+        <div class="content-cart">
+          ${userHtml}
+          <div class="end-cart">
+            <div class="total-cash">
+              <span class="left">Total Cash:</span>
+              <span class="text-price-cash">$${totalCash.toFixed(2)}</span>
+            </div>
+            <div class="total-card">
+              <span class="left">Total Card:</span>
+              <span class="text-price-card">$${totalCard.toFixed(2)}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  console.log("cartHTML: ", htmlCart);
+  $(".content-choose-sertech .overlay-nav-cart").remove(); // xoá trước khi append mới
+  $(".content-choose-sertech").append(htmlCart);
 }
 
 // import store

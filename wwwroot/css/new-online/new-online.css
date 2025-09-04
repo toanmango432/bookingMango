@@ -54,11 +54,15 @@
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+  overflow: hidden;
 }
 
 .header-sertech .content .infor .name {
   color: var(--text-colo-primary);
   font: normal normal 500 var(--s-16);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .header-sertech .content .infor .phone {

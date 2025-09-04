@@ -36,10 +36,21 @@
   gap: 32px;
   flex-shrink: 0;
   border-radius: 12px;
-  border: 2px solid var(--bs-main);
+  cursor: pointer;
   background: linear-gradient(74deg, #fff 0.14%, #fff 99.86%);
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.15);
+  border: 1px solid #c9c9c9;
+  transition: border 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
+
+.item-salon:hover {
+  border: 1px solid var(--bs-main);
+  /* shadow mạnh hơn chút */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  /* nổi nhẹ lên */
+  transform: translateY(-0.6px);
+}
+
 .infor-salon {
   display: flex;
   align-items: flex-start;
@@ -53,9 +64,10 @@
   aspect-ratio: 1/1;
   border-radius: 360px;
   border: 2px solid var(--White-Transparent-50, rgba(255, 255, 255, 0.5));
-  background: url(<path-to-image>) lightgray 50% / cover no-repeat;
+  background: lightgray 50% / cover no-repeat;
   display: flex;
   flex-shrink: 0;
+  overflow: hidden;
 }
 .avt-salon {
 }
@@ -74,7 +86,7 @@
 }
 .address {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 4px;
   align-self: stretch;
 }

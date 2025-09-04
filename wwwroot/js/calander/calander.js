@@ -28,6 +28,7 @@ export async function renderCalendar(
     dayName.textContent = day;
     daysEl.appendChild(dayName);
   });
+  console.log("check");
 
   const firstDay = new Date(currentYear, currentMonth, 1).getDay();
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();

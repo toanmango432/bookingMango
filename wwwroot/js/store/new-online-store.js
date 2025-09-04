@@ -11,7 +11,8 @@ export const salonStore = {
   _listeners: [],
 
   async load() {
-    let RVCNo = 336;
+    let RVCNoInit = parseInt(window.location.pathname.split("/")[2], 10);
+    let RVCNo = RVCNoInit; // khởi tạo lần đầu
     let selectedDate = new Date();
     let currentMonth = selectedDate.getMonth();
     let currentYear = selectedDate.getFullYear();
@@ -37,7 +38,21 @@ export const salonStore = {
       cardNumber: [],
     };
 
+    // --- API: All salon ---
+    let allSalon = [];
+    const getAllSalon = async () => {
+      try {
+        const resSalon = await fetchAPI.get(
+          `/api/store/getliststorechain?RVCNo=${RVCNo}`
+        );
+        salonStore.setState({ allSalon: resSalon });
+        return resSalon;
+      } catch (e) {
+        console.error("[getAllSalon]", e);
+      }
+    };
     // --- API: Services ---
+    let dataServices = [];
     const getListDataService = async () => {
       try {
         const dataCategories = await fetchAPI.get(
@@ -47,7 +62,7 @@ export const salonStore = {
           `/api/category/getallitem?RVCNo=${RVCNo}`
         );
 
-        const dataServices = [];
+        const resDataServices = [];
         dataCategories.forEach((itemCar) => {
           const objCar = { item: {} };
           const categoryID = itemCar.categoryID;
@@ -66,11 +81,13 @@ export const salonStore = {
                 id: itemSer.itemID,
                 title: itemSer.itemName,
                 priceRental: itemSer.basePrice,
+                priceCash: itemSer.baseCashPrice,
                 timetext: itemSer.duration,
                 listOptionAddOn: itemSer.listAddOn.map((iAdd) => ({
                   id: iAdd.addOnID,
                   title: iAdd.itemName,
                   price: iAdd.price,
+                  priceDiscount: iAdd.priceDiscount,
                   timedura: iAdd.duration,
                 })),
               };
@@ -78,9 +95,10 @@ export const salonStore = {
             }
           });
           objCar.item.listItem = listItem;
-          dataServices.push(objCar);
+          resDataServices.push(objCar);
         });
-        return dataServices;
+        salonStore.setState({ dataServices: resDataServices });
+        return resDataServices;
       } catch (e) {
         console.error("[getDataListDataService]", e);
       }
@@ -322,6 +340,8 @@ export const salonStore = {
     let daysOffNail = {
       8: [8, 9, 10, 12, 20, 22], // August: non-working days
     };
+    // salon choosing
+    let salonChoosing = {};
 
     // --- SET STATE ---
     this._state = {
@@ -335,6 +355,9 @@ export const salonStore = {
       dataMe,
       dataGuest,
       dataFamily,
+      allSalon,
+      getAllSalon,
+      dataServices,
       getListDataService,
       getListUserStaff,
       listStaffUser,
@@ -352,6 +375,7 @@ export const salonStore = {
 
       // day off
       daysOffNail,
+      salonChoosing,
     };
     this._notify();
     return this._state;

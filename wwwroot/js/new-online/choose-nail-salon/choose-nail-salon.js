@@ -5,13 +5,21 @@ function listSalon(group) {
             ${group
               .map((item) => {
                 return `
-                    <div class="item-salon">
+                    <div
+                      class="item-salon"
+                      data-id=${item.storeID}
+                      data-rvcno=${item.rvcNo}
+                    >
                         <div class="infor-salon">
                             <div class="wrap-avt">
-                                <img src="" alt="Image salon" class="avt-salon"/>
+                                <img src="${
+                                  baseLogoSalon + item?.logo
+                                }" alt="Image salon" class="avt-salon"/>
                             </div>
                             <div class="salon-address">
-                                <h1 class="text-uppercase">MIA NAILS & SPA</h1>
+                                <h1 class="text-uppercase">${
+                                  item?.storeName
+                                }</h1>
                                 <div class="address">
                                     <span class="icon-address">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
@@ -19,7 +27,9 @@ function listSalon(group) {
                                             <path d="M19.5 9.75C19.5 15.375 12.5 21 12.5 21C12.5 21 5.5 15.375 5.5 9.75C5.5 6.02208 8.63401 3 12.5 3C16.366 3 19.5 6.02208 19.5 9.75Z" stroke="#181818" stroke-opacity="0.7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                                         </svg>
                                     </span>
-                                    <span class="text-address">2118 Thornridge Cir. Syracuse, Connecticut 35624</span>
+                                    <span class="text-address">${
+                                      item?.addressLine
+                                    }</span>
                                 </div>
                             </div>
                         </div>
@@ -67,7 +77,9 @@ function initSliderFromElement(containerEl, cardSelector) {
   nextBtn.addEventListener("click", () => moveSlider("next"));
   updateButtons();
 }
-export function ChooseNailSalon() {
+export async function ChooseNailSalon() {
+  await salonStore.getState().getAllSalon();
+
   const chunkArray = (array, size) => {
     const result = [];
     for (let i = 0; i < array.length; i += size) {
@@ -75,11 +87,9 @@ export function ChooseNailSalon() {
     }
     return result;
   };
-  const arrfake = [
-    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1,
-  ];
-  const chunkArr = chunkArray(arrfake, 9);
+  let allSalon = salonStore.getState().allSalon;
+
+  const chunkArr = chunkArray(allSalon, 9);
   const htmlHeaderLocation = HeaderLocation();
   return `
         <div class="wrap-content-salon">
@@ -113,9 +123,13 @@ import { salonStore } from "../../store/new-online-store.js";
 // import component
 import { HeaderLocation } from "../header/header-location.js";
 import { ServiceOrTech } from "../service-or-tech/service-or-tech.js";
+
+// import constant
+import { baseLogoSalon } from "../../constants/base-url.js";
+
 $(document).ready(async function () {
+  const allSalon = salonStore.getState().allSalon;
   const $wrapNewOnline = $(".wrap-newonline");
-  const $wrapContenSalon = $(".wrap-content-salon");
 
   setTimeout(() => {
     const sliderEl = document.querySelector(
@@ -126,10 +140,22 @@ $(document).ready(async function () {
     }
   }, 0);
 
-  $(document).on("click", ".book-salon", function () {
+  $(document).on("click", ".item-salon", function () {
+    let allSalon = salonStore.getState().allSalon;
+
+    const $this = $(this);
+    const rvcNoChoose = $this.data("rvcno");
+    const idStore = $this.data("id");
+    salonStore.setState({ RVCNo: rvcNoChoose });
+
+    const salonChoosing =
+      allSalon.find((item) => item.storeID == idStore) || {};
+    salonStore.setState({ salonChoosing: { ...salonChoosing } });
+
     $wrapNewOnline.empty();
     const htmlWrapContentSertech = ServiceOrTech();
-
     $wrapNewOnline.append(htmlWrapContentSertech);
+
+    // save salon choosing
   });
 });

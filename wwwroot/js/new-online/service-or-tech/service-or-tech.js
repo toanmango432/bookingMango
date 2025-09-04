@@ -39,9 +39,11 @@ import { ChooseNailSalon } from "../choose-nail-salon/choose-nail-salon.js";
 import { HeaderSalon } from "../header/header-salon.js";
 import { ScreenChooseService } from "../screen-choose-sertech/sreen-choose-service.js";
 import { ScreenChooseTech } from "../screen-choose-sertech/screen-choose-tech.js";
-
+import { Cart } from "../cart/cart.js";
 export function ServiceOrTech() {
-  const htmlHeaderSalon = HeaderSalon();
+  const salonChoosing = salonStore.getState().salonChoosing;
+  const htmlHeaderSalon = HeaderSalon(salonChoosing);
+
   return `
         <div class="wrap-service-or-tech">
             <div class="header-sertech">
@@ -93,26 +95,29 @@ export function ServiceOrTech() {
 
 $(document).ready(async function () {
   const $wrapNewOnline = $(".wrap-newonline");
-  $(document).on("click", ".back-salon", function () {
-    const htmlListSalon = ChooseNailSalon();
+  $(document).on("click", ".back-salon", async function () {
+    const htmlListSalon = await ChooseNailSalon();
+    const rvcNoInit = salonStore.getState().RVCNoInit;
+    salonStore.setState({ RVCNo: rvcNoInit });
     $wrapNewOnline.empty();
 
     $wrapNewOnline.append(htmlListSalon);
   });
 
-  $(document).on("click", "#item-ser", function () {
-    const htmlScreenChooseService = ScreenChooseService();
+  $(document).on("click", "#item-ser", async function () {
+    const htmlScreenChooseService = await ScreenChooseService();
     $wrapNewOnline.empty();
 
     $wrapNewOnline.append(htmlScreenChooseService);
+    // append Card
+    Cart();
 
     setTimeout(() => {
       const sliderEl = document.querySelector(".categories-search .categories");
-      console.log("sliderEl: ", sliderEl);
       if (sliderEl) {
         initSliderFromElement(sliderEl, ".item-cate");
       }
-    }, 0);
+    }, 100);
   });
 
   $(document).on("click", "#item-tech", function () {

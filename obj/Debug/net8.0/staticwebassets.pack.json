@@ -141,6 +141,14 @@
       "PackagePath": "staticwebassets/assets/images/vintage.png"
     },
     {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/assets/new-online/icon-salon/icon-nail.png",
+      "PackagePath": "staticwebassets/assets/new-online/icon-salon/icon-nail.png"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/assets/new-online/salon/bg-salon.png",
+      "PackagePath": "staticwebassets/assets/new-online/salon/bg-salon.png"
+    },
+    {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/css/all.min.css",
       "PackagePath": "staticwebassets/css/all.min.css"
     },
@@ -201,8 +209,16 @@
       "PackagePath": "staticwebassets/css/montserrat/JTUSjIg1_i6t8kCHKm459Wlhyw.woff2"
     },
     {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/css/new-online/choose-nail-salon.css",
+      "PackagePath": "staticwebassets/css/new-online/choose-nail-salon.css"
+    },
+    {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/css/new-online/new-online.css",
       "PackagePath": "staticwebassets/css/new-online/new-online.css"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/css/new-online/sertech.css",
+      "PackagePath": "staticwebassets/css/new-online/sertech.css"
     },
     {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/css/paddingmargin.css",
@@ -369,8 +385,56 @@
       "PackagePath": "staticwebassets/js/momenttimezone.js"
     },
     {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/cart/cart.css",
+      "PackagePath": "staticwebassets/js/new-online/cart/cart.css"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/cart/cart.js",
+      "PackagePath": "staticwebassets/js/new-online/cart/cart.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/choose-nail-salon/choose-nail-salon.js",
+      "PackagePath": "staticwebassets/js/new-online/choose-nail-salon/choose-nail-salon.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/header/header-location.js",
+      "PackagePath": "staticwebassets/js/new-online/header/header-location.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/header/header-salon.js",
+      "PackagePath": "staticwebassets/js/new-online/header/header-salon.js"
+    },
+    {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/new-online.js",
       "PackagePath": "staticwebassets/js/new-online/new-online.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/option-sertech/item-ser.js",
+      "PackagePath": "staticwebassets/js/new-online/option-sertech/item-ser.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/option-sertech/item-tech.js",
+      "PackagePath": "staticwebassets/js/new-online/option-sertech/item-tech.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/option-sertech/option-sertech.js",
+      "PackagePath": "staticwebassets/js/new-online/option-sertech/option-sertech.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/screen-choose-sertech/screen-choose-sertech.css",
+      "PackagePath": "staticwebassets/js/new-online/screen-choose-sertech/screen-choose-sertech.css"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/screen-choose-sertech/screen-choose-tech.js",
+      "PackagePath": "staticwebassets/js/new-online/screen-choose-sertech/screen-choose-tech.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/screen-choose-sertech/sreen-choose-service.js",
+      "PackagePath": "staticwebassets/js/new-online/screen-choose-sertech/sreen-choose-service.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/service-or-tech/service-or-tech.js",
+      "PackagePath": "staticwebassets/js/new-online/service-or-tech/service-or-tech.js"
     },
     {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/popup/base.js",
@@ -439,6 +503,10 @@
     {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/slider.js",
       "PackagePath": "staticwebassets/js/slider.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/store/new-online-store.js",
+      "PackagePath": "staticwebassets/js/store/new-online-store.js"
     },
     {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/store/template-store.js",
