@@ -37,7 +37,7 @@ import { salonStore } from "../../store/new-online-store.js";
 // import component
 import { ChooseNailSalon } from "../choose-nail-salon/choose-nail-salon.js";
 import { HeaderSalon } from "../header/header-salon.js";
-import { ScreenChooseService } from "../screen-choose-sertech/sreen-choose-service.js";
+import { ScreenChooseService } from "../screen-choose-sertech/screen-choose-service.js";
 import { ScreenChooseTech } from "../screen-choose-sertech/screen-choose-tech.js";
 import { Cart } from "../cart/cart.js";
 export function ServiceOrTech() {

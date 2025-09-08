@@ -285,6 +285,10 @@
       "PackagePath": "staticwebassets/js/calander/calander.js"
     },
     {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/constants/base-url.js",
+      "PackagePath": "staticwebassets/js/constants/base-url.js"
+    },
+    {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/constants/days-weeks.js",
       "PackagePath": "staticwebassets/js/constants/days-weeks.js"
     },
@@ -425,12 +429,12 @@
       "PackagePath": "staticwebassets/js/new-online/screen-choose-sertech/screen-choose-sertech.css"
     },
     {
-      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/screen-choose-sertech/screen-choose-tech.js",
-      "PackagePath": "staticwebassets/js/new-online/screen-choose-sertech/screen-choose-tech.js"
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/screen-choose-sertech/screen-choose-service.js",
+      "PackagePath": "staticwebassets/js/new-online/screen-choose-sertech/screen-choose-service.js"
     },
     {
-      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/screen-choose-sertech/sreen-choose-service.js",
-      "PackagePath": "staticwebassets/js/new-online/screen-choose-sertech/sreen-choose-service.js"
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/screen-choose-sertech/screen-choose-tech.js",
+      "PackagePath": "staticwebassets/js/new-online/screen-choose-sertech/screen-choose-tech.js"
     },
     {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/service-or-tech/service-or-tech.js",

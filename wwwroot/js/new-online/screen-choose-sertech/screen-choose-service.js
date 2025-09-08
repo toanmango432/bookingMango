@@ -166,7 +166,7 @@ function renderServices(listItem) {
 
   $(".list-services").html(html);
 }
-function renderAddonPanel(itemService) {
+export function renderAddonPanel(itemService) {
   const store = salonStore.getState();
   const dataBooking = store.dataBooking;
   const user = dataBooking.users.find((u) => u.isChoosing);
@@ -175,7 +175,7 @@ function renderAddonPanel(itemService) {
   // Tìm service đã chọn trong dataBooking
   let currentService = null;
   for (const cate of user.services) {
-    currentService = cate.itemService.find(
+    currentService = cate?.itemService.find(
       (s) => s.idItemService === itemService.id
     );
     if (currentService) break;
@@ -246,7 +246,6 @@ function renderAddonPanel(itemService) {
 
 function findAddonById(optId, dataServices) {
   // duyệt tất cả category
-  console.log("dataServices: ", dataServices);
   for (const cate of dataServices || []) {
     // duyệt tất cả service trong category
     for (const srv of cate.item.listItem || []) {

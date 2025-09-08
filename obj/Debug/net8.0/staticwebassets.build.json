@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "Gm9wK/HuUz1iuGjus2PLLAqSoxxHQrCJ2F9OovBNayQ=",
+  "Hash": "qQENGddVKm/oNrVDhn3EczodVoW+nNKUD6oh0TmcpIQ=",
   "Source": "OnlineStore",
   "BasePath": "_content/OnlineStore",
   "Mode": "Default",
@@ -1385,6 +1385,25 @@
       "OriginalItemSpec": "wwwroot/js/calander/calander.js"
     },
     {
+      "Identity": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/constants/base-url.js",
+      "SourceId": "OnlineStore",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/",
+      "BasePath": "_content/OnlineStore",
+      "RelativePath": "js/constants/base-url.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/js/constants/base-url.js"
+    },
+    {
       "Identity": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/constants/days-weeks.js",
       "SourceId": "OnlineStore",
       "SourceType": "Discovered",
@@ -2050,6 +2069,25 @@
       "OriginalItemSpec": "wwwroot/js/new-online/screen-choose-sertech/screen-choose-sertech.css"
     },
     {
+      "Identity": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/screen-choose-sertech/screen-choose-service.js",
+      "SourceId": "OnlineStore",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/",
+      "BasePath": "_content/OnlineStore",
+      "RelativePath": "js/new-online/screen-choose-sertech/screen-choose-service.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/js/new-online/screen-choose-sertech/screen-choose-service.js"
+    },
+    {
       "Identity": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/screen-choose-sertech/screen-choose-tech.js",
       "SourceId": "OnlineStore",
       "SourceType": "Discovered",
@@ -2067,25 +2105,6 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/js/new-online/screen-choose-sertech/screen-choose-tech.js"
-    },
-    {
-      "Identity": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/screen-choose-sertech/sreen-choose-service.js",
-      "SourceId": "OnlineStore",
-      "SourceType": "Discovered",
-      "ContentRoot": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/",
-      "BasePath": "_content/OnlineStore",
-      "RelativePath": "js/new-online/screen-choose-sertech/sreen-choose-service.js",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "PreferTarget",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/js/new-online/screen-choose-sertech/sreen-choose-service.js"
     },
     {
       "Identity": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/service-or-tech/service-or-tech.js",
