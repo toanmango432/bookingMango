@@ -61,7 +61,7 @@ export function ServiceOrTech() {
                         <h3 class="text-uppercase">Pick a service or choose your technician</h3>
                     </div>
                     <div class="list-sertech">
-                        <button id="item-ser" class="item-sertech">
+                        <button id="options-service" class="item-sertech">
                             <span class="icon-ser">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="43" height="42" viewBox="0 0 43 42" fill="currentColor">
                                     <mask id="path-1-inside-1_3756_128067" fill="white">
@@ -76,7 +76,7 @@ export function ServiceOrTech() {
                                 I want to pick a service
                             </span>
                         </button>
-                        <button id="item-tech" class="item-sertech">
+                        <button id="options-tech" class="item-sertech">
                             <span class="icon-tech">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="43" height="42" viewBox="0 0 43 42" fill="none">
                                     <path d="M37.25 34.9999C37.25 31.952 34.3282 29.3591 30.25 28.3982M26.75 35C26.75 31.134 22.049 28 16.25 28C10.451 28 5.75 31.134 5.75 35M26.75 22.75C30.616 22.75 33.75 19.616 33.75 15.75C33.75 11.884 30.616 8.75 26.75 8.75M16.25 22.75C12.384 22.75 9.25 19.616 9.25 15.75C9.25 11.884 12.384 8.75 16.25 8.75C20.116 8.75 23.25 11.884 23.25 15.75C23.25 19.616 20.116 22.75 16.25 22.75Z" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
@@ -104,23 +104,11 @@ $(document).ready(async function () {
     $wrapNewOnline.append(htmlListSalon);
   });
 
-  $(document).on("click", "#item-ser", async function () {
-    const htmlScreenChooseService = await ScreenChooseService();
-    $wrapNewOnline.empty();
-
-    $wrapNewOnline.append(htmlScreenChooseService);
-    // append Card
-    Cart();
-
-    setTimeout(() => {
-      const sliderEl = document.querySelector(".categories-search .categories");
-      if (sliderEl) {
-        initSliderFromElement(sliderEl, ".item-cate");
-      }
-    }, 100);
+  $(document).on("click", "#options-service", async function () {
+    await ScreenChooseService(); // append screen choose service
   });
 
-  $(document).on("click", "#item-tech", function () {
+  $(document).on("click", "#options-tech", function () {
     const htmlScreenChooseTech = ScreenChooseTech();
     $wrapNewOnline.empty();
 

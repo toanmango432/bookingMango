@@ -29,6 +29,10 @@
 .overlay-nav-cart.open .cart {
   right: 400px;
 }
+.overlay-nav-cart.open.addon-pan .cart {
+  right: 700px;
+}
+
 .wrap-cart .content-cart {
   position: absolute;
   top: 0;
@@ -44,6 +48,7 @@
   display: flex;
   flex-direction: column;
 }
+
 .wrap-cart .content-cart .close-cart {
   width: 42px;
   height: 42px;
@@ -144,6 +149,9 @@
 
 .overlay-nav-cart.open .content-cart {
   right: 0; /* trượt vào */
+}
+.wrap-cart .content-cart.addon-pan {
+  right: 300px;
 }
 .cart button {
   display: flex;

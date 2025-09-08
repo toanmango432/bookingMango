@@ -1,26 +1,104 @@
-// ScreenChooseService.js
-export async function ScreenChooseService() {
+export function renderTrackCate(dataService) {
   const store = salonStore.getState();
-  const salonChoosing = store.salonChoosing;
-  let dataService = await store.getListDataService();
+  const dataBooking = store.dataBooking;
+  const user = dataBooking.users.find((u) => u.isChoosing);
 
-  const htmlHeaderSalon = HeaderSalon(salonChoosing);
+  // tìm cateId cần active
+  let activeCateId = null;
 
-  // Lấy categories từ API
-  const htmlCategories = dataService
+  if (user) {
+    // 1. Kiểm tra cate nào có itemService user đã chọn
+    for (const cate of dataService) {
+      const isChosen = cate.item.listItem.some((item) =>
+        user.services.some((uCate) =>
+          uCate.itemService.some((srv) => srv.idItemService === item.id)
+        )
+      );
+      if (isChosen) {
+        activeCateId = cate.item.id;
+        break;
+      }
+    }
+
+    // 2. Nếu chưa có, tìm cate nào có listItem > 0
+    if (!activeCateId) {
+      const cateWithItem = dataService.find((c) => c.item.listItem.length > 0);
+      if (cateWithItem) {
+        activeCateId = cateWithItem.item.id;
+      }
+    }
+  }
+
+  // 3. Nếu vẫn chưa có, fallback cate đầu tiên
+  if (!activeCateId && dataService.length > 0) {
+    activeCateId = dataService[0].item.id;
+  }
+
+  return dataService
     .map((cate, index) => {
+      // kiểm tra cate này có service user chọn không
+      const hasChosenService = user?.services.some((uCate) =>
+        uCate.itemService.some((srv) =>
+          cate.item.listItem.some((item) => item.id === srv.idItemService)
+        )
+      );
+      // set class cho cate
+      const classNames = [
+        cate.item.id === activeCateId ? "active" : "",
+        hasChosenService ? "choosed" : "",
+      ]
+        .filter(Boolean)
+        .join(" ");
       return `
-      <div class="item-cate ${index === 0 ? "active" : ""}" data-id="${
-        cate.item.id
-      }">
+      <div class="item-cate ${classNames}" data-id="${cate.item.id}">
         <span class="name-cate">${cate.item.value}</span>
         <span class="count">${cate.item.listItem.length}</span>
       </div>
     `;
     })
     .join("");
+}
+export function renderFooterService() {
+  const store = salonStore.getState();
+  const dataBooking = store.dataBooking;
+  const user = dataBooking.users.find((u) => u.isChoosing);
+  // đã chọn service mới được phép next
+  const isNext = user.services.some((srv) => {
+    return srv.itemService.length > 0;
+  });
+  console.log("isNext: ", isNext);
+  const $wrapDirBtn = `
+    <div class="wrap-dir-btn">
+      <button class="dir-btn-back-ser text-uppercase">Back</button>
+      <button class="dir-btn-next-ser text-uppercase ${
+        isNext ? "allow-next" : ""
+      }">Next</button>
+    </div>
+  `;
+  // nếu DOM đã có footer-dir thì append khi hàm được gọi
+  const $footerDir = $(".footer-dir");
+  if ($footerDir.length) {
+    $footerDir.empty(); // reset
+    $footerDir.append($wrapDirBtn);
+  }
+  return $wrapDirBtn;
+}
+// ScreenChooseService.js
+export async function ScreenChooseService() {
+  const store = salonStore.getState();
+  const dataBooking = store.dataBooking;
+  const user = dataBooking.users.find((u) => u.isChoosing);
 
-  return `
+  const salonChoosing = store.salonChoosing;
+  let dataService = await store.getListDataService();
+
+  const htmlHeaderSalon = HeaderSalon(salonChoosing);
+  // Lấy categories từ API
+  const htmlCategories = renderTrackCate(dataService);
+
+  // Render footer
+  const $wrapDirBtn = renderFooterService();
+  const htmlScreenChooseService = `
         <div class="wrap-content-salon">
             <div class="header-sertech">
                 ${htmlHeaderSalon}
@@ -76,12 +154,32 @@ export async function ScreenChooseService() {
                 </div>
 
                 <div class="list-services"></div>
+                <div class="footer-dir">
+                  ${$wrapDirBtn}
+                </div>
             </div>
         </div>
     `;
+  const $wrapNewOnline = $(".wrap-newonline");
+  $wrapNewOnline.empty();
+  $wrapNewOnline.append(htmlScreenChooseService);
+  // render cart
+  Cart();
+  // render slider cate
+  setTimeout(() => {
+    const sliderEl = document.querySelector(".categories-search .categories");
+    if (sliderEl) {
+      initSliderFromElement(sliderEl, ".item-cate");
+    }
+  }, 100);
+  // khởi tạo lần đầu renderServices
+  const id = $(".item-cate.active").data("id");
+  const cate = dataService.find((c) => c.item.id === id);
+  renderServices(cate?.item.listItem || []);
+  return htmlScreenChooseService;
 }
 // Render service items
-function renderServices(listItem) {
+export function renderServices(listItem) {
   const store = salonStore.getState();
   const dataBooking = store.dataBooking;
   const user = dataBooking.users.find((u) => u.isChoosing);
@@ -165,6 +263,8 @@ function renderServices(listItem) {
     .join("");
 
   $(".list-services").html(html);
+  // load lại btn next, back footer
+  renderFooterService();
 }
 export function renderAddonPanel(itemService) {
   const store = salonStore.getState();
@@ -261,12 +361,15 @@ function findAddonById(optId, dataServices) {
 import { salonStore } from "../../store/new-online-store.js";
 import { HeaderSalon } from "../header/header-salon.js";
 import { Cart } from "../cart/cart.js";
+import { initSliderFromElement } from "../choose-nail-salon/choose-nail-salon.js";
 // import constant
 import { idStaffDefault } from "../../constants/template-online.js";
+import { ServiceOrTech } from "../service-or-tech/service-or-tech.js";
+import { ChooseTechForServices } from "./choose-tech-for-service/choose-tech-for-service.js";
 // hanle event
 $(document).ready(async function () {
-  await salonStore.load(); // load first
   let dataService = await salonStore.getState().getListDataService();
+  const $wrapNewOnline = $(".wrap-newonline");
 
   // Toggle search
   $(document).on("click", ".btn-search-toggle", function () {
@@ -371,6 +474,13 @@ $(document).ready(async function () {
     renderServices(cate?.item.listItem || []);
     // Load lại cart
     Cart();
+    // Load button next, back
+    renderFooterService();
+    // Load lại cate
+    const $trackCate = $(".slider-track-categories");
+    const htmlCategories = renderTrackCate(dataService);
+    $trackCate.empty(); // reset
+    $trackCate.append(htmlCategories);
   });
 
   // Click ra ngoài addOn-pannel đóng addOn
@@ -427,13 +537,24 @@ $(document).ready(async function () {
     const cate = store.dataServices;
     const currentCate = cate.find((c) => c.item.id === cateId);
     renderServices(currentCate.item.listItem);
-    // Load lại cart
-    Cart();
+    // Load lại cart khi đang chỉ chọn add on hoặc đang có mở cart
+    // đang mở cart
+    const $cartActive = $(".content-cart.addon-pan");
+    if ($cartActive.length) {
+      Cart(true, true);
+    } else {
+      Cart();
+    }
   });
 
   $(document).on("click", ".btn-close-addon, .btn-done", async function () {
     $(".overlay-nav-addOn").removeClass("open");
-
+    const $contentCart = $(".overlay-nav-cart.open");
+    // chỉ đóng add on, vẫn mở cart nếu cart đang mở
+    if ($contentCart.length) {
+      $(".content-cart").removeClass("addon-pan");
+      $contentCart.removeClass("addon-pan");
+    }
     const store = salonStore.getState();
     const cateId = $(".item-cate.active").data("id");
     const cate = store.dataServices;
@@ -474,7 +595,40 @@ $(document).ready(async function () {
     const cate = store.dataServices;
     const currentCate = cate.find((c) => c.item.id === cateId);
     renderServices(currentCate.item.listItem);
-    // Load lại cart
+    // Load lại cart khi đang chỉ chọn add on hoặc đang có mở cart
+    // đang mở cart
+    const $cartActive = $(".content-cart.addon-pan");
+    if ($cartActive.length) {
+      Cart(true, true);
+    } else {
+      Cart();
+    }
+  });
+  // back choose service or tech
+  $(document).on("click", ".dir-btn-back-ser", function () {
+    const $this = $(this);
+
+    $wrapNewOnline.empty();
+    const htmlWrapContentSertech = ServiceOrTech();
+    $wrapNewOnline.append(htmlWrapContentSertech);
+  });
+  // next choose service
+  $(document).on("click", ".dir-btn-next-ser", function () {
+    const $this = $(this);
+    const store = salonStore.getState();
+    const dataBooking = store.dataBooking;
+    const user = dataBooking.users.find((u) => u.isChoosing);
+    // Kiểm tra đã chọn service chưa trước khi next
+    const isNext = user.services.some((srv) => {
+      return srv.itemService.length > 0;
+    });
+    if (!isNext) return;
+
+    $wrapNewOnline.empty();
+    const htmlChooseTechForSer = ChooseTechForServices();
+    $wrapNewOnline.append(htmlChooseTechForSer);
+
+    // append Card
     Cart();
   });
 });

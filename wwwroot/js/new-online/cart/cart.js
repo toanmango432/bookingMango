@@ -1,9 +1,8 @@
-export function Cart(isOpen = false) {
+export function Cart(isOpen = false, isAddOn = false) {
   const store = salonStore.getState();
   const dataServices = store.dataServices;
   const dataBooking = store.dataBooking;
   const user = dataBooking.users.find((u) => u.isChoosing);
-
   let totalCash = 0;
   let totalCard = 0;
   const userHtml = user.services
@@ -123,7 +122,9 @@ export function Cart(isOpen = false) {
     0
   );
   const htmlCart = `
-    <div class="overlay-nav-cart ${isOpen ? "open" : ""}">
+    <div class="overlay-nav-cart ${isOpen ? "open" : ""} ${
+    isAddOn ? "addon-pan" : ""
+  }">
       <div class="wrap-cart">
         <div class="cart">
           <button>
@@ -140,7 +141,7 @@ export function Cart(isOpen = false) {
             </svg>
           </button>
         </div>
-        <div class="content-cart">
+        <div class="content-cart ${isAddOn ? "addon-pan" : ""}">
           <button class="close-cart">
             <i class="fa-solid fa-xmark"></i>
           </button>
@@ -166,12 +167,16 @@ export function Cart(isOpen = false) {
     </div>
   `;
   $(".content-choose-sertech .overlay-nav-cart").remove(); // xoá trước khi append mới
-  $(".content-choose-sertech").append(htmlCart);
+
+  requestAnimationFrame(() => {
+    $(".content-choose-sertech").append(htmlCart);
+  });
 }
 
 // import store
 import { salonStore } from "../../store/new-online-store.js";
 // import component
+import { renderServices } from "../screen-choose-sertech/screen-choose-service.js";
 import { renderAddonPanel } from "../screen-choose-sertech/screen-choose-service.js";
 $(document).ready(async function () {
   // Toggle giỏ hàng
@@ -183,37 +188,38 @@ $(document).ready(async function () {
   $(document).on("click", function (e) {
     if ($(".overlay-nav-cart").hasClass("open")) {
       // Nếu click không nằm trong .content-cart
-      if (!$(e.target).closest(".content-cart").length) {
+      if (!$(e.target).closest(".content-cart, .addon-panel").length) {
         $(".overlay-nav-cart").removeClass("open");
       }
     }
   });
   $(document).on("click", ".btn-remove-cart-item", function () {
     const itemServiceId = $(this).closest(".cart-item").data("item-service-id");
-    console.log("itemServiceId: ", itemServiceId);
+    console.log("itemSer: ", itemServiceId);
+    const store = salonStore.getState();
+    const dataBooking = store.dataBooking;
 
-    salonStore.setState((prev) => {
-      const newUsers = prev.dataBooking.users.map((u) => ({
-        ...u,
-        services: u.services
-          .map((cate) => ({
-            ...cate,
-            itemService: cate.itemService.filter(
-              (srv) => srv.idItemService !== itemServiceId
-            ),
-          }))
-          // lọc bỏ cate rỗng
-          .filter((cate) => cate.itemService.length > 0),
-      }));
+    // Tìm user đang chọn
+    const user = dataBooking.users.find((u) => u.isChoosing);
+    if (!user) return;
 
-      return {
-        ...prev,
-        dataBooking: { ...prev.dataBooking, users: newUsers },
-      };
+    // Cập nhật itemService trong user đó
+
+    user.services.forEach((cate) => {
+      cate.itemService = cate.itemService.filter(
+        (item) => item.idItemService !== itemServiceId
+      );
     });
-    console.log("dataBooking: ", salonStore.getState().dataBooking);
 
-    Cart();
+    // set lại store
+    salonStore.setState({ dataBooking: { ...dataBooking } });
+
+    Cart(true);
+    // Load lại service khi thay đổi item service
+    const cateId = $(".item-cate.active").data("id");
+    const cate = store.dataServices;
+    const currentCate = cate.find((c) => c.item.id === cateId);
+    renderServices(currentCate.item.listItem);
   });
 
   $(document).on("click", ".btn-remove-addon", function () {
@@ -238,9 +244,12 @@ $(document).ready(async function () {
     // set lại state
     salonStore.setState({ dataBooking: { ...dataBooking } });
 
-    console.log("updated dataBooking:", dataBooking);
-
     Cart(true); // render lại giỏ
+    // Load lại service khi thay đổi addOn
+    const cateId = $(".item-cate.active").data("id");
+    const cate = store.dataServices;
+    const currentCate = cate.find((c) => c.item.id === cateId);
+    renderServices(currentCate.item.listItem);
   });
 
   // close-cart
@@ -250,6 +259,9 @@ $(document).ready(async function () {
 
   // click add on trong cart
   $(document).on("click", ".btn-addons-in-cart", function () {
+    // right
+    $(".content-cart").addClass("addon-pan");
+    $(".overlay-nav-cart").addClass("addon-pan");
     const store = salonStore.getState();
     const dataServices = store.dataServices;
 
@@ -259,7 +271,6 @@ $(document).ready(async function () {
     const cate = dataServices.find((c) => c.item.id === serviceId);
     const itemService = cate?.item.listItem.find((s) => s.id === itemServiceId);
     let settingPanel = {};
-    console.log("itemservice: ", itemService);
     renderAddonPanel(itemService, settingPanel);
     // trigger chờ để transition
     requestAnimationFrame(() => {

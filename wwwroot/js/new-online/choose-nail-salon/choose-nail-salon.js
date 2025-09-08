@@ -44,7 +44,7 @@ function listSalon(group) {
     `;
 }
 // slider
-function initSliderFromElement(containerEl, cardSelector) {
+export function initSliderFromElement(containerEl, cardSelector) {
   const track = containerEl.querySelector(".slider-track-salon");
   const cards = containerEl.querySelectorAll(cardSelector);
   const prevBtn = containerEl.querySelector(".slider-btn-booking.prev");
