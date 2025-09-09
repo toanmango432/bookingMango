@@ -152,10 +152,7 @@ $(document).ready(async function () {
       allSalon.find((item) => item.storeID == idStore) || {};
     salonStore.setState({ salonChoosing: { ...salonChoosing } });
 
-    $wrapNewOnline.empty();
-    const htmlWrapContentSertech = ServiceOrTech();
-    $wrapNewOnline.append(htmlWrapContentSertech);
-
+    ServiceOrTech();
     // save salon choosing
   });
 });

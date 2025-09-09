@@ -1,5 +1,3 @@
-//import store
-import { salonStore } from "../store/new-online-store.js";
 // import component
 import { ChooseNailSalon } from "./choose-nail-salon/choose-nail-salon.js";
 // import helper

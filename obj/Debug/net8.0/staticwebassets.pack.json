@@ -425,6 +425,22 @@
       "PackagePath": "staticwebassets/js/new-online/option-sertech/option-sertech.js"
     },
     {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/screen-choose-sertech/choose-service-for-tech/choose-service-for-tech.css",
+      "PackagePath": "staticwebassets/js/new-online/screen-choose-sertech/choose-service-for-tech/choose-service-for-tech.css"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/screen-choose-sertech/choose-service-for-tech/choose-service-for-tech.js",
+      "PackagePath": "staticwebassets/js/new-online/screen-choose-sertech/choose-service-for-tech/choose-service-for-tech.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/screen-choose-sertech/choose-tech-for-service/choose-tech-for-service.css",
+      "PackagePath": "staticwebassets/js/new-online/screen-choose-sertech/choose-tech-for-service/choose-tech-for-service.css"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/screen-choose-sertech/choose-tech-for-service/choose-tech-for-service.js",
+      "PackagePath": "staticwebassets/js/new-online/screen-choose-sertech/choose-tech-for-service/choose-tech-for-service.js"
+    },
+    {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/screen-choose-sertech/screen-choose-sertech.css",
       "PackagePath": "staticwebassets/js/new-online/screen-choose-sertech/screen-choose-sertech.css"
     },

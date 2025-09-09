@@ -41,10 +41,12 @@ import { ScreenChooseService } from "../screen-choose-sertech/screen-choose-serv
 import { ScreenChooseTech } from "../screen-choose-sertech/screen-choose-tech.js";
 import { Cart } from "../cart/cart.js";
 export function ServiceOrTech() {
+  const $wrapNewOnline = $(".wrap-newonline");
+
   const salonChoosing = salonStore.getState().salonChoosing;
   const htmlHeaderSalon = HeaderSalon(salonChoosing);
 
-  return `
+  const htmlSerOrTech = `
         <div class="wrap-service-or-tech">
             <div class="header-sertech">
                 ${htmlHeaderSalon}
@@ -91,6 +93,10 @@ export function ServiceOrTech() {
             </div>
         </div>
     `;
+
+  $wrapNewOnline.empty();
+  $wrapNewOnline.append(htmlSerOrTech);
+  return htmlSerOrTech;
 }
 
 $(document).ready(async function () {
@@ -108,10 +114,7 @@ $(document).ready(async function () {
     await ScreenChooseService(); // append screen choose service
   });
 
-  $(document).on("click", "#options-tech", function () {
-    const htmlScreenChooseTech = ScreenChooseTech();
-    $wrapNewOnline.empty();
-
-    $wrapNewOnline.append(htmlScreenChooseTech);
+  $(document).on("click", "#options-tech", async function () {
+    await ScreenChooseTech();
   });
 });

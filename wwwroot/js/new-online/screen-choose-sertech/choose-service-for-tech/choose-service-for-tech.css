@@ -1,0 +1,202 @@
+.choose-services {
+  height: 130px;
+  text-align: center;
+  margin: 20px 0 12px;
+}
+.choose-ftservices {
+  height: 72px;
+  text-align: center;
+  margin: 20px 0 12px;
+}
+.choose-ptechs {
+  width: 100%;
+  height: 204px;
+  text-align: center;
+  margin: 20px 0 12px;
+}
+.choose-services .wrap-title,
+.choose-ptechs .wrap-title,
+.choose-ftservices .wrap-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.choose-services .wrap-title .title,
+.choose-ftservices .wrap-title .title,
+.choose-ptechs .wrap-title .title {
+  position: relative;
+  font-weight: bold;
+  font-size: 20px;
+  margin-bottom: 8px;
+  position: relative;
+}
+.choose-services .title::after,
+.choose-ftservices .title::after,
+.choose-ptechs .title::after {
+  content: "";
+  width: 80px;
+  height: 1px;
+  background-color: #aeaeae;
+  position: absolute;
+  left: 108%;
+  top: 50%;
+}
+
+.choose-services .title::before,
+.choose-ftservices .title::before,
+.choose-ptechs .title::before {
+  content: "";
+  width: 80px;
+  height: 1px;
+  background-color: #aeaeae;
+  position: absolute;
+  right: 108%;
+  top: 50%;
+}
+
+.choose-services .desc,
+.choose-ftservices .desc,
+.choose-ptechs .desc {
+  font-size: 16px;
+  margin-bottom: 20px;
+  color: var(--text-color-primary);
+}
+
+.categories-ftsearch {
+  width: 100%;
+  height: 53px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  --search-width: 48px;
+}
+.categories-ftsearch .categories {
+  width: 100%;
+  position: relative;
+  padding: 0px 80px;
+  transition: width 0.5s ease;
+  overflow: hidden;
+}
+
+/* search */
+.wrap-search-ftser {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+.wrap-search-ftser .container-search-ftser {
+  width: 680px;
+  height: 48px;
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 80px;
+  position: relative;
+}
+.wrap-search-ftser .input-search-ftser {
+  width: 100%;
+  border: none;
+  transition: width 0.3s ease;
+  outline: none;
+  padding-left: 12px;
+  border-radius: 6px;
+  position: relative;
+}
+.wrap-search-ftser .input-search-ftser {
+  /* padding: 0px 60px 0px 14px; */
+}
+.wrap-search-ftser .input-search-ftser {
+  width: calc(100% - 80px);
+  display: block;
+  padding: 0px 60px 0px 12px;
+  border: 1px solid #c9c9c9;
+}
+.wrap-search-ftser .input-search-ftser:focus-visible {
+  border: 1px solid var(--bs-main);
+  border-radius: 6px;
+}
+
+.wrap-search-ftser .btn-search-toggle {
+  display: flex;
+  width: 48px;
+  height: 46px;
+  padding: 12px 20px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 6px;
+  background: var(--Gray-Neutral-100, #fff);
+  border: none;
+  z-index: 1;
+  transition: border 0.3s ease 0.3s;
+  position: absolute;
+  top: 1px;
+  right: 81px;
+}
+.wrap-search-ftser .btn-search-toggle:hover {
+  color: var(--bs-main);
+}
+.list-petech {
+  width: 30%;
+  padding-right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: scroll;
+}
+
+.wrap-header-techd {
+  display: flex;
+  width: 100%;
+  height: 114px;
+  padding: 16px;
+  flex-direction: column;
+  gap: 8px;
+  border-radius: 12px;
+  border: 1px solid var(--bs-main);
+  box-shadow: 0 1px 4px 0 rgba(5, 34, 39, 0.25);
+  background-color: white;
+}
+.wrap-header-techd.active {
+  background-color: var(--Primary-1, #d9f2f6);
+}
+.nametechd-time-dura {
+  display: flex;
+  justify-content: space-between;
+}
+.wrap-header-techd .ser-of-tech {
+  display: flex;
+  justify-content: space-between;
+}
+
+.wrap-header-techd .ser-of-tech .ser-name {
+  font: normal normal 600 var(--s-16);
+}
+
+.wrap-header-techd .no-ser {
+  font: normal normal 600 var(--s-16);
+}
+
+.wrap-header-techd .name-techd {
+  color: var(--bs-main);
+}
+
+.ser-of-tech.see-more {
+  width: fit-content;
+  font: normal normal 500 var(--s-14);
+  color: var(--bs-main);
+  position: relative;
+  cursor: pointer;
+}
+.ser-of-tech.see-more:hover {
+  filter: brightness(0.95);
+}
+.ser-of-tech.see-more::after {
+  content: "";
+  width: 100%;
+  height: 1px;
+  position: absolute;
+  bottom: -1px;
+  background-color: var(--bs-main);
+}

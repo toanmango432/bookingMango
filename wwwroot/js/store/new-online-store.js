@@ -11,6 +11,8 @@ export const salonStore = {
   _listeners: [],
 
   async load() {
+    if (this._state) return this._state;
+    console.log("check load store?");
     let RVCNoInit = parseInt(window.location.pathname.split("/")[2], 10);
     let RVCNo = RVCNoInit; // khởi tạo lần đầu
     let selectedDate = new Date();
@@ -18,7 +20,8 @@ export const salonStore = {
     let currentYear = selectedDate.getFullYear();
 
     // --- DATA BOOKING mặc định ---
-    let dataBooking = {
+    // --- DATA BOOKING mặc định ---
+    const createDefaultDataBooking = () => ({
       type: typeBookingEnum.ME,
       users: [
         {
@@ -36,8 +39,9 @@ export const salonStore = {
         },
       ],
       cardNumber: [],
-    };
+    });
 
+    let dataBooking = createDefaultDataBooking();
     // --- API: All salon ---
     let allSalon = [];
     const getAllSalon = async () => {
@@ -342,6 +346,10 @@ export const salonStore = {
     };
     // salon choosing
     let salonChoosing = {};
+    let itemServiceChoosing = {};
+    // start same time
+    let isSameTime = false;
+    let chooseStaffBefore = [];
 
     // --- SET STATE ---
     this._state = {
@@ -376,9 +384,25 @@ export const salonStore = {
       // day off
       daysOffNail,
       salonChoosing,
+      itemServiceChoosing,
+      // copy same time
+      isSameTime,
+      // lưu staff khi chưa chọn service
+      chooseStaffBefore,
     };
+
+    // Lưu lại hàm tạo mặc định để dùng trong reset
+    this._state.createDefaultDataBooking = createDefaultDataBooking;
+
     this._notify();
     return this._state;
+  },
+
+  // Hàm reset dataBooking khi cần
+  resetDataBooking() {
+    if (!this._state?.createDefaultDataBooking) return;
+    const freshDataBooking = this._state.createDefaultDataBooking();
+    this.setState({ dataBooking: freshDataBooking });
   },
 
   getState() {
@@ -401,3 +425,8 @@ export const salonStore = {
     this._listeners.forEach((cb) => cb(this._state));
   },
 };
+
+// Khởi động store ngay khi file được import
+salonStore.init = (async () => {
+  await salonStore.load();
+})();

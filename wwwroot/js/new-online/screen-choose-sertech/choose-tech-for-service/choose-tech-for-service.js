@@ -1,16 +1,17 @@
-export function renderFooterTech() {
+function renderFooterTech() {
   const store = salonStore.getState();
   const dataBooking = store.dataBooking;
   const user = dataBooking.users.find((u) => u.isChoosing);
-  // đã chọn service mới được phép next
-  const isNext = user.services.some((srv) => {
-    return srv.itemService.length > 0;
-  });
-  console.log("isNext: ", isNext);
+  // đã chọn tech mới được phép next
+  const isNext = user.services.some((cate) =>
+    cate.itemService.some(
+      (srv) => srv.selectedStaff && Object.keys(srv.selectedStaff).length > 0
+    )
+  );
   const $wrapDirBtn = `
     <div class="wrap-dir-btn">
-      <button class="dir-btn-back-tech text-uppercase">Back</button>
-      <button class="dir-btn-next-tech text-uppercase ${
+      <button id="btn-back-tech" class="dir-btn-back-tech text-uppercase">Back</button>
+      <button id="btn-next-tech" class="dir-btn-next-tech text-uppercase ${
         isNext ? "allow-next" : ""
       }">Next</button>
     </div>
@@ -23,69 +24,7 @@ export function renderFooterTech() {
   }
   return $wrapDirBtn;
 }
-export async function ChooseTechForServices() {
-  const store = salonStore.getState();
-  const dataBooking = store.dataBooking;
-  const user = dataBooking.users.find((u) => u.isChoosing);
-  const listStaffUser = store.listStaffUser;
-
-  const salonChoosing = store.salonChoosing;
-
-  const htmlHeaderSalon = HeaderSalon(salonChoosing);
-  // Render footer
-  const $wrapDirBtn = renderFooterTech();
-  const htmlScreenChooseTech = `
-        <div class="wrap-content-salon">
-            <div class="header-sertech">
-                ${htmlHeaderSalon}
-            </div>
-            <div class="content-choose-sertech">
-                <div class="choose-techs">
-                    <div class="wrap-title">
-                        <h2 class="title">Choose Technician</h2>
-                    </div>
-                    <p class="desc">
-                      Select tech for each services
-                    </p>
-                    <div class="wrap-search-tech">
-                        <div class="container-search-tech">
-                          <input type="text" class="input-search-tech" placeholder="Search by name..."/>
-                          <button class="btn-search-toggle"><i class="fa-solid fa-magnifying-glass"></i></button>
-                        </div>
-                    </div>
-                </div>
-                <div class="list-techs"></div>
-                <div class="wrap-choose-multitech">
-                  <div class="choose-multitech">
-                    <span class="icon-c-multitech">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="33" height="32" viewBox="0 0 33 32" fill="none">
-                        <path d="M24.4991 10.5464C24.4591 10.5464 24.4324 10.5464 24.3924 10.5464H24.3258C21.8058 10.4664 19.9258 8.51969 19.9258 6.11969C19.9258 3.66636 21.9258 1.67969 24.3658 1.67969C26.8058 1.67969 28.8058 3.67969 28.8058 6.11969C28.7925 8.53302 26.9124 10.4797 24.5124 10.5597C24.5124 10.5464 24.5124 10.5464 24.4991 10.5464ZM24.3658 3.66636C23.0191 3.66636 21.9258 4.7597 21.9258 6.10636C21.9258 7.42636 22.9525 8.49303 24.2725 8.54637C24.2858 8.53303 24.3924 8.53303 24.5124 8.54637C25.8058 8.4797 26.8058 7.41303 26.8191 6.10636C26.8191 4.7597 25.7258 3.66636 24.3658 3.66636Z" fill="#5C5C5C"/>
-                        <path d="M24.514 20.3742C23.994 20.3742 23.474 20.3342 22.954 20.2408C22.4073 20.1475 22.0473 19.6275 22.1407 19.0808C22.234 18.5342 22.754 18.1742 23.3007 18.2675C24.9407 18.5475 26.674 18.2409 27.834 17.4675C28.4607 17.0542 28.794 16.5342 28.794 16.0142C28.794 15.4942 28.4473 14.9875 27.834 14.5742C26.674 13.8008 24.914 13.4942 23.2607 13.7875C22.714 13.8942 22.194 13.5208 22.1007 12.9742C22.0073 12.4275 22.3673 11.9075 22.914 11.8142C25.0873 11.4275 27.3407 11.8408 28.9407 12.9075C30.114 13.6942 30.794 14.8142 30.794 16.0142C30.794 17.2008 30.1273 18.3342 28.9407 19.1342C27.7273 19.9342 26.154 20.3742 24.514 20.3742Z" fill="#5C5C5C"/>
-                        <path d="M8.46063 10.548C8.44729 10.548 8.43396 10.548 8.43396 10.548C6.03396 10.468 4.15396 8.5213 4.14062 6.1213C4.14062 3.66796 6.14063 1.66797 8.58063 1.66797C11.0206 1.66797 13.0206 3.66797 13.0206 6.10797C13.0206 8.5213 11.1406 10.468 8.74063 10.548L8.46063 9.54797L8.55396 10.548C8.52729 10.548 8.48729 10.548 8.46063 10.548ZM8.59396 8.54797C8.67396 8.54797 8.74063 8.54797 8.82063 8.5613C10.0073 8.50797 11.0473 7.4413 11.0473 6.1213C11.0473 4.77463 9.95396 3.68129 8.6073 3.68129C7.26063 3.68129 6.16729 4.77463 6.16729 6.1213C6.16729 7.42796 7.18062 8.4813 8.47396 8.5613C8.48729 8.54797 8.54063 8.54797 8.59396 8.54797Z" fill="#5C5C5C"/>
-                        <path d="M8.44797 20.3742C6.80797 20.3742 5.23463 19.9342 4.0213 19.1342C2.84797 18.3475 2.16797 17.2142 2.16797 16.0142C2.16797 14.8275 2.84797 13.6942 4.0213 12.9075C5.6213 11.8408 7.87463 11.4275 10.048 11.8142C10.5946 11.9075 10.9546 12.4275 10.8613 12.9742C10.768 13.5208 10.248 13.8942 9.7013 13.7875C8.04797 13.4942 6.3013 13.8008 5.12797 14.5742C4.5013 14.9875 4.16797 15.4942 4.16797 16.0142C4.16797 16.5342 4.51464 17.0542 5.12797 17.4675C6.28797 18.2409 8.0213 18.5475 9.6613 18.2675C10.208 18.1742 10.728 18.5475 10.8213 19.0808C10.9146 19.6275 10.5546 20.1475 10.008 20.2408C9.48797 20.3342 8.96797 20.3742 8.44797 20.3742Z" fill="#5C5C5C"/>
-                        <path d="M16.4991 20.5073C16.4591 20.5073 16.4324 20.5073 16.3924 20.5073H16.3258C13.8058 20.4273 11.9258 18.4806 11.9258 16.0806C11.9258 13.6273 13.9258 11.6406 16.3658 11.6406C18.8058 11.6406 20.8058 13.6406 20.8058 16.0806C20.7924 18.494 18.9124 20.4406 16.5124 20.5206C16.5124 20.5073 16.5124 20.5073 16.4991 20.5073ZM16.3658 13.6273C15.0191 13.6273 13.9258 14.7206 13.9258 16.0673C13.9258 17.3873 14.9525 18.454 16.2725 18.5073C16.2858 18.494 16.3924 18.494 16.5124 18.5073C17.8058 18.4406 18.8058 17.374 18.8191 16.0673C18.8191 14.734 17.7258 13.6273 16.3658 13.6273Z" fill="#5C5C5C"/>
-                        <path d="M16.5004 30.345C14.9004 30.345 13.3004 29.9317 12.0604 29.0917C10.887 28.305 10.207 27.185 10.207 25.985C10.207 24.7983 10.8737 23.6517 12.0604 22.865C14.5537 21.2117 18.4604 21.2117 20.9404 22.865C22.1137 23.6517 22.7937 24.7717 22.7937 25.9717C22.7937 27.1583 22.127 28.305 20.9404 29.0917C19.7004 29.9184 18.1004 30.345 16.5004 30.345ZM13.167 24.545C12.5404 24.9583 12.207 25.4783 12.207 25.9983C12.207 26.5183 12.5537 27.025 13.167 27.4383C14.967 28.6517 18.0204 28.6517 19.8204 27.4383C20.447 27.025 20.7804 26.505 20.7804 25.985C20.7804 25.465 20.4337 24.9583 19.8204 24.545C18.0337 23.3317 14.9804 23.345 13.167 24.545Z" fill="#5C5C5C"/>
-                      </svg>
-                    </span>
-                    <span class="text-c-multitech">
-                      Choose Tech per Service
-                    </span>
-                  </div>
-                </div>
-                <div class="footer-dir">
-                  ${$wrapDirBtn}
-                </div>
-            </div>
-        </div>
-    `;
-  const $wrapNewOnline = $(".wrap-newonline");
-  $wrapNewOnline.empty();
-  $wrapNewOnline.append(htmlScreenChooseTech);
-  renderListStaff(listStaffUser);
-  return htmlScreenChooseTech;
-}
 function renderFirstTechAvailable(tech, isSelected) {
-  console.log("isSelected: ", isSelected);
   return `
     <div class="item-tech wrap-item-tech-first ${
       isSelected ? "selected" : ""
@@ -124,7 +63,6 @@ function renderFirstTechAvailable(tech, isSelected) {
     </div>
   `;
 }
-
 function renderItemTech(staff) {
   const store = salonStore.getState();
   const dataBooking = store.dataBooking;
@@ -186,8 +124,7 @@ function renderItemTech(staff) {
     </div>
   `;
 }
-
-export function renderListStaff(listUserStaff) {
+function renderListStaff(listUserStaff) {
   if (!listUserStaff?.length) return "";
   let htmlListTech = "";
 
@@ -207,7 +144,6 @@ export function renderListStaff(listUserStaff) {
         (srv) => srv.selectedStaff?.employeeID === idStaffDefault
       )
     );
-    console.log("idStaffDefault: ", isSelected9999);
     htmlListTech += renderFirstTechAvailable(techAvailable, isSelected9999);
   }
 
@@ -224,6 +160,69 @@ export function renderListStaff(listUserStaff) {
   }
   return htmlListTech;
 }
+export async function ChooseTechForServices() {
+  const store = salonStore.getState();
+  const dataBooking = store.dataBooking;
+  const user = dataBooking.users.find((u) => u.isChoosing);
+  const listStaffUser = store.listStaffUser;
+
+  const salonChoosing = store.salonChoosing;
+
+  const htmlHeaderSalon = HeaderSalon(salonChoosing);
+  // Render footer
+  const $wrapDirBtn = renderFooterTech();
+  const htmlScreenChooseTech = `
+        <div class="wrap-content-salon">
+            <div class="header-sertech">
+                ${htmlHeaderSalon}
+            </div>
+            <div class="content-choose-sertech">
+                <div class="choose-techs">
+                    <div class="wrap-title">
+                        <h2 class="title">Choose Technician</h2>
+                    </div>
+                    <p class="desc">
+                      Select tech for each services
+                    </p>
+                    <div class="wrap-search-tech">
+                        <div class="container-search-tech">
+                          <input type="text" class="input-search-tech" placeholder="Search by name..."/>
+                          <button class="btn-search-toggle"><i class="fa-solid fa-magnifying-glass"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="list-techs"></div>
+                <div class="wrap-choose-multitech">
+                  <div class="choose-multitech">
+                    <span class="icon-c-multitech">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="33" height="32" viewBox="0 0 33 32" fill="none">
+                        <path d="M24.4991 10.5464C24.4591 10.5464 24.4324 10.5464 24.3924 10.5464H24.3258C21.8058 10.4664 19.9258 8.51969 19.9258 6.11969C19.9258 3.66636 21.9258 1.67969 24.3658 1.67969C26.8058 1.67969 28.8058 3.67969 28.8058 6.11969C28.7925 8.53302 26.9124 10.4797 24.5124 10.5597C24.5124 10.5464 24.5124 10.5464 24.4991 10.5464ZM24.3658 3.66636C23.0191 3.66636 21.9258 4.7597 21.9258 6.10636C21.9258 7.42636 22.9525 8.49303 24.2725 8.54637C24.2858 8.53303 24.3924 8.53303 24.5124 8.54637C25.8058 8.4797 26.8058 7.41303 26.8191 6.10636C26.8191 4.7597 25.7258 3.66636 24.3658 3.66636Z" fill="#5C5C5C"/>
+                        <path d="M24.514 20.3742C23.994 20.3742 23.474 20.3342 22.954 20.2408C22.4073 20.1475 22.0473 19.6275 22.1407 19.0808C22.234 18.5342 22.754 18.1742 23.3007 18.2675C24.9407 18.5475 26.674 18.2409 27.834 17.4675C28.4607 17.0542 28.794 16.5342 28.794 16.0142C28.794 15.4942 28.4473 14.9875 27.834 14.5742C26.674 13.8008 24.914 13.4942 23.2607 13.7875C22.714 13.8942 22.194 13.5208 22.1007 12.9742C22.0073 12.4275 22.3673 11.9075 22.914 11.8142C25.0873 11.4275 27.3407 11.8408 28.9407 12.9075C30.114 13.6942 30.794 14.8142 30.794 16.0142C30.794 17.2008 30.1273 18.3342 28.9407 19.1342C27.7273 19.9342 26.154 20.3742 24.514 20.3742Z" fill="#5C5C5C"/>
+                        <path d="M8.46063 10.548C8.44729 10.548 8.43396 10.548 8.43396 10.548C6.03396 10.468 4.15396 8.5213 4.14062 6.1213C4.14062 3.66796 6.14063 1.66797 8.58063 1.66797C11.0206 1.66797 13.0206 3.66797 13.0206 6.10797C13.0206 8.5213 11.1406 10.468 8.74063 10.548L8.46063 9.54797L8.55396 10.548C8.52729 10.548 8.48729 10.548 8.46063 10.548ZM8.59396 8.54797C8.67396 8.54797 8.74063 8.54797 8.82063 8.5613C10.0073 8.50797 11.0473 7.4413 11.0473 6.1213C11.0473 4.77463 9.95396 3.68129 8.6073 3.68129C7.26063 3.68129 6.16729 4.77463 6.16729 6.1213C6.16729 7.42796 7.18062 8.4813 8.47396 8.5613C8.48729 8.54797 8.54063 8.54797 8.59396 8.54797Z" fill="#5C5C5C"/>
+                        <path d="M8.44797 20.3742C6.80797 20.3742 5.23463 19.9342 4.0213 19.1342C2.84797 18.3475 2.16797 17.2142 2.16797 16.0142C2.16797 14.8275 2.84797 13.6942 4.0213 12.9075C5.6213 11.8408 7.87463 11.4275 10.048 11.8142C10.5946 11.9075 10.9546 12.4275 10.8613 12.9742C10.768 13.5208 10.248 13.8942 9.7013 13.7875C8.04797 13.4942 6.3013 13.8008 5.12797 14.5742C4.5013 14.9875 4.16797 15.4942 4.16797 16.0142C4.16797 16.5342 4.51464 17.0542 5.12797 17.4675C6.28797 18.2409 8.0213 18.5475 9.6613 18.2675C10.208 18.1742 10.728 18.5475 10.8213 19.0808C10.9146 19.6275 10.5546 20.1475 10.008 20.2408C9.48797 20.3342 8.96797 20.3742 8.44797 20.3742Z" fill="#5C5C5C"/>
+                        <path d="M16.4991 20.5073C16.4591 20.5073 16.4324 20.5073 16.3924 20.5073H16.3258C13.8058 20.4273 11.9258 18.4806 11.9258 16.0806C11.9258 13.6273 13.9258 11.6406 16.3658 11.6406C18.8058 11.6406 20.8058 13.6406 20.8058 16.0806C20.7924 18.494 18.9124 20.4406 16.5124 20.5206C16.5124 20.5073 16.5124 20.5073 16.4991 20.5073ZM16.3658 13.6273C15.0191 13.6273 13.9258 14.7206 13.9258 16.0673C13.9258 17.3873 14.9525 18.454 16.2725 18.5073C16.2858 18.494 16.3924 18.494 16.5124 18.5073C17.8058 18.4406 18.8058 17.374 18.8191 16.0673C18.8191 14.734 17.7258 13.6273 16.3658 13.6273Z" fill="#5C5C5C"/>
+                        <path d="M16.5004 30.345C14.9004 30.345 13.3004 29.9317 12.0604 29.0917C10.887 28.305 10.207 27.185 10.207 25.985C10.207 24.7983 10.8737 23.6517 12.0604 22.865C14.5537 21.2117 18.4604 21.2117 20.9404 22.865C22.1137 23.6517 22.7937 24.7717 22.7937 25.9717C22.7937 27.1583 22.127 28.305 20.9404 29.0917C19.7004 29.9184 18.1004 30.345 16.5004 30.345ZM13.167 24.545C12.5404 24.9583 12.207 25.4783 12.207 25.9983C12.207 26.5183 12.5537 27.025 13.167 27.4383C14.967 28.6517 18.0204 28.6517 19.8204 27.4383C20.447 27.025 20.7804 26.505 20.7804 25.985C20.7804 25.465 20.4337 24.9583 19.8204 24.545C18.0337 23.3317 14.9804 23.345 13.167 24.545Z" fill="#5C5C5C"/>
+                      </svg>
+                    </span>
+                    <span class="text-c-multitech">
+                      Choose Tech per Service
+                    </span>
+                  </div>
+                </div>
+                <div class="footer-dir">
+                  ${$wrapDirBtn}
+                </div>
+            </div>
+        </div>
+    `;
+  const $wrapNewOnline = $(".wrap-newonline");
+  $wrapNewOnline.empty();
+  $wrapNewOnline.append(htmlScreenChooseTech);
+  renderListStaff(listStaffUser);
+  // append Card
+  Cart();
+  return htmlScreenChooseTech;
+}
 // import store
 import { salonStore } from "../../../store/new-online-store.js";
 // import constant
@@ -231,14 +230,13 @@ import { idStaffDefault } from "../../../constants/template-online.js";
 // import component
 import { HeaderSalon } from "../../header/header-salon.js";
 import { ScreenChooseService } from "../screen-choose-service.js";
+import { Cart } from "../../cart/cart.js";
+import { ChooseTechForEachServices } from "../choose-tech-for-each-service/choose-tech-for-each-service.js";
 $(document).ready(async function () {
-  await salonStore.load(); // load first
-  const store = salonStore.getState();
-  const listStaffUser = (await store.getListUserStaff()) || [];
   const $wrapNewOnline = $(".wrap-newonline");
 
   // btn back tech to services
-  $(document).on("click", ".dir-btn-back-tech", async function () {
+  $(document).on("click", "#btn-back-tech", async function () {
     const $this = $(this);
 
     await ScreenChooseService();
@@ -259,21 +257,42 @@ $(document).ready(async function () {
     const $this = $(this);
 
     const store = salonStore.getState();
+    const listStaffUser = store.listStaffUser;
     const dataBooking = store.dataBooking;
     const user = dataBooking.users.find((u) => u.isChoosing);
 
     const idStaff = $this.data("id");
     const inforStaff = listStaffUser.find((s) => s.employeeID == idStaff);
-
     user.services.forEach((cate) => {
       cate.itemService.forEach((srv) => {
         srv.selectedStaff = inforStaff;
       });
     });
     salonStore.setState({ dataBooking: { ...dataBooking } });
-    console.log("dataBooking: ", dataBooking);
-
     // render lại list staff
+    console.log("dataBooking: ", dataBooking);
     renderListStaff(listStaffUser);
+    // render lại footer
+    renderFooterTech();
+  });
+
+  $(document).on("click", "#btn-next-tech", function () {
+    const $this = $(this);
+    const store = salonStore.getState();
+    const dataBooking = store.dataBooking;
+    const user = dataBooking.users.find((u) => u.isChoosing);
+    // Kiểm tra đã chọn service chưa trước khi next
+    const isNext = user.services.some((cate) =>
+      cate.itemService.some(
+        (srv) => srv.selectedStaff && Object.keys(srv.selectedStaff).length > 0
+      )
+    );
+    if (!isNext) return;
+    // component chọn time khi next
+    // $wrapNewOnline.empty();
+  });
+  $(document).on("click", ".choose-multitech", async function () {
+    const $this = $(this);
+    await ChooseTechForEachServices();
   });
 });

@@ -17,20 +17,29 @@
   text-align: center;
   margin: 20px 0 12px;
 }
-.choose-services .wrap-title {
+.choose-ptechs {
+  width: 100%;
+  height: 204px;
+  text-align: center;
+  margin: 20px 0 12px;
+}
+.choose-services .wrap-title,
+.choose-ptechs .wrap-title {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.choose-services .wrap-title .title {
+.choose-services .wrap-title .title,
+.choose-ptechs .wrap-title .title {
   position: relative;
   font-weight: bold;
   font-size: 20px;
   margin-bottom: 8px;
   position: relative;
 }
-.choose-services .title::after {
+.choose-services .title::after,
+.choose-ptechs .title::after {
   content: "";
   width: 80px;
   height: 1px;
@@ -40,7 +49,8 @@
   top: 50%;
 }
 
-.choose-services .title::before {
+.choose-services .title::before,
+.choose-ptechs .title::before {
   content: "";
   width: 80px;
   height: 1px;
@@ -50,7 +60,8 @@
   top: 50%;
 }
 
-.choose-services .desc {
+.choose-services .desc,
+.choose-ptechs .desc {
   font-size: 16px;
   margin-bottom: 20px;
   color: var(--text-color-primary);
@@ -273,7 +284,18 @@
   overflow-y: auto;
   flex: 1 0 0;
 }
-.wrap-service-card {
+.list-pesers3 {
+  width: 66%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: max-content;
+  gap: 8px;
+  padding: 0px 8px 8px 24px;
+  overflow-y: auto;
+  flex: 1 0 0;
+}
+.wrap-service-card,
+.wrap-ftservice-card {
   display: flex;
   width: 100%;
   height: 136px;
@@ -661,4 +683,33 @@
 .dir-btn-back-ser:hover,
 .dir-btn-next-ser:hover {
   filter: brightness(0.95);
+}
+
+.overlay-screen {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #cfcdcb7a;
+  z-index: 999999;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.popup-container-template {
+  width: 64%;
+  height: 64%;
+  position: absolute;
+  background-color: transparent;
+  transform: translateX(100%) scale(0.8);
+  padding: var(--px-32);
+  width: var(--px-560);
+  overflow-y: scroll;
+  opacity: 0;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+.overlay-screen.show .popup-container-template {
+  transform: translateX(0) scale(1);
+  opacity: 1;
 }
