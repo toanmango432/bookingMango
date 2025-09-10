@@ -170,7 +170,9 @@ export async function ScreenChooseTech() {
             </div>
             <div class="content-choose-sertech">
                 <div class="choose-ptechs">
-                    <h2 class="title">CHOOSE SERVICES</h2>
+                    <div class="wrap-title">
+                      <h2 class="title">CHOOSE SERVICES</h2>
+                    </div>
                     <p class="desc">
                         Pick <b>SERVICE</b> if you know the service you want, or pick <b>STAFF</b> if you prefer your favorite technician.
                     </p>

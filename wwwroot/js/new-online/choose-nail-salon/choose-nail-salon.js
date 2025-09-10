@@ -49,7 +49,8 @@ export function initSliderFromElement(
   containerEl,
   cardSelector,
   btnNextSelector,
-  btnPreSelector
+  btnPreSelector,
+  offsetSetting = 0
 ) {
   const track = containerEl.querySelector(sliderTrackEl);
   const cards = containerEl.querySelectorAll(cardSelector);
@@ -60,7 +61,7 @@ export function initSliderFromElement(
   if (!cards.length || !track) return;
 
   const cardWidth = cards[0].offsetWidth + 16;
-  const visibleWidth = containerEl.offsetWidth;
+  const visibleWidth = containerEl.offsetWidth - offsetSetting;
   let currentOffset = 0;
 
   function updateButtons() {

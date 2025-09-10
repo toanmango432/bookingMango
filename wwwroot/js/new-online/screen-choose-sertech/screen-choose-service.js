@@ -183,7 +183,8 @@ export async function ScreenChooseService() {
         sliderEl,
         cardSelector,
         btnNextSelector,
-        btnPreSelector
+        btnPreSelector,
+        208 // 80 padding,80 gap, 48 width btn
       );
     }
   }, 100);
@@ -375,11 +376,17 @@ import { Cart } from "../cart/cart.js";
 import { initSliderFromElement } from "../choose-nail-salon/choose-nail-salon.js";
 // import constant
 import { idStaffDefault } from "../../constants/template-online.js";
+import { SelecteFlow } from "../../constants/new-online.js";
+// import component
 import { ServiceOrTech } from "../service-or-tech/service-or-tech.js";
 import { ChooseTechForServices } from "./choose-tech-for-service/choose-tech-for-service.js";
+import { closePopupContainerTemplate } from "../../popup/close-popup.js";
+import { shakeError } from "../../helper/shake-error.js";
+import { ScreenChooseTech } from "./screen-choose-tech.js";
 // import popup
 import { contentShowResetDataBooking } from "../../popup/content/reset-databooking.js";
 import { renderBasePopup } from "../../popup/base.js";
+
 // hanle event
 $(document).ready(async function () {
   let dataService = await salonStore.getState().getListDataService();
@@ -646,6 +653,11 @@ $(document).ready(async function () {
   // Chuyển đổi flow
   // 1 Chọn service trước khi chọn tech
   $(document).on("click", "#flow-ser", function () {
+    const $this = $(this);
+    const flowActive = $this.hasClass("active");
+    if (flowActive) return;
+    selectFlow = SelecteFlow.SER;
+
     const htmlConfirmReset = contentShowResetDataBooking();
     let height = 300;
     let width = 600;
@@ -663,6 +675,12 @@ $(document).ready(async function () {
   });
   // 1 Chọn tech trước khi chọn service
   $(document).on("click", "#flow-tech", function () {
+    const $this = $(this);
+    const flowActive = $this.hasClass("active");
+    if (flowActive) return;
+    console.log("choose tech");
+    selectFlow = SelecteFlow.TECH;
+
     const htmlConfirmReset = contentShowResetDataBooking();
     let height = 300;
     let width = 600;
@@ -685,9 +703,28 @@ $(document).ready(async function () {
   $(document).on("click", ".btn-back-reset", function () {
     closePopupContainerTemplate();
   });
-  $(document).on("click", ".btn-confirm-reset", function () {
+  $(document).on("click", ".btn-confirm-reset", async function () {
+    // reset databooking
     salonStore.resetDataBooking();
+    // reset chọn thợ
+    salonStore.setState({ chooseStaffBefore: [] });
+
     // render ui chọn
+    if (selectFlow === SelecteFlow.SER) {
+      await ScreenChooseService();
+    } else {
+      await ScreenChooseTech();
+    }
     closePopupContainerTemplate();
+  });
+
+  // 1. Đóng / persitent khi click overlay-screen
+  $(document).on("click", ".overlay-screen", function (e) {
+    const $this = $(this);
+    const $popupContainerTemplate = $this.find(".popup-container-template");
+    const isPersit = $this.hasClass("persistent");
+    if (e.target === this && isPersit) {
+      shakeError($popupContainerTemplate);
+    } else if (e.target === this) closePopupContainerTemplate();
   });
 });

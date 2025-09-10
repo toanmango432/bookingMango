@@ -288,7 +288,8 @@ export async function ScreenChooseServiceForTech() {
         sliderEl,
         cardSelector,
         btnNextSelector,
-        btnPreSelector
+        btnPreSelector,
+        208 // 80 padding,80 gap, 48 width btn
       );
     }
   }, 100);
