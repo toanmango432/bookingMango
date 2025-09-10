@@ -1,36 +1,3 @@
-function initSliderFromElement(containerEl, cardSelector) {
-  const track = containerEl.querySelector(".slider-track-categories");
-  const cards = containerEl.querySelectorAll(cardSelector);
-  const prevBtn = containerEl.querySelector(".slider-btn-categories.prev");
-  const nextBtn = containerEl.querySelector(".slider-btn-categories.next");
-
-  if (!cards.length || !track) return;
-
-  const cardWidth = cards[0].offsetWidth + 16;
-  const visibleWidth = containerEl.offsetWidth - 160; // padding 80 2 bên
-  let currentOffset = 0;
-
-  function updateButtons() {
-    const maxOffset = track.scrollWidth - visibleWidth;
-    prevBtn.style.display = currentOffset <= 0 ? "none" : "block";
-    nextBtn.style.display = currentOffset >= maxOffset ? "none" : "block";
-  }
-
-  function moveSlider(direction) {
-    const maxOffset = track.scrollWidth - visibleWidth;
-    if (direction === "next") {
-      currentOffset = Math.min(currentOffset + cardWidth, maxOffset);
-    } else {
-      currentOffset = Math.max(currentOffset - cardWidth, 0);
-    }
-    track.style.transform = `translateX(-${currentOffset}px)`;
-    updateButtons();
-  }
-
-  prevBtn.addEventListener("click", () => moveSlider("prev"));
-  nextBtn.addEventListener("click", () => moveSlider("next"));
-  updateButtons();
-}
 // header lấy thông tin tiệm từ store khi chọn tiệm
 // import store
 import { salonStore } from "../../store/new-online-store.js";
@@ -101,13 +68,11 @@ export function ServiceOrTech() {
 
 $(document).ready(async function () {
   const $wrapNewOnline = $(".wrap-newonline");
+
   $(document).on("click", ".back-salon", async function () {
-    const htmlListSalon = await ChooseNailSalon();
+    await ChooseNailSalon();
     const rvcNoInit = salonStore.getState().RVCNoInit;
     salonStore.setState({ RVCNo: rvcNoInit });
-    $wrapNewOnline.empty();
-
-    $wrapNewOnline.append(htmlListSalon);
   });
 
   $(document).on("click", "#options-service", async function () {

@@ -44,12 +44,19 @@ function listSalon(group) {
     `;
 }
 // slider
-export function initSliderFromElement(containerEl, cardSelector) {
-  const track = containerEl.querySelector(".slider-track-salon");
+export function initSliderFromElement(
+  sliderTrackEl,
+  containerEl,
+  cardSelector,
+  btnNextSelector,
+  btnPreSelector
+) {
+  const track = containerEl.querySelector(sliderTrackEl);
   const cards = containerEl.querySelectorAll(cardSelector);
-  const prevBtn = containerEl.querySelector(".slider-btn-booking.prev");
-  const nextBtn = containerEl.querySelector(".slider-btn-booking.next");
 
+  const prevBtn = containerEl.querySelector(btnPreSelector);
+
+  const nextBtn = containerEl.querySelector(btnNextSelector);
   if (!cards.length || !track) return;
 
   const cardWidth = cards[0].offsetWidth + 16;
@@ -79,7 +86,7 @@ export function initSliderFromElement(containerEl, cardSelector) {
 }
 export async function ChooseNailSalon() {
   await salonStore.getState().getAllSalon();
-
+  const $wrapNewOnline = $(".wrap-newonline");
   const chunkArray = (array, size) => {
     const result = [];
     for (let i = 0; i < array.length; i += size) {
@@ -91,7 +98,8 @@ export async function ChooseNailSalon() {
 
   const chunkArr = chunkArray(allSalon, 9);
   const htmlHeaderLocation = HeaderLocation();
-  return `
+
+  const htmlChooseNailSalon = `
         <div class="wrap-content-salon">
             <div class="header-salon">
                 ${htmlHeaderLocation}
@@ -116,6 +124,28 @@ export async function ChooseNailSalon() {
             </div>
         </div>
     `;
+  $wrapNewOnline.empty();
+  $wrapNewOnline.append(htmlChooseNailSalon);
+  //init slider
+  setTimeout(() => {
+    const sliderEl = document.querySelector(
+      ".wrap-content-salon .content-salon"
+    );
+    const sliderTrackSelector = ".slider-track-salon";
+    const cardSelector = ".list-salon";
+    const btnNextSelector = ".slider-btn-booking.prev";
+    const btnPreSelector = ".slider-btn-booking.next";
+    if (sliderEl) {
+      initSliderFromElement(
+        sliderTrackSelector,
+        sliderEl,
+        cardSelector,
+        btnNextSelector,
+        btnPreSelector
+      );
+    }
+  }, 0);
+  return htmlChooseNailSalon;
 }
 
 //import store
@@ -130,15 +160,6 @@ import { baseLogoSalon } from "../../constants/base-url.js";
 $(document).ready(async function () {
   const allSalon = salonStore.getState().allSalon;
   const $wrapNewOnline = $(".wrap-newonline");
-
-  setTimeout(() => {
-    const sliderEl = document.querySelector(
-      ".wrap-content-salon .content-salon"
-    );
-    if (sliderEl) {
-      initSliderFromElement(sliderEl, ".list-salon");
-    }
-  }, 0);
 
   $(document).on("click", ".item-salon", function () {
     let allSalon = salonStore.getState().allSalon;

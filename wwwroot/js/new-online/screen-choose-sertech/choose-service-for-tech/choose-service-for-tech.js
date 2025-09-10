@@ -277,8 +277,19 @@ export async function ScreenChooseServiceForTech() {
   // render slider cate
   setTimeout(() => {
     const sliderEl = document.querySelector(".categories-search .categories");
+    const sliderTrackSelector = ".slider-track-categories";
+    const cardSelector = ".item-cate";
+    const btnNextSelector = ".slider-btn-categories.next";
+    const btnPreSelector = ".slider-btn-categories.prev";
+
     if (sliderEl) {
-      initSliderFromElement(sliderEl, ".item-cate");
+      initSliderFromElement(
+        sliderTrackSelector,
+        sliderEl,
+        cardSelector,
+        btnNextSelector,
+        btnPreSelector
+      );
     }
   }, 100);
   // khởi tạo lần đầu renderServices
@@ -305,23 +316,6 @@ import { ScreenChooseTech } from "../screen-choose-tech.js";
 $(document).ready(async function () {
   let dataService = await salonStore.getState().getListDataService();
   const $wrapNewOnline = $(".wrap-newonline");
-
-  // Toggle search
-  $(document).on("click", ".btn-search-toggle", function () {
-    const $this = $(this);
-    const $inputSearch = $(".input-search-ser");
-    const $wrapSearchSer = $(".wrap-search-ser");
-
-    $this.toggleClass("active");
-    $inputSearch.toggleClass("active");
-    $wrapSearchSer.toggleClass("active");
-
-    $inputSearch.focus().val(""); // reset input khi mở
-    // Reset list về category active
-    const id = $(".item-cate.active").data("id");
-    const cate = dataService.find((c) => c.item.id === id);
-    renderServices(cate?.item.listItem || []);
-  });
 
   // Search trong category active
   $(document).on("input", ".input-search-ser", function () {

@@ -165,17 +165,28 @@ export async function ScreenChooseService() {
   $wrapNewOnline.append(htmlScreenChooseService);
   // render cart
   Cart();
-  // render slider cate
-  setTimeout(() => {
-    const sliderEl = document.querySelector(".categories-search .categories");
-    if (sliderEl) {
-      initSliderFromElement(sliderEl, ".item-cate");
-    }
-  }, 100);
   // khởi tạo lần đầu renderServices
   const id = $(".item-cate.active").data("id");
   const cate = dataService.find((c) => c.item.id === id);
   renderServices(cate?.item.listItem || []);
+  // render slider cate
+  setTimeout(() => {
+    const sliderEl = document.querySelector(".categories-search .categories");
+    const sliderTrackSelector = ".slider-track-categories";
+    const cardSelector = ".item-cate";
+    const btnNextSelector = ".slider-btn-categories.next";
+    const btnPreSelector = ".slider-btn-categories.prev";
+
+    if (sliderEl) {
+      initSliderFromElement(
+        sliderTrackSelector,
+        sliderEl,
+        cardSelector,
+        btnNextSelector,
+        btnPreSelector
+      );
+    }
+  }, 100);
   return htmlScreenChooseService;
 }
 // Render service items
@@ -381,7 +392,7 @@ $(document).ready(async function () {
     const $this = $(this);
     const $inputSearch = $(".input-search-ser");
     const $wrapSearchSer = $(".wrap-search-ser");
-
+    console.log("here");
     $this.toggleClass("active");
     $inputSearch.toggleClass("active");
     $wrapSearchSer.toggleClass("active");
