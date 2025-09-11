@@ -33,8 +33,8 @@ export function Cart(isOpen = false, isAddOn = false) {
                       ? `<svg class="first" xmlns="http://www.w3.org/2000/svg" width="19" height="64" viewBox="0 0 19 64" fill="none">
                           <path d="M1.47953 0.960938C1.47953 0.684795 1.25567 0.460938 0.979526 0.460938C0.703384 0.460938 0.479526 0.684795 0.479526 0.960938H0.979526H1.47953ZM0.979526 49.8352L1.47953 49.8352V49.8352H0.979526ZM6.27558 60.901L6.2501 61.4004L6.27558 60.901ZM12.6879 60.901C12.6879 62.3738 13.8818 63.5677 15.3545 63.5677C16.8273 63.5677 18.0212 62.3738 18.0212 60.901C18.0212 59.4283 16.8273 58.2344 15.3545 58.2344C13.8818 58.2344 12.6879 59.4283 12.6879 60.901ZM0.979526 0.960938H0.479526V49.8352H0.979526H1.47953V0.960938H0.979526ZM0.979526 49.8352L0.479526 49.8352C0.479511 52.5588 0.397253 55.3522 1.04881 57.4821C1.38013 58.5651 1.91119 59.5181 2.76904 60.2171C3.62901 60.9179 4.77 61.3249 6.2501 61.4004L6.27558 60.901L6.30106 60.4017C4.98036 60.3343 4.05894 59.9782 3.40074 59.4419C2.74043 58.9038 2.29756 58.1456 2.00507 57.1895C1.40899 55.2411 1.47951 52.6444 1.47953 49.8352L0.979526 49.8352ZM6.27558 60.901L6.2501 61.4004C8.90737 61.536 11.9834 61.401 15.3545 61.401V60.901V60.401C11.9165 60.401 8.92761 60.5357 6.30106 60.4017L6.27558 60.901Z" fill="#707070"/>
                         </svg>`
-                      : `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="94" viewBox="0 0 18 94" fill="none">
-                          <path d="M1.31546 0.960938C1.31546 0.684795 1.09161 0.460938 0.815464 0.460938C0.539321 0.460938 0.315464 0.684795 0.315464 0.960938H0.815464H1.31546ZM0.815464 74.2723L1.31546 74.2723V74.2723H0.815464ZM6.11152 90.8711L6.07336 91.3696L6.11152 90.8711ZM12.5238 90.8711C12.5238 92.3438 13.7177 93.5377 15.1905 93.5377C16.6632 93.5377 17.8571 92.3438 17.8571 90.8711C17.8571 89.3983 16.6632 88.2044 15.1905 88.2044C13.7177 88.2044 12.5238 89.3983 12.5238 90.8711ZM0.815464 0.960938H0.315464V74.2723H0.815464H1.31546V0.960938H0.815464ZM0.815464 74.2723L0.315464 74.2723C0.315448 78.3926 0.236331 82.5016 0.872963 85.6231C1.19239 87.1893 1.7015 88.563 2.53384 89.5804C3.38136 90.6163 4.53974 91.2522 6.07336 91.3696L6.11152 90.8711L6.14967 90.3725C4.8825 90.2756 3.97847 89.7669 3.30782 88.9472C2.622 88.1089 2.15719 86.9158 1.85279 85.4233C1.24179 82.4274 1.31545 78.4513 1.31546 74.2723L0.815464 74.2723ZM6.11152 90.8711L6.07336 91.3696C8.73824 91.5736 11.836 91.3711 15.1905 91.3711V90.8711V90.3711C11.7357 90.3711 8.76861 90.573 6.14967 90.3725L6.11152 90.8711Z" fill="#707070"/>
+                      : `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="99" viewBox="0 0 18 99" fill="none">
+                          <path d="M1.31546 0.960938C1.31546 0.684795 1.09161 0.460938 0.815464 0.460938C0.539321 0.460938 0.315464 0.684795 0.315464 0.960938H0.815464H1.31546ZM0.815464 78.3451L1.31546 78.3451V78.3451H0.815464ZM6.11152 95.8661L6.07126 96.3645L6.11152 95.8661ZM12.5238 95.8661C12.5238 97.3388 13.7177 98.5328 15.1905 98.5328C16.6632 98.5328 17.8571 97.3388 17.8571 95.8661C17.8571 94.3933 16.6632 93.1994 15.1905 93.1994C13.7177 93.1994 12.5238 94.3933 12.5238 95.8661ZM0.815464 0.960938H0.315464V78.3451H0.815464H1.31546V0.960938H0.815464ZM0.815464 78.3451L0.315464 78.3451C0.315448 82.6975 0.236602 87.0276 0.871957 90.316C1.19044 91.9643 1.69741 93.4072 2.52563 94.4758C3.36947 95.5645 4.5287 96.2399 6.07126 96.3645L6.11152 95.8661L6.15178 95.3677C4.89354 95.2661 3.99035 94.7332 3.31602 93.8632C2.62608 92.973 2.15913 91.7065 1.8538 90.1262C1.24152 86.9574 1.31545 82.7532 1.31546 78.3451L0.815464 78.3451ZM6.11152 95.8661L6.07126 96.3645C8.7374 96.5798 11.8388 96.3661 15.1905 96.3661V95.8661V95.3661C11.7329 95.3661 8.76945 95.5792 6.15178 95.3677L6.11152 95.8661Z" fill="#707070"/>
                         </svg>`
                   }
                   <div class="cart-addon" data-addon-id="${opt.id}">
@@ -175,9 +175,22 @@ export function Cart(isOpen = false, isAddOn = false) {
 
 // import store
 import { salonStore } from "../../store/new-online-store.js";
+// import constant
+import { PageCurrent } from "../../constants/new-online.js";
 // import component
 import { renderServices } from "../screen-choose-sertech/screen-choose-service.js";
 import { renderAddonPanel } from "../screen-choose-sertech/screen-choose-service.js";
+import {
+  renderFooterTech_PageChooseOnlyTech,
+  renderListStaff_PageChooseOnlyTech,
+} from "../screen-choose-sertech/choose-tech-for-service/choose-tech-for-service.js";
+import {
+  renderFooterFor_PageChooseEachTech,
+  renderListPeSer,
+  renderListStaff_PageChoseEachSer,
+} from "../screen-choose-sertech/choose-tech-for-each-service/choose-tech-for-each-service.js";
+import { renderListPeTech_PageChooseServiceTech } from "../screen-choose-sertech/choose-service-for-tech/choose-service-for-tech.js";
+import { renderServices_PageChooseServiceTech } from "../screen-choose-sertech/choose-service-for-tech/choose-service-for-tech.js";
 $(document).ready(async function () {
   // Toggle giỏ hàng
   $(document).on("click", ".cart button", function (e) {
@@ -194,11 +207,16 @@ $(document).ready(async function () {
     }
   });
   $(document).on("click", ".btn-remove-cart-item", function () {
-    const itemServiceId = $(this).closest(".cart-item").data("item-service-id");
-    console.log("itemSer: ", itemServiceId);
+    // 1. Xoá item cart khi ở page CHOOSE_SERVICE
     const store = salonStore.getState();
-    const dataBooking = store.dataBooking;
+    const pageCurrent = store.pageCurrent;
+    const listStaffUser = store.listStaffUser;
+    const dataService = store.dataServices;
+    console.log("pageCurrent: ", pageCurrent);
 
+    // xử lý chung khi xoá
+    const itemServiceId = $(this).closest(".cart-item").data("item-service-id");
+    const dataBooking = store.dataBooking;
     // Tìm user đang chọn
     const user = dataBooking.users.find((u) => u.isChoosing);
     if (!user) return;
@@ -210,16 +228,32 @@ $(document).ready(async function () {
         (item) => item.idItemService !== itemServiceId
       );
     });
-
     // set lại store
     salonStore.setState({ dataBooking: { ...dataBooking } });
-
     Cart(true);
-    // Load lại service khi thay đổi item service
-    const cateId = $(".item-cate.active").data("id");
-    const cate = store.dataServices;
-    const currentCate = cate.find((c) => c.item.id === cateId);
-    renderServices(currentCate.item.listItem);
+
+    if (pageCurrent === PageCurrent.CHOOSE_SERVICE) {
+      // Load lại service khi thay đổi item service
+      const cateId = $(".item-cate.active").data("id");
+      const cate = store.dataServices;
+      const currentCate = cate.find((c) => c.item.id === cateId);
+      renderServices(currentCate.item.listItem);
+    } else if (pageCurrent === PageCurrent.CHOOSE_ONLY_TECH) {
+      // render lại listStaff khi xoá
+      const listStaffUser = store.listStaffUser;
+      renderListStaff_PageChooseOnlyTech(listStaffUser);
+      renderFooterTech_PageChooseOnlyTech();
+    } else if (pageCurrent === PageCurrent.CHOOSE_TECH_FOR_SERVICE) {
+      renderListPeSer(true);
+      renderListStaff_PageChoseEachSer(listStaffUser);
+      renderFooterFor_PageChooseEachTech();
+    } else if (pageCurrent === PageCurrent.CHOOSE_SERVICE_FOR_TECH) {
+      renderListPeTech_PageChooseServiceTech();
+      // khởi tạo lần đầu renderServices_PageChooseServiceTech
+      const id = $(".item-ftcate.active").data("id");
+      const cate = dataService.find((c) => c.item.id === id);
+      renderServices_PageChooseServiceTech(cate?.item.listItem || []);
+    }
   });
 
   $(document).on("click", ".btn-remove-addon", function () {

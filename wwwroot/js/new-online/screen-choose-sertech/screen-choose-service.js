@@ -1,4 +1,4 @@
-export function renderTrackCate(dataService) {
+export function renderTrackCate(dataService, classItem = "item-cate") {
   const store = salonStore.getState();
   const dataBooking = store.dataBooking;
   const user = dataBooking.users.find((u) => u.isChoosing);
@@ -50,7 +50,7 @@ export function renderTrackCate(dataService) {
         .filter(Boolean)
         .join(" ");
       return `
-      <div class="item-cate ${classNames}" data-id="${cate.item.id}">
+      <div class="${classItem} ${classNames}" data-id="${cate.item.id}">
         <span class="name-cate">${cate.item.value}</span>
         <span class="count">${cate.item.listItem.length}</span>
       </div>
@@ -376,7 +376,7 @@ import { Cart } from "../cart/cart.js";
 import { initSliderFromElement } from "../choose-nail-salon/choose-nail-salon.js";
 // import constant
 import { idStaffDefault } from "../../constants/template-online.js";
-import { SelecteFlow } from "../../constants/new-online.js";
+import { PageCurrent, SelecteFlow } from "../../constants/new-online.js";
 // import component
 import { ServiceOrTech } from "../service-or-tech/service-or-tech.js";
 import { ChooseTechForServices } from "./choose-tech-for-service/choose-tech-for-service.js";
@@ -386,6 +386,7 @@ import { ScreenChooseTech } from "./screen-choose-tech.js";
 // import popup
 import { contentShowResetDataBooking } from "../../popup/content/reset-databooking.js";
 import { renderBasePopup } from "../../popup/base.js";
+import { renderServices_PageChooseServiceTech } from "./choose-service-for-tech/choose-service-for-tech.js";
 
 // hanle event
 $(document).ready(async function () {
@@ -442,6 +443,7 @@ $(document).ready(async function () {
   }
 
   $(document).on("click", ".wrap-service-card", async function () {
+    let isUnSelected = true;
     const serviceId = $(this).data("iditem");
     const cateId = $(".item-cate.active").data("id");
     const store = salonStore.getState();
@@ -478,15 +480,19 @@ $(document).ready(async function () {
         selectedStaff: {},
         optionals: [],
       });
-    }
-
-    // Nếu có AddOn thì mở panel
-    if (itemService.listOptionAddOn?.length) {
-      renderAddonPanel(itemService);
-      // trigger chờ để transition
-      requestAnimationFrame(() => {
-        $(".overlay-nav-addOn").addClass("open");
-      });
+      // Nếu có AddOn thì mở panel
+      if (itemService.listOptionAddOn?.length) {
+        renderAddonPanel(itemService);
+        // trigger chờ để transition
+        requestAnimationFrame(() => {
+          $(".overlay-nav-addOn").addClass("open");
+        });
+      }
+    } else if (existingService && isUnSelected) {
+      // Remove itemService đã chọn
+      cateInUser.itemService = cateInUser.itemService.filter(
+        (s) => s.idItemService !== itemService.id
+      );
     }
 
     salonStore.setState((prev) => ({
@@ -516,10 +522,11 @@ $(document).ready(async function () {
     }
   });
 
-  $(document).on("click", ".addon-item", function () {
+  $(document).on("click", ".addon-item", async function () {
     const store = salonStore.getState();
     const dataServices = store.dataServices;
     const dataBooking = store.dataBooking;
+
     const user = dataBooking.users.find((u) => u.isChoosing);
     if (!user) return;
 
@@ -554,19 +561,27 @@ $(document).ready(async function () {
     salonStore.setState({
       dataBooking: store.dataBooking,
     });
-
-    // Load lại service khi thay đổi addOn
-    const cateId = $(".item-cate.active").data("id");
-    const cate = store.dataServices;
-    const currentCate = cate.find((c) => c.item.id === cateId);
-    renderServices(currentCate.item.listItem);
-    // Load lại cart khi đang chỉ chọn add on hoặc đang có mở cart
-    // đang mở cart
-    const $cartActive = $(".content-cart.addon-pan");
-    if ($cartActive.length) {
-      Cart(true, true);
-    } else {
-      Cart();
+    // Tuỳ pageCurrent mà render lại component cần thiết
+    const pageCurrent = store.pageCurrent;
+    if (pageCurrent === PageCurrent.CHOOSE_SERVICE) {
+      // Load lại service khi thay đổi addOn
+      const cateId = $(".item-ftcate.active").data("id");
+      const cate = store.dataServices;
+      const currentCate = cate.find((c) => c.item.id === cateId);
+      renderServices(currentCate?.item.listItem);
+      // Load lại cart khi đang chỉ chọn add on hoặc đang có mở cart
+      // đang mở cart
+      const $cartActive = $(".content-cart.addon-pan");
+      if ($cartActive.length) {
+        Cart(true, true);
+      } else {
+        Cart();
+      }
+    } else if (pageCurrent === PageCurrent.CHOOSE_SERVICE_FOR_TECH) {
+      // khởi tạo lần đầu renderServices_PageChooseServiceTech
+      const id = $(".item-ftcate.active").data("id");
+      const cate = dataServices.find((c) => c.item.id === id);
+      renderServices_PageChooseServiceTech(cate?.item.listItem);
     }
   });
 
@@ -648,6 +663,8 @@ $(document).ready(async function () {
     if (!isNext) return;
 
     await ChooseTechForServices();
+    // Chuyển tới page chọn duy nhất một thợ
+    salonStore.setState({ pageCurrent: PageCurrent.CHOOSE_ONLY_TECH });
   });
 
   // Chuyển đổi flow
@@ -715,6 +732,7 @@ $(document).ready(async function () {
     } else {
       await ScreenChooseTech();
     }
+    salonStore.setState({ flow: selectFlow });
     closePopupContainerTemplate();
   });
 

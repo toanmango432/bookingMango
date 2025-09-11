@@ -185,3 +185,20 @@
 .shake {
   animation: shake 0.4s ease;
 }
+
+.selected-by {
+  font: normal normal 500 var(--s-12);
+  position: relative;
+  bottom: -6px;
+  max-width: 200px;
+  overflow: hidden;
+}
+
+.selected-by span {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%; /* kế thừa từ cha */
+  vertical-align: bottom;
+}

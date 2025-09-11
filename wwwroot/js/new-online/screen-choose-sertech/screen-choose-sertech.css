@@ -228,7 +228,8 @@
   right: 24px;
 }
 
-.item-cate {
+.item-cate,
+.item-ftcate {
   display: flex;
   padding: 8px 8px 8px 9px;
   justify-content: space-between;
@@ -240,24 +241,29 @@
   font: normal normal 600 var(--s-16);
   cursor: pointer;
 }
-.item-cate:hover {
+.item-cate:hover,
+.item-ftcate:hover {
   border: 2px solid var(--bs-main);
   transform: translateY(-1px);
 }
-.item-cate.active {
+.item-cate.active,
+.item-ftcate.active {
   border: 2px solid var(--White, #fff);
   background: var(--bs-main);
 }
-.item-cate.choosed {
+.item-cate.choosed,
+.item-ftcate.choosed {
   border: 2px solid var(--bs-main-600);
 }
 .name-cate {
   white-space: nowrap;
 }
-.item-cate.active .name-cate {
+.item-cate.active .name-cate,
+.item-ftcate.active .name-cate {
   color: white;
 }
-.item-cate .count {
+.item-cate .count,
+.item-ftcate .count {
   display: flex;
   width: 32px;
   height: 32px;
@@ -268,7 +274,8 @@
   background: #ecf8fb;
   color: var(--bs-main);
 }
-.item-cate.active .count {
+.item-cate.active .count,
+.item-ftcate.active .count {
   background: var(--White, #fff);
   color: var(--text-color-primary);
 }
@@ -367,11 +374,16 @@
   font: normal normal 500 var(--s-18);
   color: #747474;
 }
+.pcard .text-method,
+.pcash .text-method {
+  font: normal normal 500 var(--s-14);
+}
 
 .bot-item-service {
   width: 100%;
   position: relative;
   display: flex;
+  flex-direction: column;
 }
 .addon-indicator {
   display: inline;
@@ -451,6 +463,7 @@
 .overlay-nav-addOn.open {
   width: 100%;
   background: #d3d3d363;
+  z-index: 3001; /* Khi open nằm tren cart và slider */
 }
 .overlay-nav-addOn.open .addon-panel {
   right: 0; /* trượt vào */

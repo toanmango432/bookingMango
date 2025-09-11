@@ -12,7 +12,6 @@ export const salonStore = {
 
   async load() {
     if (this._state) return this._state;
-    console.log("check load store?");
     let RVCNoInit = parseInt(window.location.pathname.split("/")[2], 10);
     let RVCNo = RVCNoInit; // khởi tạo lần đầu
     let selectedDate = new Date();
@@ -347,9 +346,12 @@ export const salonStore = {
     // salon choosing
     let salonChoosing = {};
     let itemServiceChoosing = {};
+    let itemTechChoosing = {};
     // start same time
     let isSameTime = false;
     let chooseStaffBefore = [];
+    let flow;
+    let pageCurrent;
 
     // --- SET STATE ---
     this._state = {
@@ -389,6 +391,8 @@ export const salonStore = {
       isSameTime,
       // lưu staff khi chưa chọn service
       chooseStaffBefore,
+      flow, // flow chọn tech hoặc chọn service trước
+      pageCurrent, // lưu tên page hiện tại để xoá trong cart render lại phần cần thiết
     };
 
     // Lưu lại hàm tạo mặc định để dùng trong reset

@@ -1,12 +1,3 @@
-// header lấy thông tin tiệm từ store khi chọn tiệm
-// import store
-import { salonStore } from "../../store/new-online-store.js";
-// import component
-import { ChooseNailSalon } from "../choose-nail-salon/choose-nail-salon.js";
-import { HeaderSalon } from "../header/header-salon.js";
-import { ScreenChooseService } from "../screen-choose-sertech/screen-choose-service.js";
-import { ScreenChooseTech } from "../screen-choose-sertech/screen-choose-tech.js";
-import { Cart } from "../cart/cart.js";
 export function ServiceOrTech() {
   const $wrapNewOnline = $(".wrap-newonline");
 
@@ -66,6 +57,17 @@ export function ServiceOrTech() {
   return htmlSerOrTech;
 }
 
+// header lấy thông tin tiệm từ store khi chọn tiệm
+// import store
+import { salonStore } from "../../store/new-online-store.js";
+// import constant
+import { SelecteFlow, PageCurrent } from "../../constants/new-online.js";
+// import component
+import { ChooseNailSalon } from "../choose-nail-salon/choose-nail-salon.js";
+import { HeaderSalon } from "../header/header-salon.js";
+import { ScreenChooseService } from "../screen-choose-sertech/screen-choose-service.js";
+import { ScreenChooseTech } from "../screen-choose-sertech/screen-choose-tech.js";
+
 $(document).ready(async function () {
   const $wrapNewOnline = $(".wrap-newonline");
 
@@ -77,9 +79,17 @@ $(document).ready(async function () {
 
   $(document).on("click", "#options-service", async function () {
     await ScreenChooseService(); // append screen choose service
+    salonStore.setState({
+      flow: SelecteFlow.SER,
+      pageCurrent: PageCurrent.CHOOSE_SERVICE,
+    });
   });
 
   $(document).on("click", "#options-tech", async function () {
     await ScreenChooseTech();
+    salonStore.setState({
+      flow: SelecteFlow.TECH,
+      pageCurrent: PageCurrent.CHOOSE_TECH,
+    });
   });
 });

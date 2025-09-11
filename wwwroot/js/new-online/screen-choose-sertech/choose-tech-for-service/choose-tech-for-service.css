@@ -49,6 +49,9 @@
   overflow-y: auto;
   flex: 1 0 0;
 }
+.list-techs.not-ser {
+  opacity: 0.5;
+}
 
 .item-tech,
 .wrap-item-tech-first {
@@ -290,11 +293,16 @@
   align-items: center;
   background: transparent;
   z-index: 1;
+  position: relative;
 }
 .wrap-dir-btn {
   display: flex;
   gap: 24px;
 }
+.wrap-dir-btn.not-ser {
+  padding-bottom: 12px;
+}
+
 .dir-btn-back-tech,
 .dir-btn-next-tech {
   display: flex;
@@ -342,6 +350,10 @@
   box-shadow: 0 0 4px 0 rgba(23, 189, 213, 0.1);
   cursor: pointer;
 }
+.choose-multitech.not-ser {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
 .choose-multitech:hover {
   filter: brightness(1.05);
   border: 1.2px solid var(--bs-main-600);
@@ -370,4 +382,31 @@
 }
 .staff-sub .icon-show-day-off:hover svg {
   color: var(--bs-main);
+}
+
+.hand-anim {
+  display: inline-block;
+  margin-right: 6px;
+  animation: pointRight 1s infinite;
+}
+
+@keyframes pointRight {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(6px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.tip-text {
+  position: absolute;
+  font-size: 13px;
+  color: #e74c3c;
+  margin-top: 6px;
+  text-align: center;
+  bottom: 6px;
 }

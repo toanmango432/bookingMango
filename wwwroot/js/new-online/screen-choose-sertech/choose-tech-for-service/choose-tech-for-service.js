@@ -1,4 +1,4 @@
-function renderFooterTech() {
+export function renderFooterTech_PageChooseOnlyTech() {
   const store = salonStore.getState();
   const dataBooking = store.dataBooking;
   const user = dataBooking.users.find((u) => u.isChoosing);
@@ -8,13 +8,28 @@ function renderFooterTech() {
       (srv) => srv.selectedStaff && Object.keys(srv.selectedStaff).length > 0
     )
   );
+  // Kiểm tra có itemService nào không
+  const hasAnyItemService =
+    user?.services?.some((cate) => cate.itemService?.length > 0) ?? false;
+
+  // Nút back có thêm hand khi chưa có service
+  const backBtn = `
+    <button id="btn-back-tech" class="dir-btn-back-tech text-uppercase">
+      ${!hasAnyItemService ? '<span class="hand-anim">👉</span>' : ""} Back
+    </button>
+  `;
   const $wrapDirBtn = `
-    <div class="wrap-dir-btn">
-      <button id="btn-back-tech" class="dir-btn-back-tech text-uppercase">Back</button>
+    <div class="wrap-dir-btn ${hasAnyItemService ? "" : "not-ser"}">
+      ${backBtn}
       <button id="btn-next-tech" class="dir-btn-next-tech text-uppercase ${
         isNext ? "allow-next" : ""
       }">Next</button>
     </div>
+    ${
+      !hasAnyItemService
+        ? `<div class="tip-text">Please go back to select service</div>`
+        : ""
+    }
   `;
   // nếu DOM đã có footer-dir thì append khi hàm được gọi
   const $footerDir = $(".footer-dir");
@@ -26,7 +41,7 @@ function renderFooterTech() {
 }
 function renderFirstTechAvailable(tech, isSelected) {
   return `
-    <div class="item-tech wrap-item-tech-first ${
+    <div class="item-tech item-tech-ctpage wrap-item-tech-first ${
       isSelected ? "selected" : ""
     }" data-id=${tech?.employeeID}>
       <span class="icon-checked ${isSelected ? "selected" : ""}">
@@ -75,7 +90,7 @@ function renderItemTech(staff) {
   );
   return `
     <div
-      class="item-tech staff ${isStaff ? "selected" : ""}"
+      class="item-tech item-tech-ctpage staff ${isStaff ? "selected" : ""}"
       data-id=${staff?.employeeID}
       style="--border-color:${staff.color || "#6f42c1"}"
     >
@@ -124,15 +139,13 @@ function renderItemTech(staff) {
     </div>
   `;
 }
-function renderListStaff(listUserStaff) {
+export function renderListStaff_PageChooseOnlyTech(listUserStaff) {
   if (!listUserStaff?.length) return "";
   let htmlListTech = "";
 
   const store = salonStore.getState();
   const dataBooking = store.dataBooking;
   const user = dataBooking.users.find((u) => u.isChoosing);
-
-  console.log("user: ", user);
 
   // staff idStaffDefault (Next Available)
   const techAvailable = listUserStaff.find(
@@ -158,6 +171,14 @@ function renderListStaff(listUserStaff) {
     listTech.empty();
     listTech.append(htmlListTech);
   }
+
+  // tại đây kiểm tra userChoosing = true có đang có itemService nào không
+  const hasAnyItemService =
+    user?.services?.some((cate) => cate.itemService?.length > 0) ?? false;
+  if (!hasAnyItemService) {
+    $(".list-techs").addClass("not-ser");
+    $(".choose-multitech").addClass("not-ser");
+  }
   return htmlListTech;
 }
 export async function ChooseTechForServices() {
@@ -170,7 +191,7 @@ export async function ChooseTechForServices() {
 
   const htmlHeaderSalon = HeaderSalon(salonChoosing);
   // Render footer
-  const $wrapDirBtn = renderFooterTech();
+  const $wrapDirBtn = renderFooterTech_PageChooseOnlyTech();
   const htmlScreenChooseTech = `
         <div class="wrap-content-salon">
             <div class="header-sertech">
@@ -218,7 +239,7 @@ export async function ChooseTechForServices() {
   const $wrapNewOnline = $(".wrap-newonline");
   $wrapNewOnline.empty();
   $wrapNewOnline.append(htmlScreenChooseTech);
-  renderListStaff(listStaffUser);
+  renderListStaff_PageChooseOnlyTech(listStaffUser);
   // append Card
   Cart();
   return htmlScreenChooseTech;
@@ -232,6 +253,7 @@ import { HeaderSalon } from "../../header/header-salon.js";
 import { ScreenChooseService } from "../screen-choose-service.js";
 import { Cart } from "../../cart/cart.js";
 import { ChooseTechForEachServices } from "../choose-tech-for-each-service/choose-tech-for-each-service.js";
+import { PageCurrent } from "../../../constants/new-online.js";
 $(document).ready(async function () {
   const $wrapNewOnline = $(".wrap-newonline");
 
@@ -248,14 +270,17 @@ $(document).ready(async function () {
     if (keyword) {
       list = list.filter((u) => u.nickName.toLowerCase().includes(keyword));
     }
-    renderListStaff(list);
+    renderListStaff_PageChooseOnlyTech(list);
   });
 
   // Xử lý chọn staff tại đây, dù có setting multitech hay không thì
   // cũng gán tất cả service đã chọn bằng staff được chọn
-  $(document).on("click", ".item-tech", async function () {
+  $(document).on("click", ".item-tech-ctpage", async function () {
     const $this = $(this);
-
+    if ($this.hasClass("not-ser")) {
+      console.log("Please back to choose tech!");
+      return;
+    }
     const store = salonStore.getState();
     const listStaffUser = store.listStaffUser;
     const dataBooking = store.dataBooking;
@@ -263,17 +288,21 @@ $(document).ready(async function () {
 
     const idStaff = $this.data("id");
     const inforStaff = listStaffUser.find((s) => s.employeeID == idStaff);
+
+    // update staff cho toàn bộ service của user
     user.services.forEach((cate) => {
       cate.itemService.forEach((srv) => {
         srv.selectedStaff = inforStaff;
       });
     });
+
     salonStore.setState({ dataBooking: { ...dataBooking } });
     // render lại list staff
-    console.log("dataBooking: ", dataBooking);
-    renderListStaff(listStaffUser);
+    renderListStaff_PageChooseOnlyTech(listStaffUser);
     // render lại footer
-    renderFooterTech();
+    renderFooterTech_PageChooseOnlyTech();
+    // render lại cart
+    Cart();
   });
 
   $(document).on("click", "#btn-next-tech", function () {
@@ -293,6 +322,12 @@ $(document).ready(async function () {
   });
   $(document).on("click", ".choose-multitech", async function () {
     const $this = $(this);
+    if ($this.hasClass("not-ser")) {
+      console.log("Please back to choose service!");
+      return;
+    }
     await ChooseTechForEachServices();
+    // Chuyển page chọn tech cho từng service, chỉ chọn được 1 thợ cho 1 service
+    salonStore.setState({ pageCurrent: PageCurrent.CHOOSE_TECH_FOR_SERVICE });
   });
 });

@@ -1,4 +1,4 @@
-function renderFooterTech() {
+function renderFooterTech_PageChooseTech() {
   const store = salonStore.getState();
   let chooseStaffBefore = store.chooseStaffBefore;
   // đã chọn tech mới được phép next
@@ -25,7 +25,7 @@ function renderFirstTechAvailable(tech) {
   const isSelected = chooseStaffBefore.includes(tech.employeeID);
 
   return `
-    <div class="item-tech item-pctech wrap-item-tech-first ${
+    <div class="item-tech item-tech-sctpage wrap-item-tech-first ${
       isSelected ? "selected" : ""
     }" data-id=${tech?.employeeID}>
       <span class="icon-checked ${isSelected ? "selected" : ""}">
@@ -72,7 +72,7 @@ function renderItemTech(staff) {
   const isStaff = chooseStaffBefore.includes(staff.employeeID);
   return `
     <div
-      class="item-tech item-pctech staff ${isStaff ? "selected" : ""}"
+      class="item-tech item-tech-sctpage staff ${isStaff ? "selected" : ""}"
       data-id=${staff?.employeeID}
       style="--border-color:${staff.color || "#6f42c1"}"
     >
@@ -122,7 +122,7 @@ function renderItemTech(staff) {
   `;
 }
 
-function renderListStaff(listUserStaff) {
+function renderListStaff_PageChooseTech(listUserStaff) {
   if (!listUserStaff?.length) return "";
   let htmlListTech = "";
 
@@ -162,7 +162,7 @@ export async function ScreenChooseTech() {
   const user = dataBooking.users.find((u) => u.isChoosing);
   const listStaffUser = store.listStaffUser;
   const htmlHeaderSalon = HeaderSalon();
-  const $wrapDirBtn = renderFooterTech();
+  const $wrapDirBtn = renderFooterTech_PageChooseTech();
   const htmlScreenChooseTechs = `
         <div class="wrap-content-salon">
              <div class="header-sertech">
@@ -216,7 +216,7 @@ export async function ScreenChooseTech() {
   const $wrapNewOnline = $(".wrap-newonline");
   $wrapNewOnline.empty();
   $wrapNewOnline.append(htmlScreenChooseTechs);
-  renderListStaff(listStaffUser);
+  renderListStaff_PageChooseTech(listStaffUser);
   // append Card
   Cart();
 }
@@ -226,17 +226,17 @@ import { HeaderSalon } from "../header/header-salon.js";
 // import constant
 import { idStaffDefault } from "../../constants/template-online.js";
 // import component
-import { ScreenChooseService } from "./screen-choose-service.js";
 import { ScreenChooseServiceForTech } from "./choose-service-for-tech/choose-service-for-tech.js";
 import { ServiceOrTech } from "../service-or-tech/service-or-tech.js";
 import { Cart } from "../cart/cart.js";
+import { PageCurrent } from "../../constants/new-online.js";
 $(document).ready(async function () {
   const store = salonStore.getState();
   const listStaffUser = (await store.getListUserStaff()) || [];
 
   const $wrapNewOnline = $(".wrap-newonline");
   // Lưu staff chọn vào chooseStaffBefore
-  $(document).on("click", ".item-pctech", function () {
+  $(document).on("click", ".item-tech-sctpage", function () {
     const $this = $(this);
     const staffId = $this.data("id");
 
@@ -260,10 +260,10 @@ $(document).ready(async function () {
 
     // render lại staff với trạng thái selected mới
     const listStaffUser = store.listStaffUser;
-    renderListStaff(listStaffUser);
+    renderListStaff_PageChooseTech(listStaffUser);
 
     // render lại footer (cập nhật nút Next nếu cần)
-    renderFooterTech();
+    renderFooterTech_PageChooseTech();
   });
 
   // btn back tech to services
@@ -278,7 +278,7 @@ $(document).ready(async function () {
     if (keyword) {
       list = list.filter((u) => u.nickName.toLowerCase().includes(keyword));
     }
-    renderListStaff(list);
+    renderListStaff_PageChooseTech(list);
   });
   $(document).on("click", "#btn-next-pctech", async function () {
     const $this = $(this);
@@ -288,5 +288,7 @@ $(document).ready(async function () {
     const isNext = chooseStaffBefore.length > 0;
     if (!isNext) return;
     await ScreenChooseServiceForTech();
+    // Chuyển page chọn nhiều service cho tech, có thể chọn nhiều service cho 1 tech và 1 service chọn nhiều tech,
+    salonStore.setState({ pageCurrent: PageCurrent.CHOOSE_SERVICE_FOR_TECH });
   });
 });

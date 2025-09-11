@@ -12,6 +12,7 @@
 .overlay-nav-cart.open {
   width: 100%;
   background: #d3d3d363;
+  z-index: 3000; /* nằm trên slider khi open */
 }
 .wrap-cart {
   position: relative;
@@ -332,12 +333,12 @@
 .cart-addon-wrapper svg.first {
   margin-right: 2px;
   position: relative;
-  top: -30px;
+  top: -22px;
 }
 .cart-addon-wrapper svg {
   margin-right: 2px;
   position: relative;
-  top: -50px;
+  top: -55px;
 }
 
 .connector-line {

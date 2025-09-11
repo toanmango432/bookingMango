@@ -1,21 +1,15 @@
-function renderListPeTech() {
+export function renderListPeTech_PageChooseServiceTech(forceChoose = false) {
   const store = salonStore.getState();
   const { dataBooking, listStaffUser } = store;
+  let itemTechChoosing = store.itemTechChoosing;
   const user = dataBooking.users.find((u) => u.isChoosing);
 
   let chooseStaffBefore = store.chooseStaffBefore || [];
 
-  // Nếu chưa có chooseStaffBefore và user chưa có service nào, active staff đầu tiên
-  const hasAnyService = user.services.some(
-    (cate) => cate.itemService.length > 0
-  );
-  if (
-    chooseStaffBefore.length === 0 &&
-    !hasAnyService &&
-    listStaffUser.length > 0
-  ) {
-    chooseStaffBefore = [listStaffUser[0].employeeID];
-    salonStore.setState({ chooseStaffBefore });
+  // Nếu chưa chọn tech nào thì alert và return
+  if (chooseStaffBefore.length === 0) {
+    alert("Please choose a tech before proceeding");
+    return;
   }
 
   // chỉ lấy staff có trong chooseStaffBefore
@@ -23,9 +17,36 @@ function renderListPeTech() {
     chooseStaffBefore.includes(s.employeeID)
   );
 
+  // --- Xác định itemTechChoosing ---
+  if (forceChoose || !itemTechChoosing) {
+    // lấy danh sách employeeID đã gắn với service
+    const staffWithService = new Set();
+    user.services.forEach((cate) => {
+      cate.itemService.forEach((srv) => {
+        if (srv.selectedStaff?.employeeID) {
+          staffWithService.add(srv.selectedStaff.employeeID);
+        }
+      });
+    });
+
+    // tìm staff đầu tiên chưa có trong staffWithService
+    let firstNoServiceStaff = chooseStaffBefore.find(
+      (id) => !staffWithService.has(id)
+    );
+
+    if (firstNoServiceStaff) {
+      itemTechChoosing = { employeeID: firstNoServiceStaff };
+    } else {
+      // fallback: staff đầu tiên trong chooseStaffBefore
+      itemTechChoosing = { employeeID: chooseStaffBefore[0] };
+    }
+
+    salonStore.setState({ itemTechChoosing });
+  }
+
   const htmlListPeTech = staffToRender
     .map((staff) => {
-      const isActive = chooseStaffBefore.includes(staff.employeeID);
+      const isActive = itemTechChoosing?.employeeID === staff.employeeID;
 
       // Tìm các service đang gắn với staff này
       const servicesOfStaff = [];
@@ -50,22 +71,39 @@ function renderListPeTech() {
       if (servicesOfStaff.length > 0) {
         const serviceBlocks = servicesOfStaff.map((s) => {
           const baseDuration = s.duration || 0;
-          const optionalsHtml = (s.optionals || [])
-            .map(
-              (opt) => `
-          <div class="ser-optional">
-            <span class="ser-name">+ ${opt.title} (${opt.timedura}m)</span>
-            <span class="ser-price">$${opt.price.toFixed(2)}</span>
-          </div>`
-            )
-            .join("");
+
+          // Đếm và tính tổng addOn
+          const addonCount = s.optionals?.length || 0;
+          const addOnTotalPrice = s.optionals?.reduce(
+            (sum, opt) => sum + (opt.price || 0),
+            0
+          );
+          // Nếu có addOn thì show 1 dòng tóm tắt
+          const optionalsHtml =
+            addonCount > 0
+              ? `
+                <div class="addon-indicator-fortech">
+                  <span class="be-addOn">
+                    ${addonCount} Add on
+                    <span class="be-addOn_cash">$${addOnTotalPrice.toFixed(
+                      2
+                    )}</span>
+                    <span class="partiti">|</span>
+                    <span class="be-addOn_card">$${addOnTotalPrice.toFixed(
+                      2
+                    )}</span>
+                  </span>
+                </div>
+              `
+              : "";
 
           return `
-      <div class="ser-of-tech">
-        <span class="ser-name">${s.title} (${baseDuration}m)</span>
-        <span class="ser-price">$${s.price.toFixed(2)}</span>
-      </div>
-      ${optionalsHtml}`;
+                  <div class="ser-of-tech">
+                    <span class="ser-name">${s.title} (${baseDuration}m)</span>
+                    <span class="ser-price">$${s.price.toFixed(2)}</span>
+                  </div>
+                  ${optionalsHtml}
+                `;
         });
 
         if (serviceBlocks.length > 1) {
@@ -82,15 +120,13 @@ function renderListPeTech() {
         <div class="techd-item ${isActive ? "active" : ""}" data-techd-id="${
         staff.employeeID
       }">
-          <div class="wrap-header-techd">
-            <div class="nametechd-time-dura">
-              <div class="name-techd text-uppercase">${staff.nickName}</div>
-              <span class="time-duratechd">
-              ${totalDuration > 0 ? `(${totalDuration}m)` : ""}
-              </span>
-            </div>
-              ${serviceInfoHtml}
+          <div class="nametechd-time-dura">
+            <div class="name-techd text-uppercase">${staff.nickName}</div>
+            <span class="time-duratechd">
+            ${totalDuration > 0 ? `(${totalDuration}m)` : ""}
+            </span>
           </div>
+          ${serviceInfoHtml}
         </div>`;
     })
     .join("");
@@ -124,91 +160,140 @@ function renderFooterService() {
   return $wrapDirBtn;
 }
 // Render service items
-function renderServices(listItem) {
-  const store = salonStore.getState();
-  const dataBooking = store.dataBooking;
-  const user = dataBooking.users.find((u) => u.isChoosing);
-  const selectedServices = [];
+// Hàm render 1 item service
+// Hàm dựng HTML cho 1 service
+function renderServiceItem(serviceItem, selectedServices, itemTechChoosing) {
+  const hasAddon = serviceItem.listOptionAddOn?.length > 0;
 
+  // Lấy tất cả tech đã chọn service này
+  const matchedServices = selectedServices.filter(
+    (s) => s.idItemService === serviceItem.id
+  );
+
+  const isSelected = matchedServices.some(
+    (s) => s.selectedStaff?.employeeID === itemTechChoosing?.employeeID
+  );
+
+  // AddOn tính theo service của tech đang active
+  const matchedActiveService = matchedServices.find(
+    (s) => s.selectedStaff?.employeeID === itemTechChoosing?.employeeID
+  );
+
+  const addonCount = matchedActiveService?.optionals?.length || 0;
+  const addOnTotalPrice =
+    matchedActiveService?.optionals?.reduce(
+      (sum, opt) => sum + (opt.price || 0),
+      0
+    ) || 0;
+
+  // Lấy danh sách tất cả tech đã chọn service này
+  const selectedByList = matchedServices
+    .map((s) => s.selectedStaff?.nickName || s.selectedStaff?.fullName)
+    .filter(Boolean);
+  return `
+    <div
+      class="wrap-ftservice-card ${isSelected ? "selected" : ""}"
+      data-iditem="${serviceItem.id}"
+    >
+      <span class="icon-checked ${isSelected ? "selected" : ""}">
+        <i class="fa-solid fa-check"></i>
+      </span>
+      <div class="green-addOn ${hasAddon ? "dis-addOn" : ""}">
+        <i class="fa-solid fa-chevron-right"></i>
+      </div>
+      <div class="service-card">
+        <div class="service-title text-uppercase">
+          ${serviceItem.title}
+        </div>
+        <div class="service-price">
+          <span class="pcash">
+            $${serviceItem.priceRental.toFixed(2)}
+            <span class="text-method">Cash</span>
+          </span> /
+          <span class="pcard">
+            $${serviceItem.priceRental.toFixed(2)}
+            <span class="text-method">Card</span>
+          </span>
+        </div>
+        <div class="bot-item-service">
+          ${
+            addonCount > 0
+              ? `<div class="addon-indicator">
+                    <span class="be-addOn">
+                      ${addonCount} Add on
+                      <span class="be-addOn_cash">
+                        $ ${addOnTotalPrice}
+                      </span>
+                      <span class="partiti">|</span>
+                      <span class="be-addOn_card">
+                        $ ${addOnTotalPrice}
+                      </span>
+                    </span>
+                  </div>`
+              : ""
+          }
+          ${
+            serviceItem.description
+              ? `<div class="info-icon"><i class="fa-solid fa-circle-info"></i></div>`
+              : ""
+          }
+          ${
+            selectedByList.length
+              ? `<div class="selected-by">
+                  <span>Selected by: <b>${selectedByList.join(", ")}</b></span>
+                </div>`
+              : ""
+          }
+        </div>
+      </div>
+    </div>
+  `;
+}
+// Hàm render lại toàn bộ list
+export function renderServices_PageChooseServiceTech(listItem) {
+  const store = salonStore.getState();
+  const { dataBooking, itemTechChoosing } = store;
+  const user = dataBooking.users.find((u) => u.isChoosing);
+
+  const selectedServices = [];
   if (user) {
-    for (const cate of user.services) {
-      for (const s of cate.itemService) {
-        selectedServices.push(s);
-      }
-    }
+    user.services.forEach((cate) => {
+      cate.itemService.forEach((s) => selectedServices.push(s));
+    });
   }
 
   const html = listItem
-    .map((serviceItem) => {
-      const hasAddon = serviceItem.listOptionAddOn?.length > 0;
-
-      // check service này có đang được chọn không
-      const matchedService = selectedServices.find(
-        (s) => s.idItemService === serviceItem.id
-      );
-      const isSelected = Boolean(matchedService);
-
-      // nếu có addon đã chọn
-      const addonCount = matchedService?.optionals?.length || 0;
-      const addOnTotalPrice =
-        matchedService?.optionals?.reduce(
-          (sum, opt) => sum + (opt.price || 0),
-          0
-        ) || 0;
-      return `
-        <div
-          class="wrap-ftservice-card ${isSelected ? "selected" : ""}"
-          data-iditem="${serviceItem.id}"
-        >
-          <span class="icon-checked ${isSelected ? "selected" : ""}"">
-            <i class="fa-solid fa-check"></i>
-          </span>
-          <div class="green-addOn ${hasAddon ? "dis-addOn" : ""}">
-            <i class="fa-solid fa-chevron-right"></i>
-          </div>
-          <div class="service-card">
-            <div class="service-title text-uppercase">
-              ${serviceItem.title}
-            </div>
-            <div class="service-price">
-              <span class="pcash">
-                $${serviceItem.priceRental.toFixed(2)} Cash
-              </span> /
-              <span class="pcard">
-                $${serviceItem.priceRental.toFixed(2)} Card
-              </span>
-            </div>
-            <div class="bot-item-service">
-              ${
-                addonCount > 0
-                  ? `<div class="addon-indicator">
-                        <span class="be-addOn">
-                          ${addonCount} Add on
-                          <span class="be-addOn_cash">
-                            $ ${addOnTotalPrice}
-                          </span>
-                          <span class="partiti">|</span>
-                          <span class="be-addOn_card">
-                            $ ${addOnTotalPrice}
-                          </span>
-                        </span>
-                      </div>`
-                  : ""
-              }
-              ${
-                serviceItem.description
-                  ? `<div class="info-icon"><i class="fa-solid fa-circle-info"></i></div>`
-                  : ""
-              }
-            </div>
-          </div>
-        </div>
-    `;
-    })
+    .map((serviceItem) =>
+      renderServiceItem(serviceItem, selectedServices, itemTechChoosing)
+    )
     .join("");
 
   $(".list-pesers3").html(html);
-  // load lại btn next, back footer
+
+  renderFooterService();
+}
+// Hàm render lại 1 item cụ thể
+function rerenderServiceItem(serviceItem) {
+  const store = salonStore.getState();
+  const { dataBooking, itemTechChoosing } = store;
+  const user = dataBooking.users.find((u) => u.isChoosing);
+
+  const selectedServices = [];
+  if (user) {
+    user.services.forEach((cate) => {
+      cate.itemService.forEach((s) => selectedServices.push(s));
+    });
+  }
+
+  const html = renderServiceItem(
+    serviceItem,
+    selectedServices,
+    itemTechChoosing
+  );
+
+  // Thay thế DOM cũ bằng DOM mới
+  $(`.wrap-ftservice-card[data-iditem="${serviceItem.id}"]`).replaceWith(html);
+
   renderFooterService();
 }
 
@@ -222,7 +307,7 @@ export async function ScreenChooseServiceForTech() {
 
   const htmlHeaderSalon = HeaderSalon(salonChoosing);
   // Lấy categories từ API
-  const htmlCategories = renderTrackCate(dataService);
+  const htmlCategories = renderTrackCate(dataService, "item-ftcate");
 
   // Render footer
   const $wrapDirBtn = renderFooterService();
@@ -274,11 +359,16 @@ export async function ScreenChooseServiceForTech() {
   $wrapNewOnline.append(htmlScreenChooseService);
   // render cart
   Cart();
+  // khởi tạo lần đầu renderServices_PageChooseServiceTech
+  const id = $(".item-ftcate.active").data("id");
+  const cate = dataService.find((c) => c.item.id === id);
+  renderServices_PageChooseServiceTech(cate?.item.listItem || []);
+  renderListPeTech_PageChooseServiceTech(true); // lần đầu render page
   // render slider cate
   setTimeout(() => {
-    const sliderEl = document.querySelector(".categories-search .categories");
+    const sliderEl = document.querySelector(".categories-ftsearch .categories");
     const sliderTrackSelector = ".slider-track-categories";
-    const cardSelector = ".item-cate";
+    const cardSelector = ".item-ftcate";
     const btnNextSelector = ".slider-btn-categories.next";
     const btnPreSelector = ".slider-btn-categories.prev";
 
@@ -293,11 +383,6 @@ export async function ScreenChooseServiceForTech() {
       );
     }
   }, 100);
-  // khởi tạo lần đầu renderServices
-  const id = $(".item-cate.active").data("id");
-  const cate = dataService.find((c) => c.item.id === id);
-  renderServices(cate?.item.listItem || []);
-  renderListPeTech();
   return htmlScreenChooseService;
 }
 
@@ -308,7 +393,6 @@ import { Cart } from "../../cart/cart.js";
 import { initSliderFromElement } from "../../choose-nail-salon/choose-nail-salon.js";
 // import constant
 import { idStaffDefault } from "../../../constants/template-online.js";
-import { ServiceOrTech } from "../../service-or-tech/service-or-tech.js";
 import { ChooseTechForServices } from "../choose-tech-for-service/choose-tech-for-service.js";
 import { renderTrackCate } from "../screen-choose-service.js";
 import { renderAddonPanel } from "../screen-choose-service.js";
@@ -317,77 +401,93 @@ import { ScreenChooseTech } from "../screen-choose-tech.js";
 $(document).ready(async function () {
   let dataService = await salonStore.getState().getListDataService();
   const $wrapNewOnline = $(".wrap-newonline");
-
-  // Search trong category active
-  $(document).on("input", ".input-search-ser", function () {
-    const keyword = $(this).val().toLowerCase();
-    const id = $(".item-cate.active").data("id");
-    const cate = dataService.find((c) => c.item.id === id);
-    let list = cate?.item.listItem || [];
-
-    if (keyword) {
-      list = list.filter((srv) => srv.title.toLowerCase().includes(keyword));
-    }
-
-    renderServices(list);
-  });
-
-  // Chọn category
-  $(document).on("click", ".item-cate", function () {
-    $(".item-cate").removeClass("active");
-    $(this).addClass("active");
-
-    const id = $(this).data("id");
-    const cate = dataService.find((c) => c.item.id === id);
-    renderServices(cate?.item.listItem || []);
-    $(".input-search-ser").val(""); // clear search khi đổi cate
-  });
-
   // Render lần đầu (category đầu tiên)
   if (dataService.length) {
-    renderServices(dataService[0].item.listItem);
+    renderServices_PageChooseServiceTech(dataService[0].item.listItem);
   }
 
   $(document).on("click", ".wrap-ftservice-card", async function () {
+    const isUnSelected = true; // True: Cho phép bỏ chọn nếu item service đã chọn
     const serviceId = $(this).data("iditem");
-    const cateId = $(".item-cate.active").data("id");
+    const cateId = $(".item-ftcate.active").data("id");
 
     const store = salonStore.getState();
+    const listStaffUser = store.listStaffUser;
+    let itemTechChoosing = store.itemTechChoosing;
     let dataService = store.getListDataService
       ? await store.getListDataService()
       : [];
     const cate = dataService.find((c) => c.item.id === cateId);
     const itemService = cate?.item.listItem.find((s) => s.id === serviceId);
-    if (!itemService) return;
+    if (!itemService) {
+      console.log("Not found item service!");
+      return;
+    }
+    if (!itemTechChoosing) {
+      console.log("Please choose tech!");
+      return;
+    }
 
     const dataBooking = store.dataBooking;
     const user = dataBooking.users.find((u) => u.isChoosing);
-
-    // Lấy tech đang active
-    const techActiveId = $(".techd-item.active").data("techd-id");
-    const techActive = store.listStaffUser.find(
-      (s) => s.employeeID == techActiveId
-    );
-    if (!techActive) return;
-
     // Tìm category trong user
     let cateInUser = user.services.find((s) => s.idService === cateId);
     if (!cateInUser) {
       cateInUser = { idService: cateId, itemService: [] };
       user.services.push(cateInUser);
     }
+    // Lấy tech đang active
+    const techActive = listStaffUser.find(
+      (s) => s.employeeID === itemTechChoosing.employeeID
+    );
+    if (!techActive) {
+      console.log("Not found tech active!");
+      return;
+    }
 
-    // Kiểm tra service đã có chưa
-    let existingService = cateInUser.itemService.find(
+    // Kiểm tra xem service đã được chọn chưa
+    let existingServices = cateInUser.itemService.filter(
       (s) => s.idItemService === itemService.id
     );
-    if (existingService) {
-      // Nếu có rồi → bỏ chọn (remove)
-      cateInUser.itemService = cateInUser.itemService.filter(
-        (s) => s.idItemService !== itemService.id
+
+    if (existingServices.length) {
+      // Kiểm tra xem techActive đã chọn service này chưa
+      let existingForTech = existingServices.find(
+        (s) => s.selectedStaff?.employeeID === techActive.employeeID
       );
+
+      if (existingForTech && isUnSelected) {
+        // Nếu đã chọn cùng tech active thì bỏ chọn service cho tech này
+        cateInUser.itemService = cateInUser.itemService.filter(
+          (s) =>
+            !(
+              s.idItemService === itemService.id &&
+              s.selectedStaff?.employeeID === techActive.employeeID
+            )
+        );
+      } else if (!existingForTech) {
+        // Nếu service đã được chọn bởi tech khác thì add thêm service cho tech active
+        cateInUser.itemService.push({
+          idItemService: itemService.id,
+          title: itemService.title,
+          price: itemService.priceRental,
+          duration: itemService.timetext,
+          selectedStaff: {
+            employeeID: techActive.employeeID,
+            nickName: techActive.nickName,
+          },
+          optionals: [],
+        });
+        // mở AddOn cho tech mới này
+        if (itemService.listOptionAddOn?.length) {
+          renderAddonPanel(itemService);
+          requestAnimationFrame(() => {
+            $(".overlay-nav-addOn").addClass("open");
+          });
+        }
+      }
     } else {
-      // Thêm mới
+      // Service chưa có -> thêm mới cho tech active
       cateInUser.itemService.push({
         idItemService: itemService.id,
         title: itemService.title,
@@ -400,7 +500,7 @@ $(document).ready(async function () {
         optionals: [],
       });
 
-      // Nếu có AddOn
+      // Nếu có AddOn, chỗ này add on cho tech đầu tiên
       if (itemService.listOptionAddOn?.length) {
         renderAddonPanel(itemService);
         requestAnimationFrame(() => {
@@ -409,33 +509,64 @@ $(document).ready(async function () {
       }
     }
 
-    salonStore.setState({ dataBooking });
-    renderServices(cate?.item.listItem || []);
+    salonStore.setState({ dataBooking: { ...dataBooking } });
+    rerenderServiceItem(itemService); // chỉ render lại item đang chọn, tối ưu
     renderFooterService();
-    renderListPeTech();
+    renderListPeTech_PageChooseServiceTech();
     Cart();
   });
 
-  // back choose service or tech
-  $(document).on("click", "#btn-back-ftser", async function () {
-    const $this = $(this);
-
-    await ScreenChooseTech();
-  });
-  // next choose service
-  $(document).on("click", "#btn-next-ser", function () {
+  $(document).on("click", ".techd-item", function () {
     const $this = $(this);
     const store = salonStore.getState();
-    const dataBooking = store.dataBooking;
-    const user = dataBooking.users.find((u) => u.isChoosing);
-    // Kiểm tra đã chọn service chưa trước khi next
-    const isNext = user.services.some((srv) => {
-      return srv.itemService.length > 0;
-    });
-    if (!isNext) return;
+    const dataService = store.dataServices;
 
-    $wrapNewOnline.empty();
-    const htmlChooseTechForSer = ChooseTechForServices();
-    $wrapNewOnline.append(htmlChooseTechForSer);
+    const techId = $this.data("techd-id");
+    const cateId = $(".item-ftcate.active").data("id");
+    const cate = dataService.find((c) => c.item.id === cateId);
+
+    // Cập nhật state
+    salonStore.setState({
+      itemTechChoosing: {
+        employeeID: techId,
+      },
+    });
+
+    // Update active UI
+    $(".techd-item").removeClass("active");
+    $this.addClass("active");
+
+    // Render lại list staff
+    console.log("render servies: ", cate);
+    renderServices_PageChooseServiceTech(cate?.item.listItem || []);
+  });
+
+  // Chọn category
+  $(document).on("click", ".item-ftcate", function () {
+    $(".item-ftcate").removeClass("active");
+    $(this).addClass("active");
+
+    const id = $(this).data("id");
+    const cate = dataService.find((c) => c.item.id === id);
+    renderServices_PageChooseServiceTech(cate?.item.listItem || []);
+    $(".input-search-ser").val(""); // clear search khi đổi cate
+  });
+  // Search trong category active
+  $(document).on("input", ".input-search-ftser", function () {
+    const keyword = $(this).val().toLowerCase();
+    const id = $(".item-ftcate.active").data("id");
+    const cate = dataService.find((c) => c.item.id === id);
+    let list = cate?.item.listItem || [];
+
+    if (keyword) {
+      list = list.filter((srv) => srv.title.toLowerCase().includes(keyword));
+    }
+    renderServices_PageChooseServiceTech(list);
+  });
+  //
+
+  // back choose service or tech
+  $(document).on("click", "#btn-back-ftser", async function () {
+    await ScreenChooseTech();
   });
 });

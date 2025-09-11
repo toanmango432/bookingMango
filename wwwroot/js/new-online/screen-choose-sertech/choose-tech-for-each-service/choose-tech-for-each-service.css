@@ -49,6 +49,9 @@
   flex: 1 0 0;
   padding: 4px 8px 8px 24px;
 }
+.list-petechs.not-ser {
+  opacity: 0.5;
+}
 
 .item-petech,
 .wrap-item-petech-first {
