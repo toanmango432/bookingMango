@@ -10,7 +10,9 @@ export async function renderCalendar(
 ) {
   const daysEl = document.getElementById("days");
   const monthYearEl = document.getElementById("monthYear");
-  if (!daysEl || monthYearEl) return;
+  console.log("here");
+  if (!daysEl || !monthYearEl) return;
+  console.log("here:daysEl ");
   daysEl.innerHTML = "";
   monthYearEl.textContent = `${monthNames[currentMonth]}, ${currentYear}`;
 
