@@ -252,11 +252,11 @@ export function renderServices(listItem) {
                         <span class="be-addOn">
                           ${addonCount} Add on
                           <span class="be-addOn_cash">
-                            $ ${addOnTotalPrice}
+                            $ ${addOnTotalPrice.toFixed(2)}
                           </span>
                           <span class="partiti">|</span>
                           <span class="be-addOn_card">
-                            $ ${addOnTotalPrice}
+                            $ ${addOnTotalPrice.toFixed(2)}
                           </span>
                         </span>
                       </div>`
@@ -278,26 +278,41 @@ export function renderServices(listItem) {
   // load lại btn next, back footer
   renderFooterService();
 }
-export function renderAddonPanel(itemService) {
+export function renderAddonPanel(itemService, employeeID) {
   const store = salonStore.getState();
   const dataBooking = store.dataBooking;
   const user = dataBooking.users.find((u) => u.isChoosing);
   if (!user) return;
 
-  // Tìm service đã chọn trong dataBooking
   let currentService = null;
-  for (const cate of user.services) {
-    currentService = cate?.itemService.find(
-      (s) => s.idItemService === itemService.id
-    );
-    if (currentService) break;
+  let serviceInstanceId = null;
+  // Tìm service đã chọn trong dataBooking
+  if (employeeID) {
+    // tìm đúng instance trong user theo serviceId + employeeID
+    for (const cate of user.services) {
+      currentService = cate.itemService.find(
+        (s) =>
+          s.idItemService === itemService.id &&
+          s.selectedStaff?.employeeID === employeeID
+      );
+      if (currentService) break;
+    }
+    // nếu có employee tức là chọn tech trước, do đó dùng serviceInstanceId
+    serviceInstanceId = `${itemService.id}-${employeeID}`;
+  } else {
+    // fallback: chỉ lấy theo idItemService
+    for (const cate of user.services) {
+      currentService = cate.itemService.find(
+        (s) => s.idItemService === itemService.id
+      );
+      if (currentService) break;
+    }
   }
 
   // Lấy danh sách add-on đã chọn
   const selectedOptIds = currentService
     ? currentService.optionals.map((o) => o.id)
     : [];
-
   // xoá panel cũ
   $(".overlay-nav-addOn").remove();
   const html = `
@@ -319,7 +334,11 @@ export function renderAddonPanel(itemService) {
                 <span>Add-Ons</span>
             </div>
           </div>
-          <div class="addon-list" data-id=${itemService.id}>
+          <div
+            class="addon-list"
+            data-instance-id="${serviceInstanceId || "undefined"}"
+            data-id=${itemService.id}
+          >
             ${itemService.listOptionAddOn
               .map((opt) => {
                 const isSelected = selectedOptIds.includes(opt.id);
@@ -386,7 +405,10 @@ import { ScreenChooseTech } from "./screen-choose-tech.js";
 // import popup
 import { contentShowResetDataBooking } from "../../popup/content/reset-databooking.js";
 import { renderBasePopup } from "../../popup/base.js";
-import { renderServices_PageChooseServiceTech } from "./choose-service-for-tech/choose-service-for-tech.js";
+import {
+  renderListPeTech_PageChooseServiceTech,
+  renderServices_PageChooseServiceTech,
+} from "./choose-service-for-tech/choose-service-for-tech.js";
 
 // hanle event
 $(document).ready(async function () {
@@ -518,6 +540,12 @@ $(document).ready(async function () {
       // click out
       if (!$(e.target).closest(".addon-panel").length) {
         $(".overlay-nav-addOn").removeClass("open");
+        if ($(".overlay-nav-cart").hasClass("addon-pan")) {
+          $(".overlay-nav-cart").removeClass("addon-pan").addClass("open");
+
+          $(".content-cart").hasClass("addon-pan") &&
+            $(".content-cart").removeClass("addon-pan").addClass("open");
+        }
       }
     }
   });
@@ -534,14 +562,19 @@ $(document).ready(async function () {
     const $item = $this.find(".checkbox-addOn");
     const optId = $this.data("id");
 
-    // lấy id service đang mở panel
-    const idItemService = $this.closest(".addon-list").data("id");
-
+    // lấy instanceId service đang mở panel
+    let serviceInstanceId = $this.closest(".addon-list").data("instance-id");
+    if (serviceInstanceId == "undefined") {
+      serviceInstanceId = $this.closest(".addon-list").data("id");
+    }
+    console.log("serIn: ", serviceInstanceId);
     // tìm đúng service theo id
     let currentService = null;
     for (const cate of user.services) {
       currentService = cate.itemService.find(
-        (s) => s.idItemService === idItemService
+        (s) =>
+          s.serviceInstanceId === serviceInstanceId ||
+          s.idItemService === serviceInstanceId
       );
       if (currentService) break;
     }
@@ -565,7 +598,10 @@ $(document).ready(async function () {
     const pageCurrent = store.pageCurrent;
     if (pageCurrent === PageCurrent.CHOOSE_SERVICE) {
       // Load lại service khi thay đổi addOn
-      const cateId = $(".item-ftcate.active").data("id");
+      let cateId = $(".item-cate.active").data("id");
+      if (!cateId) {
+        cateId = $("item-ftcate.active").data("id");
+      }
       const cate = store.dataServices;
       const currentCate = cate.find((c) => c.item.id === cateId);
       renderServices(currentCate?.item.listItem);
@@ -582,7 +618,18 @@ $(document).ready(async function () {
       const id = $(".item-ftcate.active").data("id");
       const cate = dataServices.find((c) => c.item.id === id);
       renderServices_PageChooseServiceTech(cate?.item.listItem);
+      renderListPeTech_PageChooseServiceTech();
+
+      // Load lại cart khi đang chỉ chọn add on hoặc đang có mở cart
+      // đang mở cart
+      const $cartActive = $(".content-cart.addon-pan");
+      if ($cartActive.length) {
+        Cart(true, true);
+      } else {
+        Cart();
+      }
     }
+    console.log("data affter choose addon item: ", dataBooking);
   });
 
   $(document).on("click", ".btn-close-addon, .btn-done", async function () {

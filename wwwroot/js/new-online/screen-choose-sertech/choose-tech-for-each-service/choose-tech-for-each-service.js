@@ -199,6 +199,7 @@ export function renderListPeSer(forceChoose = false) {
 
   let totalCash = 0;
   let totalCard = 0;
+
   const userHtml = user.services
     .map((cate) =>
       cate.itemService
@@ -209,33 +210,66 @@ export function renderListPeSer(forceChoose = false) {
 
           totalCash += price;
           totalCard += price;
+          console.log("srv: ", srv);
+
+          let totalAddonCount = 0;
+          let totalAddonPrice = 0;
+          if (Array.isArray(srv.optionals)) {
+            totalAddonCount = srv.optionals.length;
+            totalAddonPrice = srv.optionals.reduce(
+              (sum, opt) => sum + (opt.price || 0),
+              0
+            );
+          }
+          console.log("totalAddonCount: ", totalAddonCount);
+          console.log("totalAddonPrice: ", totalAddonPrice);
+          // Build dòng AddOn tổng
+          let optionalsHtml = "";
+          if (totalAddonCount > 0) {
+            optionalsHtml = `
+                          <div class="addon-indicator-forser">
+                            <span class="be-addOn">
+                              ${totalAddonCount} Add on
+                              <span class="be-addOn_cash">$${totalAddonPrice.toFixed(
+                                2
+                              )}</span>
+                              <span class="partiti">|</span>
+                              <span class="be-addOn_card">$${totalAddonPrice.toFixed(
+                                2
+                              )}</span>
+                            </span>
+                          </div>
+                        `;
+          }
+          console.log("optionalHTMl: ", optionalsHtml);
 
           // block HTML khép kín
           return `
             <div
-                class="serd-item"
+                class="serd-item ${totalAddonCount > 0 ? "has-addon" : ""}"
                 data-service-id="${cate.idService}"
                 data-item-service-id="${srv.idItemService}"
             >
-                <div class="wrap-header-serd">
-                    <div class="d-wrap-header-serd">
-                        <div class="cart-item-header">
-                            <div class="cart-title">${srv.title}</div>
-                            <div class="cart-prices">
-                                <span class="cashaddon-in-cart">$${price.toFixed(
-                                  2
-                                )}</span> |
-                                <span class="cardaddon-in-cart">$${price.toFixed(
-                                  2
-                                )}</span>
-                            </div>
-                        </div>
-                        <div class="staff-serd">
-                            <div class="cart-staff text-uppercase">${staffName}</div>
-                            <div class="cart-duration">${duration} mins</div>
-                        </div>
+              <div class="wrap-header-serd">
+                <div class="d-wrap-header-serd">
+                  <div class="cart-item-header">
+                    <div class="cart-title">${srv.title}</div>
+                    <div class="cart-prices">
+                      <span class="cashaddon-in-cart">$${price.toFixed(
+                        2
+                      )}</span> |
+                      <span class="cardaddon-in-cart">$${price.toFixed(
+                        2
+                      )}</span>
                     </div>
+                  </div>
+                  <div class="staff-serd">
+                    <div class="cart-staff text-uppercase">${staffName}</div>
+                    <div class="cart-duration">${duration} mins</div>
+                  </div>
                 </div>
+              </div>
+              ${optionalsHtml}
             </div>`;
         })
         .join("")
@@ -289,6 +323,7 @@ export function renderListPeSer(forceChoose = false) {
   }
   // chưa xử lý chuẩn cho trường hợp next available
   // khi chọn next available thì được phép trùng
+  console.log("wrap-list-peser: ", userHtml);
   const htmlPeSer = `
     <div class="wrap-list-peser">
         <div class="list-peser">

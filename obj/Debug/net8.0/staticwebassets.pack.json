@@ -293,6 +293,10 @@
       "PackagePath": "staticwebassets/js/constants/days-weeks.js"
     },
     {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/constants/new-online.js",
+      "PackagePath": "staticwebassets/js/constants/new-online.js"
+    },
+    {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/constants/template-online.js",
       "PackagePath": "staticwebassets/js/constants/template-online.js"
     },
@@ -433,6 +437,14 @@
       "PackagePath": "staticwebassets/js/new-online/screen-choose-sertech/choose-service-for-tech/choose-service-for-tech.js"
     },
     {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/screen-choose-sertech/choose-tech-for-each-service/choose-tech-for-each-service.css",
+      "PackagePath": "staticwebassets/js/new-online/screen-choose-sertech/choose-tech-for-each-service/choose-tech-for-each-service.css"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/screen-choose-sertech/choose-tech-for-each-service/choose-tech-for-each-service.js",
+      "PackagePath": "staticwebassets/js/new-online/screen-choose-sertech/choose-tech-for-each-service/choose-tech-for-each-service.js"
+    },
+    {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/screen-choose-sertech/choose-tech-for-service/choose-tech-for-service.css",
       "PackagePath": "staticwebassets/js/new-online/screen-choose-sertech/choose-tech-for-service/choose-tech-for-service.css"
     },
@@ -491,6 +503,10 @@
     {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/popup/content/register.js",
       "PackagePath": "staticwebassets/js/popup/content/register.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/popup/content/reset-databooking.js",
+      "PackagePath": "staticwebassets/js/popup/content/reset-databooking.js"
     },
     {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/popup/content/verify-code.js",

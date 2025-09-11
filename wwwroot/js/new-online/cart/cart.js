@@ -37,7 +37,13 @@ export function Cart(isOpen = false, isAddOn = false) {
                           <path d="M1.31546 0.960938C1.31546 0.684795 1.09161 0.460938 0.815464 0.460938C0.539321 0.460938 0.315464 0.684795 0.315464 0.960938H0.815464H1.31546ZM0.815464 78.3451L1.31546 78.3451V78.3451H0.815464ZM6.11152 95.8661L6.07126 96.3645L6.11152 95.8661ZM12.5238 95.8661C12.5238 97.3388 13.7177 98.5328 15.1905 98.5328C16.6632 98.5328 17.8571 97.3388 17.8571 95.8661C17.8571 94.3933 16.6632 93.1994 15.1905 93.1994C13.7177 93.1994 12.5238 94.3933 12.5238 95.8661ZM0.815464 0.960938H0.315464V78.3451H0.815464H1.31546V0.960938H0.815464ZM0.815464 78.3451L0.315464 78.3451C0.315448 82.6975 0.236602 87.0276 0.871957 90.316C1.19044 91.9643 1.69741 93.4072 2.52563 94.4758C3.36947 95.5645 4.5287 96.2399 6.07126 96.3645L6.11152 95.8661L6.15178 95.3677C4.89354 95.2661 3.99035 94.7332 3.31602 93.8632C2.62608 92.973 2.15913 91.7065 1.8538 90.1262C1.24152 86.9574 1.31545 82.7532 1.31546 78.3451L0.815464 78.3451ZM6.11152 95.8661L6.07126 96.3645C8.7374 96.5798 11.8388 96.3661 15.1905 96.3661V95.8661V95.3661C11.7329 95.3661 8.76945 95.5792 6.15178 95.3677L6.11152 95.8661Z" fill="#707070"/>
                         </svg>`
                   }
-                  <div class="cart-addon" data-addon-id="${opt.id}">
+                  <div
+                    class="cart-addon"
+                    data-addon-id="${opt.id}"
+                    data-service-instance-id="${
+                      srv.serviceInstanceId || "undefined"
+                    }"
+                  >
                     <button class="btn-remove-addon">
                       <i class="fa-solid fa-xmark"></i>
                     </button>
@@ -73,9 +79,12 @@ export function Cart(isOpen = false, isAddOn = false) {
 
           // block HTML khép kín
           return `
-            <div class="cart-item" data-service-id="${
-              cate.idService
-            }" data-item-service-id="${srv.idItemService}">
+            <div
+              class="cart-item"
+              data-service-id="${cate.idService}"
+              data-item-service-id="${srv.idItemService}"
+              data-service-instance-id="${srv.serviceInstanceId || "undefined"}"
+            >
               <div class="wrap-header-dura">
                 <button class="btn-remove-cart-item">
                   <i class="fa-solid fa-xmark"></i>
@@ -93,7 +102,7 @@ export function Cart(isOpen = false, isAddOn = false) {
                     </div>
                   </div>
                   <div class="staff-dura">
-                    <div class="cart-staff">${staffName}</div>
+                    <div id="select-staff-in-cart" class="cart-staff">${staffName}</div>
                     <div class="cart-duration">${duration} mins</div>
                   </div>
                 </div>
@@ -191,6 +200,7 @@ import {
 } from "../screen-choose-sertech/choose-tech-for-each-service/choose-tech-for-each-service.js";
 import { renderListPeTech_PageChooseServiceTech } from "../screen-choose-sertech/choose-service-for-tech/choose-service-for-tech.js";
 import { renderServices_PageChooseServiceTech } from "../screen-choose-sertech/choose-service-for-tech/choose-service-for-tech.js";
+import { ChooseTechForEachServices } from "../screen-choose-sertech/choose-tech-for-each-service/choose-tech-for-each-service.js";
 $(document).ready(async function () {
   // Toggle giỏ hàng
   $(document).on("click", ".cart button", function (e) {
@@ -216,17 +226,25 @@ $(document).ready(async function () {
 
     // xử lý chung khi xoá
     const itemServiceId = $(this).closest(".cart-item").data("item-service-id");
+    const instanceId = $(this)
+      .closest(".cart-item")
+      .data("service-instance-id");
+
     const dataBooking = store.dataBooking;
     // Tìm user đang chọn
     const user = dataBooking.users.find((u) => u.isChoosing);
     if (!user) return;
 
     // Cập nhật itemService trong user đó
-
     user.services.forEach((cate) => {
-      cate.itemService = cate.itemService.filter(
-        (item) => item.idItemService !== itemServiceId
-      );
+      cate.itemService = cate.itemService.filter((item) => {
+        if (instanceId !== "undefined") {
+          // xoá đúng instance
+          return item.serviceInstanceId !== instanceId;
+        }
+        // fallback theo id
+        return item.idItemService !== itemServiceId;
+      });
     });
     // set lại store
     salonStore.setState({ dataBooking: { ...dataBooking } });
@@ -258,9 +276,14 @@ $(document).ready(async function () {
 
   $(document).on("click", ".btn-remove-addon", function () {
     const addonId = $(this).closest(".cart-addon").data("addon-id");
+    const instanceId = $(this)
+      .closest(".cart-addon")
+      .data("service-instance-id");
 
     const store = salonStore.getState();
     const dataBooking = store.dataBooking;
+    let pageCurrent = store.pageCurrent;
+    const dataServices = store.dataServices;
 
     // tìm user đang chọn
     const user = dataBooking.users.find((u) => u.isChoosing);
@@ -269,21 +292,37 @@ $(document).ready(async function () {
     // cập nhật optionals trong user đó
     user.services.forEach((cate) => {
       cate.itemService.forEach((srv) => {
-        srv.optionals = srv.optionals.filter(
-          (opt) => String(opt.id) !== String(addonId)
-        );
+        if (instanceId == "undefined" || srv.serviceInstanceId === instanceId) {
+          srv.optionals = srv.optionals.filter(
+            (opt) => String(opt.id) !== String(addonId)
+          );
+        }
       });
     });
-
     // set lại state
     salonStore.setState({ dataBooking: { ...dataBooking } });
 
     Cart(true); // render lại giỏ
+    // Khi remove addOn cần render lại ui cần thiết
     // Load lại service khi thay đổi addOn
-    const cateId = $(".item-cate.active").data("id");
-    const cate = store.dataServices;
-    const currentCate = cate.find((c) => c.item.id === cateId);
-    renderServices(currentCate.item.listItem);
+    let cateId =
+      $(".item-cate.active").data("id") || $(".item-ftcate.active").data("id");
+
+    if (cateId) {
+      const cate = store.dataServices;
+      const currentCate = cate.find((c) => c.item.id === cateId);
+      renderServices(currentCate.item.listItem);
+    }
+    console.log("Page: ", pageCurrent);
+    // render lại theo page
+    if (pageCurrent === PageCurrent.CHOOSE_SERVICE_FOR_TECH) {
+      console.log("check here");
+      renderListPeTech_PageChooseServiceTech();
+      // khởi tạo lần đầu renderServices_PageChooseServiceTech
+      const id = $(".item-ftcate.active").data("id");
+      const cate = dataServices.find((c) => c.item.id === id);
+      renderServices_PageChooseServiceTech(cate?.item.listItem || []);
+    }
   });
 
   // close-cart
@@ -305,10 +344,22 @@ $(document).ready(async function () {
     const cate = dataServices.find((c) => c.item.id === serviceId);
     const itemService = cate?.item.listItem.find((s) => s.id === itemServiceId);
     let settingPanel = {};
-    renderAddonPanel(itemService, settingPanel);
+    renderAddonPanel(itemService);
     // trigger chờ để transition
     requestAnimationFrame(() => {
       $(".overlay-nav-addOn").addClass("open");
     });
+  });
+
+  // Chuyển page chọn tech cho service trong cart
+  $(document).on("click", "#select-staff-in-cart", async function () {
+    const $this = $(this);
+    if ($this.hasClass("not-ser")) {
+      console.log("Please back to choose service!");
+      return;
+    }
+    await ChooseTechForEachServices();
+    // Chuyển page chọn tech cho từng service, chỉ chọn được 1 thợ cho 1 service
+    salonStore.setState({ pageCurrent: PageCurrent.CHOOSE_TECH_FOR_SERVICE });
   });
 });

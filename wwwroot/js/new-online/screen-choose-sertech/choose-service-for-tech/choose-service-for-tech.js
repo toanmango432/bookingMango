@@ -43,7 +43,6 @@ export function renderListPeTech_PageChooseServiceTech(forceChoose = false) {
 
     salonStore.setState({ itemTechChoosing });
   }
-
   const htmlListPeTech = staffToRender
     .map((staff) => {
       const isActive = itemTechChoosing?.employeeID === staff.employeeID;
@@ -58,7 +57,7 @@ export function renderListPeTech_PageChooseServiceTech(forceChoose = false) {
         });
       });
 
-      // tính tổng thời gian (service + optionals)
+      // Tính tổng thời gian (service + optionals)
       const totalDuration = servicesOfStaff.reduce((sum, s) => {
         let d = s.duration || 0;
         if (Array.isArray(s.optionals)) {
@@ -67,55 +66,62 @@ export function renderListPeTech_PageChooseServiceTech(forceChoose = false) {
         return sum + d;
       }, 0);
 
+      // Tính tổng AddOn (tất cả service)
+      let totalAddonCount = 0;
+      let totalAddonPrice = 0;
+      servicesOfStaff.forEach((s) => {
+        if (Array.isArray(s.optionals)) {
+          totalAddonCount += s.optionals.length;
+          totalAddonPrice += s.optionals.reduce(
+            (sum, opt) => sum + (opt.price || 0),
+            0
+          );
+        }
+      });
+
+      // Build dòng AddOn tổng
+      let optionalsHtml = "";
+      if (totalAddonCount > 0) {
+        optionalsHtml = `
+                          <div class="addon-indicator-fortech">
+                            <span class="be-addOn">
+                              ${totalAddonCount} Add on
+                              <span class="be-addOn_cash">$${totalAddonPrice.toFixed(
+                                2
+                              )}</span>
+                              <span class="partiti">|</span>
+                              <span class="be-addOn_card">$${totalAddonPrice.toFixed(
+                                2
+                              )}</span>
+                            </span>
+                          </div>
+                        `;
+      }
+
+      // Build service blocks
       let serviceInfoHtml = `<span class="no-ser">No service</span>`;
       if (servicesOfStaff.length > 0) {
         const serviceBlocks = servicesOfStaff.map((s) => {
           const baseDuration = s.duration || 0;
-
-          // Đếm và tính tổng addOn
-          const addonCount = s.optionals?.length || 0;
-          const addOnTotalPrice = s.optionals?.reduce(
-            (sum, opt) => sum + (opt.price || 0),
-            0
-          );
-          // Nếu có addOn thì show 1 dòng tóm tắt
-          const optionalsHtml =
-            addonCount > 0
-              ? `
-                <div class="addon-indicator-fortech">
-                  <span class="be-addOn">
-                    ${addonCount} Add on
-                    <span class="be-addOn_cash">$${addOnTotalPrice.toFixed(
-                      2
-                    )}</span>
-                    <span class="partiti">|</span>
-                    <span class="be-addOn_card">$${addOnTotalPrice.toFixed(
-                      2
-                    )}</span>
-                  </span>
-                </div>
-              `
-              : "";
-
           return `
                   <div class="ser-of-tech">
                     <span class="ser-name">${s.title} (${baseDuration}m)</span>
                     <span class="ser-price">$${s.price.toFixed(2)}</span>
                   </div>
-                  ${optionalsHtml}
                 `;
         });
 
         if (serviceBlocks.length > 1) {
           const hiddenCount = serviceBlocks.length - 1;
           serviceInfoHtml =
-            serviceBlocks.slice(0, 1).join("") +
+            serviceBlocks[0] +
             `<div class="ser-of-tech see-more">+${hiddenCount} more...</div>`;
         } else {
           serviceInfoHtml = serviceBlocks.join("");
         }
       }
 
+      // Ghép vào HTML cuối
       return `
         <div class="techd-item ${isActive ? "active" : ""}" data-techd-id="${
         staff.employeeID
@@ -123,11 +129,13 @@ export function renderListPeTech_PageChooseServiceTech(forceChoose = false) {
           <div class="nametechd-time-dura">
             <div class="name-techd text-uppercase">${staff.nickName}</div>
             <span class="time-duratechd">
-            ${totalDuration > 0 ? `(${totalDuration}m)` : ""}
+              ${totalDuration > 0 ? `(${totalDuration}m)` : ""}
             </span>
           </div>
           ${serviceInfoHtml}
-        </div>`;
+          ${optionalsHtml}
+        </div>
+      `;
     })
     .join("");
 
@@ -222,11 +230,11 @@ function renderServiceItem(serviceItem, selectedServices, itemTechChoosing) {
                     <span class="be-addOn">
                       ${addonCount} Add on
                       <span class="be-addOn_cash">
-                        $ ${addOnTotalPrice}
+                        $ ${addOnTotalPrice.toFixed(2)}
                       </span>
                       <span class="partiti">|</span>
                       <span class="be-addOn_card">
-                        $ ${addOnTotalPrice}
+                        $ ${addOnTotalPrice.toFixed(2)}
                       </span>
                     </span>
                   </div>`
@@ -402,6 +410,7 @@ $(document).ready(async function () {
   let dataService = await salonStore.getState().getListDataService();
   const $wrapNewOnline = $(".wrap-newonline");
   // Render lần đầu (category đầu tiên)
+  //  Trường hợp này có chọn tech trước, do đó lấy tech active truyền cho pannel addOn
   if (dataService.length) {
     renderServices_PageChooseServiceTech(dataService[0].item.listItem);
   }
@@ -450,6 +459,8 @@ $(document).ready(async function () {
       (s) => s.idItemService === itemService.id
     );
 
+    const serviceInstanceId = `${itemService.id}-${techActive.employeeID}`;
+
     if (existingServices.length) {
       // Kiểm tra xem techActive đã chọn service này chưa
       let existingForTech = existingServices.find(
@@ -457,17 +468,14 @@ $(document).ready(async function () {
       );
 
       if (existingForTech && isUnSelected) {
-        // Nếu đã chọn cùng tech active thì bỏ chọn service cho tech này
+        // Dùng serviceInstanceId
         cateInUser.itemService = cateInUser.itemService.filter(
-          (s) =>
-            !(
-              s.idItemService === itemService.id &&
-              s.selectedStaff?.employeeID === techActive.employeeID
-            )
+          (s) => s.serviceInstanceId !== serviceInstanceId
         );
       } else if (!existingForTech) {
         // Nếu service đã được chọn bởi tech khác thì add thêm service cho tech active
         cateInUser.itemService.push({
+          serviceInstanceId,
           idItemService: itemService.id,
           title: itemService.title,
           price: itemService.priceRental,
@@ -480,7 +488,7 @@ $(document).ready(async function () {
         });
         // mở AddOn cho tech mới này
         if (itemService.listOptionAddOn?.length) {
-          renderAddonPanel(itemService);
+          renderAddonPanel(itemService, techActive.employeeID);
           requestAnimationFrame(() => {
             $(".overlay-nav-addOn").addClass("open");
           });
@@ -489,6 +497,7 @@ $(document).ready(async function () {
     } else {
       // Service chưa có -> thêm mới cho tech active
       cateInUser.itemService.push({
+        serviceInstanceId,
         idItemService: itemService.id,
         title: itemService.title,
         price: itemService.priceRental,
@@ -502,7 +511,7 @@ $(document).ready(async function () {
 
       // Nếu có AddOn, chỗ này add on cho tech đầu tiên
       if (itemService.listOptionAddOn?.length) {
-        renderAddonPanel(itemService);
+        renderAddonPanel(itemService, techActive.employeeID);
         requestAnimationFrame(() => {
           $(".overlay-nav-addOn").addClass("open");
         });

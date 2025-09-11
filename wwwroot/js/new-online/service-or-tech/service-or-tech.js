@@ -83,6 +83,9 @@ $(document).ready(async function () {
       flow: SelecteFlow.SER,
       pageCurrent: PageCurrent.CHOOSE_SERVICE,
     });
+
+    // reset dataBooking
+    salonStore.resetDataBooking();
   });
 
   $(document).on("click", "#options-tech", async function () {
@@ -91,5 +94,8 @@ $(document).ready(async function () {
       flow: SelecteFlow.TECH,
       pageCurrent: PageCurrent.CHOOSE_TECH,
     });
+
+    // reset dataBooking
+    salonStore.resetDataBooking();
   });
 });
