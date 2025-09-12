@@ -413,6 +413,7 @@ export function renderListPeSer(forceChoose = false) {
 export async function ChooseTechForEachServices() {
   const store = salonStore.getState();
   const dataBooking = store.dataBooking;
+  (await store.getListUserStaff()) || [];
   const user = dataBooking.users.find((u) => u.isChoosing);
   const listStaffUser = store.listStaffUser;
 
@@ -471,7 +472,6 @@ import { ScreenChooseService } from "../screen-choose-service.js";
 import { Cart } from "../../cart/cart.js";
 $(document).ready(async function () {
   const store = salonStore.getState();
-  const listStaffUser = (await store.getListUserStaff()) || [];
   const $wrapNewOnline = $(".wrap-newonline");
 
   // btn back tech to services
@@ -482,6 +482,7 @@ $(document).ready(async function () {
   });
 
   $(document).on("input", ".input-search-tech", async function () {
+    const listStaffUser = store.listStaffUser;
     const keyword = $(this).val().toLowerCase();
     let list = listStaffUser;
     if (keyword) {

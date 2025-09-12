@@ -412,7 +412,8 @@ import {
 
 // hanle event
 $(document).ready(async function () {
-  let dataService = await salonStore.getState().getListDataService();
+  const store = salonStore.getState();
+
   const $wrapNewOnline = $(".wrap-newonline");
   const isMobile = $(window).width() <= 768;
   let selectFlow;
@@ -420,6 +421,8 @@ $(document).ready(async function () {
   // Toggle search
   $(document).on("click", ".btn-search-toggle", function () {
     const $this = $(this);
+    const dataService = store.dataServices;
+
     const $inputSearch = $(".input-search-ser");
     const $wrapSearchSer = $(".wrap-search-ser");
     console.log("here");
@@ -436,6 +439,8 @@ $(document).ready(async function () {
 
   // Search trong category active
   $(document).on("input", ".input-search-ser", function () {
+    const dataService = store.dataServices;
+
     const keyword = $(this).val().toLowerCase();
     const id = $(".item-cate.active").data("id");
     const cate = dataService.find((c) => c.item.id === id);
@@ -450,6 +455,8 @@ $(document).ready(async function () {
 
   // Chọn category
   $(document).on("click", ".item-cate", function () {
+    const dataService = store.dataServices;
+
     $(".item-cate").removeClass("active");
     $(this).addClass("active");
 

@@ -8,9 +8,11 @@ export async function renderCalendar(
   selectedDate, // ngày đã chọn nếu có
   dataBooking
 ) {
+  const store = salonStore.getState();
   const daysEl = document.getElementById("days");
   const monthYearEl = document.getElementById("monthYear");
-  if (!daysEl || monthYearEl) return;
+
+  if (!daysEl || !monthYearEl) return;
   daysEl.innerHTML = "";
   monthYearEl.textContent = `${monthNames[currentMonth]}, ${currentYear}`;
 
@@ -89,7 +91,7 @@ export async function renderCalendar(
             return;
           }
         });
-        templateStore.setState({ dataBooking });
+        salonStore.setState({ dataBooking });
 
         day.classList.add("active");
         document.getElementById("selectedDateTitle").textContent =
@@ -113,17 +115,17 @@ export async function renderCalendar(
         const listUniqueEmID = Array.from(uniqueEmployeeID);
         // lọc lại thời gian cho ngày mới
         for (const item of listUniqueEmID) {
-          await fetchStaffTimeSlots({
+          await buildSlotTimeMultiTechFromBooking({
             dataBooking,
-            itemSelected: {},
-            empID: item,
+            includeChooseStaffBefore: false,
+            oldEmpID: null,
           });
         }
-        const slotTimeForSelect = templateStore.getState().slotTimeForSelect;
+        const slotTimeForSelect = store.slotTimeForSelect;
+        console.log("time: ", slotTimeForSelect);
         renderTimeSlotsForDate(dataBooking, slotTimeForSelect);
       });
     }
-
     daysEl.appendChild(day);
   }
 
@@ -140,227 +142,384 @@ export async function renderCalendar(
   renderTimeSlotsForDate(dataBooking);
 }
 
-export async function fetchStaffTimeSlots({
+/**
+ * Build slotTimeMultiTech từ dataBooking (toàn bộ services đã gán cho từng tech)
+ * và gọi API lấy time slots cho từng tech, rồi tính possibleTimeSlot bằng findMultiTechStarts
+ *
+ * options:
+ *  - includeChooseStaffBefore: nếu true sẽ thêm các tech trong chooseStaffBefore (duration = 0 nếu chưa có service)
+ *  - oldEmpID: nếu truyền vào (khi đổi tech), sẽ remove tech cũ khỏi slotTimeMultiTech trước khi update
+ */
+export async function buildSlotTimeMultiTechFromBooking({
   dataBooking,
-  itemSelected,
-  empID,
-  oldEmpID = null, // tham số khi đổi staff
+  includeChooseStaffBefore = false,
+  oldEmpID = null,
 }) {
   try {
-    // 1. Lấy user đang chọn
+    const store = salonStore.getState(); // hoặc salonStore tùy bạn lưu ở đâu
+    const RVCNo = store.RVCNo;
+    if (!dataBooking) return null;
+
     const userChoosing = dataBooking.users.find((u) => u.isChoosing === true);
-    const RVCNo = templateStore.getState().RVCNo;
-    if (!userChoosing) return [];
+    if (!userChoosing) return null;
 
-    // 2. Tính tổng duration cho thợ empID
-    let totalDuration = 0;
-
-    // ---- A. Các service đã có trong dataBooking ----
-    for (const sv of userChoosing.services) {
-      for (const item of sv.itemService) {
-        if (item.selectedStaff && item.selectedStaff.employeeID === empID) {
-          // cộng duration chính
-          totalDuration += item.duration || 0;
-
-          // cộng optionals nếu có
-          if (Array.isArray(item.optionals) && item.optionals.length) {
-            totalDuration += item.optionals.reduce(
-              (sum, opt) => sum + (opt.timedura || 0),
-              0
-            );
-          }
+    // 1) Tính tổng duration per tech từ dataBooking
+    const durationsMap = {}; // { [empId]: totalDuration }
+    for (const cate of userChoosing.services || []) {
+      for (const item of cate.itemService || []) {
+        const emp = item.selectedStaff && item.selectedStaff.employeeID;
+        if (!emp) continue;
+        const base =
+          Number(item.duration || 0) || Number(item.timetext || 0) || 0;
+        let add = 0;
+        if (Array.isArray(item.optionals) && item.optionals.length) {
+          add = item.optionals.reduce(
+            (s, o) => s + (Number(o.timedura || 0) || 0),
+            0
+          );
         }
+        durationsMap[emp] = (durationsMap[emp] || 0) + base + add;
       }
     }
 
-    // ---- B. Service vừa chọn (chưa có trong dataBooking) ----
-    if (itemSelected) {
-      totalDuration += itemSelected.timetext || 0;
+    // 2) (Optional) thêm tech đã chọn trước vào map (duration 0 nếu chưa có)
+    if (includeChooseStaffBefore) {
+      const chooseStaffBefore = store.chooseStaffBefore || [];
+      chooseStaffBefore.forEach((empId) => {
+        if (!durationsMap[empId]) durationsMap[empId] = 0;
+      });
     }
 
-    if (totalDuration === 0) {
-      console.warn("Chưa có dịch vụ nào gán cho thợ:", empID);
-      return [];
+    // Nếu không có tech nào => thông báo / trả về rỗng
+    const techIds = Object.keys(durationsMap).map((k) => Number(k));
+    if (!techIds.length) {
+      console.warn("No techs with assigned duration found in dataBooking");
+      // set empty slotTimeMultiTech nếu cần
+      const empty = { techs: [], durations: [] };
+      salonStore.setState({
+        slotTimeMultiTech: empty,
+        slotTimeForSelect: [],
+      });
+      return empty;
     }
 
-    // 3. Lấy ngày
-    const dateSer =
-      formatDateMMDDYYYY(userChoosing.selectedDate) ||
-      formatDateMMDDYYYY(new Date());
-
-    // 4. Call API
-    const res = await fetchAPI.get(
-      `/api/appointment/gettimebookonline?date=${dateSer}&duration=${totalDuration}&rvcno=${RVCNo}&empID=${empID}`
-    );
-
-    const techID = empID;
-    let slotTimeMultiTech = templateStore.getState().slotTimeMultiTech;
-
-    // --- Clone mảng ---
-    let techs = [...slotTimeMultiTech.techs];
-    let durations = [...slotTimeMultiTech.durations];
-
-    // --- Nếu có oldEmpID thì remove thợ cũ trước ---
-    if (oldEmpID) {
-      techs = techs.filter((t) => t.techID !== oldEmpID);
-      durations = durations.filter((d) => d.techID !== oldEmpID);
-    }
-
-    // --- Update techs ---
-    let idxTech = techs.findIndex((t) => t.techID === techID);
-    if (idxTech >= 0) {
-      techs[idxTech] = { ...techs[idxTech], timeSlotTech: res?.data };
-    } else {
-      techs.push({ techID, timeSlotTech: res?.data });
-    }
-
-    // --- Update durations ---
-    let idxDur = durations.findIndex((d) => d.techID === techID);
-    if (idxDur >= 0) {
-      durations[idxDur] = { techID, totalDuration };
-    } else {
-      durations.push({ techID, totalDuration });
-    }
-
-    // --- Update store ---
-    slotTimeMultiTech = { techs, durations };
-    templateStore.setState({ slotTimeMultiTech });
-
-    // lọc slot time (multi tech)
-    const possibleTimeSlot = findMultiTechStarts(slotTimeMultiTech);
-    templateStore.setState({ slotTimeForSelect: possibleTimeSlot });
-
-    return {
-      timeSlotTech: res?.data || [],
-      duration: totalDuration,
+    // 3) Nếu cần: remove oldEmpID khỏi kết quả hiện tại (khi đổi staff)
+    let existingSlot = salonStore.getState().slotTimeMultiTech || {
+      techs: [],
+      durations: [],
     };
-  } catch (e) {
-    console.error("Lỗi lấy time slots:", e);
-    return [];
+    let techsArr = [...existingSlot.techs];
+    let durationsArr = [...existingSlot.durations];
+
+    if (oldEmpID) {
+      techsArr = techsArr.filter((t) => t.techID !== oldEmpID);
+      durationsArr = durationsArr.filter((d) => d.techID !== oldEmpID);
+    }
+
+    // 4) Prepare API calls: gọi gettimebookonline cho từng tech (dùng duration tính được)
+    // Sử dụng date của userChoosing
+    const dateStr = formatDateMMDDYYYY(userChoosing.selectedDate || new Date());
+
+    // gọi song song, nhưng nếu duration === 0 bạn có thể skip gọi (tuỳ API),
+    // ở đây mình gọi luôn (API có thể trả full/day hoặc bạn muốn skip)
+    const calls = techIds.map((techID) => {
+      const duration = durationsMap[techID] || 0;
+      // nếu duration === 0 và bạn muốn skip call, return Promise.resolve({ data: [] })
+      // return duration === 0 ? Promise.resolve({ data: [] }) : fetchAPI.get(...)
+      return fetchAPI
+        .get(
+          `/api/appointment/gettimebookonline?date=${dateStr}&duration=${duration}&rvcno=${RVCNo}&empID=${techID}`
+        )
+        .then((res) => ({ techID, data: res?.data || [] }));
+    });
+
+    const results = await Promise.all(calls);
+
+    // 5) Merge kết quả vào techsArr và durationsArr (thay thế nếu tech tồn tại)
+    for (const r of results) {
+      const { techID, data } = r;
+      // update techsArr
+      const idxT = techsArr.findIndex((t) => t.techID === techID);
+      if (idxT >= 0) techsArr[idxT] = { techID, timeSlotTech: data };
+      else techsArr.push({ techID, timeSlotTech: data });
+
+      // update durationsArr
+      const idxD = durationsArr.findIndex((d) => d.techID === techID);
+      if (idxD >= 0)
+        durationsArr[idxD] = { techID, totalDuration: durationsMap[techID] };
+      else durationsArr.push({ techID, totalDuration: durationsMap[techID] });
+    }
+
+    const slotTimeMultiTech = { techs: techsArr, durations: durationsArr };
+    salonStore.setState({ slotTimeMultiTech });
+
+    // 6) Tính possible starts multi-tech
+    const possibleTimeSlot = findMultiTechStarts(slotTimeMultiTech);
+    console.log("possibleTimeSlot: ", possibleTimeSlot);
+    salonStore.setState({ slotTimeForSelect: possibleTimeSlot });
+
+    return slotTimeMultiTech;
+  } catch (err) {
+    console.error("buildSlotTimeMultiTechFromBooking error:", err);
+    return null;
   }
 }
 
-export function renderTimeSlotsForDate(dataBooking, slotTimeForSelect = {}) {
+/*
+  *log:
+  beginDateTime: "2025-09-11T10:00:00"
+  dateString: "09/11/2025"
+  dayOfWeek: "Thursday"
+  endDateTime: "2025-09-11T10:00:00"
+  endTime: "09:00 PM"
+  isOpen: true
+  startTime: "10:00 AM"
+*/
+export function renderTimeSlotsForDate(dataBooking, slotTimeForSelect = []) {
+  const store = salonStore.getState();
+
+  const timeKeySlot = store.timeKeySlot; // interval phút
+  const timeBeginCurDate = store.timeBeginCurDate; // dữ liệu từ API
+
   const container = $("#timeSlotsContainer");
   container.empty();
-  //timeslot khi chưa chọn thợ
-  const workingHoursByWeekday = {
-    0: [], // Chủ nhật - không làm
-    1: ["08:00", "20:00"], // Thứ 2
-    2: ["08:00", "20:00"], // Thứ 3
-    3: ["08:00", "20:00"], // Thứ 4
-    4: ["08:00", "20:00"], // Thứ 5
-    5: ["08:00", "20:00"], // Thứ 6
-    6: ["08:00", "20:00"], // Thứ 7
-  };
+
   let selectedDate =
-    templateStore.getState().dataBooking.users.find((u) => u.isChoosing)
-      .selectedDate || new Date();
-  const weekday = selectedDate.getDay();
-  const workingRange = workingHoursByWeekday[weekday];
-  if (!workingRange || workingRange.length === 0) {
-    container.append(
-      `<div class="time-slot">Không có giờ làm việc hôm nay.</div>`
-    );
-    return;
-  }
-  let slots = generateTimeSlotsDynamic(
-    selectedDate,
-    workingRange[0],
-    workingRange[1]
+    store.dataBooking.users.find((u) => u.isChoosing).selectedDate ||
+    new Date();
+
+  // nếu không có dữ liệu API thì default 08:00 - 22:00
+  const start = timeBeginCurDate?.startTime
+    ? convertTo24h(timeBeginCurDate.startTime)
+    : "08:00";
+  const end = timeBeginCurDate?.endTime
+    ? convertTo24h(timeBeginCurDate.endTime)
+    : "22:00";
+
+  // generate toàn bộ slot theo khung giờ
+  const slots = generateTimeSlotsDynamic(selectedDate, start, end, timeKeySlot);
+
+  // slot active (thợ có)
+  const activeSlots = new Set(
+    (slotTimeForSelect || []).map((item) => removeAmPm(item.time))
   );
-  // khi đã chọn thợ
-  if (Object.keys(slotTimeForSelect).length > 0) {
-    slots = slotTimeForSelect.map((item) => item.time);
-  }
-  function removeAmPm(timeStr = "") {
-    if (typeof timeStr !== "string") return timeStr;
-    return timeStr.replace(/\s?(AM|PM)$/i, "").trim();
-  }
+
+  // nhóm slot theo buổi
+  const groups = { morning: [], afternoon: [], evening: [] };
+
   slots.forEach((slot) => {
-    const div = $(`
-        <div class="time-slot">
-          <span>${removeAmPm(slot)}</span>
-          <span>${getAMPM(slot)}</span>
-          <div class="circle">
-            <div class="dot"></div>
-          </div>
-        </div>
-      `);
-    container.append(div);
+    const cleanSlot = removeAmPm(slot);
+    const [hour] = cleanSlot.split(":").map(Number);
+    const isActive = activeSlots.has(cleanSlot);
+
+    const div = `
+      <div class="time-slot ${isActive ? "active" : ""}">
+        <span>${cleanSlot}</span>
+        <span>${getAMPM(slot)}</span>
+        <div class="circle"><div class="dot"></div></div>
+      </div>
+    `;
+
+    if (hour < 12) {
+      groups.morning.push(div);
+    } else if (hour < 17) {
+      groups.afternoon.push(div);
+    } else {
+      groups.evening.push(div);
+    }
   });
+
+  // append UI
+  if (groups.morning.length) {
+    container.append(`<div class="slot-group-title">Sáng</div>`);
+    container.append(groups.morning.join(""));
+  }
+  if (groups.afternoon.length) {
+    container.append(`<div class="slot-group-title">Trưa</div>`);
+    container.append(groups.afternoon.join(""));
+  }
+  if (groups.evening.length) {
+    container.append(`<div class="slot-group-title">Tối</div>`);
+    container.append(groups.evening.join(""));
+  }
+
+  // click handler
   container.off("click", ".time-slot");
 
-  // Nếu user đã có selectedTimeSlot thì đánh dấu slot tương ứng
+  // mark selected slot nếu user đã chọn
   const user = dataBooking.users.find((u) => u.isChoosing);
   if (user && user.selectedTimeSlot) {
     const match = container.find(".time-slot").filter(function () {
       return (
-        $(this).find("span").text().trim() ===
-        String(user.selectedTimeSlot).trim()
+        $(this).find("span").first().text().trim() ===
+        removeAmPm(user.selectedTimeSlot)
       );
     });
     if (match.length) {
       container.find(".time-slot").removeClass("selected");
       match.first().addClass("selected");
-      // scroll tới slot
-      // container.animate({ scrollTop: match.first().position().top - 40 }, 300);
-    } else {
     }
   }
 }
 
-export function renderChooseTime(dataBooking) {
-  // xử lý lại copy time là khi người dùng chọn 2 service và 2 thợ khác nhau thì cho phép copy same time , tại đây cần check thời gian đó 2 thợ có rảnh không, case mid
-  const userCopyTime = dataBooking.users.find(
-    (u) => u.isSelecting && !u.isChoosing
-  );
-  // Kiểm tra chọn service xong mới hiện chọn time
-  const userChoosing = dataBooking.users.find((u) => u.isChoosing);
-  const isSelectedService = userChoosing.services.length > 0;
-  return `
+export function renderFooterChooseTime() {
+  const store = salonStore.getState();
+  const dataBooking = store.dataBooking;
+  const user = dataBooking.users.find((u) => u.isChoosing);
+  // đã chọn service mới được phép next
+  const isNext = user.services.some((srv) => {
+    return srv.itemService.length > 0;
+  });
+
+  const $wrapDirBtn = `
+    <div class="wrap-dir-btn">
+      <button id="btn-back-ser" class="dir-btn-back-ser text-uppercase">Back</button>
+      <button id="btn-next-ser" class="dir-btn-next-ser text-uppercase ${
+        isNext ? "allow-next" : ""
+      }">Next</button>
+    </div>
+  `;
+  // nếu DOM đã có footer-dir thì append khi hàm được gọi
+  const $footerDir = $(".footer-dir");
+  if ($footerDir.length) {
+    $footerDir.empty(); // reset
+    $footerDir.append($wrapDirBtn);
+  }
+  return $wrapDirBtn;
+}
+export function updateCalendarData(month, year, rvcNo, daysOffNail, callback) {
+  fetchStoreOffDays(rvcNo, month, year).then((daysOff) => {
+    daysOffNail[month + 1] = daysOff; // lưu lại theo key tháng
+    // update store
+    salonStore.setState({ daysOffNail: { ...daysOffNail } });
+    if (typeof callback === "function") callback();
+  });
+}
+
+export function generateTimeSlotsDynamic(
+  selectedDate,
+  start,
+  end,
+  interval = 15
+) {
+  const slots = [];
+
+  let [startH, startM] = start.split(":").map(Number);
+  let [endH, endM] = end.split(":").map(Number);
+
+  let startTime = new Date(selectedDate);
+  startTime.setHours(startH, startM, 0, 0);
+
+  let endTime = new Date(selectedDate);
+  endTime.setHours(endH, endM, 0, 0);
+
+  let cur = new Date(startTime);
+  while (cur <= endTime) {
+    const formatted = cur.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    slots.push(formatted);
+    cur.setMinutes(cur.getMinutes() + interval);
+  }
+
+  return slots;
+}
+
+export function roundUpToNearestInterval(date, interval = 20) {
+  const d = new Date(date);
+  const minutes = d.getMinutes();
+  const mod = minutes % interval;
+  if (mod !== 0) {
+    d.setMinutes(minutes + (interval - mod));
+  }
+  d.setSeconds(0, 0);
+  return d;
+}
+
+function convertTo24h(time12h) {
+  const [time, modifier] = time12h.split(" ");
+  let [hours, minutes] = time.split(":").map(Number);
+
+  if (modifier === "PM" && hours < 12) hours += 12;
+  if (modifier === "AM" && hours === 12) hours = 0;
+
+  return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
+    2,
+    "0"
+  )}`;
+}
+export function getAMPM(timeStr) {
+  const [hourStr] = timeStr.split(":");
+  const hour = parseInt(hourStr, 10);
+  return hour >= 12 ? "PM" : "AM";
+}
+
+export function removeAmPm(timeStr = "") {
+  if (typeof timeStr !== "string") return timeStr;
+  return timeStr.replace(/\s?(AM|PM)$/i, "").trim();
+}
+
+export async function fetchStoreOffDays(rvcNo, month, year) {
+  const beginDate = `${month + 1}/01/${year}`;
+
+  // Lấy số ngày cuối tháng
+  const lastDayOfMonth = new Date(year, month + 1, 0).getDate();
+  const endDate = `${month + 1}/${lastDayOfMonth}/${year}`;
+
+  const url = `/api/store/getstoreoffday?rvcNo=${rvcNo}&beginDate=${encodeURIComponent(
+    beginDate
+  )}&endDate=${encodeURIComponent(endDate)}`;
+
+  try {
+    const res = await fetchAPI.get(url);
+    if (res.status === 0 && Array.isArray(res.data)) {
+      return res.data.map((item) => new Date(item.dateOff).getDate());
+    }
+    return [];
+  } catch (e) {
+    console.error("[fetchStoreOffDays]", {
+      message: e.message,
+      stack: e.stack,
+      name: e.name,
+    });
+    return [];
+  }
+}
+
+export async function renderChooseTime() {
+  const store = salonStore.getState();
+  const dataBooking = store.dataBooking;
+
+  await store.getTimeKeySlot();
+  await buildSlotTimeMultiTechFromBooking({
+    dataBooking,
+    includeChooseStaffBefore: false,
+  });
+
+  const salonChoosing = store.salonChoosing;
+  const slotTimeForSelect = store.slotTimeForSelect;
+
+  const htmlHeaderSalon = HeaderSalon(salonChoosing);
+  const $wrapDirBtn = renderFooterChooseTime();
+
+  const htmlChooseTime = `
+    <div id="section-date-time" class="wrap-calendar-timeslot">
       <div class="calendar-timeslot">
         <div class="wrap-calendar-time"
-          style="
-            --color-cur-primary: ${colorPrimary};
-          "
         >
-          <div class="top-cal-time">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M7.16625 11.4688H13.4263V2.46875H1.90625V21.9688H13.4263V12.9688H7.16625V11.4688Z" fill="#E27303" />
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M21.8448 11.4691C19.8328 11.4681 18.0008 9.63605 18.0008 7.62305V6.87305H16.5008V7.62305C16.5008 9.10005 17.1758 10.4801 18.2198 11.4691L13.4219 11.469V12.969L18.2198 12.9691C17.1758 13.9581 16.5008 15.3371 16.5008 16.8141V17.5641H18.0008V16.8141C18.0008 14.8021 19.8338 12.9691 21.8458 12.9691H22.5958V11.4691H21.8448Z" fill="#E27303" />
-            </svg>
-            <h2 class="title-copy-time text-uppercase mb-0">SELECT DATE AND TIME</h2>
-            ${
-              userCopyTime && Object.keys(userCopyTime).length > 0
-                ? `<div class="copy-time">
-                <input
-                  id="select-banner-pm"
-                  type='checkbox'
-                  class='toggle-switch'
-                  ${isCopySameTime ? "checked" : ""}
-                />
-                <span class="text-same-time">Start on same time</span>
-              </div>`
-                : ""
-            }
-          </div>
-          <div class="container-cal-time">
+          <div class="container-choose-time">
             <div class="calendar">
               <div class="calendar-header">
                 <button id="prev">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
-                    <path d="M12.5547 22.752C18.0775 22.752 22.5547 18.2748 22.5547 12.752C22.5547 7.22911 18.0775 2.75195 12.5547 2.75195C7.03184 2.75195 2.55469 7.22911 2.55469 12.752C2.55469 18.2748 7.03184 22.752 12.5547 22.752Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M16.0547 12.752H10.0547" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M12.0547 9.75195L9.05469 12.752L12.0547 15.752" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M14.9998 19.9181L8.47984 13.3981C7.70984 12.6281 7.70984 11.3681 8.47984 10.5981L14.9998 4.07812" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
                 </button>
                 <div id="monthYear"></div>
                 <button id="next">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
-                    <path d="M12.5547 22.752C18.0775 22.752 22.5547 18.2748 22.5547 12.752C22.5547 7.22911 18.0775 2.75195 12.5547 2.75195C7.03184 2.75195 2.55469 7.22911 2.55469 12.752C2.55469 18.2748 7.03184 22.752 12.5547 22.752Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M9.05469 12.752H15.0547" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M13.0547 15.752L16.0547 12.752L13.0547 9.75195" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M8.91016 19.9181L15.4302 13.3981C16.2002 12.6281 16.2002 11.3681 15.4302 10.5981L8.91016 4.07812" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
                 </button>
               </div>
@@ -369,22 +528,130 @@ export function renderChooseTime(dataBooking) {
             </div>
             <div class="timeslot">
               <h2 id="selectedDateTitle">August 14, 2025</h2>
-              <!-- <div id="comboBox"></div> -->
               <div id="timeSlotsContainer" class="time-slots"></div>
-              <div class="text-scroll-more">
-                <h2>Scroll to see more time slots</h2>
-              </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
     `;
+  const htmlPageChooseTime = `
+    <div class="wrap-content-salon bg-choose-time">
+      <div class="header-sertech">
+          ${htmlHeaderSalon}
+      </div>
+      <div class="text-choose-time">
+        <div class="wrap-title">
+            <h2 class="title">CHOOSE SERVICES</h2>
+        </div>
+        <p class="desc">
+            Business Time: 9:00 AM - 9:00 PM
+        </p>
+      </div>
+      <div class="content-choose-time">
+        ${htmlChooseTime}
+      </div>
+      <div class="wrap-help-support">
+        <h4 class="ques-see">
+          Don’t See Your Time ?
+        </h4>
+        <p class="contact-to">
+          <span class="icon-contact">
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
+              <path d="M9 19.2578H8.5C4.5 19.2578 2.5 18.2578 2.5 13.2578V8.25781C2.5 4.25781 4.5 2.25781 8.5 2.25781H16.5C20.5 2.25781 22.5 4.25781 22.5 8.25781V13.2578C22.5 17.2578 20.5 19.2578 16.5 19.2578H16C15.69 19.2578 15.39 19.4078 15.2 19.6578L13.7 21.6578C13.04 22.5378 11.96 22.5378 11.3 21.6578L9.8 19.6578C9.64 19.4378 9.27 19.2578 9 19.2578Z" stroke="black" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M16.4965 11.2578H16.5054" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M12.4955 11.2578H12.5045" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M8.49451 11.2578H8.50349" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span class="need-help">Need help?</span>
+          <span class="call-us">Call Us: </span>
+          <span class="phone-contact">(384) 334-2234</span>
+        </p>
+      </div>
+      <div class="footer-dir footer-choose-time">
+        ${$wrapDirBtn}
+      </div>
+    </div>
+  `;
+  const $wrapNewOnline = $(".wrap-newonline");
+  $wrapNewOnline.empty();
+  $wrapNewOnline.append(htmlPageChooseTime);
+
+  return htmlPageChooseTime;
 }
 
+// import API
+import { fetchAPI } from "../../site.js";
 // import store
 import { salonStore } from "../../store/new-online-store.js";
 // import component
-
+import { HeaderSalon } from "../header/header-salon.js";
+import { formatDateMMDDYYYY } from "../../helper/format-day.js";
+import { findMultiTechStarts } from "../../helper/free-time/slot-time-available.js";
 // import constant
+import { monthNames, dayNames } from "../../constants/days-weeks.js";
+$(document).ready(async function () {
+  const store = salonStore.getState();
+  let currentMonth = store.currentMonth;
+  const selectedDate = store.selectedDate;
+  const currentYear = store.currentYear;
+  const currentDate = new Date();
+  console.log("currentDate: ", currentDate);
+  const daysOffNail = store.daysOffNail;
+  const RVCNo = store.RVCNo;
+  // await store.getTimeKeySlot();
+  await store.getTimeBeginCurDate(formatDateMMDDYYYY(currentDate));
 
-$(document).ready(async function () {});
+  const dataBooking = store.dataBooking;
+
+  const isMobile = $(window).width() <= 768;
+
+  $(document).on("click", "#prev", function () {
+    const dataBooking = store.dataBooking;
+    const RVCNo = store.RVCNo;
+
+    if (currentMonth > 0) {
+      currentMonth--;
+      selectedDate = new Date(currentYear, currentMonth, currentDate.getDate());
+
+      updateCalendarData(currentMonth, currentYear, RVCNo, daysOffNail, () => {
+        renderCalendar(
+          monthNames,
+          dayNames,
+          currentMonth,
+          currentYear,
+          daysOffNail,
+          selectedDate,
+          dataBooking
+        );
+        // update store
+        salonStore.setState({ dataBooking });
+      });
+    }
+  });
+
+  $(document).on("click", "#next", function () {
+    const dataBooking = store.dataBooking;
+    const RVCNo = store.RVCNo;
+
+    if (currentMonth < 11) {
+      currentMonth++;
+      selectedDate = new Date(currentYear, currentMonth, currentDate.getDate());
+
+      updateCalendarData(currentMonth, currentYear, RVCNo, daysOffNail, () => {
+        renderCalendar(
+          monthNames,
+          dayNames,
+          currentMonth,
+          currentYear,
+          daysOffNail,
+          selectedDate,
+          dataBooking
+        );
+        // update store
+        salonStore.setState({ dataBooking });
+      });
+    }
+  });
+});

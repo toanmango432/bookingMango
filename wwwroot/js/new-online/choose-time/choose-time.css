@@ -1,0 +1,247 @@
+.content-choose-time {
+  flex: 1 0 0;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  /* padding: 16px 0; */
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  border-radius: 0 0 9px 9px;
+  background: #eceef0;
+  position: relative;
+  overflow: hidden;
+}
+.container-choose-time {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row;
+  align-items: stretch;
+  height: 448px;
+  gap: 96px;
+}
+
+.timeslot {
+  width: 45%;
+  box-shadow: 0 var(--px-4) var(--px-8) rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  /* justify-content: space-between; */
+  border-radius: var(--px-12);
+  background: white;
+}
+
+.time-slots {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* 5 cột bằng nhau */
+  grid-auto-rows: max-content;
+  gap: 16px;
+  gap: 8px; /* khoảng cách giữa các ô */
+  padding: 8px 16px;
+  flex: 1 0 0; /* có thể bỏ nếu không cần flex trong parent */
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.time-slots h2 {
+  text-align: center;
+  padding: var(--px-12);
+  font: normal normal 500 var(--s-24);
+}
+
+.time-slot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--px-12) var(--px-16);
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+}
+.time-slot span:first-child {
+  font: normal normal 500 var(--s-15);
+}
+.time-slot span {
+  font: normal normal 400 var(--s-15);
+}
+
+.time-slot.selected {
+  background-color: #d8e3dc;
+}
+
+.time-slot .circle {
+  width: 21px;
+  height: 21px;
+  border: 2px solid var(--color-cur-primary);
+  border-radius: 50%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Dot bên trong khi selected */
+.time-slot.selected .circle .dot {
+  width: var(--px-12); /* 20 - 2*border - 2*padding = ~12 */
+  height: var(--px-12);
+  background-color: var(--color-cur-primary);
+  border-radius: 50%;
+}
+
+/* Optional: smooth transition */
+.time-slot .circle,
+.time-slot .dot {
+  transition: all 0.2s ease;
+}
+
+.day.active {
+  background-color: var(--bs-main) !important;
+  color: white !important;
+}
+
+.day {
+  display: flex;
+  width: 50px;
+  height: 50px;
+  min-width: 50px;
+  padding: 8px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  position: relative;
+}
+.day:not(.active):not(.past)::after {
+  position: absolute;
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 100%;
+  background-color: #3ba755;
+  bottom: 2px;
+  left: 44%;
+}
+.calendar-header button {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  border-radius: 100%;
+}
+.calendar-header button:hover {
+  color: var(--bs-main);
+  border: 1px solid var(--bs-main);
+}
+
+.day-name {
+  font: normal normal 300 var(--s-20);
+  color: var(--text-color-primary);
+  display: flex;
+  width: 50px;
+  padding: var(--px-8) var(--px-24);
+  justify-content: center;
+  align-items: center;
+}
+.text-choose-time {
+  background-color: #eceef0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 24px;
+}
+
+.text-choose-time .wrap-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.text-choose-time .wrap-title .title {
+  position: relative;
+  font-weight: bold;
+  font-size: 20px;
+  margin-bottom: 8px;
+  position: relative;
+}
+.text-choose-time .title::after {
+  content: "";
+  width: 80px;
+  height: 1px;
+  background-color: #aeaeae;
+  position: absolute;
+  left: 108%;
+  top: 50%;
+}
+
+.text-choose-time .title::before {
+  content: "";
+  width: 80px;
+  height: 1px;
+  background-color: #aeaeae;
+  position: absolute;
+  right: 108%;
+  top: 50%;
+}
+
+.text-choose-time .desc {
+  font-size: 16px;
+  margin-bottom: 20px;
+  color: var(--text-color-primary);
+}
+
+.calendar-timeslot {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-self: stretch;
+  background-color: transparent;
+}
+
+.wrap-help-support {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #eceef0;
+  padding-bottom: 24px;
+}
+
+.wrap-help-support .contact-to {
+  background: linear-gradient(
+    90deg,
+    #eceef0 0%,
+    #fff 24.04%,
+    #fff 48.08%,
+    #fff 75.48%,
+    #eceef0 100%
+  );
+  display: flex;
+  padding: 12px;
+  align-items: center;
+  gap: 12px;
+}
+
+.wrap-help-support .ques-see {
+  font: normal normal 500 var(--s-14);
+}
+
+.wrap-help-support .contact-to .need-help {
+  font: normal normal 600 var(--s-14);
+}
+.wrap-help-support .contact-to .call-us {
+  font: normal normal 600 var(--s-14);
+}
+.wrap-help-support .contact-to .phone-contact {
+  font: normal normal 600 var(--s-18);
+  color: #eb5781;
+}
+
+.footer-choose-time {
+  background-color: #eceef0;
+}
+.bg-choose-time {
+  background-color: #eceef0;
+}

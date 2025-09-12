@@ -313,6 +313,10 @@ export async function ScreenChooseServiceForTech() {
   const salonChoosing = store.salonChoosing;
   let dataService = await store.getListDataService();
 
+  if (dataService.length) {
+    renderServices_PageChooseServiceTech(dataService[0].item.listItem);
+  }
+
   const htmlHeaderSalon = HeaderSalon(salonChoosing);
   // Lấy categories từ API
   const htmlCategories = renderTrackCate(dataService, "item-ftcate");
@@ -407,13 +411,7 @@ import { renderAddonPanel } from "../screen-choose-service.js";
 import { ScreenChooseTech } from "../screen-choose-tech.js";
 // hanle event
 $(document).ready(async function () {
-  let dataService = await salonStore.getState().getListDataService();
   const $wrapNewOnline = $(".wrap-newonline");
-  // Render lần đầu (category đầu tiên)
-  //  Trường hợp này có chọn tech trước, do đó lấy tech active truyền cho pannel addOn
-  if (dataService.length) {
-    renderServices_PageChooseServiceTech(dataService[0].item.listItem);
-  }
 
   $(document).on("click", ".wrap-ftservice-card", async function () {
     const isUnSelected = true; // True: Cho phép bỏ chọn nếu item service đã chọn
@@ -552,6 +550,8 @@ $(document).ready(async function () {
 
   // Chọn category
   $(document).on("click", ".item-ftcate", function () {
+    const store = salonStore.getState();
+    const dataService = store.dataServices;
     $(".item-ftcate").removeClass("active");
     $(this).addClass("active");
 
@@ -562,6 +562,9 @@ $(document).ready(async function () {
   });
   // Search trong category active
   $(document).on("input", ".input-search-ftser", function () {
+    const store = salonStore.getState();
+    const dataService = store.dataServices;
+
     const keyword = $(this).val().toLowerCase();
     const id = $(".item-ftcate.active").data("id");
     const cate = dataService.find((c) => c.item.id === id);

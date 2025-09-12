@@ -107,6 +107,41 @@ export const salonStore = {
       }
     };
 
+    // --- API: time key slot
+    let timeKeySlot;
+    const getTimeKeySlot = async () => {
+      try {
+        const paramOB = "OB.TimeFrameDistance";
+        const resTimeKey = await fetchAPI.get(
+          `/api/setting/getbykey?RVCNo=${RVCNo}&ParaName=${paramOB}`
+        );
+        salonStore.setState({ timeKeySlot: resTimeKey?.data });
+        return resTimeKey.data;
+      } catch (e) {
+        console.error("[getTimeKeySlot]", e);
+      }
+    };
+    // --- API: time begin - end
+    let timeBeginCurDate = null;
+    const getTimeBeginCurDate = async (date) => {
+      // date: aa/bb/cccc
+      try {
+        const url = `/api/store/getweeksalonschedule?rvcNo=${RVCNo}&${encodeURIComponent(
+          date
+        )}`;
+        //  api trả ra cả tuần nên phải lọc ra ngày hôm nay
+
+        const resWeek = await fetchAPI.get(url);
+        const timeBegin = resWeek?.data.find((item) => item.dateString == date);
+        if (timeBegin) {
+          salonStore.setState({ timeBeginCurDate: timeBegin });
+        }
+        return resWeek;
+      } catch (e) {
+        console.error("[getTimeBeginCurDate]", e);
+      }
+    };
+
     // --- API: Staff ---
     let listStaffUser;
     const getListUserStaff = async () => {
@@ -372,6 +407,10 @@ export const salonStore = {
       getListUserStaff,
       listStaffUser,
       getDataSetting,
+      timeKeySlot,
+      getTimeKeySlot,
+      timeBeginCurDate,
+      getTimeBeginCurDate,
       dataSetting,
       paymentDeposit,
       isDeposit,

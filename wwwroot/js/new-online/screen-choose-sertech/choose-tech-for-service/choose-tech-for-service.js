@@ -248,13 +248,28 @@ export async function ChooseTechForServices() {
 import { salonStore } from "../../../store/new-online-store.js";
 // import constant
 import { idStaffDefault } from "../../../constants/template-online.js";
+import { monthNames, dayNames } from "../../../constants/days-weeks.js";
 // import component
 import { HeaderSalon } from "../../header/header-salon.js";
 import { ScreenChooseService } from "../screen-choose-service.js";
 import { Cart } from "../../cart/cart.js";
 import { ChooseTechForEachServices } from "../choose-tech-for-each-service/choose-tech-for-each-service.js";
 import { PageCurrent } from "../../../constants/new-online.js";
+import { renderChooseTime } from "../../choose-time/choose-time.js";
+import {
+  updateCalendarData,
+  renderCalendar,
+} from "../../choose-time/choose-time.js";
 $(document).ready(async function () {
+  const store = salonStore.getState();
+  const currentMonth = store.currentMonth;
+  const selectedDate = store.selectedDate;
+  const currentYear = store.currentYear;
+  const currentDate = new Date();
+  const daysOffNail = store.daysOffNail;
+  const RVCNo = store.RVCNo;
+  const dataBooking = store.dataBooking;
+
   const $wrapNewOnline = $(".wrap-newonline");
 
   // btn back tech to services
@@ -305,7 +320,7 @@ $(document).ready(async function () {
     Cart();
   });
 
-  $(document).on("click", "#btn-next-tech", function () {
+  $(document).on("click", "#btn-next-tech", async function () {
     const $this = $(this);
     const store = salonStore.getState();
     const dataBooking = store.dataBooking;
@@ -317,8 +332,21 @@ $(document).ready(async function () {
       )
     );
     if (!isNext) return;
-    // component chọn time khi next
-    // $wrapNewOnline.empty();
+
+    await renderChooseTime();
+
+    // lần đầu load: fetch ngày nghỉ của tháng hiện tại
+    updateCalendarData(currentMonth, currentYear, RVCNo, daysOffNail, () => {
+      renderCalendar(
+        monthNames,
+        dayNames,
+        currentMonth,
+        currentYear,
+        daysOffNail,
+        selectedDate,
+        dataBooking
+      );
+    });
   });
   $(document).on("click", ".choose-multitech", async function () {
     const $this = $(this);
