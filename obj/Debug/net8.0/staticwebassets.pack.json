@@ -405,12 +405,24 @@
       "PackagePath": "staticwebassets/js/new-online/choose-nail-salon/choose-nail-salon.js"
     },
     {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/choose-time/choose-time.css",
+      "PackagePath": "staticwebassets/js/new-online/choose-time/choose-time.css"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/choose-time/choose-time.js",
+      "PackagePath": "staticwebassets/js/new-online/choose-time/choose-time.js"
+    },
+    {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/header/header-location.js",
       "PackagePath": "staticwebassets/js/new-online/header/header-location.js"
     },
     {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/header/header-salon.js",
       "PackagePath": "staticwebassets/js/new-online/header/header-salon.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/helper/send-otp.js",
+      "PackagePath": "staticwebassets/js/new-online/helper/send-otp.js"
     },
     {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/new-online.js",
@@ -427,6 +439,58 @@
     {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/option-sertech/option-sertech.js",
       "PackagePath": "staticwebassets/js/new-online/option-sertech/option-sertech.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/popup/base.js",
+      "PackagePath": "staticwebassets/js/new-online/popup/base.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/popup/close-popup.js",
+      "PackagePath": "staticwebassets/js/new-online/popup/close-popup.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/popup/content/add-new-payment.js",
+      "PackagePath": "staticwebassets/js/new-online/popup/content/add-new-payment.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/popup/content/cart.js",
+      "PackagePath": "staticwebassets/js/new-online/popup/content/cart.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/popup/content/choose-payment.js",
+      "PackagePath": "staticwebassets/js/new-online/popup/content/choose-payment.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/popup/content/notify.js",
+      "PackagePath": "staticwebassets/js/new-online/popup/content/notify.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/popup/content/payment-confirm.js",
+      "PackagePath": "staticwebassets/js/new-online/popup/content/payment-confirm.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/popup/content/policies.js",
+      "PackagePath": "staticwebassets/js/new-online/popup/content/policies.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/popup/content/register.js",
+      "PackagePath": "staticwebassets/js/new-online/popup/content/register.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/popup/content/reset-databooking.js",
+      "PackagePath": "staticwebassets/js/new-online/popup/content/reset-databooking.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/popup/content/verify-code.js",
+      "PackagePath": "staticwebassets/js/new-online/popup/content/verify-code.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/popup/content/verify-email-phone.js",
+      "PackagePath": "staticwebassets/js/new-online/popup/content/verify-email-phone.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/popup/popup-upload.js",
+      "PackagePath": "staticwebassets/js/new-online/popup/popup-upload.js"
     },
     {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/screen-choose-sertech/choose-service-for-tech/choose-service-for-tech.css",

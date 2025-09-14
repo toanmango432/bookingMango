@@ -38,8 +38,8 @@ export function renderVerifyCodeContent(
           </div>
 
           <div class="button-container">
-            <button class="btn-back-verify">Back</button>
-            <button class="btn-next-verify" disabled>
+            <button class="btn-back-verify-1">Back</button>
+            <button class="btn-next-verify-1" disabled>
             Verify
             <i class="fa-solid fa-arrow-right"></i>
             </button>

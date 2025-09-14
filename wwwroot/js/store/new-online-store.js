@@ -126,7 +126,7 @@ export const salonStore = {
     const getTimeBeginCurDate = async (date) => {
       // date: aa/bb/cccc
       try {
-        const url = `/api/store/getweeksalonschedule?rvcNo=${RVCNo}&${encodeURIComponent(
+        const url = `/api/store/getweeksalonschedule?rvcNo=${RVCNo}&date=${encodeURIComponent(
           date
         )}`;
         //  api trả ra cả tuần nên phải lọc ra ngày hôm nay

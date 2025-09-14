@@ -38,6 +38,13 @@
   right: 108%;
   top: 50%;
 }
+.name-techs {
+  padding: 8px 16px;
+  font: normal normal 400 var(--s-14);
+}
+.name-techs .techs {
+  font: normal normal 600 var(--s-14);
+}
 
 .list-techs {
   width: 100%;
@@ -49,8 +56,13 @@
   overflow-y: auto;
   flex: 1 0 0;
 }
+
 .list-techs.not-ser {
   opacity: 0.5;
+}
+.timeslot {
+  background: transparent;
+  box-shadow: none;
 }
 
 .item-tech,

@@ -1,3 +1,19 @@
+export function startResendTimer() {
+  $(".resend-btn").addClass("disabled");
+
+  resendInterval = setInterval(() => {
+    resendCountdown--;
+    $(".countdown").text(
+      `00:${resendCountdown < 10 ? "0" + resendCountdown : resendCountdown}`
+    );
+
+    if (resendCountdown <= 0) {
+      clearInterval(resendInterval);
+      $(".resend-btn").removeClass("disabled").text("Send Again");
+    }
+  }, 1000);
+}
+
 // render container time-booking && select time// render calender
 export async function renderCalendar(
   monthNames,
@@ -12,7 +28,7 @@ export async function renderCalendar(
   const daysEl = document.getElementById("days");
   const monthYearEl = document.getElementById("monthYear");
 
-  if (!daysEl || !monthYearEl) return;
+  // if (!daysEl || !monthYearEl) return;
   daysEl.innerHTML = "";
   monthYearEl.textContent = `${monthNames[currentMonth]}, ${currentYear}`;
 
@@ -91,29 +107,12 @@ export async function renderCalendar(
             return;
           }
         });
-        salonStore.setState({ dataBooking });
+        salonStore.setState({ dataBooking, selectedDate });
 
         day.classList.add("active");
-        document.getElementById("selectedDateTitle").textContent =
-          selectedDate.toDateString();
+        // document.getElementById("selectedDateTitle").textContent =
+        //   selectedDate.toDateString();
 
-        $("#timeSlotsContainer").empty();
-
-        // khi chọn ngày khác kiểm tra đã chọn tech chưa, nếu chọn tech rồi lấy ra slot cho tech
-        // danh sách ID thợ không trùng lặp
-        const uniqueEmployeeID = new Set();
-        dataBooking.users.forEach((user) => {
-          user.services.forEach((service) => {
-            service.itemService.forEach((item) => {
-              if (item.selectedStaff && item.selectedStaff.employeeID) {
-                uniqueEmployeeID.add(item.selectedStaff.employeeID);
-              }
-            });
-          });
-        });
-
-        const listUniqueEmID = Array.from(uniqueEmployeeID);
-        // lọc lại thời gian cho ngày mới
         for (const item of listUniqueEmID) {
           await buildSlotTimeMultiTechFromBooking({
             dataBooking,
@@ -121,9 +120,9 @@ export async function renderCalendar(
             oldEmpID: null,
           });
         }
-        const slotTimeForSelect = store.slotTimeForSelect;
-        console.log("time: ", slotTimeForSelect);
-        renderTimeSlotsForDate(dataBooking, slotTimeForSelect);
+        // Cập nhật giờ start ngày mới
+        await store.getTimeBeginCurDate(formatDateMMDDYYYY(selectedDate)); // khởi tạo lịch ở ngày hiện tại
+        renderTimeSlotsForDate(dataBooking);
       });
     }
     daysEl.appendChild(day);
@@ -136,8 +135,32 @@ export async function renderCalendar(
     if (user) {
       user.selectedDate = selectedDate;
     }
-    document.getElementById("selectedDateTitle").textContent =
-      selectedDate.toDateString();
+    // document.getElementById("selectedDateTitle").textContent =
+    //   selectedDate.toDateString();
+  }
+
+  $("#timeSlotsContainer").empty();
+
+  // khi chọn ngày khác kiểm tra đã chọn tech chưa, nếu chọn tech rồi lấy ra slot cho tech
+  // danh sách ID thợ không trùng lặp
+  const uniqueEmployeeID = new Set();
+  dataBooking.users.forEach((user) => {
+    user.services.forEach((service) => {
+      service.itemService.forEach((item) => {
+        if (item.selectedStaff && item.selectedStaff.employeeID) {
+          uniqueEmployeeID.add(item.selectedStaff.employeeID);
+        }
+      });
+    });
+  });
+  const listUniqueEmID = Array.from(uniqueEmployeeID);
+  // lọc lại thời gian cho ngày mới
+  for (const item of listUniqueEmID) {
+    await buildSlotTimeMultiTechFromBooking({
+      dataBooking,
+      includeChooseStaffBefore: false,
+      oldEmpID: null,
+    });
   }
   renderTimeSlotsForDate(dataBooking);
 }
@@ -255,110 +278,12 @@ export async function buildSlotTimeMultiTechFromBooking({
 
     // 6) Tính possible starts multi-tech
     const possibleTimeSlot = findMultiTechStarts(slotTimeMultiTech);
-    console.log("possibleTimeSlot: ", possibleTimeSlot);
     salonStore.setState({ slotTimeForSelect: possibleTimeSlot });
 
     return slotTimeMultiTech;
   } catch (err) {
     console.error("buildSlotTimeMultiTechFromBooking error:", err);
     return null;
-  }
-}
-
-/*
-  *log:
-  beginDateTime: "2025-09-11T10:00:00"
-  dateString: "09/11/2025"
-  dayOfWeek: "Thursday"
-  endDateTime: "2025-09-11T10:00:00"
-  endTime: "09:00 PM"
-  isOpen: true
-  startTime: "10:00 AM"
-*/
-export function renderTimeSlotsForDate(dataBooking, slotTimeForSelect = []) {
-  const store = salonStore.getState();
-
-  const timeKeySlot = store.timeKeySlot; // interval phút
-  const timeBeginCurDate = store.timeBeginCurDate; // dữ liệu từ API
-
-  const container = $("#timeSlotsContainer");
-  container.empty();
-
-  let selectedDate =
-    store.dataBooking.users.find((u) => u.isChoosing).selectedDate ||
-    new Date();
-
-  // nếu không có dữ liệu API thì default 08:00 - 22:00
-  const start = timeBeginCurDate?.startTime
-    ? convertTo24h(timeBeginCurDate.startTime)
-    : "08:00";
-  const end = timeBeginCurDate?.endTime
-    ? convertTo24h(timeBeginCurDate.endTime)
-    : "22:00";
-
-  // generate toàn bộ slot theo khung giờ
-  const slots = generateTimeSlotsDynamic(selectedDate, start, end, timeKeySlot);
-
-  // slot active (thợ có)
-  const activeSlots = new Set(
-    (slotTimeForSelect || []).map((item) => removeAmPm(item.time))
-  );
-
-  // nhóm slot theo buổi
-  const groups = { morning: [], afternoon: [], evening: [] };
-
-  slots.forEach((slot) => {
-    const cleanSlot = removeAmPm(slot);
-    const [hour] = cleanSlot.split(":").map(Number);
-    const isActive = activeSlots.has(cleanSlot);
-
-    const div = `
-      <div class="time-slot ${isActive ? "active" : ""}">
-        <span>${cleanSlot}</span>
-        <span>${getAMPM(slot)}</span>
-        <div class="circle"><div class="dot"></div></div>
-      </div>
-    `;
-
-    if (hour < 12) {
-      groups.morning.push(div);
-    } else if (hour < 17) {
-      groups.afternoon.push(div);
-    } else {
-      groups.evening.push(div);
-    }
-  });
-
-  // append UI
-  if (groups.morning.length) {
-    container.append(`<div class="slot-group-title">Sáng</div>`);
-    container.append(groups.morning.join(""));
-  }
-  if (groups.afternoon.length) {
-    container.append(`<div class="slot-group-title">Trưa</div>`);
-    container.append(groups.afternoon.join(""));
-  }
-  if (groups.evening.length) {
-    container.append(`<div class="slot-group-title">Tối</div>`);
-    container.append(groups.evening.join(""));
-  }
-
-  // click handler
-  container.off("click", ".time-slot");
-
-  // mark selected slot nếu user đã chọn
-  const user = dataBooking.users.find((u) => u.isChoosing);
-  if (user && user.selectedTimeSlot) {
-    const match = container.find(".time-slot").filter(function () {
-      return (
-        $(this).find("span").first().text().trim() ===
-        removeAmPm(user.selectedTimeSlot)
-      );
-    });
-    if (match.length) {
-      container.find(".time-slot").removeClass("selected");
-      match.first().addClass("selected");
-    }
   }
 }
 
@@ -373,8 +298,8 @@ export function renderFooterChooseTime() {
 
   const $wrapDirBtn = `
     <div class="wrap-dir-btn">
-      <button id="btn-back-ser" class="dir-btn-back-ser text-uppercase">Back</button>
-      <button id="btn-next-ser" class="dir-btn-next-ser text-uppercase ${
+      <button id="btn-back-choose-time" class="dir-btn-back-ser text-uppercase">Back</button>
+      <button id="btn-next-choose-time" class="dir-btn-next-ser text-uppercase ${
         isNext ? "allow-next" : ""
       }">Next</button>
     </div>
@@ -395,35 +320,181 @@ export function updateCalendarData(month, year, rvcNo, daysOffNail, callback) {
     if (typeof callback === "function") callback();
   });
 }
+function formatHHMM(date) {
+  const h = String(date.getHours()).padStart(2, "0");
+  const m = String(date.getMinutes()).padStart(2, "0");
+  return `${h}:${m}`;
+}
 
 export function generateTimeSlotsDynamic(
   selectedDate,
   start,
   end,
-  interval = 15
+  interval = 20
 ) {
   const slots = [];
 
-  let [startH, startM] = start.split(":").map(Number);
-  let [endH, endM] = end.split(":").map(Number);
+  // ensure interval is a positive integer (minutes)
+  interval = Number(interval);
+  if (!Number.isFinite(interval) || interval <= 0) {
+    console.warn("Invalid interval passed, falling back to 20");
+    interval = 20;
+  }
 
-  let startTime = new Date(selectedDate);
+  // parse "HH:mm" -> numbers
+  const [startH, startM] = start.split(":").map((n) => parseInt(n, 10));
+  const [endH, endM] = end.split(":").map((n) => parseInt(n, 10));
+
+  const startTime = new Date(selectedDate);
   startTime.setHours(startH, startM, 0, 0);
 
-  let endTime = new Date(selectedDate);
+  const endTime = new Date(selectedDate);
   endTime.setHours(endH, endM, 0, 0);
 
-  let cur = new Date(startTime);
-  while (cur <= endTime) {
-    const formatted = cur.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-    slots.push(formatted);
-    cur.setMinutes(cur.getMinutes() + interval);
+  // If end <= start assume end is next day (optional, keep if you ever have overnight ranges)
+  if (endTime.getTime() <= startTime.getTime()) {
+    endTime.setDate(endTime.getDate() + 1);
+  }
+
+  // Use timestamps to increment — safer than mutating Date with setMinutes
+  let curTime = startTime.getTime();
+  const endTs = endTime.getTime();
+  let iter = 0;
+  const maxIter = 2000; // safety guard to avoid infinite loops
+
+  while (curTime < endTs) {
+    const curDate = new Date(curTime);
+
+    // IMPORTANT: call formatting function that MUST NOT mutate the Date object we pass in
+    slots.push(formatHHMM(curDate));
+
+    // advance
+    curTime += interval * 60 * 1000;
+    iter++;
+    if (iter > maxIter) {
+      console.warn("Too many iterations, breaking to avoid infinite loop");
+      break;
+    }
   }
 
   return slots;
+}
+
+export function renderTimeSlotsForDate(dataBooking) {
+  const store = salonStore.getState();
+  const timeKeySlot = store.timeKeySlot;
+  const timeBeginCurDate = store.timeBeginCurDate;
+  const slotTimeForSelect = store.slotTimeForSelect || [];
+  const container = $("#timeSlotsContainer");
+  container.empty();
+
+  let selectedDate =
+    store.dataBooking.users.find((u) => u.isChoosing)?.selectedDate ||
+    new Date();
+
+  let start, end;
+
+  if (!timeBeginCurDate) {
+    start = "08:00";
+    end = "22:00";
+  } else {
+    start = parseTimeTo24h(timeBeginCurDate.startTime); // "10:00"
+    end = parseTimeTo24h(timeBeginCurDate.endTime); // "20:00"
+  }
+
+  // Tạo toàn bộ slots theo interval
+  const slots = generateTimeSlotsDynamic(selectedDate, start, end, timeKeySlot);
+  // Set slot nào active
+  const activeSlots = new Set(
+    (slotTimeForSelect || []).map((item) => removeAmPm(item.time))
+  );
+
+  // nhóm slot theo buổi
+  const groups = { morning: [], afternoon: [], evening: [] };
+
+  // flag để theo dõi best fit cho từng buổi
+  const bestFitAssigned = { morning: false, afternoon: false, evening: false };
+
+  slots.forEach((slot) => {
+    const cleanSlot = removeAmPm(slot);
+    const [hour] = cleanSlot.split(":").map(Number);
+    const isActive = activeSlots.has(cleanSlot);
+
+    let groupName;
+    if (hour < 12) groupName = "morning";
+    else if (hour < 17) groupName = "afternoon";
+    else groupName = "evening";
+
+    let div = `
+    <div class="time-slot ${isActive ? "active" : ""}">
+      <span id="time-val">${cleanSlot}</span>
+      <span>${getAMPM(slot)}</span>
+      <div class="circle">
+        <div class="dot">
+          <svg xmlns="http://www.w3.org/2000/svg" width="9" height="8" viewBox="0 0 9 8" fill="none">
+            <path d="M1.16699 3.98984L3.28236 6L7.83366 2" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+      ${
+        isActive && !bestFitAssigned[groupName]
+          ? `<div class="best-fit-text">
+              <svg xmlns="http://www.w3.org/2000/svg" width="9" height="8" viewBox="0 0 9 8" fill="none">
+                <g clip-path="url(#clip0_4193_144126)">
+                  <path d="M4.69587 6.74486C4.57525 6.66859 4.424 6.6686 4.30338 6.74489L2.45347 7.91488C2.16674 8.09622 1.81228 7.82791 1.88847 7.4872L2.37891 5.29404C2.41077 5.15156 2.36457 5.00238 2.25884 4.90629L0.630505 3.42661C0.378278 3.1974 0.513872 2.76448 0.847135 2.73495L2.99304 2.5448C3.13278 2.53242 3.25451 2.44046 3.30942 2.3058L4.15158 0.240419C4.28229 -0.0801398 4.71771 -0.0801394 4.84842 0.240419L5.69058 2.3058C5.74549 2.44046 5.86722 2.53242 6.00696 2.5448L8.15287 2.73495C8.48613 2.76448 8.62172 3.1974 8.3695 3.42661L6.74116 4.90629C6.63543 5.00238 6.58923 5.15156 6.62109 5.29404L7.11156 7.48735C7.18775 7.82804 6.83333 8.09635 6.5466 7.91505L4.69587 6.74486Z" fill="#FCC003"/>
+                </g>
+                <defs>
+                  <clipPath id="clip0_4193_144126">
+                    <rect width="8" height="8" fill="white" transform="translate(0.5)"/>
+                  </clipPath>
+                </defs>
+              </svg>
+              Best Fit
+            </div>`
+          : ""
+      }
+    </div>
+  `;
+
+    if (isActive && !bestFitAssigned[groupName]) {
+      bestFitAssigned[groupName] = true; // gắn best fit cho slot active đầu tiên của buổi
+    }
+
+    groups[groupName].push(div);
+  });
+
+  // append UI (block riêng cho mỗi buổi)
+  function renderGroup(name, label, arr) {
+    if (!arr.length) return "";
+    return `
+    <div class="slot-group ${name}">
+      <div class="slot-group-title">${label}</div>
+      <div class="slot-group-content">${arr.join("")}</div>
+    </div>
+  `;
+  }
+
+  container.append(renderGroup("morning", "Morning", groups.morning));
+  container.append(renderGroup("afternoon", "Afternoon", groups.afternoon));
+  container.append(renderGroup("evening", "Evening", groups.evening));
+
+  // click handler
+  container.off("click", ".time-slot");
+
+  // mark selected slot nếu user đã chọn
+  const user = dataBooking.users.find((u) => u.isChoosing);
+  if (user && user.selectedTimeSlot) {
+    const match = container.find(".time-slot").filter(function () {
+      return (
+        $(this).find("span").first().text().trim() ===
+        removeAmPm(user.selectedTimeSlot)
+      );
+    });
+    if (match.length) {
+      container.find(".time-slot").removeClass("selected");
+      match.first().addClass("selected");
+    }
+  }
 }
 
 export function roundUpToNearestInterval(date, interval = 20) {
@@ -437,18 +508,23 @@ export function roundUpToNearestInterval(date, interval = 20) {
   return d;
 }
 
-function convertTo24h(time12h) {
-  const [time, modifier] = time12h.split(" ");
+function parseTimeTo24h(timeStr) {
+  // timeStr: "10:00 AM" hoặc "08:00 PM"
+  const [time, modifier] = timeStr.split(" ");
   let [hours, minutes] = time.split(":").map(Number);
 
-  if (modifier === "PM" && hours < 12) hours += 12;
-  if (modifier === "AM" && hours === 12) hours = 0;
+  if (modifier.toUpperCase() === "PM" && hours !== 12) {
+    hours += 12;
+  }
+  if (modifier.toUpperCase() === "AM" && hours === 12) {
+    hours = 0;
+  }
 
-  return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
-    2,
-    "0"
-  )}`;
+  return `${hours.toString().padStart(2, "0")}:${minutes
+    .toString()
+    .padStart(2, "0")}`;
 }
+
 export function getAMPM(timeStr) {
   const [hourStr] = timeStr.split(":");
   const hour = parseInt(hourStr, 10);
@@ -486,10 +562,34 @@ export async function fetchStoreOffDays(rvcNo, month, year) {
     return [];
   }
 }
+function getUniqueStaff(dataBooking) {
+  const staffMap = new Map();
+  console.log("dataBooking: ", dataBooking);
+
+  dataBooking.users.forEach((user) => {
+    if (user.isChoosing) {
+      (user.services || []).forEach((svc) => {
+        (svc.itemService || []).forEach((item) => {
+          if (item.selectedStaff) {
+            staffMap.set(
+              item.selectedStaff.employeeID,
+              item.selectedStaff.nickName
+            );
+          }
+        });
+      });
+    }
+  });
+
+  return Array.from(staffMap.values());
+}
 
 export async function renderChooseTime() {
   const store = salonStore.getState();
   const dataBooking = store.dataBooking;
+
+  const listStaff = getUniqueStaff(dataBooking);
+  const htmlListStaff = listStaff.map((item) => item).join(", ");
 
   await store.getTimeKeySlot();
   await buildSlotTimeMultiTechFromBooking({
@@ -498,7 +598,6 @@ export async function renderChooseTime() {
   });
 
   const salonChoosing = store.salonChoosing;
-  const slotTimeForSelect = store.slotTimeForSelect;
 
   const htmlHeaderSalon = HeaderSalon(salonChoosing);
   const $wrapDirBtn = renderFooterChooseTime();
@@ -526,8 +625,12 @@ export async function renderChooseTime() {
               <div class="calendar-grid" id="days">
               </div>
             </div>
+            <div class="line-ca-ti"></div>
             <div class="timeslot">
-              <h2 id="selectedDateTitle">August 14, 2025</h2>
+              <!-- <h2 id="selectedDateTitle">August 14, 2025</h2> -->
+              <div class="name-techs">
+                Tech: <span class="techs text-uppercase">${htmlListStaff}</span>
+              </div>
               <div id="timeSlotsContainer" class="time-slots"></div>
             </div>
           </div>
@@ -589,23 +692,39 @@ import { salonStore } from "../../store/new-online-store.js";
 import { HeaderSalon } from "../header/header-salon.js";
 import { formatDateMMDDYYYY } from "../../helper/format-day.js";
 import { findMultiTechStarts } from "../../helper/free-time/slot-time-available.js";
+import { ChooseTechForServices } from "../screen-choose-sertech/choose-tech-for-service/choose-tech-for-service.js";
+// help function
+import { validateEmailPhoneInput } from "../../helper/input/valid-form.js";
+import { buildLocktimePayload } from "../../helper/build-lock-time.js";
+import { sendOTP } from "../helper/send-otp.js";
 // import constant
+import { PageCurrent } from "../../constants/new-online.js";
 import { monthNames, dayNames } from "../../constants/days-weeks.js";
+// import content popup
+import { renderVerifyEmailPhoneContent } from "../popup/content/verify-email-phone.js";
+import { renderBasePopup } from "../popup/base.js";
+import { renderVerifyCodeContent } from "../popup/content/verify-code.js";
+import { renderPaymentMethodsForm } from "../popup/content/choose-payment.js";
+import { renderAddNewMethod } from "../popup/content/add-new-payment.js";
+import { isValidPhoneNumber } from "../../helper/format-phone.js";
+import { formatPhoneNumber } from "../../helper/format-phone.js";
+import { shakeError } from "../../helper/shake-error.js";
+import { isValidEmail } from "../../helper/input/valid-form.js";
+import { renderSumary } from "../summary/summary.js";
 $(document).ready(async function () {
   const store = salonStore.getState();
   let currentMonth = store.currentMonth;
   const selectedDate = store.selectedDate;
   const currentYear = store.currentYear;
   const currentDate = new Date();
-  console.log("currentDate: ", currentDate);
   const daysOffNail = store.daysOffNail;
   const RVCNo = store.RVCNo;
   // await store.getTimeKeySlot();
-  await store.getTimeBeginCurDate(formatDateMMDDYYYY(currentDate));
-
-  const dataBooking = store.dataBooking;
+  await store.getTimeBeginCurDate(formatDateMMDDYYYY(currentDate)); // khởi tạo lịch ở ngày hiện tại
 
   const isMobile = $(window).width() <= 768;
+
+  const $wrapNewOnline = $(".wrap-newonline");
 
   $(document).on("click", "#prev", function () {
     const dataBooking = store.dataBooking;
@@ -653,5 +772,293 @@ $(document).ready(async function () {
         salonStore.setState({ dataBooking });
       });
     }
+  });
+
+  $(document).on("click", "#btn-back-choose-time", async function () {
+    await ChooseTechForServices();
+    // Chuyển tới page chọn duy nhất một thợ
+    salonStore.setState({ pageCurrent: PageCurrent.CHOOSE_ONLY_TECH });
+  });
+
+  $(document).on("click", ".time-slot", function () {
+    const $this = $(this);
+    const valTime = $this.find("#time-val").text().trim();
+    const store = salonStore.getState();
+    const dataBooking = store.dataBooking;
+    const user = dataBooking.users.find((u) => u.isChoosing);
+
+    user.selectedTimeSlot = valTime;
+    salonStore.setState({ dataBooking });
+  });
+
+  // popup verify user
+
+  $(document).on("click", "#btn-next-choose-time", async function () {
+    const store = salonStore.getState();
+    const dataBooking = store.dataBooking;
+    // GUEST
+    const userHavePhone = dataBooking.users.find(
+      (u) => u.phoneNumber || u.email
+    );
+    const phoneEmailOrNull =
+      userHavePhone?.phoneNumber || userHavePhone?.email || "";
+    const htmlVerifyEmailPhone =
+      renderVerifyEmailPhoneContent(phoneEmailOrNull);
+    let height = 620;
+    let width = 560;
+    if (isMobile) {
+      height = 620;
+      width = "100%";
+    }
+    // const persistent = true;
+    const html = renderBasePopup(htmlVerifyEmailPhone, false, height, width);
+    $wrapNewOnline.append(html);
+    setTimeout(() => {
+      $(".overlay-screen").addClass("show");
+    }, 10);
+  });
+
+  // Xử lý onChange input appointment-input
+  $(document).on("input", "#appointment-input", function () {
+    const $this = $(this);
+    let val = $this.val().trim();
+    const $error = $this.siblings(".error-message");
+
+    const digits = val.replace(/\D/g, "");
+
+    let isPhone = false;
+    let isEmail = false;
+
+    // Check nếu là phone đủ 10 số
+    if (digits.length === 10 && /^\d+$/.test(digits)) {
+      val = formatPhoneNumber(digits); // Format lại hiển thị
+      $this.val(val); // Gán lại giá trị vào input
+      isPhone = true;
+    } else {
+      // Nếu đang ở dạng đã format mà không còn đủ 10 số → gỡ format
+      if (val.includes("(") || val.includes(")") || val.includes("-")) {
+        if (digits.length !== 10) {
+          val = digits;
+          $this.val(val);
+        }
+      }
+
+      isPhone = isValidPhoneNumber(val);
+      isEmail = isValidEmail(val);
+    }
+    // clear input #appointment-input
+    $(document).on("click", ".clear-icon", function () {
+      const $inputAppt = $("#appointment-input");
+      $inputAppt.val("");
+      clearInputError($inputAppt);
+      $inputAppt.focus();
+    });
+
+    // Cập nhật lỗi
+    if (val === "") {
+      $this.addClass("is-invalid");
+      $error.text("Email or phone is required.");
+      // $('.btn-next-emailPhone').prop('disabled', true)
+    } else if (val !== "" && !isPhone && !isEmail) {
+      $this.addClass("is-invalid");
+      $error.text("Email or phone is incorrect format.");
+      // $('.btn-next-emailPhone').prop('disabled', true)
+    } else {
+      $this.removeClass("is-invalid");
+      $error.text("");
+      // Cho phép next
+      $(".btn-next-emailPhone-1").prop("disabled", false);
+    }
+  });
+  // Xử lý blur input apointment-input
+  $(document).on("blur", "#appointment-input", function () {
+    const store = salonStore.getState();
+    const dataBooking = store.dataBooking;
+
+    const $this = $(this);
+    const res = validateEmailPhoneInput($this);
+    if (res === "EMAIL") {
+      dataBooking.users[0].email = $this.val();
+    } else if (res === "PHONE") {
+      dataBooking.users[0].phoneNumber = $this.val();
+    } else {
+      // $('.btn-next-emailPhone').prop('disabled', true)
+    }
+  });
+
+  // Xử lý sự kiện cho next verify
+  $(document).on("click", ".btn-next-emailPhone-1", async function () {
+    const store = salonStore.getState();
+    const dataBooking = store.dataBooking;
+    const RVCNo = store.RVCNo;
+    const $appointInput = $("#appointment-input");
+    const res = validateEmailPhoneInput($appointInput);
+    if (!res) return;
+
+    const value = $appointInput.val();
+    const resVerifyGetOtp = await sendOTP(value, res);
+
+    if (resVerifyGetOtp && resVerifyGetOtp.status === 200) {
+      const extraData = resVerifyGetOtp.extraData;
+      dataBooking.users[0] = {
+        ...dataBooking.users[0],
+        email: extraData?.mail,
+        phoneNumber: extraData?.contactPhone,
+        firstName: extraData?.firstName,
+        lastName: extraData?.lastName,
+        rcpCustomer: extraData?.rcpCustomer,
+        isChoosing: true,
+        isVerify: true,
+      };
+      // update store
+      salonStore.setState({
+        dataBooking,
+      });
+
+      const emailPhoneMasked =
+        res === typeInput.EMAIL
+          ? dataBooking.users[0].email
+          : dataBooking.users[0].phoneNumber;
+
+      const htmlVerifyEmailPhoneMasked =
+        renderVerifyCodeContent(emailPhoneMasked);
+
+      const persistent = true;
+      let height = 620,
+        width = 560;
+      if (isMobile) {
+        height = 620;
+        width = "100%";
+      }
+
+      const html = renderBasePopup(
+        htmlVerifyEmailPhoneMasked,
+        persistent,
+        height,
+        width
+      );
+      $wrapHomeTemp.append(html);
+
+      setTimeout(() => {
+        $(".overlay-screen").addClass("show");
+        $('.otp-box[data-index="0"]').focus();
+      }, 20);
+
+      resendCountdown = 59;
+      startResendTimer();
+
+      const typeBooking = dataBooking.type;
+      if (typeBooking === typeBookingEnum.GUESTS) {
+        // Add thêm 1 Guest rỗng
+        $(".btn-increase").trigger("click");
+      }
+
+      // lấy listcard authorized tại đây
+      const owner = dataBooking.users[0];
+      const customerID = owner.id;
+      const rcpCustomer = owner.rcpCustomer;
+
+      // locktime thợ đã chọn
+      for (const user of dataBooking.users) {
+        const listPayload = buildLocktimePayload(user);
+        for (const payload of listPayload) {
+          try {
+            await fetchAPI.post("/api/appointment/createlocktime", payload);
+          } catch (e) {
+            console.error("[sendOTP - locktime tech]", payload, e);
+          }
+        }
+      }
+
+      // get list card authorized
+      try {
+        const listCardAuthorized = await fetchAPI.post(
+          `/api/card/getlistcardauthorize?RCPCustomer=${rcpCustomer}&CustomerID=${customerID}&RVCNo=${RVCNo}&TypeAuthorize=1`
+        );
+        if (listCardAuthorized.data)
+          dataBooking.cardNumber = listCardAuthorized.data;
+        else return;
+      } catch (e) {
+        console.error("[sendOTP - list card authorized]", e.error);
+      }
+    } else {
+      // console.log("! status 200");
+    }
+  });
+
+  // next form policies
+  $(document).on("click", ".btn-next-policies-1", async function () {
+    console.log("2");
+    const store = salonStore.getState();
+    const dataBooking = store.dataBooking;
+    const contentPaymentMethod = renderPaymentMethodsForm(dataBooking);
+    let height = 776;
+    let width = 886;
+    if (isMobile) {
+      height = 676;
+      width = "100%";
+    }
+    const html = renderBasePopup(contentPaymentMethod, false, height, width);
+    $wrapNewOnline.append(html);
+    setTimeout(() => {
+      $(".overlay-screen").addClass("show");
+    }, 10);
+  });
+  // add new card
+  $(document).on("click", ".add-new-card-btn-1", function () {
+    const htmlAddNewMethod = renderAddNewMethod();
+    const persistent = true;
+    const html = renderBasePopup(htmlAddNewMethod, persistent, 900, 886);
+
+    $wrapNewOnline.append(html);
+    setTimeout(() => {
+      $(".overlay-screen").addClass("show");
+    }, 10);
+  });
+  // back: add new card
+  $(document).on("click", ".btn-back-add-card", function () {
+    let height = 776;
+    let width = 886;
+    if (isMobile) {
+      height = 676;
+      width = "100%";
+    }
+    const htmlPaymentMethod = renderPaymentMethodsForm(dataBooking);
+    const html = renderBasePopup(htmlPaymentMethod, false, height, width);
+
+    $wrapNewOnline.append(html);
+    setTimeout(() => {
+      $(".overlay-screen").addClass("show");
+    }, 10);
+    // settime close form
+  });
+
+  $(document).on("click", ".payment-method-item", function () {
+    const store = salonStore.getState();
+    const dataBooking = store.dataBooking;
+
+    const $this = $(this);
+    $(".payment-method-item").removeClass("selected");
+
+    $this.addClass("selected");
+    const idCard = $this.data("id");
+    let cardChoosing = {};
+    dataBooking.cardNumber.forEach((item) => {
+      if (item.id == idCard) {
+        item.isChoosing = true;
+        cardChoosing = item;
+      }
+    });
+    salonStore.setState({ dataBooking });
+    // bật nút Confirm
+    $(".btn-next-payment-1").prop("disabled", false);
+  });
+
+  $(document).on("click", ".btn-next-payment-1", function () {
+    const store = salonStore.getState();
+    const dataBooking = store.dataBooking;
+    const dataServices = store.dataServices;
+
+    renderSumary(dataBooking, dataServices);
   });
 });

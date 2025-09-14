@@ -1,31 +1,29 @@
-import { fetchAPI } from "../site.js";
-import { buildLocktimePayload } from "./build-lock-time.js";
-import { unFormatPhoneNumber } from "./format-phone.js";
-import { renderPoliciesForm } from "../popup/content/policies.js";
-import { updateGuestSection } from "../layout-template/layout.js";
+import { fetchAPI } from "../../site.js";
+import { buildLocktimePayload } from "../../helper/build-lock-time.js";
+import { unFormatPhoneNumber } from "../../helper/format-phone.js";
+import { updateGuestSection } from "../../layout-template/layout.js";
 import { renderBasePopup } from "../popup/base.js";
-import { startPopupFlowCountdown } from "./count-down.js";
-// import constant
-import { typeInput, typeBookingEnum } from "../constants/template-online.js";
-import { colorPrimary } from "../templateDetail.js";
-// import store
-import { templateStore } from "../store/template-store.js";
-import { nextFormRegister } from "../templateDetail.js";
+import { startPopupFlowCountdown } from "../../helper/count-down.js";
+import { typeInput, typeBookingEnum } from "../../constants/template-online.js";
+import { salonStore } from "../../store/new-online-store.js";
+import { colorPrimary } from "../../templateDetail.js";
+import { renderPoliciesForm } from "../popup/content/policies.js";
+
 // Hàm dùng để gửi OTP (email hoặc phone)
 export async function sendOTP(inputValue, type) {
-  const RVCNo = templateStore.getState().RVCNo;
+  await salonStore.getState().getDataSetting();
+
+  const store = salonStore.getState();
+  const RVCNo = store.RVCNo;
 
   const isMobile = $(window).width() <= 768;
   const $wrapNewOnline = $(".wrap-newonline");
 
-  await templateStore.getState().getDataSetting();
-
-  let popupFlowCountdownInterval =
-    templateStore.getState().popupFlowCountdownInterval;
-  const dataBooking = templateStore.getState().dataBooking;
-  const policySetting = templateStore.getState().policySetting;
-  const currencyDeposit = templateStore.getState().currencyDeposit;
-  const paymentDeposit = templateStore.getState().paymentDeposit;
+  let popupFlowCountdownInterval = store.popupFlowCountdownInterval;
+  const dataBooking = store.dataBooking;
+  const policySetting = store.policySetting;
+  const currencyDeposit = store.currencyDeposit;
+  const paymentDeposit = store.paymentDeposit;
 
   const newDataBooking = {
     ...dataBooking,
@@ -33,7 +31,7 @@ export async function sendOTP(inputValue, type) {
     paymentDeposit: paymentDeposit,
   };
 
-  templateStore.setState({
+  salonStore.setState({
     dataBooking: newDataBooking,
   });
 
@@ -77,10 +75,11 @@ export async function sendOTP(inputValue, type) {
           return;
         }
       }
+
       if (resVerifyAccount.status === 201) {
         // lưu lại customerID
         dataBooking.users[0].id = resVerifyAccount?.data?.customerID;
-        templateStore.setState({ dataBooking });
+        salonStore.setState({ dataBooking });
         // chưa verify, cần gửi OTP
         return await fetchAPI.get(
           `/api/user/verifycode?phone=${phoneUnformat}&portalCode=${encodeURIComponent(
@@ -119,7 +118,7 @@ export async function sendOTP(inputValue, type) {
         };
 
         // update store
-        templateStore.setState({
+        salonStore.setState({
           dataBooking: newDataBooking,
         });
 
@@ -156,8 +155,8 @@ export async function sendOTP(inputValue, type) {
         } catch (e) {
           console.error("[sendOTP - list card authorized]", e.error);
         }
-        const contentPolicies = renderPoliciesForm(policySetting);
-        console.log("contentPo: ", contentPolicies);
+        const contentPolicies = renderPoliciesForm(policySetting, colorPrimary);
+        console.log("poliform: ", contentPolicies);
         let height = 768;
         let width = 886;
         if (isMobile) {
@@ -245,7 +244,7 @@ export async function sendOTP(inputValue, type) {
       // Nếu chưa exits create
       if (resVerifyAccount.status === 201) {
         dataBooking.users[0].id = resVerifyAccount?.data[0]?.customerID;
-        templateStore.setState({ dataBooking });
+        salonStore.setState({ dataBooking });
         // chưa verify, cần gửi OTP
         return await fetchAPI.get(
           `/api/user/verifycode?phone=${emailVerify}&portalCode=${encodeURIComponent(
@@ -284,7 +283,7 @@ export async function sendOTP(inputValue, type) {
         };
 
         // update store
-        templateStore.setState({
+        salonStore.setState({
           dataBooking: newDataBooking,
         });
 

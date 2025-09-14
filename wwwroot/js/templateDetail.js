@@ -760,7 +760,7 @@ $(document).ready(async function () {
   // next form policies
   $(document).on("click", ".btn-next-policies", async function () {
     const dataBooking = templateStore.getState().dataBooking;
-
+    console.log("1");
     const contentPaymentMethod = renderPaymentMethodsForm(
       dataBooking,
       colorPrimary
@@ -2177,7 +2177,6 @@ $(document).ready(async function () {
     const userHavePhone = dataBooking.users.find(
       (u) => u.phoneNumber || u.email
     );
-    console.log("userHavePhone: ", userHavePhone);
     const RVCNo = templateStore.getState().RVCNo;
     const phoneEmailOrNull =
       userHavePhone?.phoneNumber || userHavePhone?.email || "";

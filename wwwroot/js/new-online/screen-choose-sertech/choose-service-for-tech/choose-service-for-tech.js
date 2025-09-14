@@ -146,10 +146,22 @@ function renderFooterService() {
   const store = salonStore.getState();
   const dataBooking = store.dataBooking;
   const user = dataBooking.users.find((u) => u.isChoosing);
-  // đã chọn service mới được phép next
-  const isNext = user.services.some((srv) => {
-    return srv.itemService.length > 0;
+  const chooseStaffBefore = store.chooseStaffBefore;
+
+  // Lấy danh sách staff đã được gán trong itemService
+  const staffSelectedInServices = new Set();
+  user.services.forEach((srv) => {
+    srv.itemService.forEach((item) => {
+      if (item.selectedStaff) {
+        staffSelectedInServices.add(item.selectedStaff.employeeID);
+      }
+    });
   });
+
+  // Kiểm tra tất cả staff trong chooseStaffBefore đã có mặt trong itemService chưa
+  const isNext =
+    chooseStaffBefore.length > 0 &&
+    chooseStaffBefore.every((staffId) => staffSelectedInServices.has(staffId));
 
   const $wrapDirBtn = `
     <div class="wrap-dir-btn">
@@ -405,12 +417,27 @@ import { Cart } from "../../cart/cart.js";
 import { initSliderFromElement } from "../../choose-nail-salon/choose-nail-salon.js";
 // import constant
 import { idStaffDefault } from "../../../constants/template-online.js";
+import { monthNames, dayNames } from "../../../constants/days-weeks.js";
+// import component
 import { ChooseTechForServices } from "../choose-tech-for-service/choose-tech-for-service.js";
 import { renderTrackCate } from "../screen-choose-service.js";
 import { renderAddonPanel } from "../screen-choose-service.js";
 import { ScreenChooseTech } from "../screen-choose-tech.js";
+import {
+  renderChooseTime,
+  updateCalendarData,
+  renderCalendar,
+} from "../../choose-time/choose-time.js";
 // hanle event
 $(document).ready(async function () {
+  const store = salonStore.getState();
+  const currentMonth = store.currentMonth;
+  const selectedDate = store.selectedDate;
+  const currentYear = store.currentYear;
+  const currentDate = new Date();
+  const daysOffNail = store.daysOffNail;
+  const RVCNo = store.RVCNo;
+  const dataBooking = store.dataBooking;
   const $wrapNewOnline = $(".wrap-newonline");
 
   $(document).on("click", ".wrap-ftservice-card", async function () {
@@ -580,5 +607,46 @@ $(document).ready(async function () {
   // back choose service or tech
   $(document).on("click", "#btn-back-ftser", async function () {
     await ScreenChooseTech();
+  });
+
+  $(document).on("click", "#btn-next-ftser", async function () {
+    // Kiểm tra đã chọn đầy đủ service cho thợ chưa trước khi next
+    const store = salonStore.getState();
+    const dataBooking = store.dataBooking;
+    const user = dataBooking.users.find((u) => u.isChoosing);
+    const chooseStaffBefore = store.chooseStaffBefore;
+
+    // Lấy danh sách staff đã được gán trong itemService
+    const staffSelectedInServices = new Set();
+    user.services.forEach((srv) => {
+      srv.itemService.forEach((item) => {
+        if (item.selectedStaff) {
+          staffSelectedInServices.add(item.selectedStaff.employeeID);
+        }
+      });
+    });
+
+    // Kiểm tra tất cả staff trong chooseStaffBefore đã có mặt trong itemService chưa
+    const isNext =
+      chooseStaffBefore.length > 0 &&
+      chooseStaffBefore.every((staffId) =>
+        staffSelectedInServices.has(staffId)
+      );
+    if (!isNext) return;
+
+    await renderChooseTime();
+
+    // lần đầu load: fetch ngày nghỉ của tháng hiện tại
+    updateCalendarData(currentMonth, currentYear, RVCNo, daysOffNail, () => {
+      renderCalendar(
+        monthNames,
+        dayNames,
+        currentMonth,
+        currentYear,
+        daysOffNail,
+        selectedDate,
+        dataBooking
+      );
+    });
   });
 });

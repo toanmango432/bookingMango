@@ -7,7 +7,7 @@ export function renderPoliciesForm(
   return `
         <div class="wrap-popup-policies"
           style="
-            --color-cur-primary: ${colorPrimary ? colorPrimary : ""};
+            --color-cur-primary: ${colorPrimary};
           "
         >
           <div class="title-timeoff">
@@ -21,8 +21,8 @@ export function renderPoliciesForm(
             ${policySetting}
           </div>
           <div class="button-container">
-            <button class="btn-back-policies">Back</button>
-            <button class="btn-next-policies">Accept</button>
+            <button class="btn-back-policies-1">Back</button>
+            <button class="btn-next-policies-1">Accept</button>
           </div>
         </div>
       `;

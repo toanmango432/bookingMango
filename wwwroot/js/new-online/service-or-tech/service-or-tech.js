@@ -79,11 +79,14 @@ $(document).ready(async function () {
 
   $(document).on("click", "#options-service", async function () {
     await ScreenChooseService(); // append screen choose service
+
     salonStore.setState({
       flow: SelecteFlow.SER,
       pageCurrent: PageCurrent.CHOOSE_SERVICE,
     });
-
+    const store = salonStore.getState();
+    const dataServices = store.dataServices;
+    console.log("dataServices: ", dataServices);
     // reset dataBooking
     salonStore.resetDataBooking();
   });

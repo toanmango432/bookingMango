@@ -35,8 +35,8 @@ export function renderVerifyEmailPhoneContent(emailOrPhone, colorPrimary) {
             <label for="consent-checkbox">Input your number to consent to HANG NAILS & SPA SMS messages. Opt out with Stop</label>
           </div>
           <div class="button-container">
-            <button class="btn-back-emailPhone">Back</button>
-            <button class="btn-next-emailPhone" ${
+            <button class="btn-back-emailPhone-1">Back</button>
+            <button class="btn-next-emailPhone-1" ${
               emailOrPhone ? "" : "disabled"
             }>Next</button>
           </div>

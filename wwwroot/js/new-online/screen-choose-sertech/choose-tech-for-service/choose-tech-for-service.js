@@ -185,7 +185,7 @@ export async function ChooseTechForServices() {
   const store = salonStore.getState();
   const dataBooking = store.dataBooking;
   const user = dataBooking.users.find((u) => u.isChoosing);
-  const listStaffUser = store.listStaffUser;
+  const listStaffUser = store.listStaffUser || (await store.getListUserStaff());
 
   const salonChoosing = store.salonChoosing;
 
@@ -255,8 +255,8 @@ import { ScreenChooseService } from "../screen-choose-service.js";
 import { Cart } from "../../cart/cart.js";
 import { ChooseTechForEachServices } from "../choose-tech-for-each-service/choose-tech-for-each-service.js";
 import { PageCurrent } from "../../../constants/new-online.js";
-import { renderChooseTime } from "../../choose-time/choose-time.js";
 import {
+  renderChooseTime,
   updateCalendarData,
   renderCalendar,
 } from "../../choose-time/choose-time.js";

@@ -394,7 +394,6 @@ import { HeaderSalon } from "../header/header-salon.js";
 import { Cart } from "../cart/cart.js";
 import { initSliderFromElement } from "../choose-nail-salon/choose-nail-salon.js";
 // import constant
-import { idStaffDefault } from "../../constants/template-online.js";
 import { PageCurrent, SelecteFlow } from "../../constants/new-online.js";
 // import component
 import { ServiceOrTech } from "../service-or-tech/service-or-tech.js";
@@ -412,8 +411,6 @@ import {
 
 // hanle event
 $(document).ready(async function () {
-  const store = salonStore.getState();
-
   const $wrapNewOnline = $(".wrap-newonline");
   const isMobile = $(window).width() <= 768;
   let selectFlow;
@@ -421,11 +418,11 @@ $(document).ready(async function () {
   // Toggle search
   $(document).on("click", ".btn-search-toggle", function () {
     const $this = $(this);
+    const store = salonStore.getState();
     const dataService = store.dataServices;
 
     const $inputSearch = $(".input-search-ser");
     const $wrapSearchSer = $(".wrap-search-ser");
-    console.log("here");
     $this.toggleClass("active");
     $inputSearch.toggleClass("active");
     $wrapSearchSer.toggleClass("active");
@@ -439,6 +436,7 @@ $(document).ready(async function () {
 
   // Search trong category active
   $(document).on("input", ".input-search-ser", function () {
+    const store = salonStore.getState();
     const dataService = store.dataServices;
 
     const keyword = $(this).val().toLowerCase();
@@ -454,8 +452,10 @@ $(document).ready(async function () {
   });
 
   // Chọn category
-  $(document).on("click", ".item-cate", function () {
+  $(document).on("click", ".item-cate", async function () {
+    const store = salonStore.getState();
     const dataService = store.dataServices;
+    console.log("dataSer: ", dataService);
 
     $(".item-cate").removeClass("active");
     $(this).addClass("active");
@@ -466,19 +466,13 @@ $(document).ready(async function () {
     $(".input-search-ser").val(""); // clear search khi đổi cate
   });
 
-  // Render lần đầu (category đầu tiên)
-  if (dataService.length) {
-    renderServices(dataService[0].item.listItem);
-  }
-
   $(document).on("click", ".wrap-service-card", async function () {
+    const store = salonStore.getState();
+    let dataService = store.dataServices;
+
     let isUnSelected = true;
     const serviceId = $(this).data("iditem");
     const cateId = $(".item-cate.active").data("id");
-    const store = salonStore.getState();
-    let dataService = store.getListDataService
-      ? await store.getListDataService()
-      : []; // fallback
 
     const cate = dataService.find((c) => c.item.id === cateId);
     const itemService = cate?.item.listItem.find((s) => s.id === serviceId);

@@ -160,8 +160,11 @@ export async function ScreenChooseTech() {
   const store = salonStore.getState();
   const dataBooking = store.dataBooking;
   const user = dataBooking.users.find((u) => u.isChoosing);
-  const listStaffUser = store.listStaffUser;
-  const htmlHeaderSalon = HeaderSalon();
+  const listStaffUser =
+    store.listStaffUser || (await store.getListUserStaff()) || [];
+  const salonChoosing = store.salonChoosing;
+
+  const htmlHeaderSalon = HeaderSalon(salonChoosing);
   const $wrapDirBtn = renderFooterTech_PageChooseTech();
   const htmlScreenChooseTechs = `
         <div class="wrap-content-salon">
@@ -232,11 +235,10 @@ import { Cart } from "../cart/cart.js";
 import { PageCurrent } from "../../constants/new-online.js";
 $(document).ready(async function () {
   const store = salonStore.getState();
-  const listStaffUser = (await store.getListUserStaff()) || [];
 
   const $wrapNewOnline = $(".wrap-newonline");
   // Lưu staff chọn vào chooseStaffBefore
-  $(document).on("click", ".item-tech-sctpage", function () {
+  $(document).on("click", ".item-tech-sctpage", async function () {
     const $this = $(this);
     const staffId = $this.data("id");
 

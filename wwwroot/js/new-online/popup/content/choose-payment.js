@@ -1,5 +1,5 @@
 // Form chọn phương thức thanh toán
-import { maskCardNumber } from "../../helper/format-card.js";
+import { maskCardNumber } from "../../../helper/format-card.js";
 export function renderPaymentMethodsForm(
   dataBooking,
   colorPrimary,
@@ -22,7 +22,7 @@ export function renderPaymentMethodsForm(
             <span class="subtitle-text">
               Choose your card
             </span>
-            <span class="add-new-card-btn">
+            <span class="add-new-card-btn-1">
               <i class="fa-solid fa-plus"></i>
               Add new card
             </span>
@@ -74,8 +74,8 @@ export function renderPaymentMethodsForm(
             </div>
           </div>
           <div class="button-container">
-            <button class="btn-back-payment">Back</button>
-            <button class="btn-next-payment" disabled>Confirm</button>
+            <button class="btn-back-payment-1">Back</button>
+            <button class="btn-next-payment-1" disabled>Confirm</button>
           </div>
         </div>
       `;

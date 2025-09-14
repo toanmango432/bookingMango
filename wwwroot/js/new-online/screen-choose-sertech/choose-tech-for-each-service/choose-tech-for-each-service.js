@@ -466,12 +466,26 @@ export async function ChooseTechForEachServices() {
 import { salonStore } from "../../../store/new-online-store.js";
 // import constant
 import { idStaffDefault } from "../../../constants/template-online.js";
+import { monthNames, dayNames } from "../../../constants/days-weeks.js";
 // import component
 import { HeaderSalon } from "../../header/header-salon.js";
 import { ScreenChooseService } from "../screen-choose-service.js";
 import { Cart } from "../../cart/cart.js";
+import {
+  renderChooseTime,
+  updateCalendarData,
+  renderCalendar,
+} from "../../choose-time/choose-time.js";
+
 $(document).ready(async function () {
   const store = salonStore.getState();
+  const currentMonth = store.currentMonth;
+  const selectedDate = store.selectedDate;
+  const currentYear = store.currentYear;
+  const currentDate = new Date();
+  const daysOffNail = store.daysOffNail;
+  const RVCNo = store.RVCNo;
+  const dataBooking = store.dataBooking;
   const $wrapNewOnline = $(".wrap-newonline");
 
   // btn back tech to services
@@ -567,5 +581,23 @@ $(document).ready(async function () {
     renderListPeSer();
     renderListStaff_PageChoseEachSer(listStaffUser);
     Cart();
+  });
+  $(document).on("click", "#btn-next-cetech", async function () {
+    // Kiểm tra đã chọn đầy đủ thợ cho service chưa trước khi next
+
+    await renderChooseTime();
+
+    // lần đầu load: fetch ngày nghỉ của tháng hiện tại
+    updateCalendarData(currentMonth, currentYear, RVCNo, daysOffNail, () => {
+      renderCalendar(
+        monthNames,
+        dayNames,
+        currentMonth,
+        currentYear,
+        daysOffNail,
+        selectedDate,
+        dataBooking
+      );
+    });
   });
 });

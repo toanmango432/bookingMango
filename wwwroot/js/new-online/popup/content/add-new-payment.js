@@ -1,5 +1,5 @@
 // Form thêm thẻ mới
-import { typeRequire } from "../../constants/template-online.js";
+import { typeRequire } from "../../../constants/template-online.js";
 export function renderAddNewMethod(colorPrimary) {
   return `
         <div class="wrap-popup-add-card"
@@ -108,8 +108,8 @@ export function renderAddNewMethod(colorPrimary) {
             </div>
           </div>
           <div class="button-container">
-            <button class="btn-back-add-card">Back</button>
-            <button class="btn-add-card">Add</button>
+            <button class="btn-back-add-card-1">Back</button>
+            <button class="btn-add-card-1">Add</button>
           </div>
         </div>
       `;
