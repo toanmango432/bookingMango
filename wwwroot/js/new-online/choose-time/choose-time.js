@@ -623,43 +623,46 @@ export async function renderChooseTime() {
       <div class="header-sertech">
           ${htmlHeaderSalon}
       </div>
-      <div class="text-choose-time">
-        <div class="wrap-title">
-            <h2 class="title">CHOOSE SERVICES</h2>
+      <div class="content-choose-sertech">
+        <div class="text-choose-time">
+          <div class="wrap-title">
+              <h2 class="title">CHOOSE SERVICES</h2>
+          </div>
+          <p class="desc">
+              Business Time: 9:00 AM - 9:00 PM
+          </p>
         </div>
-        <p class="desc">
-            Business Time: 9:00 AM - 9:00 PM
-        </p>
-      </div>
-      <div class="content-choose-time">
-        ${htmlChooseTime}
-      </div>
-      <div class="wrap-help-support">
-        <h4 class="ques-see">
-          Don’t See Your Time ?
-        </h4>
-        <p class="contact-to">
-          <span class="icon-contact">
-            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
-              <path d="M9 19.2578H8.5C4.5 19.2578 2.5 18.2578 2.5 13.2578V8.25781C2.5 4.25781 4.5 2.25781 8.5 2.25781H16.5C20.5 2.25781 22.5 4.25781 22.5 8.25781V13.2578C22.5 17.2578 20.5 19.2578 16.5 19.2578H16C15.69 19.2578 15.39 19.4078 15.2 19.6578L13.7 21.6578C13.04 22.5378 11.96 22.5378 11.3 21.6578L9.8 19.6578C9.64 19.4378 9.27 19.2578 9 19.2578Z" stroke="black" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M16.4965 11.2578H16.5054" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M12.4955 11.2578H12.5045" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M8.49451 11.2578H8.50349" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </span>
-          <span class="need-help">Need help?</span>
-          <span class="call-us">Call Us: </span>
-          <span class="phone-contact">(384) 334-2234</span>
-        </p>
-      </div>
-      <div class="footer-dir footer-choose-time">
-        ${$wrapDirBtn}
+        <div class="content-choose-time">
+          ${htmlChooseTime}
+        </div>
+        <div class="wrap-help-support">
+          <h4 class="ques-see">
+            Don’t See Your Time ?
+          </h4>
+          <p class="contact-to">
+            <span class="icon-contact">
+              <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
+                <path d="M9 19.2578H8.5C4.5 19.2578 2.5 18.2578 2.5 13.2578V8.25781C2.5 4.25781 4.5 2.25781 8.5 2.25781H16.5C20.5 2.25781 22.5 4.25781 22.5 8.25781V13.2578C22.5 17.2578 20.5 19.2578 16.5 19.2578H16C15.69 19.2578 15.39 19.4078 15.2 19.6578L13.7 21.6578C13.04 22.5378 11.96 22.5378 11.3 21.6578L9.8 19.6578C9.64 19.4378 9.27 19.2578 9 19.2578Z" stroke="black" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M16.4965 11.2578H16.5054" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12.4955 11.2578H12.5045" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8.49451 11.2578H8.50349" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <span class="need-help">Need help?</span>
+            <span class="call-us">Call Us: </span>
+            <span class="phone-contact">(384) 334-2234</span>
+          </p>
+        </div>
+        <div class="footer-dir footer-choose-time">
+          ${$wrapDirBtn}
+        </div>
       </div>
     </div>
   `;
   const $wrapNewOnline = $(".wrap-newonline");
   $wrapNewOnline.empty();
   $wrapNewOnline.append(htmlPageChooseTime);
+  Cart();
 
   return htmlPageChooseTime;
 }
@@ -673,6 +676,7 @@ import { HeaderSalon } from "../header/header-salon.js";
 import { formatDateMMDDYYYY } from "../../helper/format-day.js";
 import { findMultiTechStarts } from "../../helper/free-time/slot-time-available.js";
 import { ChooseTechForServices } from "../screen-choose-sertech/choose-tech-for-service/choose-tech-for-service.js";
+import { Cart } from "../cart/cart.js";
 // help function
 import { validateEmailPhoneInput } from "../../helper/input/valid-form.js";
 import { buildLocktimePayload } from "../../helper/build-lock-time.js";
@@ -691,6 +695,7 @@ import { formatPhoneNumber } from "../../helper/format-phone.js";
 import { shakeError } from "../../helper/shake-error.js";
 import { isValidEmail } from "../../helper/input/valid-form.js";
 import { renderSumary } from "../summary/summary.js";
+
 $(document).ready(async function () {
   const store = salonStore.getState();
   let currentMonth = store.currentMonth;
@@ -755,12 +760,13 @@ $(document).ready(async function () {
   });
 
   $(document).on("click", "#btn-back-choose-time", async function () {
-    await ChooseTechForServices();
+    const store = salonStore.getState();
     // Chuyển tới page chọn duy nhất một thợ
     salonStore.setState({
       ...store,
       pageCurrent: PageCurrent.CHOOSE_ONLY_TECH,
     });
+    await ChooseTechForServices();
   });
 
   $(document).on("click", ".time-slot", function () {
@@ -1043,5 +1049,10 @@ $(document).ready(async function () {
     const dataServices = store.dataServices;
 
     renderSumary(dataBooking, dataServices);
+
+    salonStore.setState((prev) => ({
+      ...prev,
+      pageCurrent: PageCurrent.SUMMARY,
+    }));
   });
 });

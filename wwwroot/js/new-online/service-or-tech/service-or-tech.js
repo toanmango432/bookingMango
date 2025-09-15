@@ -2,6 +2,7 @@ export function ServiceOrTech() {
   const $wrapNewOnline = $(".wrap-newonline");
 
   const salonChoosing = salonStore.getState().salonChoosing;
+  console.log("hre: ", salonChoosing);
   const htmlHeaderSalon = HeaderSalon(salonChoosing);
 
   const htmlSerOrTech = `

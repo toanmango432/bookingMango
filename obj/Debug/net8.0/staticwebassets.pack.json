@@ -533,6 +533,14 @@
       "PackagePath": "staticwebassets/js/new-online/service-or-tech/service-or-tech.js"
     },
     {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/summary/summary.css",
+      "PackagePath": "staticwebassets/js/new-online/summary/summary.css"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/summary/summary.js",
+      "PackagePath": "staticwebassets/js/new-online/summary/summary.js"
+    },
+    {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/popup/base.js",
       "PackagePath": "staticwebassets/js/popup/base.js"
     },

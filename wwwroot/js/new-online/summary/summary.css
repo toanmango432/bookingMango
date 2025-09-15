@@ -9,8 +9,11 @@
   border-radius: var(--px-12);
   border: 1px solid #b1c9b8;
   background: var(--bs-main);
-  font: normal normal 600 var(--s-20);
+  font: normal normal 600 var(--s-16);
   color: white;
+}
+.confirm-booking .btn-confirm-booking-1:disabled {
+  cursor: not-allowed;
 }
 .confirm-booking .btn-confirm-booking-1:disabled {
   cursor: not-allowed;
@@ -19,4 +22,416 @@
 
 .confirm-booking .btn-confirm-booking-1:hover {
   filter: brightness(0.95);
+}
+
+.item-content .text-name-service,
+.header-item-sumary .name-service {
+  width: 32.5%;
+  margin-bottom: 0px;
+}
+.header-item-sumary {
+  width: 100%;
+  border-bottom: 1px solid var(--bs-main);
+  position: absolute;
+  top: 48px;
+  z-index: 2;
+  padding: 0px var(--px-12);
+}
+.body-item-sumary {
+  margin-top: 90px;
+  margin-bottom: 65px;
+  flex: 1 0 0;
+  overflow-y: scroll;
+}
+
+.header-item-sumary .wrap-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  margin-bottom: 0px;
+}
+
+.item-content .text-name-tech,
+.header-item-sumary .name-tech {
+  width: 26%;
+  margin-bottom: 0px;
+}
+.item-content .text-time-dura,
+.header-item-sumary .name-dura {
+  width: 17%;
+  margin-bottom: 0px;
+}
+.item-content .text-price-service,
+.header-item-sumary .name-price {
+  width: 24.5%;
+  text-align: right;
+  margin-bottom: 0px;
+  justify-content: flex-end;
+}
+.total-pay {
+  width: 100%;
+  position: absolute;
+  bottom: 0px;
+  z-index: 2;
+  padding: var(--px-12);
+  display: flex;
+  border-top: 1px solid #d3d3d3;
+  padding: 12px;
+  background: #f3f3f3;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+.total-pay .text-total-amount {
+  width: 58.5%;
+  margin-bottom: 0px;
+}
+.total-pay .text-total-times {
+  width: 13%;
+  margin-bottom: 0px;
+}
+
+.total-pay .text-total-price {
+  width: 27.5%;
+  margin-bottom: 0px;
+  text-align: right;
+  color: red;
+  justify-content: flex-end;
+}
+.wrap-bottom-sum {
+  height: 308px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.checkbox-confirm {
+  width: 100%;
+  display: flex;
+  gap: 4px;
+}
+
+.checkbox-confirm-sum {
+  padding-top: 2px;
+  cursor: pointer;
+}
+.checkbox-confirm-sum:hover {
+  filter: brightness(0.95);
+}
+
+.checkbox-confirm-sum .circle-check {
+  width: var(--px-20);
+  height: var(--px-20);
+  border: 2px solid var(--text-color-primary);
+  border-radius: var(--px-4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  margin-right: 4px;
+}
+
+/* Icon check ẩn khi chưa selected */
+.checkbox-confirm-sum .circle-check i {
+  font-size: var(--px-12);
+  color: var(--color-cur-primary);
+  display: none;
+}
+
+/* Khi selected thì hiện icon check, KHÔNG tô nền nữa */
+.checkbox-confirm-sum.selected .circle-check {
+  background-color: transparent;
+}
+
+.checkbox-confirm-sum.selected .circle-check i {
+  display: block;
+}
+.container-sumary .wrap-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 24px;
+}
+.container-sumary .wrap-title .title {
+  position: relative;
+  font-weight: bold;
+  font-size: 20px;
+  margin-bottom: 8px;
+  position: relative;
+}
+.container-sumary .wrap-title .title::after {
+  content: "";
+  width: 80px;
+  height: 1px;
+  background-color: #aeaeae;
+  position: absolute;
+  left: 108%;
+  top: 50%;
+}
+.container-sumary .wrap-title .title::before {
+  content: "";
+  width: 80px;
+  height: 1px;
+  background-color: #aeaeae;
+  position: absolute;
+  right: 108%;
+  top: 50%;
+}
+
+.new-sumary {
+  width: 745px;
+  display: flex;
+  margin: 0px auto;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  flex: 1 0 0;
+}
+
+.new-sumary .container-sumary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--px-20);
+  align-self: stretch;
+  flex: 1 0 0;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.new-sumary .payment-method-item {
+  width: 100%;
+  display: flex;
+  flex-shrink: 0;
+  height: var(--px-56);
+  padding: 0 var(--px-12);
+  justify-content: space-between;
+  align-items: center;
+  align-self: stretch;
+  border-radius: var(--px-12);
+  border: 1px solid var(--Gray-4, #ebebeb);
+  background: var(--White, #fff);
+  cursor: pointer;
+}
+
+.new-sumary .confirm-booking {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  padding: 0 50px;
+}
+.top-item-sumary {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--px-12) var(--px-12) 0px var(--px-12);
+  position: absolute;
+  top: 0px;
+  z-index: 2;
+}
+.top-item-sumary .user-book {
+  display: flex;
+  justify-content: space-between;
+}
+.top-item-sumary .user-book .left-info-sum {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.top-item-sumary .user-book .left-info-sum .name {
+  padding: var(--px-8) 0px var(--px-8);
+  font: normal normal 600 var(--s-16);
+}
+.top-item-sumary .user-book .left-info-sum .phone {
+  font: normal normal 500 var(--s-16);
+}
+
+.top-item-sumary .user-book .right-info-sum {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: normal normal 600 var(--s-14);
+}
+.wrap-list-sumary {
+  background-color: white;
+  border-radius: 8px;
+  width: 100%;
+  display: flex;
+  gap: var(--px-24);
+  flex-wrap: wrap;
+  padding: 0px;
+  flex: 1 0 0;
+}
+
+.header-item-sumary .item {
+  display: flex;
+  padding: 8px 12px 8px 20px;
+  align-items: flex-start;
+  gap: 12px;
+
+  font: normal normal 600 var(--s-14);
+}
+
+.item-sumary {
+  height: 100%;
+  position: relative;
+  border: none !important;
+  border-radius: 12px;
+  background: var(--Gray-Neutral-100, #fff);
+  box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.15);
+}
+.wrap-item-content {
+  position: relative;
+  padding: 0px var(--px-12);
+}
+
+.wrap-item-content .item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px 12px 8px 24px;
+}
+
+.total-pay .item {
+  display: flex;
+  padding: 8px 12px 8px 20px;
+  align-items: flex-start;
+  gap: 12px;
+
+  font: normal normal 600 var(--s-14);
+}
+
+.add-ticket-note {
+  display: flex;
+  padding: 12px;
+  align-items: center;
+  gap: 5px;
+  align-self: stretch;
+  border-radius: 8px;
+  background: var(--Gray-Neutral-100, #fff);
+  box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.15);
+}
+.input-note {
+  display: flex;
+  flex: 1 0 0;
+  border: none;
+  transition: border-color 0.3s ease; /* hiệu ứng mượt */
+}
+.input-note:focus-visible {
+  outline: none;
+  border-bottom: 2px solid var(--bs-main);
+}
+
+.total-book {
+  display: flex;
+  padding: 12px 24px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  align-self: stretch;
+  border-radius: 8px;
+  background: var(--White, #fff);
+}
+.total-book .total-1 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-self: stretch;
+}
+.total-book .total-2 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-self: stretch;
+}
+.btn-back-sum {
+  display: flex;
+  width: 200px;
+  padding: 12px 16px;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  border-radius: 8px;
+  background: var(--Gray-Neutral-70, #aeaeae);
+  color: white;
+  font: normal normal 600 var(--s-16);
+}
+.btn-add-guest {
+  display: flex;
+  width: 200px;
+  padding: 12px 16px;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  border-radius: 8px;
+  background: var(--Gray-Neutral-70, #ff538a);
+  color: white;
+  font: normal normal 600 var(--s-16);
+}
+.wrap-item-addon {
+  position: relative;
+  padding-left: 24px;
+}
+.wrap-item-addon svg.first {
+  position: absolute;
+  left: 10px;
+  top: -10px;
+}
+.wrap-item-addon svg {
+  position: absolute;
+  top: -25px;
+  left: 10.5px;
+}
+
+.wrap-item-addon .btn-remove-addon {
+  color: #f28500;
+  cursor: pointer;
+  border-radius: 4px;
+  border: none;
+  /* border: 1px solid #f28500; */
+  transition: all 0.25s ease;
+  font-size: 16px;
+  height: 24px;
+  background-color: white;
+  position: absolute;
+  top: 8px;
+  left: 36px;
+}
+.wrap-item-addon .btn-remove-addon:hover {
+  border-color: #d96a00; /* border cam đậm hơn */
+  color: #d96a00; /* text cam đậm hơn */
+  background: #fff7f0; /* nền hơi vàng cam nhẹ */
+}
+.wrap-item-content .btn-remove-service {
+  color: #f28500;
+  cursor: pointer;
+  border-radius: 4px;
+  border: none;
+  /* border: 1px solid #f28500; */
+  transition: all 0.25s ease;
+  font-size: 16px;
+  height: 24px;
+  background-color: white;
+  position: absolute;
+  top: 6px;
+}
+.wrap-item-content .btn-remove-service:hover {
+  border-color: #d96a00; /* border cam đậm hơn */
+  color: #d96a00; /* text cam đậm hơn */
+  background: #fff7f0; /* nền hơi vàng cam nhẹ */
+}
+
+.name-addon {
+  width: 57% !important;
+}
+.price-addon {
+  width: 26% !important;
+}
+.edit-sumary {
+  min-width: 72px;
+  justify-content: flex-end;
+}
+.edit-sumary span {
+  color: var(--bs-main);
+  font: normal normal 600 var(--s-14);
 }

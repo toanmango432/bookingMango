@@ -139,8 +139,8 @@ function renderItemTech(staff) {
     </div>
   `;
 }
-export function renderListStaff_PageChooseOnlyTech(listUserStaff) {
-  if (!listUserStaff?.length) return "";
+export function renderListStaff_PageChooseOnlyTech(listStaffUser) {
+  if (!listStaffUser?.length) return "";
   let htmlListTech = "";
 
   const store = salonStore.getState();
@@ -148,7 +148,7 @@ export function renderListStaff_PageChooseOnlyTech(listUserStaff) {
   const user = dataBooking.users.find((u) => u.isChoosing);
 
   // staff idStaffDefault (Next Available)
-  const techAvailable = listUserStaff.find(
+  const techAvailable = listStaffUser.find(
     (s) => s.employeeID === idStaffDefault
   );
   if (techAvailable) {
@@ -161,7 +161,7 @@ export function renderListStaff_PageChooseOnlyTech(listUserStaff) {
   }
 
   // staff khác
-  htmlListTech += listUserStaff
+  htmlListTech += listStaffUser
     .filter((s) => s.employeeID !== idStaffDefault)
     .map((staff) => renderItemTech(staff))
     .join("");
@@ -185,10 +185,11 @@ export async function ChooseTechForServices() {
   const store = salonStore.getState();
   const dataBooking = store.dataBooking;
   const user = dataBooking.users.find((u) => u.isChoosing);
-  const listStaffUser = store.listStaffUser || (await store.getListUserStaff());
-
+  const listStaffUser = store.listStaffUser?.length
+    ? store.listStaffUser
+    : await store.getListUserStaff();
   const salonChoosing = store.salonChoosing;
-
+  console.log("databOOKING: ", dataBooking);
   const htmlHeaderSalon = HeaderSalon(salonChoosing);
   // Render footer
   const $wrapDirBtn = renderFooterTech_PageChooseOnlyTech();
@@ -280,6 +281,8 @@ $(document).ready(async function () {
   });
 
   $(document).on("input", ".input-search-tech", async function () {
+    const store = salonStore.getState();
+    const listStaffUser = store.listStaffUser;
     const keyword = $(this).val().toLowerCase();
     let list = listStaffUser;
     if (keyword) {
@@ -350,15 +353,16 @@ $(document).ready(async function () {
   });
   $(document).on("click", ".choose-multitech", async function () {
     const $this = $(this);
+    const store = salonStore.getState();
     if ($this.hasClass("not-ser")) {
       console.log("Please back to choose service!");
       return;
     }
-    await ChooseTechForEachServices();
     // Chuyển page chọn tech cho từng service, chỉ chọn được 1 thợ cho 1 service
     salonStore.setState({
       ...store,
       pageCurrent: PageCurrent.CHOOSE_TECH_FOR_SERVICE,
     });
+    await ChooseTechForEachServices();
   });
 });

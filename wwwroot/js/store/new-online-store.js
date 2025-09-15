@@ -170,7 +170,10 @@ export const salonStore = {
           (item) => item.allowBookingOnline
         );
         dataTech.unshift(staffDefault);
-        salonStore.setState({ ...store, listStaffUser: dataTech || [] });
+        salonStore.setState((prev) => ({
+          ...prev,
+          listStaffUser: dataTech || [],
+        }));
 
         return dataTech || [];
       } catch (e) {
@@ -443,6 +446,7 @@ export const salonStore = {
       daysOffNail,
       salonChoosing,
       itemServiceChoosing,
+      itemTechChoosing,
       // copy same time
       isSameTime,
       // lưu staff khi chưa chọn service

@@ -709,12 +709,13 @@ $(document).ready(async function () {
     });
     if (!isNext) return;
 
-    await ChooseTechForServices();
     // Chuyển tới page chọn duy nhất một thợ
     salonStore.setState({
       ...store,
       pageCurrent: PageCurrent.CHOOSE_ONLY_TECH,
     });
+
+    await ChooseTechForServices();
   });
 
   // Chuyển đổi flow

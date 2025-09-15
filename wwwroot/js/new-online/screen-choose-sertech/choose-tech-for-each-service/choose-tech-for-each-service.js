@@ -145,6 +145,7 @@ export function renderItemTech_PageChoseEachSer(staff) {
 }
 
 export function renderListStaff_PageChoseEachSer(listUserStaff) {
+  console.log("listUser: ", listUserStaff);
   if (!listUserStaff?.length) return "";
 
   const store = salonStore.getState();
@@ -408,7 +409,6 @@ export function renderListPeSer(forceChoose = false) {
 export async function ChooseTechForEachServices() {
   const store = salonStore.getState();
   const dataBooking = store.dataBooking;
-  (await store.getListUserStaff()) || [];
   const user = dataBooking.users.find((u) => u.isChoosing);
   const listStaffUser = store.listStaffUser;
 

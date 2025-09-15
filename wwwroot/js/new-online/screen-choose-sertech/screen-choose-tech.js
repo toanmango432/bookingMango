@@ -160,8 +160,7 @@ export async function ScreenChooseTech() {
   const store = salonStore.getState();
   const dataBooking = store.dataBooking;
   const user = dataBooking.users.find((u) => u.isChoosing);
-  const listStaffUser =
-    store.listStaffUser || (await store.getListUserStaff()) || [];
+  const listStaffUser = await store.getListUserStaff();
   const salonChoosing = store.salonChoosing;
 
   const htmlHeaderSalon = HeaderSalon(salonChoosing);

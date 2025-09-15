@@ -176,8 +176,9 @@ $(document).ready(async function () {
     salonStore.setState({
       ...store,
       RVCNo: rvcNoChoose,
-      salonChoosing: { ...salonChoosing },
+      salonChoosing: salonChoosing,
     });
+    console.log("salonChoosing: ", salonChoosing);
 
     // đổi route mà không reload
     history.pushState({}, "", `/new-online/${rvcNoChoose}`);
