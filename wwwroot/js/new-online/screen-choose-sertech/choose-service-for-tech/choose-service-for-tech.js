@@ -571,7 +571,6 @@ $(document).ready(async function () {
     $this.addClass("active");
 
     // Render lại list staff
-    console.log("render servies: ", cate);
     renderServices_PageChooseServiceTech(cate?.item.listItem || []);
   });
 

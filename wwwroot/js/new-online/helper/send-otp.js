@@ -158,7 +158,6 @@ export async function sendOTP(inputValue, type) {
           console.error("[sendOTP - list card authorized]", e.error);
         }
         const contentPolicies = renderPoliciesForm(policySetting, colorPrimary);
-        console.log("poliform: ", contentPolicies);
         let height = 768;
         let width = 886;
         if (isMobile) {

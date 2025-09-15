@@ -552,7 +552,6 @@ $(function () {
       // Cập nhật đã chọn cho staff
       // renderServiceTechCombo(newBooking, listDataService);
       // Cập nhật sumary
-      console.log("newBooking: ", newBooking);
       renderSumary(newBooking, listDataService);
       // Trường hợp GUEST hoặc FAMILY
     })();

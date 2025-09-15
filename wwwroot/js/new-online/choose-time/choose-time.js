@@ -232,10 +232,8 @@ export async function buildSlotTimeMultiTechFromBooking({
 
     // gọi song song
     // API có thể trả full/day
-    console.log("techID: ", techIds);
     const calls = techIds.map(async (techID) => {
       const duration = durationsMap[techID] || 0;
-      console.log("gettimebookonline");
       return fetchAPI
         .get(
           `/api/appointment/gettimebookonline?date=${dateStr}&duration=${duration}&rvcno=${RVCNo}&empID=${techID}`
@@ -552,7 +550,6 @@ export async function fetchStoreOffDays(rvcNo, month, year) {
 }
 function getUniqueStaff(dataBooking) {
   const staffMap = new Map();
-  console.log("dataBooking: ", dataBooking);
 
   dataBooking.users.forEach((user) => {
     if (user.isChoosing) {
@@ -975,7 +972,6 @@ $(document).ready(async function () {
 
   // next form policies
   $(document).on("click", ".btn-next-policies-1", async function () {
-    console.log("2");
     const store = salonStore.getState();
     const dataBooking = store.dataBooking;
     const contentPaymentMethod = renderPaymentMethodsForm(dataBooking);

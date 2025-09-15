@@ -3,7 +3,6 @@ import { alertCustom } from "./site.js";
 
 const dataTemplate = JSON.parse(localStorage.getItem("dataTemplate"));
 export let dataRelease = JSON.parse(JSON.stringify(dataTemplate));
-// console.log("dataPage ", dataRelease);
 export const colorPrimary = dataRelease?.color?.bgPrimary || "#00bed6";
 export const colorSecondary = dataRelease?.color?.bgSecondary || "#1cdef4";
 // Thêm option vào item id = "page-about"
@@ -760,7 +759,6 @@ $(document).ready(async function () {
   // next form policies
   $(document).on("click", ".btn-next-policies", async function () {
     const dataBooking = templateStore.getState().dataBooking;
-    console.log("1");
     const contentPaymentMethod = renderPaymentMethodsForm(
       dataBooking,
       colorPrimary
@@ -843,7 +841,6 @@ $(document).ready(async function () {
     }
 
     const dataBooking = templateStore.getState().dataBooking;
-    console.log("dataBooking: ", dataBooking);
 
     // Chọn thẻ
     const cardChoosing = dataBooking.cardNumber.find((card) => card.isChoosing);
@@ -1363,7 +1360,6 @@ $(document).ready(async function () {
       const countdownElement = $(
         ".wrap-popup-payment-confirmation .countdown-seconds"
       );
-      console.log("countdownElement: ", countdownElement);
       const countdownInterval = setInterval(() => {
         countdownSeconds -= 1;
         countdownElement.text(countdownSeconds);

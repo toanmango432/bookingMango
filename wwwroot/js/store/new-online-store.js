@@ -12,8 +12,7 @@ export const salonStore = {
 
   async load() {
     if (this._state) return this._state;
-    let RVCNoInit = parseInt(window.location.pathname.split("/")[2], 10);
-    let RVCNo = RVCNoInit; // khởi tạo lần đầu
+    let RVCNo = 336; // khởi tạo lần đầu
     let selectedDate = new Date();
     let currentMonth = selectedDate.getMonth();
     let currentYear = selectedDate.getFullYear();
@@ -172,7 +171,6 @@ export const salonStore = {
         );
         dataTech.unshift(staffDefault);
         salonStore.setState({ ...store, listStaffUser: dataTech || [] });
-        console.log("salonStaff: ", salonStore.getState().listStaffUser);
 
         return dataTech || [];
       } catch (e) {

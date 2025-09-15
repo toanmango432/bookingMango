@@ -210,7 +210,6 @@ export function renderListPeSer(forceChoose = false) {
 
           totalCash += price;
           totalCard += price;
-          console.log("srv: ", srv);
 
           let totalAddonCount = 0;
           let totalAddonPrice = 0;
@@ -221,8 +220,6 @@ export function renderListPeSer(forceChoose = false) {
               0
             );
           }
-          console.log("totalAddonCount: ", totalAddonCount);
-          console.log("totalAddonPrice: ", totalAddonPrice);
           // Build dòng AddOn tổng
           let optionalsHtml = "";
           if (totalAddonCount > 0) {
@@ -241,7 +238,6 @@ export function renderListPeSer(forceChoose = false) {
                           </div>
                         `;
           }
-          console.log("optionalHTMl: ", optionalsHtml);
 
           // block HTML khép kín
           return `
@@ -323,7 +319,6 @@ export function renderListPeSer(forceChoose = false) {
   }
   // chưa xử lý chuẩn cho trường hợp next available
   // khi chọn next available thì được phép trùng
-  console.log("wrap-list-peser: ", userHtml);
   const htmlPeSer = `
     <div class="wrap-list-peser">
         <div class="list-peser">

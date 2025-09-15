@@ -72,10 +72,7 @@ $(document).ready(async function () {
   const $wrapNewOnline = $(".wrap-newonline");
 
   $(document).on("click", ".back-salon", async function () {
-    const store = salonStore.getState();
     await ChooseNailSalon();
-    const rvcNoInit = salonStore.getState().RVCNoInit;
-    salonStore.setState({ ...store, RVCNo: rvcNoInit });
   });
 
   $(document).on("click", "#options-service", async function () {

@@ -222,7 +222,6 @@ $(document).ready(async function () {
     const pageCurrent = store.pageCurrent;
     const listStaffUser = store.listStaffUser;
     const dataService = store.dataServices;
-    console.log("pageCurrent: ", pageCurrent);
 
     // xử lý chung khi xoá
     const itemServiceId = $(this).closest(".cart-item").data("item-service-id");
@@ -313,10 +312,8 @@ $(document).ready(async function () {
       const currentCate = cate.find((c) => c.item.id === cateId);
       renderServices(currentCate.item.listItem);
     }
-    console.log("Page: ", pageCurrent);
     // render lại theo page
     if (pageCurrent === PageCurrent.CHOOSE_SERVICE_FOR_TECH) {
-      console.log("check here");
       renderListPeTech_PageChooseServiceTech();
       // khởi tạo lần đầu renderServices_PageChooseServiceTech
       const id = $(".item-ftcate.active").data("id");

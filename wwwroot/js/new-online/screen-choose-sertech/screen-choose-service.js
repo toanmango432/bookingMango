@@ -90,7 +90,6 @@ export async function ScreenChooseService() {
   const user = dataBooking.users.find((u) => u.isChoosing);
 
   const salonChoosing = store.salonChoosing;
-  console.log("store.rvcno: ", store.RVCNo);
   let dataService = await store.getListDataService();
 
   const htmlHeaderSalon = HeaderSalon(salonChoosing);
@@ -456,7 +455,6 @@ $(document).ready(async function () {
   $(document).on("click", ".item-cate", async function () {
     const store = salonStore.getState();
     const dataService = store.dataServices;
-    console.log("dataSer: ", dataService);
 
     $(".item-cate").removeClass("active");
     $(this).addClass("active");
@@ -569,7 +567,6 @@ $(document).ready(async function () {
     if (serviceInstanceId == "undefined") {
       serviceInstanceId = $this.closest(".addon-list").data("id");
     }
-    console.log("serIn: ", serviceInstanceId);
     // tìm đúng service theo id
     let currentService = null;
     for (const cate of user.services) {
@@ -632,7 +629,6 @@ $(document).ready(async function () {
         Cart();
       }
     }
-    console.log("data affter choose addon item: ", dataBooking);
   });
 
   $(document).on("click", ".btn-close-addon, .btn-done", async function () {
@@ -749,7 +745,6 @@ $(document).ready(async function () {
     const $this = $(this);
     const flowActive = $this.hasClass("active");
     if (flowActive) return;
-    console.log("choose tech");
     selectFlow = SelecteFlow.TECH;
 
     const htmlConfirmReset = contentShowResetDataBooking();

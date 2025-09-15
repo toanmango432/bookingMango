@@ -313,7 +313,6 @@ $(document).ready(async function () {
     }
 
     const dataBooking = store.dataBooking;
-    console.log("dataBooking: ", dataBooking);
 
     // Chọn thẻ
     const cardChoosing = dataBooking.cardNumber.find((card) => card.isChoosing);
@@ -830,7 +829,6 @@ $(document).ready(async function () {
       const countdownElement = $(
         ".wrap-popup-payment-confirmation .countdown-seconds"
       );
-      console.log("countdownElement: ", countdownElement);
       const countdownInterval = setInterval(() => {
         countdownSeconds -= 1;
         countdownElement.text(countdownSeconds);

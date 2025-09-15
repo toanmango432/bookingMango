@@ -169,11 +169,15 @@ $(document).ready(async function () {
     const $this = $(this);
     const rvcNoChoose = $this.data("rvcno");
     const idStore = $this.data("id");
-    salonStore.setState({ ...store, RVCNo: rvcNoChoose });
 
     const salonChoosing =
       allSalon.find((item) => item.storeID == idStore) || {};
-    salonStore.setState({ ...store, salonChoosing: { ...salonChoosing } });
+
+    salonStore.setState({
+      ...store,
+      RVCNo: rvcNoChoose,
+      salonChoosing: { ...salonChoosing },
+    });
 
     // đổi route mà không reload
     history.pushState({}, "", `/new-online/${rvcNoChoose}`);

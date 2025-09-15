@@ -1279,25 +1279,6 @@ $(document).ready(async function () {
   // select option user
   $(document).on("click", ".wrap-select-user .toggle-select", function (e) {
     const dataBooking = templateStore.getState().dataBooking;
-    // if (!isBookMultipleTech) {
-    //   // tìm thợ khác default trong toàn bộ dataBooking
-    //   const hasNonDefault = dataBooking.users.some((user) =>
-    //     user.services.some((svc) =>
-    //       svc.itemService.some(
-    //         (item) =>
-    //           item?.selectedStaff &&
-    //           item.selectedStaff.employeeID !== idStaffDefault
-    //       )
-    //     )
-    //   );
-
-    //   if (hasNonDefault) {
-    //     // đã có mainTech rồi => chặn mở danh sách nữa
-    //     console.log("Đã có mainTech, không show danh sách chọn thợ nữa.");
-    //     e.stopPropagation();
-    //     return; // dừng hẳn, không render dropdown
-    //   }
-    // }
     e.stopPropagation();
 
     // lấy danh sách thợ phù hợp
@@ -1381,7 +1362,6 @@ $(document).ready(async function () {
     const userChoosing = updateDataBooking.users.find(
       (u) => u.isChoosing === true
     );
-    console.log("userChoosing: ", userChoosing);
     // Nếu chỉ cho phép 1 thợ (single tech mode)
     if (!isBookMultipleTech) {
       // Gán tất cả service trước đó thành staff mới chọn của userChoosing
