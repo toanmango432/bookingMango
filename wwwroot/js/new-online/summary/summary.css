@@ -1,0 +1,22 @@
+.confirm-booking {
+}
+.confirm-booking .btn-confirm-booking-1 {
+  display: flex;
+  padding: var(--px-12) var(--px-24);
+  gap: var(--px-8);
+  justify-content: center;
+  align-items: center;
+  border-radius: var(--px-12);
+  border: 1px solid #b1c9b8;
+  background: var(--bs-main);
+  font: normal normal 600 var(--s-20);
+  color: white;
+}
+.confirm-booking .btn-confirm-booking-1:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.confirm-booking .btn-confirm-booking-1:hover {
+  filter: brightness(0.95);
+}

@@ -174,7 +174,10 @@ $(document).ready(async function () {
       allSalon.find((item) => item.storeID == idStore) || {};
     salonStore.setState({ salonChoosing: { ...salonChoosing } });
 
+    // đổi route mà không reload
+    history.pushState({}, "", `/new-online/${rvcNoChoose}`);
     ServiceOrTech();
+
     // save salon choosing
   });
 });

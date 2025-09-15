@@ -278,7 +278,7 @@ export function renderSumary(dataBooking, listDataService) {
                       .join("")}
                 </div>
                 <div class="confirm-booking">
-                    <button class="btn-confirm-booking">
+                    <button class="btn-confirm-booking-1">
                         Confirm
                         <i class="fa-solid fa-arrow-right"></i>
                     </button>
@@ -295,7 +295,7 @@ export function renderSumary(dataBooking, listDataService) {
 
 $(document).ready(async function () {
   // Confirm payment final
-  $(document).on("click", ".btn-next-payment-1", async function () {
+  $(document).on("click", ".btn-confirm-booking-1", async function () {
     const store = salonStore.getState();
     const isMobile = $(window).width() <= 768;
 

@@ -90,6 +90,7 @@ export async function ScreenChooseService() {
   const user = dataBooking.users.find((u) => u.isChoosing);
 
   const salonChoosing = store.salonChoosing;
+  console.log("store.rvcno: ", store.RVCNo);
   let dataService = await store.getListDataService();
 
   const htmlHeaderSalon = HeaderSalon(salonChoosing);

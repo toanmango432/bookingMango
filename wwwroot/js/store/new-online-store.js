@@ -44,9 +44,11 @@ export const salonStore = {
     // --- API: All salon ---
     let allSalon = [];
     const getAllSalon = async () => {
+      const store = salonStore.getState();
+      const newRVCNo = store.RVCNo;
       try {
         const resSalon = await fetchAPI.get(
-          `/api/store/getliststorechain?RVCNo=${RVCNo}`
+          `/api/store/getliststorechain?RVCNo=${newRVCNo}`
         );
         salonStore.setState({ allSalon: resSalon });
         return resSalon;
@@ -57,12 +59,14 @@ export const salonStore = {
     // --- API: Services ---
     let dataServices = [];
     const getListDataService = async () => {
+      const store = salonStore.getState();
+      const newRVCNo = store.RVCNo;
       try {
         const dataCategories = await fetchAPI.get(
-          `/api/category/getallcategories?RVCNo=${RVCNo}`
+          `/api/category/getallcategories?RVCNo=${newRVCNo}`
         );
         const dataItemServices = await fetchAPI.get(
-          `/api/category/getallitem?RVCNo=${RVCNo}`
+          `/api/category/getallitem?RVCNo=${newRVCNo}`
         );
 
         const resDataServices = [];
@@ -110,10 +114,12 @@ export const salonStore = {
     // --- API: time key slot
     let timeKeySlot;
     const getTimeKeySlot = async () => {
+      const store = salonStore.getState();
+      const newRVCNo = store.RVCNo;
       try {
         const paramOB = "OB.TimeFrameDistance";
         const resTimeKey = await fetchAPI.get(
-          `/api/setting/getbykey?RVCNo=${RVCNo}&ParaName=${paramOB}`
+          `/api/setting/getbykey?RVCNo=${newRVCNo}&ParaName=${paramOB}`
         );
         salonStore.setState({ timeKeySlot: resTimeKey?.data });
         return resTimeKey.data;
@@ -145,9 +151,12 @@ export const salonStore = {
     // --- API: Staff ---
     let listStaffUser;
     const getListUserStaff = async () => {
+      const store = salonStore.getState();
+      const newRVCNo = store.RVCNo;
+
       try {
         const resTechFull = await fetchAPI.get(
-          `/api/tech/gettechinfoofsalon?rvcNo=${RVCNo}`
+          `/api/tech/gettechinfoofsalon?rvcNo=${newRVCNo}`
         );
         const staffDefault = {
           employeeID: idStaffDefault,
@@ -340,9 +349,12 @@ export const salonStore = {
     let isBookMultipleTech = true;
 
     const getDataSetting = async () => {
+      const store = salonStore.getState();
+      const newRVCNo = store.RVCNo;
+
       try {
         const resSetting = await fetchAPI.get(
-          `/api/store/getsettingonlinebook?RVCNo=${RVCNo}`
+          `/api/store/getsettingonlinebook?RVCNo=${newRVCNo}`
         );
         // dataSetting = resSetting?.data;
 
