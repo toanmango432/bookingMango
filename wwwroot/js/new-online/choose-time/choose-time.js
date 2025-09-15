@@ -110,16 +110,6 @@ export async function renderCalendar(
         salonStore.setState({ ...store, dataBooking, selectedDate });
 
         day.classList.add("active");
-        // document.getElementById("selectedDateTitle").textContent =
-        //   selectedDate.toDateString();
-
-        for (const item of listUniqueEmID) {
-          await buildSlotTimeMultiTechFromBooking({
-            dataBooking,
-            includeChooseStaffBefore: false,
-            oldEmpID: null,
-          });
-        }
         // Cập nhật giờ start ngày mới
         await store.getTimeBeginCurDate(formatDateMMDDYYYY(selectedDate)); // khởi tạo lịch ở ngày hiện tại
         renderTimeSlotsForDate(dataBooking);
@@ -135,8 +125,6 @@ export async function renderCalendar(
     if (user) {
       user.selectedDate = selectedDate;
     }
-    // document.getElementById("selectedDateTitle").textContent =
-    //   selectedDate.toDateString();
   }
 
   $("#timeSlotsContainer").empty();
@@ -155,13 +143,11 @@ export async function renderCalendar(
   });
   const listUniqueEmID = Array.from(uniqueEmployeeID);
   // lọc lại thời gian cho ngày mới
-  for (const item of listUniqueEmID) {
-    await buildSlotTimeMultiTechFromBooking({
-      dataBooking,
-      includeChooseStaffBefore: false,
-      oldEmpID: null,
-    });
-  }
+  await buildSlotTimeMultiTechFromBooking({
+    dataBooking,
+    includeChooseStaffBefore: false,
+    oldEmpID: null,
+  });
   renderTimeSlotsForDate(dataBooking);
 }
 
@@ -246,7 +232,8 @@ export async function buildSlotTimeMultiTechFromBooking({
 
     // gọi song song
     // API có thể trả full/day
-    const calls = techIds.map((techID) => {
+    console.log("techID: ", techIds);
+    const calls = techIds.map(async (techID) => {
       const duration = durationsMap[techID] || 0;
       console.log("gettimebookonline");
       return fetchAPI
@@ -593,10 +580,6 @@ export async function renderChooseTime() {
   const htmlListStaff = listStaff.map((item) => item).join(", ");
 
   await store.getTimeKeySlot();
-  await buildSlotTimeMultiTechFromBooking({
-    dataBooking,
-    includeChooseStaffBefore: false,
-  });
 
   const salonChoosing = store.salonChoosing;
 
@@ -628,7 +611,6 @@ export async function renderChooseTime() {
             </div>
             <div class="line-ca-ti"></div>
             <div class="timeslot">
-              <!-- <h2 id="selectedDateTitle">August 14, 2025</h2> -->
               <div class="name-techs">
                 Tech: <span class="techs text-uppercase">${htmlListStaff}</span>
               </div>
