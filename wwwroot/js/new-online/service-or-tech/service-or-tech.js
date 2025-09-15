@@ -72,28 +72,30 @@ $(document).ready(async function () {
   const $wrapNewOnline = $(".wrap-newonline");
 
   $(document).on("click", ".back-salon", async function () {
+    const store = salonStore.getState();
     await ChooseNailSalon();
     const rvcNoInit = salonStore.getState().RVCNoInit;
-    salonStore.setState({ RVCNo: rvcNoInit });
+    salonStore.setState({ ...store, RVCNo: rvcNoInit });
   });
 
   $(document).on("click", "#options-service", async function () {
     await ScreenChooseService(); // append screen choose service
 
+    const store = salonStore.getState();
     salonStore.setState({
+      ...store,
       flow: SelecteFlow.SER,
       pageCurrent: PageCurrent.CHOOSE_SERVICE,
     });
-    const store = salonStore.getState();
-    const dataServices = store.dataServices;
-    console.log("dataServices: ", dataServices);
     // reset dataBooking
     salonStore.resetDataBooking();
   });
 
   $(document).on("click", "#options-tech", async function () {
     await ScreenChooseTech();
+    const store = salonStore.getState();
     salonStore.setState({
+      ...store,
       flow: SelecteFlow.TECH,
       pageCurrent: PageCurrent.CHOOSE_TECH,
     });

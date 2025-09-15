@@ -319,7 +319,7 @@ export function renderListPeSer(forceChoose = false) {
   }
   if (!isValidSameTime) {
     isSameTime = false;
-    salonStore.setState({ isSameTime: isSameTime });
+    salonStore.setState({ ...store, isSameTime: isSameTime });
   }
   // chưa xử lý chuẩn cho trường hợp next available
   // khi chọn next available thì được phép trùng
@@ -395,7 +395,7 @@ export function renderListPeSer(forceChoose = false) {
       }
     }
     itemServiceChoosing = firstNoStaff;
-    salonStore.setState({ itemServiceChoosing });
+    salonStore.setState({ ...store, itemServiceChoosing });
   }
 
   // Active itemServiceChoosing
@@ -510,7 +510,7 @@ $(document).ready(async function () {
     const $this = $(this);
     const isCopySameTime = $this.prop("checked");
 
-    salonStore.setState({ isSameTime: isCopySameTime });
+    salonStore.setState({ ...store, isSameTime: isCopySameTime });
   });
 
   $(document).on("click", ".serd-item", function () {
@@ -524,6 +524,7 @@ $(document).ready(async function () {
 
     // Cập nhật state
     salonStore.setState({
+      ...store,
       itemServiceChoosing: {
         idService: serviceId,
         idItemService: itemServiceId,
@@ -576,7 +577,7 @@ $(document).ready(async function () {
       itemServiceSelected.selectedStaff = staffSelected;
     }
     // Cập nhật store
-    salonStore.setState({ dataBooking: { ...dataBooking } });
+    salonStore.setState({ ...store, dataBooking: { ...dataBooking } });
     // Re-render lại staff list và peser
     renderListPeSer();
     renderListStaff_PageChoseEachSer(listStaffUser);

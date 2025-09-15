@@ -107,7 +107,7 @@ export async function renderCalendar(
             return;
           }
         });
-        salonStore.setState({ dataBooking, selectedDate });
+        salonStore.setState({ ...store, dataBooking, selectedDate });
 
         day.classList.add("active");
         // document.getElementById("selectedDateTitle").textContent =
@@ -217,16 +217,17 @@ export async function buildSlotTimeMultiTechFromBooking({
     const techIds = Object.keys(durationsMap).map((k) => Number(k));
     if (!techIds.length) {
       console.warn("No techs with assigned duration found in dataBooking");
-      // set empty slotTimeMultiTech nếu cần
+      // set empty slotTimeMultiTech
       const empty = { techs: [], durations: [] };
       salonStore.setState({
+        ...store,
         slotTimeMultiTech: empty,
         slotTimeForSelect: [],
       });
       return empty;
     }
 
-    // 3) Nếu cần: remove oldEmpID khỏi kết quả hiện tại (khi đổi staff)
+    // 3) remove oldEmpID khỏi kết quả hiện tại (khi đổi staff)
     let existingSlot = salonStore.getState().slotTimeMultiTech || {
       techs: [],
       durations: [],
@@ -243,12 +244,11 @@ export async function buildSlotTimeMultiTechFromBooking({
     // Sử dụng date của userChoosing
     const dateStr = formatDateMMDDYYYY(userChoosing.selectedDate || new Date());
 
-    // gọi song song, nhưng nếu duration === 0 bạn có thể skip gọi (tuỳ API),
-    // ở đây mình gọi luôn (API có thể trả full/day hoặc bạn muốn skip)
+    // gọi song song
+    // API có thể trả full/day
     const calls = techIds.map((techID) => {
       const duration = durationsMap[techID] || 0;
-      // nếu duration === 0 và bạn muốn skip call, return Promise.resolve({ data: [] })
-      // return duration === 0 ? Promise.resolve({ data: [] }) : fetchAPI.get(...)
+      console.log("gettimebookonline");
       return fetchAPI
         .get(
           `/api/appointment/gettimebookonline?date=${dateStr}&duration=${duration}&rvcno=${RVCNo}&empID=${techID}`
@@ -274,11 +274,11 @@ export async function buildSlotTimeMultiTechFromBooking({
     }
 
     const slotTimeMultiTech = { techs: techsArr, durations: durationsArr };
-    salonStore.setState({ slotTimeMultiTech });
+    salonStore.setState({ ...store, slotTimeMultiTech });
 
     // 6) Tính possible starts multi-tech
     const possibleTimeSlot = findMultiTechStarts(slotTimeMultiTech);
-    salonStore.setState({ slotTimeForSelect: possibleTimeSlot });
+    salonStore.setState({ ...store, slotTimeForSelect: possibleTimeSlot });
 
     return slotTimeMultiTech;
   } catch (err) {
@@ -313,10 +313,11 @@ export function renderFooterChooseTime() {
   return $wrapDirBtn;
 }
 export function updateCalendarData(month, year, rvcNo, daysOffNail, callback) {
+  const store = salonStore.getState();
   fetchStoreOffDays(rvcNo, month, year).then((daysOff) => {
     daysOffNail[month + 1] = daysOff; // lưu lại theo key tháng
     // update store
-    salonStore.setState({ daysOffNail: { ...daysOffNail } });
+    salonStore.setState({ ...store, daysOffNail: { ...daysOffNail } });
     if (typeof callback === "function") callback();
   });
 }
@@ -745,7 +746,7 @@ $(document).ready(async function () {
           dataBooking
         );
         // update store
-        salonStore.setState({ dataBooking });
+        salonStore.setState({ ...store, dataBooking });
       });
     }
   });
@@ -769,7 +770,7 @@ $(document).ready(async function () {
           dataBooking
         );
         // update store
-        salonStore.setState({ dataBooking });
+        salonStore.setState({ ...store, dataBooking });
       });
     }
   });
@@ -777,7 +778,10 @@ $(document).ready(async function () {
   $(document).on("click", "#btn-back-choose-time", async function () {
     await ChooseTechForServices();
     // Chuyển tới page chọn duy nhất một thợ
-    salonStore.setState({ pageCurrent: PageCurrent.CHOOSE_ONLY_TECH });
+    salonStore.setState({
+      ...store,
+      pageCurrent: PageCurrent.CHOOSE_ONLY_TECH,
+    });
   });
 
   $(document).on("click", ".time-slot", function () {
@@ -788,7 +792,7 @@ $(document).ready(async function () {
     const user = dataBooking.users.find((u) => u.isChoosing);
 
     user.selectedTimeSlot = valTime;
-    salonStore.setState({ dataBooking });
+    salonStore.setState({ ...store, dataBooking });
   });
 
   // popup verify user
@@ -912,6 +916,7 @@ $(document).ready(async function () {
       };
       // update store
       salonStore.setState({
+        ...store,
         dataBooking,
       });
 
@@ -1049,7 +1054,7 @@ $(document).ready(async function () {
         cardChoosing = item;
       }
     });
-    salonStore.setState({ dataBooking });
+    salonStore.setState({ ...store, dataBooking });
     // bật nút Confirm
     $(".btn-next-payment-1").prop("disabled", false);
   });

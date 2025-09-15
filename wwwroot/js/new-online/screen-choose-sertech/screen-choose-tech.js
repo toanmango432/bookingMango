@@ -258,7 +258,7 @@ $(document).ready(async function () {
     }
 
     // cập nhật lại store
-    salonStore.setState({ chooseStaffBefore });
+    salonStore.setState({ ...store, chooseStaffBefore });
 
     // render lại staff với trạng thái selected mới
     const listStaffUser = store.listStaffUser;
@@ -289,8 +289,11 @@ $(document).ready(async function () {
     // Kiểm tra đã chọn service chưa trước khi next
     const isNext = chooseStaffBefore.length > 0;
     if (!isNext) return;
-    await ScreenChooseServiceForTech();
     // Chuyển page chọn nhiều service cho tech, có thể chọn nhiều service cho 1 tech và 1 service chọn nhiều tech,
-    salonStore.setState({ pageCurrent: PageCurrent.CHOOSE_SERVICE_FOR_TECH });
+    salonStore.setState({
+      ...store,
+      pageCurrent: PageCurrent.CHOOSE_SERVICE_FOR_TECH,
+    });
+    await ScreenChooseServiceForTech();
   });
 });

@@ -594,6 +594,7 @@ $(document).ready(async function () {
     }
 
     salonStore.setState({
+      ...store,
       dataBooking: store.dataBooking,
     });
     // Tuỳ pageCurrent mà render lại component cần thiết
@@ -674,6 +675,7 @@ $(document).ready(async function () {
       currentService.optionals = [];
     }
     salonStore.setState({
+      ...store,
       dataBooking: dataBooking,
     });
 
@@ -713,7 +715,10 @@ $(document).ready(async function () {
 
     await ChooseTechForServices();
     // Chuyển tới page chọn duy nhất một thợ
-    salonStore.setState({ pageCurrent: PageCurrent.CHOOSE_ONLY_TECH });
+    salonStore.setState({
+      ...store,
+      pageCurrent: PageCurrent.CHOOSE_ONLY_TECH,
+    });
   });
 
   // Chuyển đổi flow
@@ -770,10 +775,11 @@ $(document).ready(async function () {
     closePopupContainerTemplate();
   });
   $(document).on("click", ".btn-confirm-reset", async function () {
+    const store = salonStore.getState();
     // reset databooking
     salonStore.resetDataBooking();
     // reset chọn thợ
-    salonStore.setState({ chooseStaffBefore: [] });
+    salonStore.setState({ ...store, chooseStaffBefore: [] });
 
     // render ui chọn
     if (selectFlow === SelecteFlow.SER) {
@@ -781,7 +787,7 @@ $(document).ready(async function () {
     } else {
       await ScreenChooseTech();
     }
-    salonStore.setState({ flow: selectFlow });
+    salonStore.setState({ ...store, flow: selectFlow });
     closePopupContainerTemplate();
   });
 

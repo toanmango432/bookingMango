@@ -311,7 +311,7 @@ $(document).ready(async function () {
       });
     });
 
-    salonStore.setState({ dataBooking: { ...dataBooking } });
+    salonStore.setState({ ...store, dataBooking: { ...dataBooking } });
     // render lại list staff
     renderListStaff_PageChooseOnlyTech(listStaffUser);
     // render lại footer
@@ -356,6 +356,9 @@ $(document).ready(async function () {
     }
     await ChooseTechForEachServices();
     // Chuyển page chọn tech cho từng service, chỉ chọn được 1 thợ cho 1 service
-    salonStore.setState({ pageCurrent: PageCurrent.CHOOSE_TECH_FOR_SERVICE });
+    salonStore.setState({
+      ...store,
+      pageCurrent: PageCurrent.CHOOSE_TECH_FOR_SERVICE,
+    });
   });
 });

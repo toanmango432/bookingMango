@@ -247,7 +247,7 @@ $(document).ready(async function () {
       });
     });
     // set lại store
-    salonStore.setState({ dataBooking: { ...dataBooking } });
+    salonStore.setState({ ...store, dataBooking: { ...dataBooking } });
     Cart(true);
 
     if (pageCurrent === PageCurrent.CHOOSE_SERVICE) {
@@ -300,7 +300,7 @@ $(document).ready(async function () {
       });
     });
     // set lại state
-    salonStore.setState({ dataBooking: { ...dataBooking } });
+    salonStore.setState({ ...store, dataBooking: { ...dataBooking } });
 
     Cart(true); // render lại giỏ
     // Khi remove addOn cần render lại ui cần thiết
@@ -354,12 +354,16 @@ $(document).ready(async function () {
   // Chuyển page chọn tech cho service trong cart
   $(document).on("click", "#select-staff-in-cart", async function () {
     const $this = $(this);
+    const store = salonStore.getState();
     if ($this.hasClass("not-ser")) {
       console.log("Please back to choose service!");
       return;
     }
     await ChooseTechForEachServices();
     // Chuyển page chọn tech cho từng service, chỉ chọn được 1 thợ cho 1 service
-    salonStore.setState({ pageCurrent: PageCurrent.CHOOSE_TECH_FOR_SERVICE });
+    salonStore.setState({
+      ...store,
+      pageCurrent: PageCurrent.CHOOSE_TECH_FOR_SERVICE,
+    });
   });
 });

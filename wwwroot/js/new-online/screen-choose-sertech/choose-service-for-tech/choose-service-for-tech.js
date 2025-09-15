@@ -41,7 +41,7 @@ export function renderListPeTech_PageChooseServiceTech(forceChoose = false) {
       itemTechChoosing = { employeeID: chooseStaffBefore[0] };
     }
 
-    salonStore.setState({ itemTechChoosing });
+    salonStore.setState({ ...store, itemTechChoosing });
   }
   const htmlListPeTech = staffToRender
     .map((staff) => {
@@ -448,9 +448,8 @@ $(document).ready(async function () {
     const store = salonStore.getState();
     const listStaffUser = store.listStaffUser;
     let itemTechChoosing = store.itemTechChoosing;
-    let dataService = store.getListDataService
-      ? await store.getListDataService()
-      : [];
+    let dataService = store.dataServices;
+
     const cate = dataService.find((c) => c.item.id === cateId);
     const itemService = cate?.item.listItem.find((s) => s.id === serviceId);
     if (!itemService) {
@@ -543,7 +542,7 @@ $(document).ready(async function () {
       }
     }
 
-    salonStore.setState({ dataBooking: { ...dataBooking } });
+    salonStore.setState({ ...store, dataBooking: { ...dataBooking } });
     rerenderServiceItem(itemService); // chỉ render lại item đang chọn, tối ưu
     renderFooterService();
     renderListPeTech_PageChooseServiceTech();
@@ -561,6 +560,7 @@ $(document).ready(async function () {
 
     // Cập nhật state
     salonStore.setState({
+      ...store,
       itemTechChoosing: {
         employeeID: techId,
       },

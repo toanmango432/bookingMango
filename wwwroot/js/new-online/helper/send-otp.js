@@ -32,6 +32,7 @@ export async function sendOTP(inputValue, type) {
   };
 
   salonStore.setState({
+    ...store,
     dataBooking: newDataBooking,
   });
 
@@ -79,7 +80,7 @@ export async function sendOTP(inputValue, type) {
       if (resVerifyAccount.status === 201) {
         // lưu lại customerID
         dataBooking.users[0].id = resVerifyAccount?.data?.customerID;
-        salonStore.setState({ dataBooking });
+        salonStore.setState({ ...store, dataBooking });
         // chưa verify, cần gửi OTP
         return await fetchAPI.get(
           `/api/user/verifycode?phone=${phoneUnformat}&portalCode=${encodeURIComponent(
@@ -119,6 +120,7 @@ export async function sendOTP(inputValue, type) {
 
         // update store
         salonStore.setState({
+          ...store,
           dataBooking: newDataBooking,
         });
 
@@ -244,7 +246,7 @@ export async function sendOTP(inputValue, type) {
       // Nếu chưa exits create
       if (resVerifyAccount.status === 201) {
         dataBooking.users[0].id = resVerifyAccount?.data[0]?.customerID;
-        salonStore.setState({ dataBooking });
+        salonStore.setState({ ...store, dataBooking });
         // chưa verify, cần gửi OTP
         return await fetchAPI.get(
           `/api/user/verifycode?phone=${emailVerify}&portalCode=${encodeURIComponent(
@@ -284,6 +286,7 @@ export async function sendOTP(inputValue, type) {
 
         // update store
         salonStore.setState({
+          ...store,
           dataBooking: newDataBooking,
         });
 

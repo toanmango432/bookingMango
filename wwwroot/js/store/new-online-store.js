@@ -50,7 +50,7 @@ export const salonStore = {
         const resSalon = await fetchAPI.get(
           `/api/store/getliststorechain?RVCNo=${newRVCNo}`
         );
-        salonStore.setState({ allSalon: resSalon });
+        salonStore.setState({ ...store, allSalon: resSalon });
         return resSalon;
       } catch (e) {
         console.error("[getAllSalon]", e);
@@ -104,7 +104,10 @@ export const salonStore = {
           objCar.item.listItem = listItem;
           resDataServices.push(objCar);
         });
-        salonStore.setState({ dataServices: resDataServices });
+        salonStore.setState({
+          ...store,
+          dataServices: resDataServices,
+        });
         return resDataServices;
       } catch (e) {
         console.error("[getDataListDataService]", e);
@@ -121,7 +124,7 @@ export const salonStore = {
         const resTimeKey = await fetchAPI.get(
           `/api/setting/getbykey?RVCNo=${newRVCNo}&ParaName=${paramOB}`
         );
-        salonStore.setState({ timeKeySlot: resTimeKey?.data });
+        salonStore.setState({ ...store, timeKeySlot: resTimeKey?.data });
         return resTimeKey.data;
       } catch (e) {
         console.error("[getTimeKeySlot]", e);
@@ -130,6 +133,7 @@ export const salonStore = {
     // --- API: time begin - end
     let timeBeginCurDate = null;
     const getTimeBeginCurDate = async (date) => {
+      const store = salonStore.getState();
       // date: aa/bb/cccc
       try {
         const url = `/api/store/getweeksalonschedule?rvcNo=${RVCNo}&date=${encodeURIComponent(
@@ -140,7 +144,7 @@ export const salonStore = {
         const resWeek = await fetchAPI.get(url);
         const timeBegin = resWeek?.data.find((item) => item.dateString == date);
         if (timeBegin) {
-          salonStore.setState({ timeBeginCurDate: timeBegin });
+          salonStore.setState({ ...store, timeBeginCurDate: timeBegin });
         }
         return resWeek;
       } catch (e) {
@@ -167,7 +171,9 @@ export const salonStore = {
           (item) => item.allowBookingOnline
         );
         dataTech.unshift(staffDefault);
-        salonStore.setState({ listStaffUser: dataTech || [] });
+        salonStore.setState({ ...store, listStaffUser: dataTech || [] });
+        console.log("salonStaff: ", salonStore.getState().listStaffUser);
+
         return dataTech || [];
       } catch (e) {
         console.error("[getlistUserStaff]", e);
@@ -365,6 +371,7 @@ export const salonStore = {
         let paymentDepositRes = parts[2];
 
         salonStore.setState({
+          ...store,
           policySetting: resSetting?.data?.Policy,
           isDeposit: isDepositRes,
           currencyDeposit: currencyDepositRes,
@@ -465,7 +472,10 @@ export const salonStore = {
   },
 
   setState(partial) {
-    this._state = { ...this._state, ...partial };
+    const nextState =
+      typeof partial === "function" ? partial(this._state) : partial;
+
+    this._state = { ...this._state, ...nextState };
     this._notify();
   },
 
