@@ -10,11 +10,15 @@ const optionItems = [
   {
     aboutItemId: 1,
     text: "About Nailvibe",
-    bgColor: dataRelease.color.bgPrimary,
+    bgColor: dataRelease?.color?.bgPrimary || "#1cdef4",
   },
-  { aboutItemId: 2, text: "About Mango", bgColor: dataRelease.color.bgPrimary },
+  {
+    aboutItemId: 2,
+    text: "About Mango",
+    bgColor: dataRelease?.color?.bgPrimary,
+  },
 ];
-const findAbout = dataRelease.dataHeaderNav.itemNav.find(
+const findAbout = dataRelease?.dataHeaderNav?.itemNav.find(
   (item) => item.id === "page-about"
 );
 if (findAbout) {
@@ -192,7 +196,7 @@ $(document).ready(async function () {
   let listDataService = await templateStore.getState().getListDataService();
   let listUserStaff = await templateStore.getState().getListUserStaff();
 
-  let { banner } = dataRelease;
+  let banner = dataRelease?.banner;
   // Khai báo currentUserId trước khi gọi renderBlockTemplate
   let currentUserId = dataBooking.users[0]?.id || 1;
   // fake time , sẽ xử lý thêm close form

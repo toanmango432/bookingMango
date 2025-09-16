@@ -88,8 +88,7 @@ $(document).ready(async function () {
   let daysOffNail = templateStore.getState().daysOffNail;
   let selectedDate = templateStore.getState().selectedDate;
   let RVCNo = templateStore.getState().RVCNo;
-
-  let { banner } = dataRelease;
+  let banner = dataRelease?.banner;
 
   // Toggle chọn loại dịch vụ
   $(document).on("click", ".btn-option-banner-selected", function (e) {
