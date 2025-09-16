@@ -445,6 +445,7 @@
   position: relative;
 }
 .serd-item.has-addon {
+  min-height: 124px;
   justify-content: flex-start;
 }
 

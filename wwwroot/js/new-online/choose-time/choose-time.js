@@ -170,12 +170,15 @@ export async function buildSlotTimeMultiTechFromBooking({
     if (!dataBooking) return null;
 
     const userChoosing = dataBooking.users.find((u) => u.isChoosing === true);
+    console.log("userChoosing: ", userChoosing);
     if (!userChoosing) return null;
 
     // 1) Tính tổng duration per tech từ dataBooking
     const durationsMap = {}; // { [empId]: totalDuration }
     for (const cate of userChoosing.services || []) {
+      console.log("Service: ", cate);
       for (const item of cate.itemService || []) {
+        console.log("item: ", item);
         const emp = item.selectedStaff && item.selectedStaff.employeeID;
         if (!emp) continue;
         const base =
@@ -712,6 +715,7 @@ $(document).ready(async function () {
   const $wrapNewOnline = $(".wrap-newonline");
 
   $(document).on("click", "#prev", function () {
+    const store = salonStore.getState();
     const dataBooking = store.dataBooking;
     const RVCNo = store.RVCNo;
 
@@ -736,6 +740,7 @@ $(document).ready(async function () {
   });
 
   $(document).on("click", "#next", function () {
+    const store = salonStore.getState();
     const dataBooking = store.dataBooking;
     const RVCNo = store.RVCNo;
 
@@ -772,6 +777,7 @@ $(document).ready(async function () {
   $(document).on("click", ".time-slot", function () {
     const $this = $(this);
     const valTime = $this.find("#time-val").text().trim();
+
     const store = salonStore.getState();
     const dataBooking = store.dataBooking;
     const user = dataBooking.users.find((u) => u.isChoosing);

@@ -1,14 +1,84 @@
+// helper: cố gắng auto-assign staff nếu các service đã chọn đều cùng 1 staff
+// trả về { isNext: boolean, appliedStaff: object|null, reason: string }
+function tryAutoAssignSelectedStaffAndUpdateStore() {
+  const store = salonStore.getState();
+  const dataBooking = JSON.parse(JSON.stringify(store.dataBooking));
+  const user = dataBooking.users.find((u) => u.isChoosing);
+  if (!user) return { isNext: false, appliedStaff: null, reason: "no_user" };
+
+  const allServices = (user.services || []).flatMap((c) => c.itemService || []);
+  if (!allServices.length) {
+    return { isNext: false, appliedStaff: null, reason: "no_services" };
+  }
+
+  const withStaff = allServices.filter(
+    (s) => s.selectedStaff && Object.keys(s.selectedStaff).length > 0
+  );
+  const withoutStaff = allServices.filter(
+    (s) => !s.selectedStaff || Object.keys(s.selectedStaff).length === 0
+  );
+
+  // nếu chưa chọn ai cả -> không next
+  if (withStaff.length === 0) {
+    return { isNext: false, appliedStaff: null, reason: "no_staff_selected" };
+  }
+
+  const staffKey = (s) =>
+    s && (s.employeeID ?? s.employeeId ?? s.id ?? JSON.stringify(s));
+
+  const staffIds = Array.from(
+    new Set(withStaff.map((s) => staffKey(s.selectedStaff)))
+  );
+
+  // nếu đã có nhiều staff khác nhau -> không next
+  if (staffIds.length > 1) {
+    if (withoutStaff.length === 0) {
+      return {
+        isNext: true,
+        appliedStaff: null,
+        reason: "all_assigned_multiple_staff",
+      };
+    }
+    // Nếu nhiều staff mà còn cái chưa chọn -> không biết gán ai -> không next
+    return {
+      isNext: false,
+      appliedStaff: null,
+      reason: "multiple_different_staff",
+    };
+  }
+
+  // tất cả withStaff cùng một staff -> gán cho những cái chưa chọn
+  const staffToApply = withStaff[0].selectedStaff;
+  withoutStaff.forEach((s) => {
+    s.selectedStaff = { ...staffToApply };
+  });
+
+  // sau khi gán, kiểm tra lại: tất cả đã có staff chưa?
+  const stillWithoutStaff = allServices.some(
+    (s) => !s.selectedStaff || Object.keys(s.selectedStaff).length === 0
+  );
+
+  if (stillWithoutStaff) {
+    return { isNext: false, appliedStaff: null, reason: "some_without_staff" };
+  }
+
+  // cập nhật store
+  salonStore.setState((prev) => ({
+    ...prev,
+    dataBooking,
+  }));
+
+  return { isNext: true, appliedStaff: staffToApply, reason: "all_assigned" };
+}
+
 export function renderFooterTech_PageChooseOnlyTech() {
   const store = salonStore.getState();
   const dataBooking = store.dataBooking;
   const user = dataBooking.users.find((u) => u.isChoosing);
-  // đã chọn tech mới được phép next
-  const isNext = user.services.some((cate) =>
-    cate.itemService.some(
-      (srv) => srv.selectedStaff && Object.keys(srv.selectedStaff).length > 0
-    )
-  );
-  // Kiểm tra có itemService nào không
+  // Gọi helper -> nó sẽ auto-assign nếu có thể, và trả isNext
+  const result = tryAutoAssignSelectedStaffAndUpdateStore();
+  const isNext = result.isNext;
+
   const hasAnyItemService =
     user?.services?.some((cate) => cate.itemService?.length > 0) ?? false;
 
@@ -189,7 +259,7 @@ export async function ChooseTechForServices() {
     ? store.listStaffUser
     : await store.getListUserStaff();
   const salonChoosing = store.salonChoosing;
-  console.log("databOOKING: ", dataBooking);
+
   const htmlHeaderSalon = HeaderSalon(salonChoosing);
   // Render footer
   const $wrapDirBtn = renderFooterTech_PageChooseOnlyTech();
@@ -208,7 +278,7 @@ export async function ChooseTechForServices() {
                     </p>
                     <div class="wrap-search-tech">
                         <div class="container-search-tech">
-                          <input type="text" class="input-search-tech" placeholder="Search by name..."/>
+                          <input id="input-search-tech-2" type="text" class="input-search-tech" placeholder="Search by name..."/>
                           <button class="btn-search-toggle"><i class="fa-solid fa-magnifying-glass"></i></button>
                         </div>
                     </div>
@@ -280,7 +350,7 @@ $(document).ready(async function () {
     await ScreenChooseService();
   });
 
-  $(document).on("input", ".input-search-tech", async function () {
+  $(document).on("input", "#input-search-tech-2", async function () {
     const store = salonStore.getState();
     const listStaffUser = store.listStaffUser;
     const keyword = $(this).val().toLowerCase();

@@ -203,7 +203,7 @@ export async function ScreenChooseTech() {
                     </div>
                     <div class="wrap-search-tech mt-3">
                         <div class="container-search-tech">
-                          <input type="text" class="input-search-tech" placeholder="Search by name..."/>
+                          <input id="input-search-tech-1" type="text" class="input-search-tech" placeholder="Search by name..."/>
                           <button class="btn-search-toggle"><i class="fa-solid fa-magnifying-glass"></i></button>
                         </div>
                     </div>
@@ -242,7 +242,6 @@ $(document).ready(async function () {
     const staffId = $this.data("id");
 
     const store = salonStore.getState();
-    const dataBooking = store.dataBooking;
     let chooseStaffBefore = store.chooseStaffBefore || [];
 
     // kiểm tra staff có trong danh sách chưa
@@ -260,8 +259,13 @@ $(document).ready(async function () {
     salonStore.setState({ ...store, chooseStaffBefore });
 
     // render lại staff với trạng thái selected mới
-    const listStaffUser = store.listStaffUser;
-    renderListStaff_PageChooseTech(listStaffUser);
+    // lấy staff object tương ứng
+    const staff = store.listStaffUser.find((s) => s.employeeID === staffId);
+    if (staff) {
+      const newHtml = renderItemTech(staff);
+      // replace DOM của staff này thôi
+      $this.replaceWith(newHtml);
+    }
 
     // render lại footer (cập nhật nút Next nếu cần)
     renderFooterTech_PageChooseTech();
@@ -273,7 +277,10 @@ $(document).ready(async function () {
 
     ServiceOrTech();
   });
-  $(document).on("input", ".input-search-tech", async function () {
+  $(document).on("input", "#input-search-tech-1", async function () {
+    const store = salonStore.getState();
+    const listStaffUser = store.listStaffUser;
+
     const keyword = $(this).val().toLowerCase();
     let list = listStaffUser;
     if (keyword) {

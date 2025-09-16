@@ -1,4 +1,4 @@
-function buildServiceSummary(data, listDataService) {
+export function buildServiceSummary(data, listDataService) {
   const dataService = data.services;
 
   const images = data.images ? data.images : [];
@@ -45,12 +45,35 @@ function buildServiceSummary(data, listDataService) {
     images,
   };
 }
+export function parsePrice(priceStr) {
+  // Bỏ ký tự $ và chuyển sang số
+  if (typeof priceStr === "number") return priceStr;
+  return parseFloat(priceStr.replace("$", "")) || 0;
+}
+export function getTotalPrice(service) {
+  const basePrice = parsePrice(service.priceRental);
+
+  const optionalTotal = (service.optionals || []).reduce((sum, opt) => {
+    return sum + parsePrice(opt.price);
+  }, 0);
+
+  const total = basePrice + optionalTotal;
+
+  return total.toFixed(2);
+}
+
+export function parseTime(timeStr) {
+  if (!timeStr) return 0;
+  if (typeof timeStr === "number") return timeStr;
+  return parseInt(timeStr.replace(/[^0-9]/g, "")) || 0;
+}
+
 export function renderSumary(dataBooking, listDataService) {
   const store = salonStore.getState();
   const $wrapNewOnline = $(".wrap-newonline");
   $wrapNewOnline.empty();
   const salonChoosing = store.salonChoosing;
-  console.log("store sum: ", store);
+  const paymentDeposit = parseFloat(store?.paymentDeposit);
 
   const htmlHeaderSalon = HeaderSalon(salonChoosing);
 
@@ -87,32 +110,8 @@ export function renderSumary(dataBooking, listDataService) {
     return ``;
   }
 
-  // hàm tính tiền tạm thời, do data chưa chuẩn
-  function parsePrice(priceStr) {
-    // Bỏ ký tự $ và chuyển sang số
-    if (typeof priceStr === "number") return priceStr;
-    return parseFloat(priceStr.replace("$", "")) || 0;
-  }
-
-  function parseTime(timeStr) {
-    if (!timeStr) return 0;
-    if (typeof timeStr === "number") return timeStr;
-    return parseInt(timeStr.replace(/[^0-9]/g, "")) || 0;
-  }
-
-  function getTotalPrice(service) {
-    const basePrice = parsePrice(service.priceRental);
-
-    const optionalTotal = (service.optionals || []).reduce((sum, opt) => {
-      return sum + parsePrice(opt.price);
-    }, 0);
-
-    const total = basePrice + optionalTotal;
-
-    return total.toFixed(2);
-  }
-
   let totalPayment = 0;
+  let totalDeposit = 0;
 
   const isConfim = dataBooking?.isConfirmBook;
   const htmlSumary = `
@@ -137,7 +136,6 @@ export function renderSumary(dataBooking, listDataService) {
                         // tính tổng bản ghi, tổng tiền và tổng time
                         let totalServices = 0;
                         let totalMinutes = 0;
-                        let userTotalPayment = 0;
 
                         if (
                           dataRefact.listServiceUser &&
@@ -158,17 +156,27 @@ export function renderSumary(dataBooking, listDataService) {
                                 0
                               );
                               totalMinutes += optionalMins;
-
-                              // cộng tiền service + optionals
-                              userTotalPayment += Number(
-                                getTotalPrice(is) || 0
-                              );
                             });
                           });
                         }
                         // save total amount
                         // cộng dồn vào tổng của cả booking
-                        totalPayment += userTotalPayment;
+                        totalPayment = CalTotalPayment(
+                          dataBooking,
+                          listDataService
+                        );
+
+                        if (dataBooking?.currencyDeposit === "%") {
+                          totalDeposit = (
+                            (totalPayment * paymentDeposit) /
+                            100
+                          ).toFixed(2);
+                        } else if (dataBooking?.currencyDeposit === "$") {
+                          totalDeposit = paymentDeposit;
+                        } else {
+                          console.log("Unprocessed");
+                        }
+
                         return `
                         <div class="item-sumary" data-id="${userBooking.id}">
                           <div class="top-item-sumary">
@@ -179,7 +187,6 @@ export function renderSumary(dataBooking, listDataService) {
                                     ? userBooking.firstName
                                     : "Not Name"
                                 }</h2>
-                                |
                                 <h2 class="phone">${
                                   userBooking?.phoneNumber ||
                                   userBooking?.email ||
@@ -265,13 +272,13 @@ export function renderSumary(dataBooking, listDataService) {
                                                 }
                                                 <div class="addon-content">
                                                   <div class="p-wrap addon">
-                                                    <p class="item text-name-service name-addon">${
+                                                    <p class="item-addon text-name-service name-addon">${
                                                       opt.title
                                                     }</p>
-                                                    <p class="item text-time-dura time-dura-addon">${
+                                                    <p class="item-addon text-time-dura time-dura-addon">${
                                                       opt.timedura || "0 min"
                                                     }</p>
-                                                    <p class="item text-price-service price-addon">$ ${(
+                                                    <p class="item-addon text-price-service price-addon">$ ${(
                                                       opt.price || 0
                                                     ).toFixed(2)}</p>
                                                   </div>
@@ -294,10 +301,10 @@ export function renderSumary(dataBooking, listDataService) {
                                                 </button>
                                                 <div class="item-content">
                                                   <div class="p-wrap">
-                                                    <p class="item text-name-service">${
+                                                    <p class="item text-name-service text-uppercase">${
                                                       is?.title
                                                     }</p>
-                                                    <p class="item text-name-tech">${
+                                                    <p class="item text-name-tech text-uppercase">${
                                                       is.selectedStaff?.nickName
                                                     }</p>
                                                     <p class="item text-time-dura">${
@@ -317,9 +324,9 @@ export function renderSumary(dataBooking, listDataService) {
                               }
                           </div>
                           <div class="total-pay">
-                              <p class="item text-total-amount">Total (${totalServices})</p>
+                              <p class="item text-total-amount text-uppercase">Total ${totalServices} item</p>
                               <p class="item text-total-times">${totalMinutes} min</p>
-                              <p class="item text-total-price">$ ${userTotalPayment.toFixed(
+                              <p class="item text-total-price">$ ${totalPayment.toFixed(
                                 2
                               )}</p>
                           </div>
@@ -341,10 +348,7 @@ export function renderSumary(dataBooking, listDataService) {
                           Total
                         </span>
                         <span class="total-value">
-                          ${
-                            dataBooking.currencyDeposit +
-                            dataBooking?.totalAmount
-                          }
+                          ${"$" + totalPayment}
                         </span>
                     </span>
                     <span class="total-2">
@@ -352,10 +356,7 @@ export function renderSumary(dataBooking, listDataService) {
                           Deposit
                         </span>
                         <span class="depo-value">
-                          ${
-                            dataBooking.currencyDeposit +
-                            dataBooking?.paymentDeposit
-                          }
+                          ${"$" + totalDeposit}
                         </span>
                     </span>
                   </div>
@@ -410,19 +411,24 @@ export function renderSumary(dataBooking, listDataService) {
 }
 
 function formatDisDay(date) {
-  const options = {
-    weekday: "long",
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  };
-  const formatted = date.toLocaleDateString("en-GB", options);
-  return formatted;
+  // Nếu là string thì ép sang Date
+  if (!(date instanceof Date)) {
+    date = new Date(date);
+  }
+
+  const optionsWeekday = { weekday: "long" };
+  const optionsDate = { day: "2-digit", month: "short", year: "numeric" };
+
+  const weekday = date.toLocaleDateString("en-US", optionsWeekday);
+  const dayMonthYear = date.toLocaleDateString("en-GB", optionsDate);
+
+  return `${weekday}, ${dayMonthYear}`;
 }
 
+// import store
+import { salonStore } from "../../store/new-online-store.js";
 // import component
 import { fetchAPI } from "../../site.js";
-import { salonStore } from "../../store/new-online-store.js";
 import { HeaderSalon } from "../header/header-salon.js";
 import { formatDateMMDDYYYY } from "../../helper/format-day.js";
 import { jsonToXml } from "../../helper/xlm-to-json.js";
@@ -432,6 +438,7 @@ import { renderBasePopup } from "../popup/base.js";
 import { startConfirmAnimation } from "../../helper/confirm-animation.js";
 import { closePopupContainerTemplate } from "../../popup/close-popup.js";
 import { Cart } from "../cart/cart.js";
+import { CalTotalPayment } from "../popup/content/choose-payment.js";
 
 $(document).ready(async function () {
   // Confirm payment final

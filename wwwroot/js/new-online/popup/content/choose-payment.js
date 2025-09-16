@@ -1,11 +1,54 @@
+export function CalTotalPayment(dataBooking, listDataService) {
+  let total = 0;
+
+  (dataBooking.users || []).forEach((userBooking) => {
+    const dataRefact = buildServiceSummary(userBooking, listDataService);
+
+    if (
+      dataRefact.listServiceUser &&
+      Array.isArray(dataRefact.listServiceUser)
+    ) {
+      dataRefact.listServiceUser.forEach((item) => {
+        item.itemService.forEach((is) => {
+          // cộng tiền service + optionals
+          total += Number(getTotalPrice(is) || 0);
+        });
+      });
+    }
+  });
+
+  return total;
+}
+
+export function PaymentDeposit(dataBooking, dataServices) {
+  const store = salonStore.getState();
+  const totalPayment = CalTotalPayment(dataBooking, dataServices);
+  const paymentDeposit = store?.paymentDeposit;
+
+  if (dataBooking?.currencyDeposit === "%") {
+    return "$" + ((totalPayment * parseFloat(paymentDeposit)) / 100).toFixed(2);
+  } else if (dataBooking?.currencyDeposit === "$") {
+    return "$" + parseFloat(paymentDeposit).toFixed(2);
+  }
+  return "$0";
+}
+
 // Form chọn phương thức thanh toán
 import { maskCardNumber } from "../../../helper/format-card.js";
+import { salonStore } from "../../../store/new-online-store.js";
+import { buildServiceSummary } from "../../summary/summary.js";
+import { getTotalPrice } from "../../summary/summary.js";
+
 export function renderPaymentMethodsForm(
   dataBooking,
   colorPrimary,
   selectedMethod = null
 ) {
+  const store = salonStore.getState();
+  const dataServices = store.dataServices;
+
   const numberCard = dataBooking.cardNumber;
+  const totalPayment = CalTotalPayment(dataBooking, dataServices);
 
   return `
         <div
@@ -61,7 +104,7 @@ export function renderPaymentMethodsForm(
                 Total
               </span>
               <span class="sub-deposit-1l">
-                ${dataBooking.currencyDeposit + dataBooking?.totalAmount}
+                ${"$" + totalPayment.toFixed(2)}
               </span>
             </div>
             <div class="cur-deposit">
@@ -69,7 +112,7 @@ export function renderPaymentMethodsForm(
                 Deposit
               </span>
               <span class="sub-deposit-2l">
-                ${dataBooking.currencyDeposit + dataBooking?.paymentDeposit}
+                ${PaymentDeposit(dataBooking, dataServices)}
               </span>
             </div>
           </div>

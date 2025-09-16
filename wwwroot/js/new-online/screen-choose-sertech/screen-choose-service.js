@@ -1,13 +1,16 @@
-export function renderTrackCate(dataService, classItem = "item-cate") {
+export function renderTrackCate(
+  dataService,
+  classItem = "item-cate",
+  currentCateId = null
+) {
   const store = salonStore.getState();
   const dataBooking = store.dataBooking;
   const user = dataBooking.users.find((u) => u.isChoosing);
 
-  // tìm cateId cần active
-  let activeCateId = null;
+  let activeCateId = currentCateId;
 
-  if (user) {
-    // 1. Kiểm tra cate nào có itemService user đã chọn
+  if (user && !activeCateId) {
+    // Nếu chưa có cate hiện tại, thì tìm cate có service đã chọn
     for (const cate of dataService) {
       const isChosen = cate.item.listItem.some((item) =>
         user.services.some((uCate) =>
@@ -19,30 +22,22 @@ export function renderTrackCate(dataService, classItem = "item-cate") {
         break;
       }
     }
-
-    // 2. Nếu chưa có, tìm cate nào có listItem > 0
-    if (!activeCateId) {
-      const cateWithItem = dataService.find((c) => c.item.listItem.length > 0);
-      if (cateWithItem) {
-        activeCateId = cateWithItem.item.id;
-      }
-    }
   }
 
-  // 3. Nếu vẫn chưa có, fallback cate đầu tiên
-  if (!activeCateId && dataService.length > 0) {
-    activeCateId = dataService[0].item.id;
+  if (!activeCateId) {
+    const cateWithItem = dataService.find((c) => c.item.listItem.length > 0);
+    activeCateId = cateWithItem
+      ? cateWithItem.item.id
+      : dataService[0]?.item.id;
   }
 
   return dataService
-    .map((cate, index) => {
-      // kiểm tra cate này có service user chọn không
+    .map((cate) => {
       const hasChosenService = user?.services.some((uCate) =>
         uCate.itemService.some((srv) =>
           cate.item.listItem.some((item) => item.id === srv.idItemService)
         )
       );
-      // set class cho cate
       const classNames = [
         cate.item.id === activeCateId ? "active" : "",
         hasChosenService ? "choosed" : "",
@@ -58,6 +53,7 @@ export function renderTrackCate(dataService, classItem = "item-cate") {
     })
     .join("");
 }
+
 export function renderFooterService() {
   const store = salonStore.getState();
   const dataBooking = store.dataBooking;
@@ -190,6 +186,90 @@ export async function ScreenChooseService() {
   }, 100);
   return htmlScreenChooseService;
 }
+function renderServiceItemHTML(serviceItem, selectedServices) {
+  const matchedService = selectedServices.find(
+    (s) => s.idItemService === serviceItem.id
+  );
+  const isSelected = Boolean(matchedService);
+  const addonCount = matchedService?.optionals?.length || 0;
+  const addOnTotalPrice =
+    matchedService?.optionals?.reduce(
+      (sum, opt) => sum + (opt.price || 0),
+      0
+    ) || 0;
+
+  const hasAddon = serviceItem.listOptionAddOn?.length > 0;
+
+  return `
+    <div
+      class="wrap-service-card ${isSelected ? "selected" : ""}"
+      data-iditem="${serviceItem.id}"
+    >
+      <span class="icon-checked ${isSelected ? "selected" : ""}"">
+        <i class="fa-solid fa-check"></i>
+      </span>
+      <div class="green-addOn ${hasAddon ? "dis-addOn" : ""}">
+        <i class="fa-solid fa-chevron-right"></i>
+      </div>
+      <div class="service-card">
+        <div class="service-title text-uppercase">
+          ${serviceItem.title}
+        </div>
+        <div class="service-price">
+          <span class="pcash">
+            $${serviceItem.priceRental.toFixed(2)} Cash
+          </span> /
+          <span class="pcard">
+            $${serviceItem.priceRental.toFixed(2)} Card
+          </span>
+        </div>
+        <div class="bot-item-service">
+          ${
+            addonCount > 0
+              ? `<div class="addon-indicator">
+                    <span class="be-addOn">
+                      ${addonCount} Add on
+                      <span class="be-addOn_cash">
+                        $ ${addOnTotalPrice.toFixed(2)}
+                      </span>
+                      <span class="partiti">|</span>
+                      <span class="be-addOn_card">
+                        $ ${addOnTotalPrice.toFixed(2)}
+                      </span>
+                    </span>
+                  </div>`
+              : ""
+          }
+          ${
+            serviceItem.description
+              ? `<div class="info-icon"><i class="fa-solid fa-circle-info"></i></div>`
+              : ""
+          }
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// render lại duy nhất 1 service
+function rerenderServiceItem(itemService) {
+  const store = salonStore.getState();
+  const dataBooking = store.dataBooking;
+  const user = dataBooking.users.find((u) => u.isChoosing);
+
+  const selectedServices = [];
+  if (user) {
+    for (const cate of user.services) {
+      for (const s of cate.itemService) {
+        selectedServices.push(s);
+      }
+    }
+  }
+
+  const newHTML = renderServiceItemHTML(itemService, selectedServices);
+  $(`.wrap-service-card[data-iditem="${itemService.id}"]`).replaceWith(newHTML);
+}
+
 // Render service items
 export function renderServices(listItem) {
   const store = salonStore.getState();
@@ -521,15 +601,20 @@ $(document).ready(async function () {
       ...prev,
       dataBooking: dataBooking,
     }));
-    // load list service sau khi chọn service
-    renderServices(cate?.item.listItem || []);
+    // load item service sau khi chọn service
+    rerenderServiceItem(itemService);
     // Load lại cart
     Cart();
     // Load button next, back
     renderFooterService();
     // Load lại cate
     const $trackCate = $(".slider-track-categories");
-    const htmlCategories = renderTrackCate(dataService);
+    const currentCateId = $(".item-cate.active").data("id"); // cate đang active
+    const htmlCategories = renderTrackCate(
+      dataService,
+      "item-cate",
+      currentCateId
+    );
     $trackCate.empty(); // reset
     $trackCate.append(htmlCategories);
   });

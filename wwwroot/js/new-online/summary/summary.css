@@ -51,6 +51,17 @@
   margin-bottom: 0px;
 }
 
+.item-content .text-name-tech {
+  font: normal normal 600 var(--s-14);
+  color: var(--bs-main);
+}
+.text-time-dura {
+  font: normal normal 400 var(--s-14);
+}
+.text-name-service {
+  font: normal normal 600 var(--s-13);
+}
+
 .item-content .text-name-tech,
 .header-item-sumary .name-tech {
   width: 26%;
@@ -107,7 +118,8 @@
 .checkbox-confirm {
   width: 100%;
   display: flex;
-  gap: 4px;
+  gap: 8px;
+  align-items: center;
 }
 
 .checkbox-confirm-sum {
@@ -140,7 +152,9 @@
 
 /* Khi selected thì hiện icon check, KHÔNG tô nền nữa */
 .checkbox-confirm-sum.selected .circle-check {
-  background-color: transparent;
+  background-color: var(--bs-main);
+  border: none;
+  color: white;
 }
 
 .checkbox-confirm-sum.selected .circle-check i {
@@ -224,7 +238,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--px-12) var(--px-12) 0px var(--px-12);
+  padding: var(--px-12);
   position: absolute;
   top: 0px;
   z-index: 2;
@@ -236,14 +250,26 @@
 .top-item-sumary .user-book .left-info-sum {
   display: flex;
   align-items: center;
-  gap: 8px;
 }
 .top-item-sumary .user-book .left-info-sum .name {
   padding: var(--px-8) 0px var(--px-8);
   font: normal normal 600 var(--s-16);
+  position: relative;
+  padding-right: 16px;
 }
+.top-item-sumary .user-book .left-info-sum .name::after {
+  content: "";
+  position: absolute;
+  right: 0px;
+  top: 8px;
+  width: 2px;
+  height: 55%;
+  background-color: var(--text-color-primary);
+}
+
 .top-item-sumary .user-book .left-info-sum .phone {
   font: normal normal 500 var(--s-16);
+  padding-left: 16px;
 }
 
 .top-item-sumary .user-book .right-info-sum {
@@ -290,6 +316,12 @@
   align-items: flex-start;
   gap: 12px;
   padding: 8px 12px 8px 24px;
+}
+.wrap-item-content .item-addon {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px 12px 8px 40px;
 }
 
 .total-pay .item {
@@ -413,7 +445,7 @@
   height: 24px;
   background-color: white;
   position: absolute;
-  top: 6px;
+  top: 7px;
 }
 .wrap-item-content .btn-remove-service:hover {
   border-color: #d96a00; /* border cam đậm hơn */
@@ -435,3 +467,416 @@
   color: var(--bs-main);
   font: normal normal 600 var(--s-14);
 }
+.depo-text,
+.total-text {
+  color: #747474;
+  font: normal normal 500 var(--s-14);
+}
+.total-value {
+  font: normal normal 600 var(--s-14);
+}
+.depo-value {
+  font: normal normal 600 var(--s-28);
+}
+.text-checkbox-confirm-sum {
+  font: normal normal 400 var(--s-16);
+}
+
+/* start css  form payment success*/
+.wrap-popup-payment-confirmation {
+  padding: 22px;
+  box-sizing: border-box;
+  display: flex;
+  padding: var(--px-32);
+  flex-direction: column;
+  align-items: center;
+  gap: var(--px-24);
+  border-radius: var(--px-24);
+  background: #fff;
+  box-shadow: 0 0 var(--px-12) 0 rgba(0, 0, 0, 0.16);
+}
+
+.confirm-grid {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+  width: 100%;
+}
+
+/* LEFT */
+.confirm-left {
+  width: 254px;
+  flex: 0 0 254px;
+}
+.confirm-image {
+  width: 100%;
+  height: 450px;
+  object-fit: cover;
+  border-radius: var(--px-12);
+  display: block;
+  box-shadow: 0 2px var(--px-6) rgba(0, 0, 0, 0.06);
+}
+
+.confirm-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.wrap-top-payment-success {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: var(--px-8);
+  flex: 1 0 0;
+  align-self: stretch;
+}
+
+.check-circle {
+  margin-top: var(--px-6);
+  margin-bottom: var(--px-8);
+  width: var(--px-56);
+  height: var(--px-56);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.confirm-title {
+  color: var(--color-cur-primary);
+  font: normal normal 600 var(--s-24);
+}
+
+.confirm-desc {
+  color: var(--text-color-primary);
+  font: normal normal 400 var(--s-16);
+}
+.wrap-confirm-right {
+  display: flex;
+  flex-direction: column;
+  gap: var(--px-16);
+}
+
+.confirm-right .divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.08));
+  margin: var(--px-12) 0;
+  opacity: 0.7;
+}
+.apoint-remain {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--px-16);
+}
+
+.appointment-rows {
+  width: 100%;
+  max-width: 640px;
+}
+.appointment-rows .row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--px-12);
+}
+.appointment-rows .row .label {
+  flex: 0 0 40%;
+  text-align: left;
+  color: #616161;
+  font: normal normal 500 var(--s-16);
+}
+.appointment-rows .row .value {
+  flex: 1;
+  text-align: right;
+  font: normal normal 500 var(--s-16);
+  color: var(--text-color-primary);
+}
+
+/* payment method badge (small rectangle like VISA) */
+.payment-method {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--px-10);
+}
+.pm-badge {
+  display: inline-block;
+  background: #fff;
+  border: 1px solid #e6e6e6;
+  border-radius: var(--px-6);
+  padding: var(--px-6) var(--px-8);
+  font-weight: 700;
+  font-size: 13px;
+  color: #214a8f;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02);
+}
+.pm-text {
+  margin-left: var(--px-8);
+  font-weight: 500;
+  color: #222;
+  font-size: var(--px-16);
+}
+
+/* remaining balance box */
+.remaining-wrapper {
+  display: flex;
+  padding: var(--px-8) var(--px-16);
+  justify-content: space-between;
+  align-items: center;
+  align-self: stretch;
+  border-radius: var(--px-12);
+  background: rgba(0, 0, 0, 0.06);
+}
+.remaining-label {
+  color: var(--text-color-primary);
+  font: normal normal 600 var(--s-16);
+}
+.remaining-amount {
+  color: #ea001e;
+  font: normal normal 700 var(--s-24);
+}
+.wrap-btn-request-another {
+  width: 100%;
+  position: relative;
+  margin-top: 8px;
+}
+
+.btn-request-another {
+  width: 100%;
+  max-width: 640px;
+  background: var(--color-cur-primary);
+  color: white;
+  border: none;
+  padding: var(--px-14) 18px;
+  border-radius: var(--px-10);
+  font: normal normal 600 var(--s-20);
+  cursor: pointer;
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.02);
+}
+.btn-request-another:hover {
+  filter: brightness(0.98);
+}
+.countdown-timer {
+  position: absolute;
+  top: 16px;
+  right: 10px;
+  color: white;
+}
+.dotted-sep {
+  width: 100%;
+  border-bottom: 2px dashed rgba(0, 0, 0, 0.08);
+  margin: var(--px-24) 0;
+}
+
+.app-promo {
+}
+.promo-title {
+  color: var(--text-color-primary);
+  font: normal normal 500 var(--s-20);
+}
+.promo-desc {
+  color: var(--text-color-primary);
+  font: normal normal 400 var(--s-16);
+}
+.badges {
+  display: flex;
+  gap: var(--px-12);
+  margin-bottom: var(--px-12);
+}
+.google-badge,
+.app-badge {
+  display: flex;
+  width: 150px;
+  padding: var(--px-6) 0;
+  justify-content: center;
+  align-items: center;
+  gap: var(--px-8);
+  border-radius: var(--px-12);
+  background: #fff;
+  box-shadow: 0 2px var(--px-12) 0 rgba(0, 0, 0, 0.1);
+  padding: var(--px-4) var(--px-12);
+}
+.badges .text-icon {
+  display: flex;
+  flex-direction: column;
+  gap: var(--px-4);
+}
+.text-icon .small {
+  color: var(--text-color-primary);
+  font: normal normal 400 var(--s-10);
+}
+.text-icon .big {
+  color: var(--text-color-primary);
+  font: normal normal 500 var(--s-13);
+}
+
+.legal {
+  color: #616161;
+  font: normal normal 400 var(--s-14);
+}
+
+/* ---- SVG wrapper ---- */
+.check-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 100px;
+  margin: var(--px-6) auto;
+}
+.check-svg {
+  display: block;
+  overflow: visible;
+}
+
+/* base elements */
+.fill-circle {
+  transform-origin: var(--px-32) var(--px-32);
+  opacity: 0;
+  transform: scale(0);
+}
+.stroke-circle {
+  transform-origin: var(--px-32) var(--px-32);
+  stroke: var(--color-cur-primary, #39b54a);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  paint-order: stroke fill markers; /* stroke drawn above fill for burst look */
+}
+.check-path {
+  transform-origin: var(--px-32) var(--px-32);
+  stroke: #fff;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  opacity: 0;
+  transform: scale(0.22);
+}
+
+/* animate classes (durations read from --*-duration vars) */
+.animate-border .stroke-circle {
+  animation: drawCircle var(--border-duration, 1500ms) linear forwards;
+}
+.animate-fill .fill-circle {
+  animation: expandFill var(--fill-duration, 400ms)
+    cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+}
+.animate-check .check-path {
+  animation: drawCheck var(--check-duration, 1500ms) ease-out forwards,
+    popCheck var(--check-duration, 1500ms) cubic-bezier(0.2, 0.9, 0.3, 1)
+      forwards;
+  animation-fill-mode: forwards;
+}
+
+/* burst (outer ring grows + stroke-width reduces to 0), inner elements fade & scale */
+.animate-burst .stroke-circle {
+  animation: burstStroke var(--burst-duration, 1000ms) ease-out forwards;
+}
+.animate-burst .fill-circle,
+.animate-burst .check-path {
+  animation: fadeBurst var(--burst-duration, 1000ms) ease-out forwards;
+}
+
+/* keyframes */
+@keyframes drawCircle {
+  from {
+    stroke-dashoffset: var(--circumference, 176);
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes expandFill {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.06);
+    opacity: 1;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@keyframes drawCheck {
+  from {
+    stroke-dashoffset: var(--check-length, 50);
+    opacity: 0;
+  }
+  to {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+@keyframes popCheck {
+  0% {
+    transform: scale(0.22);
+  }
+  60% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* burst stroke: many steps to smoothly reduce stroke-width to 0 while slightly scaling up */
+@keyframes burstStroke {
+  0% {
+    transform: scale(1);
+    stroke-width: calc(var(--initial-stroke-width, 3) * 1);
+    opacity: 1;
+  }
+  12% {
+    transform: scale(1.04);
+    stroke-width: calc(var(--initial-stroke-width, 3) * 0.87);
+    opacity: 0.95;
+  }
+  28% {
+    transform: scale(1.08);
+    stroke-width: calc(var(--initial-stroke-width, 3) * 0.67);
+    opacity: 0.88;
+  }
+  44% {
+    transform: scale(1.12);
+    stroke-width: calc(var(--initial-stroke-width, 3) * 0.4);
+    opacity: 0.75;
+  }
+  64% {
+    transform: scale(1.18);
+    stroke-width: calc(var(--initial-stroke-width, 3) * 0.2);
+    opacity: 0.5;
+  }
+  84% {
+    transform: scale(1.24);
+    stroke-width: calc(var(--initial-stroke-width, 3) * 0.07);
+    opacity: 0.2;
+  }
+  100% {
+    transform: scale(1.28);
+    stroke-width: 0;
+    opacity: 0;
+  }
+}
+
+@keyframes fadeBurst {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  60% {
+    opacity: 0.7;
+    transform: scale(1.06);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.12);
+  }
+}
+/* end css popup payment success */

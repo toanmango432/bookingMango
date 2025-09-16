@@ -1,15 +1,20 @@
+function allServicesHaveStaff(user) {
+  if (!user) return false;
+  const allServices = (user.services || []).flatMap((c) => c.itemService || []);
+  if (allServices.length === 0) return false;
+  return allServices.every(
+    (srv) => srv.selectedStaff && Object.keys(srv.selectedStaff).length > 0
+  );
+}
 export function renderFooterFor_PageChooseEachTech() {
   const store = salonStore.getState();
   const dataBooking = store.dataBooking;
   const user = dataBooking.users.find((u) => u.isChoosing);
-  // đã chọn service mới được phép next
-  const isNext = user.services.some((srv) => {
-    return srv.itemService.length > 0;
-  });
   // Kiểm tra có itemService nào không
   const hasAnyItemService =
     user?.services?.some((cate) => cate.itemService?.length > 0) ?? false;
 
+  const isNext = allServicesHaveStaff(user);
   // Nút back có thêm hand khi chưa có service
   const backBtn = `
     <button id="btn-back-cetech" class="dir-btn-back-tech text-uppercase">
@@ -432,7 +437,7 @@ export async function ChooseTechForEachServices() {
                     </p>
                     <div class="wrap-search-tech">
                         <div class="container-search-tech">
-                          <input type="text" class="input-search-tech" placeholder="Search by name..."/>
+                          <input id="input-search-tech-3" type="text" class="input-search-tech" placeholder="Search by name..."/>
                           <button class="btn-search-toggle"><i class="fa-solid fa-magnifying-glass"></i></button>
                         </div>
                     </div>
@@ -480,7 +485,6 @@ $(document).ready(async function () {
   const currentDate = new Date();
   const daysOffNail = store.daysOffNail;
   const RVCNo = store.RVCNo;
-  const dataBooking = store.dataBooking;
   const $wrapNewOnline = $(".wrap-newonline");
 
   // btn back tech to services
@@ -490,7 +494,8 @@ $(document).ready(async function () {
     await ScreenChooseService();
   });
 
-  $(document).on("input", ".input-search-tech", async function () {
+  $(document).on("input", "#input-search-tech-3", async function () {
+    const store = salonStore.getState();
     const listStaffUser = store.listStaffUser;
     const keyword = $(this).val().toLowerCase();
     let list = listStaffUser;
@@ -576,11 +581,18 @@ $(document).ready(async function () {
     // Re-render lại staff list và peser
     renderListPeSer();
     renderListStaff_PageChoseEachSer(listStaffUser);
+    renderFooterFor_PageChooseEachTech();
     Cart();
   });
   $(document).on("click", "#btn-next-cetech", async function () {
+    const store = salonStore.getState();
+    const dataBooking = store.dataBooking;
+    const user = dataBooking.users.find((u) => u.isChoosing);
     // Kiểm tra đã chọn đầy đủ thợ cho service chưa trước khi next
-
+    if (!allServicesHaveStaff(user)) {
+      console.warn("Please assign staff to all services before continuing.");
+      return; // chặn next
+    }
     await renderChooseTime();
 
     // lần đầu load: fetch ngày nghỉ của tháng hiện tại
