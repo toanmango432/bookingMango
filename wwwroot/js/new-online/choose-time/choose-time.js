@@ -1,7 +1,7 @@
-export function startResendTimer() {
+export function startResendTimer(resendCountdown) {
   $(".resend-btn").addClass("disabled");
 
-  resendInterval = setInterval(() => {
+  let resendInterval = setInterval(() => {
     resendCountdown--;
     $(".countdown").text(
       `00:${resendCountdown < 10 ? "0" + resendCountdown : resendCountdown}`
@@ -687,6 +687,8 @@ import { sendOTP } from "../helper/send-otp.js";
 // import constant
 import { PageCurrent } from "../../constants/new-online.js";
 import { monthNames, dayNames } from "../../constants/days-weeks.js";
+import { typeRequire } from "../../constants/template-online.js";
+import { typeInput } from "../../constants/template-online.js";
 // import content popup
 import { renderVerifyEmailPhoneContent } from "../popup/content/verify-email-phone.js";
 import { renderBasePopup } from "../popup/base.js";
@@ -698,6 +700,21 @@ import { formatPhoneNumber } from "../../helper/format-phone.js";
 import { shakeError } from "../../helper/shake-error.js";
 import { isValidEmail } from "../../helper/input/valid-form.js";
 import { renderSumary } from "../summary/summary.js";
+import { nextFormRegister } from "../helper/next-form-register.js";
+import { unFormatPhoneNumber } from "../../helper/format-phone.js";
+import { alertCustom } from "../../site.js";
+import { clearInputError } from "../../helper/shake-error.js";
+import { validateEmailFormRegister } from "../../helper/input/valid-form.js";
+import { validatePhoneFormRegister } from "../../helper/input/valid-form.js";
+import { showInputError } from "../../helper/shake-error.js";
+import { closePopupContainerTemplate } from "../../popup/close-popup.js";
+import { renderPoliciesForm } from "../popup/content/policies.js";
+import { isValidCardNumber } from "../../helper/format-card.js";
+import { formatCardNumber } from "../../helper/format-card.js";
+import { formatExpiryDate } from "../../helper/format-card.js";
+import { isValidExpiryDate } from "../../helper/format-card.js";
+import { isValidCVV } from "../../helper/format-card.js";
+import { unformatCardNumber } from "../../helper/format-card.js";
 
 $(document).ready(async function () {
   const store = salonStore.getState();
@@ -911,6 +928,7 @@ $(document).ready(async function () {
 
     const value = $appointInput.val();
     const resVerifyGetOtp = await sendOTP(value, res);
+    console.log("res: ", resVerifyGetOtp);
 
     if (resVerifyGetOtp && resVerifyGetOtp.status === 200) {
       const extraData = resVerifyGetOtp.extraData;
@@ -952,21 +970,15 @@ $(document).ready(async function () {
         height,
         width
       );
-      $wrapHomeTemp.append(html);
+      $wrapNewOnline.append(html);
 
       setTimeout(() => {
         $(".overlay-screen").addClass("show");
         $('.otp-box[data-index="0"]').focus();
       }, 20);
 
-      resendCountdown = 59;
-      startResendTimer();
-
-      const typeBooking = dataBooking.type;
-      if (typeBooking === typeBookingEnum.GUESTS) {
-        // Add thêm 1 Guest rỗng
-        $(".btn-increase").trigger("click");
-      }
+      let resendCountdown = 59;
+      startResendTimer(resendCountdown);
 
       // lấy listcard authorized tại đây
       const owner = dataBooking.users[0];
@@ -996,6 +1008,9 @@ $(document).ready(async function () {
       } catch (e) {
         console.error("[sendOTP - list card authorized]", e.error);
       }
+    } else if (resVerifyGetOtp && resVerifyGetOtp.status === 201) {
+      // chưa đăng ký qua đăng ký
+      nextFormRegister(dataBooking);
     } else {
       // console.log("! status 200");
     }
@@ -1020,9 +1035,15 @@ $(document).ready(async function () {
   });
   // add new card
   $(document).on("click", ".add-new-card-btn-1", function () {
+    let height = "96%";
+    let width = 886;
+    if (isMobile) {
+      height = 676;
+      width = "100%";
+    }
     const htmlAddNewMethod = renderAddNewMethod();
     const persistent = true;
-    const html = renderBasePopup(htmlAddNewMethod, persistent, 900, 886);
+    const html = renderBasePopup(htmlAddNewMethod, persistent, height, width);
 
     $wrapNewOnline.append(html);
     setTimeout(() => {
@@ -1080,4 +1101,631 @@ $(document).ready(async function () {
       pageCurrent: PageCurrent.SUMMARY,
     }));
   });
+
+  $(document).on("click", ".btn-next-verify-register-1", async function () {
+    const $this = $(this);
+
+    // xử lý check lại toàn bộ form input, verify và snake text error
+    // Chỉ check format mail và phone, đã xử lý onChange input verify button verify
+    // Lấy giá trị trên tab hiện tại
+    const $wrapRegis = $(`.wrap-popup-register`);
+    const valPhoneRegis = $wrapRegis.find("#phone-register").val().trim();
+    const valFirstRegis = $wrapRegis.find("#firstname-register").val().trim();
+    const valLastRegis = $wrapRegis.find("#lastname-register").val().trim();
+    const valEmailRegis = $wrapRegis.find("#email-register").val().trim();
+
+    const isPhone = isValidPhoneNumber(valPhoneRegis);
+    const isEmail = isValidEmail(valEmailRegis);
+
+    let hasError = false;
+
+    if (valEmailRegis === "" && valPhoneRegis === "") {
+      const $errorEmailRegis = $wrapRegis
+        .find("#email-register")
+        .next(".error-message");
+      const textErrEmail =
+        "Please enter at least 1 of the 2 fields email or phone number!";
+      $errorEmailRegis.text(textErrEmail);
+      shakeError($errorEmailRegis);
+
+      const $errorPhoneNumberRegis = $wrapRegis
+        .find("#phone-register")
+        .next(".error-message");
+      const textErrPhoneNumber =
+        "Please enter at least 1 of the 2 fields email or phone number!";
+      $errorPhoneNumberRegis.text(textErrPhoneNumber);
+      shakeError($errorPhoneNumberRegis);
+
+      hasError = true;
+    }
+
+    if (valPhoneRegis !== "" && !isPhone) {
+      const $errorPhoneRegis = $wrapRegis
+        .find("#phone-register")
+        .next(".error-message");
+
+      const textErr = !isPhone
+        ? "Phone is incorrect format."
+        : "Phone is required!";
+      $errorPhoneRegis.text(textErr);
+      shakeError($errorPhoneRegis);
+      hasError = true;
+    }
+
+    if (valEmailRegis !== "" && !isEmail) {
+      const $errorEmailRegis = $wrapRegis
+        .find("#email-register")
+        .next(".error-message");
+
+      const textErr = !isEmail
+        ? "Email is incorrect format."
+        : "Email is required!";
+      $errorEmailRegis.text(textErr);
+      shakeError($errorEmailRegis);
+      hasError = true;
+    }
+
+    if (valFirstRegis === "") {
+      const $errorFirstRegis = $wrapRegis
+        .find("#firstname-register")
+        .next(".error-message");
+
+      const textErr = "First name is required!";
+      $errorFirstRegis.text(textErr);
+      shakeError($errorFirstRegis);
+      hasError = true;
+    }
+
+    if (valLastRegis === "") {
+      const $errorLastRegis = $wrapRegis
+        .find("#lastname-register")
+        .next(".error-message");
+
+      const textErr = "Last name is required!";
+      $errorLastRegis.text(textErr);
+      shakeError($errorLastRegis);
+      hasError = true;
+    }
+
+    if (hasError) {
+      $this.blur(); // Gỡ focus
+      return;
+    }
+
+    // Đăng ký thành viên
+    const payloadRegis = {
+      firstName: valFirstRegis,
+      lastName: valLastRegis,
+      contactPhone: unFormatPhoneNumber(
+        JSON.parse(JSON.stringify(valPhoneRegis))
+      ),
+      email: valEmailRegis,
+      isMail: valEmailRegis ? true : false,
+    };
+    const store = salonStore.getState();
+    const dataBooking = store.dataBooking;
+
+    try {
+      // /api/card/createauthorize
+      const resRegis = await fetchAPI.post("/api/user/register", payloadRegis);
+      if (resRegis.status !== 200) {
+        const $errorRes = $(".regis-message-error");
+        $errorRes.text();
+        return;
+      }
+      // token & refreshTokens
+      const token_bot = resRegis?.data?.token;
+      const refreshTokens_bot = resRegis?.data?.refreshTokens;
+      localStorage.setItem("token_bot", token_bot);
+      localStorage.setItem("refreshTokens_bot", refreshTokens_bot);
+
+      // Lưu thông tin vào dataBooking
+      dataBooking.users[0].email = resRegis?.data?.email;
+      dataBooking.users[0].phoneNumber = resRegis?.data?.phone;
+      dataBooking.users[0].id = resRegis?.data?.id;
+      // res chỉ trả về fullName
+      dataBooking.users[0].firstName = valFirstRegis;
+      dataBooking.users[0].lastName = valLastRegis;
+
+      salonStore.setState((prev) => ({
+        ...prev,
+        dataBooking,
+      }));
+
+      closePopupContainerTemplate();
+
+      alertCustom({
+        type: "success",
+        isNoti: true,
+        notify: {
+          title: "Đăng ký thành công!",
+          position: "bottom-end",
+          timer: 3000,
+          toast: true,
+          showConfirmButton: false,
+        },
+      });
+    } catch (e) {
+      console.error("[on.next-verify-register]", {
+        message: e.message,
+        stack: e.stack,
+        name: e.name,
+      });
+    }
+  });
+
+  // Kiểm tra và disable btn verify form register
+  $(document).on(
+    "input",
+    "#firstname-register, #lastname-register, #email-register, #phone-register",
+    function () {
+      const $this = $(this);
+      const val = $this.val().trim();
+      if (val) {
+        clearInputError($this);
+      }
+
+      // verify button next :(Verify)
+      let allFilled =
+        $("#firstname-register").val().trim() &&
+        $("#lastname-register").val().trim();
+
+      if ($this.attr("id") === "email-register") {
+        const valid = isValidEmail(val);
+
+        if ($this.data("type") === typeRequire.REQUIRED) {
+          allFilled = allFilled && val;
+        }
+
+        // --- update phone required/not required ---
+        const $phone = $("#phone-register");
+        const $labelPhone = $(".form-input-phone label p");
+
+        if (valid && val !== "") {
+          // Email hợp lệ -> Phone không bắt buộc
+          $phone.attr("data-type", typeRequire.NOTREQUIRED);
+          $labelPhone.text("");
+        } else {
+          // Email rỗng/không hợp lệ -> Phone bắt buộc
+          $phone.attr("data-type", typeRequire.REQUIRED);
+          $labelPhone.text("*");
+        }
+      }
+      if ($this.attr("id") === "phone-register") {
+        const $this = $(this);
+
+        let phoneVal = $this.val().trim();
+        const isRequired = $this.data("type") === typeRequire.REQUIRED;
+        const phoneDigits = phoneVal.replace(/\D/g, "");
+
+        let valid = true;
+
+        // Check nếu là phone đủ 10 số
+        if (phoneDigits.length === 10 && /^\d+$/.test(phoneDigits)) {
+          phoneVal = formatPhoneNumber(phoneDigits);
+          $this.val(phoneVal);
+          valid = isValidPhoneNumber(phoneVal);
+        } else {
+          // Nếu đang ở dạng đã format mà không còn đủ 10 số → gỡ format
+          if (
+            phoneVal.includes("(") ||
+            phoneVal.includes(")") ||
+            phoneVal.includes("-")
+          ) {
+            if (phoneDigits.length !== 10) {
+              phoneVal = phoneDigits;
+              $this.val(phoneVal);
+            }
+          }
+          valid = isValidPhoneNumber(phoneVal);
+        }
+        if (phoneVal === "" && !isRequired) {
+          clearInputError($this);
+        } else if (!valid) {
+          showInputError($this, "Phone is incorrect format");
+        } else {
+          clearInputError($this);
+        }
+
+        if ($this.data("type") === typeRequire.REQUIRED) {
+          const valPhone = $this.val().trim();
+          allFilled = allFilled && valPhone;
+        }
+
+        // --- update email required/not required ---
+        const $email = $("#email-register");
+        const $labelEmail = $(".form-input-email label p");
+
+        if (valid && phoneVal !== "") {
+          // Phone hợp lệ -> Email không bắt buộc
+          $email.attr("data-type", typeRequire.NOTREQUIRED);
+          $labelEmail.text("");
+        } else {
+          // Phone rỗng/không hợp lệ -> Email bắt buộc
+          $email.attr("data-type", typeRequire.REQUIRED);
+          $labelEmail.text("*");
+        }
+      }
+
+      $(".btn-next-verify-register-1").prop("disabled", !allFilled);
+    }
+  );
+  // blur #firsname-register, #lastname-register,
+  $(document).on(
+    "blur",
+    "#firstname-register, #lastname-register",
+    function () {
+      const $input = $(this);
+      const id = $input.attr("id");
+      const val = $input.val().trim();
+      const nameMap = {
+        "firstname-register": "First Name",
+        "lastname-register": "Last Name",
+      };
+
+      const fieldName = nameMap[id] || "This field";
+
+      if (!val) {
+        showInputError($input, `${fieldName} is required`, true);
+        return;
+      }
+
+      // Nếu hợp lệ => xóa lỗi
+      clearInputError($input);
+    }
+  );
+  // blur #phone-register
+  $(document).on("blur", "#phone-register", function () {
+    const $this = $(this);
+    const isRequired = $this.data("type");
+    if (isRequired === typeRequire.REQUIRED) {
+      validatePhoneFormRegister($this);
+    }
+    // nếu val = '', clear error, néu có val vẫn valid format
+    if ($this.val() === "" && isRequired === typeRequire.NOTREQUIRED) {
+      clearInputError($this);
+    } else {
+      validatePhoneFormRegister($this);
+    }
+  });
+  // blur #email-register
+  $(document).on("blur", "#email-register", function () {
+    const $this = $(this);
+    const isRequired = $this.data("type");
+    if (isRequired === typeRequire.REQUIRED) {
+      validateEmailFormRegister($this);
+    }
+    // nếu val = '', clear error, néu có val vẫn valid format
+    if ($this.val() === "" && isRequired === typeRequire.NOTREQUIRED) {
+      clearInputError($this);
+    } else {
+      validateEmailFormRegister($this);
+    }
+  });
+
+  // Auto focus và chuyển sang ô tiếp theo
+  $(document).on("input", ".otp-box", function () {
+    const $this = $(this);
+    const val = $this.val();
+    const index = parseInt($this.data("index"), 10);
+
+    if (val.length === 1) {
+      $(`.otp-box[data-index="${index + 1}"]`).focus();
+    }
+
+    // Nếu đủ 6 ô thì bật nút Verify
+    const allFilled = $(".otp-box")
+      .toArray()
+      .every((input) => $(input).val().length === 1);
+    $(".btn-next-verify-1").prop("disabled", !allFilled);
+  });
+  function getOtpCode() {
+    return $(".otp-box")
+      .toArray()
+      .map((input) => $(input).val())
+      .join("");
+  }
+  // Cho phép back bằng phím <-
+  $(document).on("keydown", ".otp-box", function (e) {
+    const $this = $(this);
+    const index = parseInt($this.data("index"), 10);
+
+    if (e.key === "Backspace" && !$this.val()) {
+      $(`.otp-box[data-index="${index - 1}"]`).focus();
+    }
+  });
+  $(document).on("click", ".btn-next-verify-1", async function () {
+    const store = salonStore.getState();
+
+    const policySetting = store.policySetting;
+    const dataBooking = store.dataBooking;
+    const currencyDeposit = store.currencyDeposit;
+    const paymentDeposit = store.paymentDeposit;
+    // Chỉ verify code lần đầu đăng ký, những lần sau không còn cần verify
+    const phoneVerify = unFormatPhoneNumber(
+      JSON.parse(JSON.stringify(dataBooking.users[0]?.phoneNumber || ""))
+    );
+    dataBooking.currencyDeposit = currencyDeposit;
+    dataBooking.paymentDeposit = paymentDeposit;
+    salonStore.setState({ dataBooking });
+
+    const emailVerify = dataBooking.users[0].email;
+
+    const optCode = getOtpCode();
+    try {
+      const resVerifyCode = await fetchAPI.get(
+        `/api/user/checkverifycode?phone=${
+          phoneVerify || emailVerify
+        }&verifyCode=${optCode}`
+      );
+      if (resVerifyCode.status === 200) {
+        const htmlPoliciesForm = renderPoliciesForm(policySetting);
+        let height = 768;
+        let width = 886;
+        if (isMobile) {
+          height = 700;
+          width = "100%";
+        }
+        const persistent = true;
+        const html = renderBasePopup(
+          htmlPoliciesForm,
+          persistent,
+          height,
+          width
+        );
+
+        $wrapNewOnline.append(html);
+        setTimeout(() => {
+          $(".overlay-screen").addClass("show");
+        }, 10);
+      }
+    } catch (e) {
+      console.error("[on.btn-next-verify]: ", {
+        message: e.message,
+        stack: e.stack,
+        name: e.name,
+      });
+    }
+  });
+  // === START: VALID SESSION CREDIT
+  function validateField($input, showError = true) {
+    const id = $input.attr("id");
+    const value = $input.val().trim();
+    let valid = true;
+
+    switch (id) {
+      case "card-holder-name":
+        if (!value) {
+          if (showError) showInputError($input, "Card holder is required");
+          valid = false;
+        } else {
+          clearInputError($input);
+        }
+        break;
+
+      case "card-number":
+        if (!isValidCardNumber(value)) {
+          if (showError) showInputError($input, "Invalid card number");
+          valid = false;
+        } else {
+          clearInputError($input);
+        }
+        break;
+
+      case "card-expiry":
+        if (!isValidExpiryDate(value)) {
+          if (showError) showInputError($input, "Invalid expiry date");
+          valid = false;
+        } else {
+          clearInputError($input);
+        }
+        break;
+
+      case "card-cvv":
+        if (!isValidCVV(value)) {
+          if (showError) showInputError($input, "Invalid CVV");
+          valid = false;
+        } else {
+          clearInputError($input);
+        }
+        break;
+
+      case "billing-address":
+        if (!value) {
+          if (showError) showInputError($input, "Billing address is required");
+          valid = false;
+        } else {
+          clearInputError($input);
+        }
+        break;
+    }
+
+    return valid;
+  }
+
+  function checkAllFormAddCard() {
+    let isValid = true;
+    $("#form-add-card input").each(function () {
+      if (!validateField($(this), false)) {
+        isValid = false;
+      }
+    });
+
+    const $btnAdd = $("#form-add-card .btn-add-card");
+    if (isValid) {
+      $btnAdd.prop("disabled", false).removeClass("disabled");
+    } else {
+      $btnAdd.prop("disabled", true).addClass("disabled");
+    }
+  }
+  // Check từng field khi blur
+  $(document).on("blur", "#form-add-card input", function () {
+    validateField($(this), true);
+    checkAllFormAddCard();
+  });
+
+  // Check toàn bộ khi input change
+  $(document).on("input change", "#form-add-card input", function () {
+    const $this = $(this);
+    if ($this.attr("id") === "card-number") {
+      $this.val(formatCardNumber($this.val()));
+    }
+    if ($this.attr("id") === "card-expiry") {
+      $this.val(formatExpiryDate($this.val())); // auto format expiry date
+    }
+    checkAllFormAddCard();
+  });
+
+  // Helper: lấy value theo id
+  function getVal($wrap, selector) {
+    return $wrap.find(selector).val().trim();
+  }
+  async function fillNewCard($wrapFormAddCard, dataBooking) {
+    // map key trong object <=> id trong form
+    const fieldMap = {
+      cardHolderName: "#card-holder-name",
+      cardNumber: "#card-number",
+      mmyy: "#card-expiry",
+      ccv2: "#card-cvv",
+      billingAddress: "#billing-address",
+      street: "#card-street",
+      city: "#card-city",
+      state: "#card-state",
+      zip: "#card-zip",
+    };
+
+    let newCard = {};
+
+    // gán giá trị cho newCard theo mapping
+    Object.entries(fieldMap).forEach(([key, selector]) => {
+      newCard[key] = getVal($wrapFormAddCard, selector);
+    });
+
+    const mmyy = newCard.mmyy || ""; // dạng "12/34"
+    let expiryMonth = "";
+    let expiryYear = "";
+
+    if (mmyy.includes("/")) {
+      const [mm, yy] = mmyy.split("/");
+      expiryMonth = mm.trim();
+      expiryYear = yy.trim();
+    }
+
+    const owner = dataBooking.users[0];
+    const phoneNumberOwner = owner.phoneNumber;
+    const emailOwner = owner.email;
+    const customerID = owner.id;
+    const rcpCustomer = owner.rcpCustomer;
+
+    // add new card
+    const payloadNewCard = {
+      // Card info
+      number: unformatCardNumber(newCard.cardNumber),
+      expiryMonth: expiryMonth,
+      expiryYear: expiryYear,
+      cvv: newCard.ccv2,
+      isDefault: true,
+      magstripe: "",
+      code: "",
+
+      // Holder info
+      firstName: newCard.cardHolderName,
+      lastName: newCard.cardHolderName,
+      name: "",
+      alias: "",
+
+      // Contact
+      phoneNumber: phoneNumberOwner,
+      email: emailOwner,
+      company: "",
+      faxNumber: "",
+
+      // Billing address
+      address: newCard.billingAddress,
+      avsStreet: newCard.billingAddress,
+      avsZip: "",
+      city: newCard.city,
+      state: newCard.state,
+      zip: newCard.zip,
+      country: "",
+    };
+    try {
+      const url = `/api/card/createcardcustomer?RCPCustomer=${rcpCustomer}&CustomerID=${customerID}&RVCNo=${RVCNo}&TypeAuthorize=1`;
+      await fetchAPI.post(url, payloadNewCard);
+    } catch (e) {
+      console.error("[fillNewCard - add new card]", {
+        message: e.message,
+        stack: e.stack,
+        name: e.name,
+      });
+    }
+    // get list card authorized
+    try {
+      const listCardAuthorized = await fetchAPI.post(
+        `/api/card/getlistcardauthorize?RCPCustomer=${rcpCustomer}&CustomerID=${customerID}&RVCNo=${RVCNo}&TypeAuthorize=1`
+      );
+
+      if (listCardAuthorized.data) {
+        const newDataBooking = {
+          ...dataBooking,
+          cardNumber: listCardAuthorized.data,
+        };
+
+        salonStore.setState({ dataBooking: newDataBooking });
+
+        setTimeout(() => {
+          const currentBooking = salonStore.getState().dataBooking;
+          const contentPaymentMethod = renderPaymentMethodsForm(currentBooking);
+
+          let height = 776;
+          let width = 886;
+          if (isMobile) {
+            height = 676;
+            width = "100%";
+          }
+
+          const html = renderBasePopup(
+            contentPaymentMethod,
+            false,
+            height,
+            width
+          );
+          $wrapNewOnline.append(html);
+
+          setTimeout(() => {
+            $(".overlay-screen").addClass("show");
+          }, 10);
+        }, 0);
+      }
+    } catch (e) {
+      console.error("[fillNewCard - get list card]", {
+        message: e.message,
+        stack: e.stack,
+        name: e.name,
+      });
+    }
+  }
+  $(document).on("click", ".btn-add-card-1", async function () {
+    const dataBooking = salonStore.getState().dataBooking;
+    const $this = $(this);
+    const $wrapFormAddCard = $this.closest(".wrap-popup-add-card");
+    const $inputs = $wrapFormAddCard.find("input");
+
+    let isValid = true;
+    $inputs.each(function () {
+      if (!validateField($(this), true)) {
+        isValid = false;
+        shakeError($(this));
+      }
+    });
+
+    if (!isValid) {
+      return; // stop add card
+    }
+
+    fillNewCard($wrapFormAddCard, dataBooking);
+
+    // to-do : valid các input
+  });
+  // === END: VALID SESSION CREDIT
 });

@@ -46,35 +46,39 @@ export async function sendOTP(inputValue, type) {
       const resVerifyAccount = await fetchAPI.get(
         `/api/client/getcustomerfamily?RVCNo=${RVCNo}&key=${phoneUnformat}&ismail=false`
       );
-      // check exit authorized accout
-      const resExitAccount = await fetchAPI.get(
-        `/api/card/checkexistaccountauthorize?CustomerID=${resVerifyAccount?.data[0]?.customerID}&RVCNo=${RVCNo}&TypeAuthorize=0`
-      );
-      // Nếu chưa exits create bằng form register
-      if (resExitAccount.data === false) {
-        // create authorized
-        const zipCode = "84101";
-        const FirstName = resVerifyAccount.data[0].firstName;
-        const LastName = resVerifyAccount.data[0].lastName;
-        const Email = resVerifyAccount.data[0].email;
-        const Phone = resVerifyAccount.data[0].contactPhone;
-        const CustomerID = resVerifyAccount.data[0].customerID;
-        const TypeAuthorize = 0; // default
+      if (resVerifyAccount.status === 201 || resVerifyAccount.status === 200) {
+        // check exit authorized accout
+        const resExitAccount = await fetchAPI.get(
+          `/api/card/checkexistaccountauthorize?CustomerID=${resVerifyAccount?.data[0]?.customerID}&RVCNo=${RVCNo}&TypeAuthorize=0`
+        );
+        // Nếu chưa exits create bằng form register
+        if (resExitAccount.data === false) {
+          // create authorized
+          const zipCode = "84101";
+          const FirstName = resVerifyAccount.data[0].firstName;
+          const LastName = resVerifyAccount.data[0].lastName;
+          const Email = resVerifyAccount.data[0].email;
+          const Phone = resVerifyAccount.data[0].contactPhone;
+          const CustomerID = resVerifyAccount.data[0].customerID;
+          const TypeAuthorize = 0; // default
 
-        const url = `/api/card/createauthorize?RVCNo=${RVCNo}&ZipCode=${encodeURIComponent(
-          zipCode
-        )}&FirstName=${encodeURIComponent(
-          FirstName
-        )}&LastName=${encodeURIComponent(LastName)}&Email=${encodeURIComponent(
-          Email
-        )}&Phone=${encodeURIComponent(
-          Phone
-        )}&CustomerID=${CustomerID}&TypeAuthorize=${TypeAuthorize}`;
+          const url = `/api/card/createauthorize?RVCNo=${RVCNo}&ZipCode=${encodeURIComponent(
+            zipCode
+          )}&FirstName=${encodeURIComponent(
+            FirstName
+          )}&LastName=${encodeURIComponent(
+            LastName
+          )}&Email=${encodeURIComponent(Email)}&Phone=${encodeURIComponent(
+            Phone
+          )}&CustomerID=${CustomerID}&TypeAuthorize=${TypeAuthorize}`;
 
-        const resCreateAuth = await fetchAPI.get(url);
-        if (resCreateAuth.status !== 200) {
-          console.log("Tạo mới authorized thất bại, vui lòng liên hệ dev T:)");
-          return;
+          const resCreateAuth = await fetchAPI.get(url);
+          if (resCreateAuth.status !== 200) {
+            console.log(
+              "Tạo mới authorized thất bại, vui lòng liên hệ dev T:)"
+            );
+            return;
+          }
         }
       }
       if (resVerifyAccount.status === 201) {
@@ -204,13 +208,12 @@ export async function sendOTP(inputValue, type) {
       const resVerifyAccount = await fetchAPI.get(
         `/api/client/getcustomerfamily?RVCNo=${RVCNo}&key=${emailVerify}&ismail=true`
       );
-
-      // check exit accout
-      const resExitAccount = await fetchAPI.get(
-        `/api/card/checkexistaccountauthorize?CustomerID=${resVerifyAccount?.data[0]?.customerID}&RVCNo=${RVCNo}&TypeAuthorize=0`
-      );
-      // Nếu chưa exits create authorized
-      if (resExitAccount.data === false) {
+      if (resVerifyAccount.status === 201 || resVerifyAccount.status === 200) {
+        // check exit accout
+        const resExitAccount = await fetchAPI.get(
+          `/api/card/checkexistaccountauthorize?CustomerID=${resVerifyAccount?.data[0]?.customerID}&RVCNo=${RVCNo}&TypeAuthorize=0`
+        );
+        // Nếu chưa exits create authorized
         if (resExitAccount.data === false) {
           // create authorized
           const zipCode = "84101";

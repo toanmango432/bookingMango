@@ -351,7 +351,7 @@ export function renderSumary(dataBooking, listDataService) {
                           Total
                         </span>
                         <span class="total-value">
-                          ${"$" + totalPayment}
+                          ${"$" + totalPayment.toFixed(2)}
                         </span>
                     </span>
                     <span class="total-2">

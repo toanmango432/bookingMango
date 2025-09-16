@@ -1,5 +1,5 @@
 // Content popup register
-import { typeRequire, typeInput } from "../../constants/template-online.js";
+import { typeRequire, typeInput } from "../../../constants/template-online.js";
 export function renderRegisterForm(
   dataRegis,
   fieldEntered = null,
@@ -11,7 +11,7 @@ export function renderRegisterForm(
   return `
         <div class="wrap-popup-register"
           style="
-            --color-cur-primary: ${colorPrimary}
+            --color-cur-primary: ${colorPrimary ? colorPrimary : ""}
           "
         >
           <h2 class="title-register text-uppercase">
@@ -96,7 +96,7 @@ export function renderRegisterForm(
           <div class="regis-message-error"></div>
           <div class="button-container">
             <button class="btn-back-verify-register">Back</button>
-            <button class="btn-next-verify-register" ${
+            <button class="btn-next-verify-register-1" ${
               isDisabled ? "" : "disabled"
             }>Sign Up</button>
           </div>

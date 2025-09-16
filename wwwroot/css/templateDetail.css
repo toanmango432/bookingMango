@@ -577,7 +577,7 @@
   filter: brightness(0.95);
   cursor: pointer;
 }
-/* css opt */
+/* css otp */
 .popup-wrap-verify-code {
   display: flex;
   padding: var(--px-32);
@@ -1091,7 +1091,7 @@ select {
 
 /* start css form add new payment methods */
 .wrap-popup-add-card {
-  height: 776px;
+  height: 100%;
   display: flex;
   padding: var(--px-32);
   flex-direction: column;
