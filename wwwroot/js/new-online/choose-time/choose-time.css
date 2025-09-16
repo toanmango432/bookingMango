@@ -1154,3 +1154,20 @@
 .confirm-booking .btn-confirm-booking:hover {
   filter: brightness(0.95);
 }
+
+.btn-skip-verify {
+  display: flex;
+  width: 196.333px;
+  height: 44px;
+  padding: 12px 16px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  background: var(--Pink-60, #ff538a);
+  border: none;
+  color: white;
+  font: normal normal 600 var(--s-16);
+}
+.btn-skip-verify:hover {
+  filter: brightness(0.95);
+}

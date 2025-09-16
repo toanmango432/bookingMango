@@ -1,5 +1,10 @@
 // content popup verify phone & email
 export function renderVerifyEmailPhoneContent(emailOrPhone, colorPrimary) {
+  const store = salonStore.getState();
+  const dataBooking = store.dataBooking;
+  const owner = dataBooking.users[0];
+  const isSkipVerify = owner.phoneNumber ? true : false;
+
   return `
         <div class="popup-wrap-verify-emailPhone"
           style="
@@ -40,6 +45,28 @@ export function renderVerifyEmailPhoneContent(emailOrPhone, colorPrimary) {
               emailOrPhone ? "" : "disabled"
             }>Next</button>
           </div>
+          <div class="btn-skip">
+            ${
+              isSkipVerify
+                ? `<button id="skip-verify" class="btn-skip-verify">Skip verify</button>`
+                : ``
+            }
+          </div>
         </div>
       `;
 }
+import { salonStore } from "../../../store/new-online-store.js";
+import { renderSumary } from "../../summary/summary.js";
+$(document).ready(async function () {
+  $(document).on("click", "#skip-verify", async function () {
+    const store = salonStore.getState();
+    const dataBooking = store.dataBooking;
+    const owner = dataBooking.users[0];
+    const listDataService = store.dataServices;
+
+    // check lại cho phép skip
+    const isSkipVerify = owner.phoneNumber ? true : false;
+    if (!isSkipVerify) return;
+    renderSumary(dataBooking, listDataService);
+  });
+});

@@ -3,7 +3,7 @@ export function CalTotalPayment(dataBooking, listDataService) {
 
   (dataBooking.users || []).forEach((userBooking) => {
     const dataRefact = buildServiceSummary(userBooking, listDataService);
-
+    console.log("dataRefact: ", dataRefact);
     if (
       dataRefact.listServiceUser &&
       Array.isArray(dataRefact.listServiceUser)
@@ -48,8 +48,9 @@ export function renderPaymentMethodsForm(
   const dataServices = store.dataServices;
 
   const numberCard = dataBooking.cardNumber;
+  console.log("dataBooking: ", dataBooking);
   const totalPayment = CalTotalPayment(dataBooking, dataServices);
-
+  console.log("total: ", totalPayment);
   return `
         <div
           class="wrap-popup-payment-methods"

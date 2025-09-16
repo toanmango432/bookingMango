@@ -816,6 +816,11 @@ $(document).ready(async function () {
   // Xử lý onChange input appointment-input
   $(document).on("input", "#appointment-input", function () {
     const $this = $(this);
+
+    const store = salonStore.getState();
+    const dataBooking = store.dataBooking;
+    const owner = dataBooking.users[0];
+
     let val = $this.val().trim();
     const $error = $this.siblings(".error-message");
 
@@ -841,12 +846,26 @@ $(document).ready(async function () {
       isPhone = isValidPhoneNumber(val);
       isEmail = isValidEmail(val);
     }
+
+    // So sánh với phone owner
+    const ownerPhone = owner?.phoneNumber?.replace(/\D/g, ""); // chuẩn hoá digits
+    if (isPhone && digits === ownerPhone) {
+      if ($("#skip-verify").length === 0) {
+        $(".btn-skip").html(
+          `<button id="skip-verify" class="btn-skip-verify">Skip Verify</button>`
+        );
+      }
+    } else {
+      $("#skip-verify").remove();
+    }
+
     // clear input #appointment-input
     $(document).on("click", ".clear-icon", function () {
       const $inputAppt = $("#appointment-input");
       $inputAppt.val("");
       clearInputError($inputAppt);
       $inputAppt.focus();
+      $("#skip-verify").remove();
     });
 
     // Cập nhật lỗi

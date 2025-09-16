@@ -87,7 +87,12 @@ export function initSliderFromElement(
 }
 export async function ChooseNailSalon() {
   await salonStore.getState().getAllSalon();
+
+  const store = salonStore.getState();
+  let allSalon = store.allSalon;
+
   const $wrapNewOnline = $(".wrap-newonline");
+
   const chunkArray = (array, size) => {
     const result = [];
     for (let i = 0; i < array.length; i += size) {
@@ -95,9 +100,9 @@ export async function ChooseNailSalon() {
     }
     return result;
   };
-  let allSalon = salonStore.getState().allSalon;
 
   const chunkArr = chunkArray(allSalon, 9);
+
   const htmlHeaderLocation = HeaderLocation();
 
   const htmlChooseNailSalon = `
@@ -159,17 +164,18 @@ import { ServiceOrTech } from "../service-or-tech/service-or-tech.js";
 import { baseLogoSalon } from "../../constants/base-url.js";
 
 $(document).ready(async function () {
-  const allSalon = salonStore.getState().allSalon;
   const $wrapNewOnline = $(".wrap-newonline");
 
-  $(document).on("click", ".item-salon", function () {
+  $(document).on("click", ".item-salon", async function () {
+    await salonStore.getState().getAllSalon();
     const store = salonStore.getState();
+    console.log("store: ", store);
     let allSalon = store.allSalon;
 
     const $this = $(this);
     const rvcNoChoose = $this.data("rvcno");
     const idStore = $this.data("id");
-
+    console.log("allsalon: ", allSalon);
     const salonChoosing =
       allSalon.find((item) => item.storeID == idStore) || {};
 

@@ -136,6 +136,7 @@ export function renderSumary(dataBooking, listDataService) {
                         // tính tổng bản ghi, tổng tiền và tổng time
                         let totalServices = 0;
                         let totalMinutes = 0;
+                        let userTotalPayment = 0;
 
                         if (
                           dataRefact.listServiceUser &&
@@ -156,6 +157,9 @@ export function renderSumary(dataBooking, listDataService) {
                                 0
                               );
                               totalMinutes += optionalMins;
+                              userTotalPayment += Number(
+                                getTotalPrice(is) || 0
+                              );
                             });
                           });
                         }
@@ -176,20 +180,19 @@ export function renderSumary(dataBooking, listDataService) {
                         } else {
                           console.log("Unprocessed");
                         }
-
+                        const fullName =
+                          userBooking?.firstName + " " + userBooking?.lastName;
                         return `
                         <div class="item-sumary" data-id="${userBooking.id}">
                           <div class="top-item-sumary">
                             <div class="user-book">
                               <div class="left-info-sum">
                                 <h2 class="name">${
-                                  userBooking.firstName
-                                    ? userBooking.firstName
-                                    : "Not Name"
+                                  fullName ? fullName : "Not Name"
                                 }</h2>
                                 <h2 class="phone">${
-                                  userBooking?.phoneNumber ||
-                                  userBooking?.email ||
+                                  owner?.phoneNumber ||
+                                  owner?.email ||
                                   "Not info"
                                 }</h2>
                               </div>
@@ -326,7 +329,7 @@ export function renderSumary(dataBooking, listDataService) {
                           <div class="total-pay">
                               <p class="item text-total-amount text-uppercase">Total ${totalServices} item</p>
                               <p class="item text-total-times">${totalMinutes} min</p>
-                              <p class="item text-total-price">$ ${totalPayment.toFixed(
+                              <p class="item text-total-price">$ ${userTotalPayment.toFixed(
                                 2
                               )}</p>
                           </div>
@@ -427,6 +430,10 @@ function formatDisDay(date) {
 
 // import store
 import { salonStore } from "../../store/new-online-store.js";
+// import constant
+import { dayNames, monthNames } from "../../constants/days-weeks.js";
+import { SelecteFlow } from "../../constants/new-online.js";
+import { PageCurrent } from "../../constants/new-online.js";
 // import component
 import { fetchAPI } from "../../site.js";
 import { HeaderSalon } from "../header/header-salon.js";
@@ -439,6 +446,11 @@ import { startConfirmAnimation } from "../../helper/confirm-animation.js";
 import { closePopupContainerTemplate } from "../../popup/close-popup.js";
 import { Cart } from "../cart/cart.js";
 import { CalTotalPayment } from "../popup/content/choose-payment.js";
+import { renderChooseTime } from "../choose-time/choose-time.js";
+import { updateCalendarData } from "../choose-time/choose-time.js";
+import { renderCalendar } from "../choose-time/choose-time.js";
+import { ScreenChooseService } from "../screen-choose-sertech/screen-choose-service.js";
+import { ScreenChooseTech } from "../screen-choose-sertech/screen-choose-tech.js";
 
 $(document).ready(async function () {
   // Confirm payment final
@@ -921,6 +933,7 @@ $(document).ready(async function () {
             userTotalDuration += itemDuration;
           });
         });
+        const noteTiket = $("#note-ticket").val();
 
         const appointment = {
           AppointmentID: "0",
@@ -934,7 +947,7 @@ $(document).ready(async function () {
           AppointmentStatusID: "1",
           EmployeeID: Array.from(userEmployeeIDs),
           GroupEmployeeName: Array.from(userNickNames),
-          AptComment: "",
+          AptComment: noteTiket || "",
           TotalAmount: userTotalAmount.toFixed(2), // Tổng tiền của user này
           DepositAmount: dataBooking.paymentDeposit || 0,
           CrearteBy: "0",
@@ -1043,7 +1056,7 @@ $(document).ready(async function () {
     };
 
     const contentSuccessPayment = renderPaymentConfirmationForm(dataBill);
-    let height = 976;
+    let height = "96%";
     let width = 886;
     if (isMobile) {
       height = 676;
@@ -1062,7 +1075,7 @@ $(document).ready(async function () {
         buttonSelector: ".wrap-popup-payment-confirmation .btn-request-another",
       });
       // Thêm đếm ngược 5 giây
-      let countdownSeconds = 10;
+      let countdownSeconds = 500;
       const countdownElement = $(
         ".wrap-popup-payment-confirmation .countdown-seconds"
       );
@@ -1079,5 +1092,90 @@ $(document).ready(async function () {
         }
       }, 1000);
     }, 100);
+  });
+  $(document).on("click", "#back-summary", async function () {
+    const $this = $(this);
+
+    const store = salonStore.getState();
+    const currentMonth = store.currentMonth;
+    const selectedDate = store.selectedDate;
+    const currentYear = store.currentYear;
+    const daysOffNail = store.daysOffNail;
+    const RVCNo = store.RVCNo;
+    const dataBooking = store.dataBooking;
+    const user = dataBooking.users.find((u) => u.isChoosing);
+
+    // Kiểm tra đã chọn service chưa trước khi next
+    const isNext = user.services.some((cate) =>
+      cate.itemService.some(
+        (srv) => srv.selectedStaff && Object.keys(srv.selectedStaff).length > 0
+      )
+    );
+    if (!isNext) return;
+
+    await renderChooseTime();
+
+    // lần đầu load: fetch ngày nghỉ của tháng hiện tại
+    updateCalendarData(currentMonth, currentYear, RVCNo, daysOffNail, () => {
+      renderCalendar(
+        monthNames,
+        dayNames,
+        currentMonth,
+        currentYear,
+        daysOffNail,
+        selectedDate,
+        dataBooking
+      );
+    });
+  });
+  $(document).on("click", "#add-guest", async function () {
+    const store = salonStore.getState();
+    const dataBooking = store.dataBooking;
+    const userCur = dataBooking.users.find((u) => u.isChoosing);
+    const owner = dataBooking.users[0];
+
+    // cập nhật trạng thái của userCur
+    userCur.isChoosing = false;
+
+    // Tạo guest và isChoosing cho guest này
+    let guest = {
+      id: dataBooking.users.length + 1,
+      firstName: owner.firstName,
+      lastName: owner.lastName + " G" + dataBooking.users.length,
+      phoneNumber: null,
+      email: null,
+      gender: null,
+      services: [],
+      selectedDate: new Date(),
+      selectedTimeSlot: null,
+      isSelecting: false,
+      isChoosing: true,
+    };
+    dataBooking.users.push(guest);
+    salonStore.setState((prev) => ({
+      ...prev,
+      dataBooking,
+    }));
+
+    const flow = store.flow;
+    if (flow === SelecteFlow.SER) {
+      await ScreenChooseService(); // append screen choose service
+
+      const store = salonStore.getState();
+      salonStore.setState({
+        ...store,
+        pageCurrent: PageCurrent.CHOOSE_SERVICE,
+      });
+    } else if (flow === SelecteFlow.TECH) {
+      await ScreenChooseTech();
+      const store = salonStore.getState();
+      salonStore.setState({
+        ...store,
+        pageCurrent: PageCurrent.CHOOSE_TECH,
+      });
+    }
+  });
+  $(document).on("input", "#note-ticket", function () {
+    const $this = $(this);
   });
 });
