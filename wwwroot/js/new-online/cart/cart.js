@@ -356,11 +356,16 @@ $(document).ready(async function () {
       console.log("Please back to choose service!");
       return;
     }
-    await ChooseTechForEachServices();
+    let listStaffUser = store.listStaffUser;
+    if (!listStaffUser) {
+      listStaffUser = await store.getListUserStaff();
+    }
     // Chuyển page chọn tech cho từng service, chỉ chọn được 1 thợ cho 1 service
     salonStore.setState({
       ...store,
       pageCurrent: PageCurrent.CHOOSE_TECH_FOR_SERVICE,
     });
+
+    await ChooseTechForEachServices();
   });
 });

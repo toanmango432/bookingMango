@@ -432,7 +432,7 @@ export async function ChooseTechForEachServices() {
   const store = salonStore.getState();
   const dataBooking = store.dataBooking;
   const user = dataBooking.users.find((u) => u.isChoosing);
-  const listStaffUser = store.listStaffUser;
+  const listStaffUser = store.listStaffUser || (await store.getListUserStaff());
 
   const salonChoosing = store.salonChoosing;
 
