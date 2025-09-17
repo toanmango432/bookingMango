@@ -1,7 +1,7 @@
 import { baseLogoSalon } from "../../constants/base-url.js";
 export function HeaderSalon(salonChoosing) {
   const urlAvt = baseLogoSalon + salonChoosing?.logo;
-  const name = salonChoosing?.storeName;
+  const name = salonChoosing?.storeName || salonChoosing.rvcName;
   const phone = salonChoosing?.phone || "N/A";
   return `
     <div class="content">

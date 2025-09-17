@@ -98,6 +98,20 @@ export async function ChooseNailSalon() {
 
   const store = salonStore.getState();
   let allSalon = store.allSalon;
+  if (allSalon.length === 0) {
+    const RVCNo = store.RVCNo;
+    const storeInfo = await fetchAPI.get(
+      `/api/store/getsettingonlinebook?RVCNo=${RVCNo}`
+    );
+    const infoSalon = storeInfo?.data?.StoreInfo;
+    salonStore.setState((prev) => ({
+      ...prev,
+      salonChoosing: infoSalon,
+    }));
+
+    ServiceOrTech();
+    return;
+  }
 
   const $wrapNewOnline = $(".wrap-newonline");
 
@@ -170,6 +184,8 @@ import { ServiceOrTech } from "../service-or-tech/service-or-tech.js";
 
 // import constant
 import { baseLogoSalon } from "../../constants/base-url.js";
+import { PageCurrent } from "../../constants/new-online.js";
+import { fetchAPI } from "../../site.js";
 
 $(document).ready(async function () {
   const $wrapNewOnline = $(".wrap-newonline");
