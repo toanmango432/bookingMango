@@ -676,8 +676,8 @@
 .name-numbercard .name-method {
 }
 .payment-method-item .circle {
-  width: 21px;
-  height: 21px;
+  width: 20px;
+  height: 20px;
   border: 2px solid var(--bs-main);
   border-radius: 50%;
   position: relative;

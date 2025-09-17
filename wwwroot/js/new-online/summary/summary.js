@@ -1053,11 +1053,11 @@ $(document).ready(async function () {
         buttonSelector: ".wrap-popup-payment-confirmation .btn-request-another",
       });
       // Thêm đếm ngược 5 giây
-      let countdownSeconds = 500;
+      let countdownSeconds = 10;
       const countdownElement = $(
         ".wrap-popup-payment-confirmation .countdown-seconds"
       );
-      const countdownInterval = setInterval(() => {
+      const countdownInterval = setInterval(async () => {
         countdownSeconds -= 1;
         countdownElement.text(countdownSeconds);
 
@@ -1065,8 +1065,13 @@ $(document).ready(async function () {
           clearInterval(countdownInterval);
           // Đóng popup
           closePopupContainerTemplate();
-          // Reload trang
-          window.location.reload();
+          // Reload dataBooking và back lại flow đã chọn
+          const flowCur = store.flow;
+          if (flowCur === SelecteFlow.SER) {
+            await ScreenChooseService();
+          } else {
+            await ScreenChooseTech();
+          }
         }
       }, 1000);
     }, 100);
@@ -1235,5 +1240,24 @@ $(document).ready(async function () {
     const listDataService = newStore.dataServices;
     const newDataBooking = newStore.dataBooking;
     renderSumary(newDataBooking, listDataService);
+  });
+  $(document).on("click", ".btn-request-another", async function () {
+    const $this = $(this);
+    const store = salonStore.getState();
+
+    const flowCur = store.flow;
+    let pageNext;
+    if (flowCur === SelecteFlow.SER) {
+      await ScreenChooseService();
+      pageNext = PageCurrent.CHOOSE_SERVICE;
+    } else {
+      await ScreenChooseTech();
+      pageNext = PageCurrent.CHOOSE_TECH;
+    }
+
+    salonStore.setState((prev) => ({
+      ...prev,
+      pageCurrent: pageNext,
+    }));
   });
 });

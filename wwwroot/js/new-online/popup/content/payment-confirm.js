@@ -88,9 +88,7 @@ export function renderPaymentConfirmationForm(data = {}, colorPrimary) {
 
                   <div class="remaining-wrapper">
                     <div class="remaining-label">Remaining Balance</div>
-                    <div class="remaining-amount">${
-                      currencyDeposit + remaining
-                    }</div>
+                    <div class="remaining-amount">${"$ " + remaining}</div>
                   </div>
                 </div>
                 <div class="wrap-btn-request-another text-uppercase">

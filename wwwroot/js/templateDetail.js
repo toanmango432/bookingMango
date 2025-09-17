@@ -1372,7 +1372,7 @@ $(document).ready(async function () {
           clearInterval(countdownInterval);
           // Đóng popup
           closePopupContainerTemplate();
-          // Reload trang
+          // Reload dataBooking
           window.location.reload();
         }
       }, 1000);

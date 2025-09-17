@@ -116,7 +116,7 @@
 }
 
 .total-pay .text-total-price {
-  width: 27.5%;
+  width: 28.5%;
   margin-bottom: 0px;
   text-align: right;
   color: red;
@@ -691,7 +691,7 @@
   box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.02);
 }
 .btn-request-another:hover {
-  filter: brightness(0.98);
+  filter: brightness(0.95);
 }
 .countdown-timer {
   position: absolute;
@@ -774,7 +774,7 @@
 }
 .stroke-circle {
   transform-origin: var(--px-32) var(--px-32);
-  stroke: var(--bs-main, #39b54a);
+  stroke: var(--bs-main);
   stroke-linecap: round;
   stroke-linejoin: round;
   paint-order: stroke fill markers; /* stroke drawn above fill for burst look */

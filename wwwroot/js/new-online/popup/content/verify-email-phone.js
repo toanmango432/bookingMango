@@ -57,6 +57,7 @@ export function renderVerifyEmailPhoneContent(emailOrPhone, colorPrimary) {
 import { salonStore } from "../../../store/new-online-store.js";
 import { renderSumary } from "../../summary/summary.js";
 import { formatPhoneNumber } from "../../../helper/format-phone.js";
+import { PageCurrent } from "../../../constants/new-online.js";
 $(document).ready(async function () {
   $(document).on("click", "#skip-verify", async function () {
     const store = salonStore.getState();
@@ -69,6 +70,11 @@ $(document).ready(async function () {
     const isSkipVerify =
       (owner.phoneNumber || owner.email) && cardChoosing ? true : false;
     if (!isSkipVerify) return;
+
+    salonStore.setState((prev) => ({
+      ...prev,
+      pageCurrent: PageCurrent.SUMMARY,
+    }));
     renderSumary(dataBooking, listDataService);
   });
 });

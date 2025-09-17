@@ -114,6 +114,12 @@ export async function renderCalendar(
         day.classList.add("active");
         // Cập nhật giờ start ngày mới
         await store.getTimeBeginCurDate(formatDateMMDDYYYY(selectedDate)); // khởi tạo lịch ở ngày hiện tại
+        // lọc lại thời gian cho ngày mới
+        await buildSlotTimeMultiTechFromBooking({
+          dataBooking,
+          includeChooseStaffBefore: false,
+          oldEmpID: null,
+        });
         renderTimeSlotsForDate(dataBooking);
       });
     }

@@ -985,8 +985,8 @@ select {
 .name-numbercard .name-method {
 }
 .payment-method-item .circle {
-  width: 21px;
-  height: 21px;
+  width: 20px;
+  height: 20px;
   border: 2px solid var(--color-cur-primary);
   border-radius: 50%;
   position: relative;

@@ -875,12 +875,15 @@ $(document).ready(async function () {
     salonStore.setState({ ...store, chooseStaffBefore: [] });
 
     // render ui chọn
+    let pageNext;
     if (selectFlow === SelecteFlow.SER) {
       await ScreenChooseService();
+      pageNext = PageCurrent.CHOOSE_SERVICE;
     } else {
       await ScreenChooseTech();
+      pageNext = PageCurrent.CHOOSE_TECH;
     }
-    salonStore.setState({ ...store, flow: selectFlow });
+    salonStore.setState({ ...store, flow: selectFlow, pageCurrent: pageNext });
     closePopupContainerTemplate();
   });
 
