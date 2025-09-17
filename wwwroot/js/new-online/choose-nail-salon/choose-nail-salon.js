@@ -183,8 +183,7 @@ $(document).ready(async function () {
     const rvcNoChoose = $this.data("rvcno");
     const idStore = $this.data("id");
     const salonChoosing =
-      allSalon.find((item) => item.storeID == idStore) || {};
-
+      allSalon.find((item) => item.rvcNo == rvcNoChoose) || {};
     salonStore.setState({
       ...store,
       RVCNo: rvcNoChoose,
