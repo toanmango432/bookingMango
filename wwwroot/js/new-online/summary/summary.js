@@ -69,9 +69,6 @@ export function parseTime(timeStr) {
 }
 
 export function renderSumary(dataBooking, listDataService) {
-  console.log("dataBooking: ", dataBooking);
-  console.log("listDataService: ", listDataService);
-
   const store = salonStore.getState();
   const $wrapNewOnline = $(".wrap-newonline");
   $wrapNewOnline.empty();
@@ -430,7 +427,6 @@ export function renderSumary(dataBooking, listDataService) {
   Cart();
   // gán totalPayment cho dataBooking
   dataBooking.totalAmount = totalPayment;
-  console.log("htmlSumary: ", htmlSumary);
   $wrapNewOnline.empty();
   $wrapNewOnline.append(htmlSumary);
 }

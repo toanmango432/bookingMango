@@ -182,7 +182,6 @@ $(document).ready(async function () {
     const $this = $(this);
     const rvcNoChoose = $this.data("rvcno");
     const idStore = $this.data("id");
-    console.log("allsalon: ", allSalon);
     const salonChoosing =
       allSalon.find((item) => item.storeID == idStore) || {};
 
@@ -191,7 +190,6 @@ $(document).ready(async function () {
       RVCNo: rvcNoChoose,
       salonChoosing: salonChoosing,
     });
-    console.log("salonChoosing: ", salonChoosing);
 
     // đổi route mà không reload
     history.pushState({}, "", `/new-online/${rvcNoChoose}`);

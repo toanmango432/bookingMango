@@ -288,8 +288,6 @@ export function renderFooterChooseTime() {
   const isNext = user.selectedTimeSlot ? true : false;
   // kiểm tra có slot nào active không
   const hasAnySlotActive = $(".time-slot-1.active").length > 0;
-  console.log("active: ", $(".time-slot-1.active"));
-  console.log("has: ", hasAnySlotActive);
 
   const backBtn = `
     <button id="btn-back-choose-time" class="dir-btn-back-time text-uppercase">
@@ -1025,7 +1023,6 @@ $(document).ready(async function () {
 
     const value = $appointInput.val();
     const resVerifyGetOtp = await sendOTP(value, res);
-    console.log("res: ", resVerifyGetOtp);
 
     if (resVerifyGetOtp && resVerifyGetOtp.status === 200) {
       const extraData = resVerifyGetOtp.extraData;

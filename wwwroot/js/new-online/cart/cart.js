@@ -2,7 +2,6 @@ export function Cart(isOpen = false, isAddOn = false) {
   const store = salonStore.getState();
   const dataServices = store.dataServices;
   const dataBooking = store.dataBooking;
-  console.log;
   const user = dataBooking.users.find((u) => u.isChoosing);
   const flowCur = store.flow;
   let totalCash = 0;
@@ -280,7 +279,6 @@ $(document).ready(async function () {
       const cate = dataService.find((c) => c.item.id === id);
       renderServices_PageChooseServiceTech(cate?.item.listItem || []);
     } else if (pageCurrent === PageCurrent.SUMMARY) {
-      console.log("hehre");
       const store = salonStore.getState();
       const databooking = store.dataBooking;
       const dataServices = store.dataServices;

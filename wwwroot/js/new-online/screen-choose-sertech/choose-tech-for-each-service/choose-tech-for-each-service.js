@@ -43,8 +43,6 @@ export function renderFooterFor_PageChooseEachTech() {
   return $wrapDirBtn;
 }
 function renderFirstTechAvailable(tech, isSelected) {
-  console.log("tech: ", tech);
-
   const firstChar = tech?.nickName?.charAt(0)?.toUpperCase() || "?";
 
   return `
@@ -175,7 +173,6 @@ export function renderItemTech_PageChoseEachSer(staff) {
 }
 
 export function renderListStaff_PageChoseEachSer(listUserStaff) {
-  console.log("listUser: ", listUserStaff);
   if (!listUserStaff?.length) return "";
 
   const store = salonStore.getState();

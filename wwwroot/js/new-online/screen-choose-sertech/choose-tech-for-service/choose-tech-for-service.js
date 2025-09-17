@@ -110,8 +110,6 @@ export function renderFooterTech_PageChooseOnlyTech() {
   return $wrapDirBtn;
 }
 function renderFirstTechAvailable(tech, isSelected) {
-  console.log("tech: ", tech);
-
   const firstChar = tech?.nickName?.charAt(0)?.toUpperCase() || "?";
 
   return `

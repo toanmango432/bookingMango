@@ -390,7 +390,6 @@ $(document).ready(async function () {
         console.error("[sendOTP - list card authorized]", e.error);
       }
     } else {
-      // console.log("! status 200");
     }
   });
   // resent verify otp

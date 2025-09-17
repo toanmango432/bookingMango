@@ -20,7 +20,6 @@ function renderFooterTech_PageChooseTech() {
   return $wrapDirBtn;
 }
 function renderFirstTechAvailable(tech) {
-  console.log("tech: ", tech);
   const store = salonStore.getState();
   const chooseStaffBefore = store.chooseStaffBefore || [];
   const isSelected = chooseStaffBefore.includes(tech.employeeID);
