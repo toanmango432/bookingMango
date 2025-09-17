@@ -50,7 +50,6 @@ export const salonStore = {
           `/api/store/getliststorechain?RVCNo=${newRVCNo}`
         );
         salonStore.setState({ ...store, allSalon: resSalon });
-        console.log("allSalon: ", salonStore.getState().allSalon);
         return resSalon;
       } catch (e) {
         console.error("[getAllSalon]", e);

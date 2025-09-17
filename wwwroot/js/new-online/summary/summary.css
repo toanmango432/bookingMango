@@ -1,6 +1,7 @@
 .confirm-booking {
 }
 .confirm-booking .btn-confirm-booking-1 {
+  width: 200px;
   display: flex;
   padding: var(--px-12) var(--px-24);
   gap: var(--px-8);
@@ -159,7 +160,7 @@
 /* Icon check ẩn khi chưa selected */
 .checkbox-confirm-sum .circle-check i {
   font-size: var(--px-12);
-  color: var(--bs-main);
+  color: white;
   display: none;
 }
 
@@ -206,7 +207,7 @@
 }
 
 .new-sumary {
-  width: 745px;
+  width: 60%;
   display: flex;
   margin: 0px auto;
   flex-direction: column;
@@ -223,7 +224,7 @@
   align-self: stretch;
   flex: 1 0 0;
   justify-content: space-between;
-  margin-bottom: 12px;
+  margin-bottom: 24px;
 }
 .new-sumary .payment-method-item {
   width: 100%;
@@ -264,6 +265,11 @@
   display: flex;
   align-items: center;
 }
+.top-item-sumary .user-book .left-info-sum h2 svg {
+  position: relative;
+  top: -10px;
+  left: -2px;
+}
 .top-item-sumary .user-book .left-info-sum .name {
   padding: var(--px-8) 0px var(--px-8);
   font: normal normal 600 var(--s-16);
@@ -288,11 +294,11 @@
 .top-item-sumary .user-book .right-info-sum {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 8px;
   font: normal normal 600 var(--s-14);
 }
 .wrap-list-sumary {
-  background-color: white;
   border-radius: 8px;
   width: 100%;
   display: flex;
@@ -907,3 +913,20 @@
   }
 }
 /* end css popup payment success */
+.item-right-info {
+  position: relative;
+}
+.item-right-info.first,
+.item-right-info.second {
+  padding-right: 8px;
+}
+.item-right-info.first::after,
+.item-right-info.second::after {
+  content: "";
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  width: 2px;
+  height: 100%;
+  background-color: var(--text-color-primary);
+}

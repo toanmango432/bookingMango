@@ -96,6 +96,7 @@
 .button-container {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: var(--px-8);
   align-self: stretch;
 }

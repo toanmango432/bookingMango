@@ -69,6 +69,9 @@ export function parseTime(timeStr) {
 }
 
 export function renderSumary(dataBooking, listDataService) {
+  console.log("dataBooking: ", dataBooking);
+  console.log("listDataService: ", listDataService);
+
   const store = salonStore.getState();
   const $wrapNewOnline = $(".wrap-newonline");
   $wrapNewOnline.empty();
@@ -180,15 +183,19 @@ export function renderSumary(dataBooking, listDataService) {
                         } else {
                           console.log("Unprocessed");
                         }
-                        const fullName =
-                          userBooking?.firstName + " " + userBooking?.lastName;
+                        const fullName = userBooking?.lastName;
                         return `
                         <div class="item-sumary" data-id="${userBooking.id}">
                           <div class="top-item-sumary">
                             <div class="user-book">
                               <div class="left-info-sum">
                                 <h2 class="name">${
-                                  fullName ? fullName : "Not Name"
+                                  fullName
+                                    ? fullName.replace(
+                                        /^[*]+/g,
+                                        '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M16.9667 7.94997L15.8333 6.6333C15.6167 6.3833 15.4417 5.91663 15.4417 5.5833V4.16663C15.4417 3.2833 14.7167 2.5583 13.8333 2.5583H12.4167C12.0917 2.5583 11.6167 2.3833 11.3667 2.16663L10.05 1.0333C9.475 0.541634 8.53334 0.541634 7.95 1.0333L6.64167 2.17497C6.39167 2.3833 5.91667 2.5583 5.59167 2.5583H4.15C3.26667 2.5583 2.54167 3.2833 2.54167 4.16663V5.59163C2.54167 5.91663 2.36667 6.3833 2.15834 6.6333L1.03334 7.9583C0.550004 8.5333 0.550004 9.46663 1.03334 10.0416L2.15834 11.3666C2.36667 11.6166 2.54167 12.0833 2.54167 12.4083V13.8333C2.54167 14.7166 3.26667 15.4416 4.15 15.4416H5.59167C5.91667 15.4416 6.39167 15.6166 6.64167 15.8333L7.95834 16.9666C8.53334 17.4583 9.47501 17.4583 10.0583 16.9666L11.375 15.8333C11.625 15.6166 12.0917 15.4416 12.425 15.4416H13.8417C14.725 15.4416 15.45 14.7166 15.45 13.8333V12.4166C15.45 12.0916 15.625 11.6166 15.8417 11.3666L16.975 10.05C17.4583 9.47497 17.4583 8.52497 16.9667 7.94997ZM12.4667 7.42497L8.44167 11.45C8.325 11.5666 8.16667 11.6333 8 11.6333C7.83334 11.6333 7.675 11.5666 7.55834 11.45L5.54167 9.4333C5.3 9.19163 5.3 8.79163 5.54167 8.54997C5.78334 8.3083 6.18334 8.3083 6.425 8.54997L8 10.125L11.5833 6.54163C11.825 6.29997 12.225 6.29997 12.4667 6.54163C12.7083 6.7833 12.7083 7.1833 12.4667 7.42497Z" stroke="white" fill="#45C65A"/></svg>'
+                                      )
+                                    : "Not Name"
                                 }</h2>
                                 <h2 class="phone">${
                                   owner?.phoneNumber ||
@@ -197,17 +204,19 @@ export function renderSumary(dataBooking, listDataService) {
                                 }</h2>
                               </div>
                               <div class="right-info-sum">
-                                <p class="item-right-info">
+                                <p class="item-right-info first">
                                   ${userBooking?.selectedTimeSlot || "N/A"}
                                 </p>
-                                <p class="item-right-info">
+                                <p class="item-right-info second">
                                   ${
                                     formatDisDay(userBooking?.selectedDate) ||
                                     "N/A"
                                   }
                                 </p>
                                 <p class="item-right-info">
-                                  <button class="edit-sumary">
+                                  <button id="edit-sumary-1" class="edit-sumary" data-id=${
+                                    userBooking.id
+                                  }>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="17" height="16" viewBox="0 0 17 16" fill="none">
                                       <path d="M16.1218 4.45017L14.7017 5.87029C14.5123 6.05963 14.323 6.05963 14.1336 5.87029L10.6306 2.36733C10.4413 2.17798 10.4413 1.98863 10.6306 1.79928L12.0508 0.379161C12.6188 -0.188887 13.5656 -0.188887 14.1336 0.379161L16.0271 2.27265C16.6898 2.93537 16.6898 3.88212 16.1218 4.45017ZM9.39988 3.12472L1.16319 11.3614L0.500467 15.1484C0.405792 15.6218 0.879165 16.0951 1.35254 16.0005L5.13952 15.3377L13.3762 7.10105C13.5656 6.91171 13.5656 6.72236 13.3762 6.53301L9.96792 3.12472C9.77857 2.93537 9.58922 2.93537 9.39988 3.12472ZM4.38212 10.604C4.19277 10.4147 4.19277 10.1306 4.38212 9.94129L9.21053 5.11289C9.39988 4.92354 9.6839 4.92354 9.87325 5.11289C9.96792 5.39691 9.96792 5.68094 9.87325 5.77561L5.04485 10.604C4.8555 10.7934 4.57147 10.7934 4.38212 10.604ZM3.24603 13.2549H4.76082V14.391L2.77266 14.7697L1.82591 13.8229L2.20461 11.8348H3.3407V13.2549H3.24603Z" fill="#505062"/>
                                     </svg>
@@ -218,7 +227,7 @@ export function renderSumary(dataBooking, listDataService) {
                                   ${
                                     owner.id !== userBooking.id
                                       ? `
-                                      <button class="delete-sumary">
+                                      <button id="delete-sumary-1" class="delete-sumary third" data-id=${userBooking.id}>
                                           <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
                                           <path d="M14.8359 10.7598V17.7598M10.8359 10.7598V17.7598M6.83594 6.75977V18.5598C6.83594 19.6799 6.83594 20.2395 7.05392 20.6674C7.24567 21.0437 7.55141 21.3502 7.92773 21.542C8.35514 21.7598 8.91493 21.7598 10.0328 21.7598H15.639C16.7569 21.7598 17.3159 21.7598 17.7433 21.542C18.1197 21.3502 18.4264 21.0437 18.6182 20.6674C18.8359 20.24 18.8359 19.6808 18.8359 18.5629V6.75977M6.83594 6.75977H8.83594M6.83594 6.75977H4.83594M8.83594 6.75977H16.8359M8.83594 6.75977C8.83594 5.82788 8.83594 5.36217 8.98818 4.99463C9.19117 4.50457 9.58026 4.11499 10.0703 3.91201C10.4379 3.75977 10.9041 3.75977 11.8359 3.75977H13.8359C14.7678 3.75977 15.2338 3.75977 15.6013 3.91201C16.0914 4.11499 16.4806 4.50457 16.6836 4.99463C16.8358 5.36217 16.8359 5.82788 16.8359 6.75977M16.8359 6.75977H18.8359M18.8359 6.75977H20.8359" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                                           </svg>
@@ -509,37 +518,6 @@ $(document).ready(async function () {
     // set lại store
     salonStore.setState({ ...store, dataBooking: { ...dataBooking } });
     Cart();
-    renderSumary(dataBooking, listDataService);
-  });
-
-  $(document).on("click", ".btn-remove-addon", function () {
-    const addonId = $(this).closest(".wrap-item-addon").data("addon-id");
-    const instanceId = $(this)
-      .closest(".wrap-item-addon")
-      .data("service-instance-id");
-
-    const store = salonStore.getState();
-    const dataBooking = store.dataBooking;
-    const listDataService = store.dataServices;
-
-    // tìm user đang chọn
-    const user = dataBooking.users.find((u) => u.isChoosing);
-    if (!user) return;
-
-    // cập nhật optionals trong user đó
-    user.services.forEach((cate) => {
-      cate.itemService.forEach((srv) => {
-        if (instanceId == "undefined" || srv.serviceInstanceId === instanceId) {
-          srv.optionals = srv.optionals.filter(
-            (opt) => String(opt.id) !== String(addonId)
-          );
-        }
-      });
-    });
-    // set lại state
-    salonStore.setState({ ...store, dataBooking: { ...dataBooking } });
-
-    Cart(); // render lại giỏ
     renderSumary(dataBooking, listDataService);
   });
 
@@ -1177,5 +1155,85 @@ $(document).ready(async function () {
   });
   $(document).on("input", "#note-ticket", function () {
     const $this = $(this);
+  });
+  $(document).on("click", "#edit-sumary-1", async function () {
+    const $this = $(this);
+    const idUserEdit = $this.data("id");
+    const store = salonStore.getState();
+    const dataBooking = store.dataBooking;
+    const userCur = dataBooking.users.find((u) => u.isChoosing);
+    userCur.isChoosing = false;
+
+    const userEdit = dataBooking.users.find((u) => u.id == idUserEdit);
+    userEdit.isChoosing = true;
+
+    salonStore.setState((prev) => ({
+      ...prev,
+      dataBooking,
+    }));
+    const flow = store.flow;
+
+    if (flow === SelecteFlow.SER) {
+      await ScreenChooseService(); // append screen choose service
+
+      const store = salonStore.getState();
+      salonStore.setState({
+        ...store,
+        pageCurrent: PageCurrent.CHOOSE_SERVICE,
+      });
+    } else if (flow === SelecteFlow.TECH) {
+      await ScreenChooseTech();
+      const store = salonStore.getState();
+      salonStore.setState({
+        ...store,
+        pageCurrent: PageCurrent.CHOOSE_TECH,
+      });
+    }
+  });
+  $(document).on("click", "#delete-sumary-1", function () {
+    const $this = $(this);
+    const store = salonStore.getState();
+    const dataBooking = [...store.dataBooking.users];
+    const owner = dataBooking[0]; // luôn tồn tại
+
+    const idDelete = $this.data("id");
+
+    // tìm vị trí user bị xoá
+    const idxDelete = dataBooking.findIndex((u) => u.id === idDelete);
+    if (idxDelete === -1) return; // không tìm thấy
+
+    const userDelete = dataBooking[idxDelete];
+
+    // xoá user đó (ngoại trừ owner)
+    if (idDelete !== owner.id) {
+      dataBooking.splice(idxDelete, 1);
+    }
+
+    // nếu userDelete đang được chọn
+    if (userDelete.isChoosing) {
+      // gán userChoosing cho user phía trước
+      const idxNew = Math.max(idxDelete - 1, 0);
+      dataBooking[idxNew].isChoosing = true;
+
+      // xoá flag ở những user khác
+      dataBooking.forEach((u, i) => {
+        if (i !== idxNew) u.isChoosing = false;
+      });
+    }
+
+    salonStore.setState((prev) => ({
+      ...prev,
+      dataBooking: {
+        ...prev.dataBooking,
+        users: dataBooking,
+      },
+    }));
+
+    // render lại summary ở đây
+    const newStore = salonStore.getState();
+
+    const listDataService = newStore.dataServices;
+    const newDataBooking = newStore.dataBooking;
+    renderSumary(newDataBooking, listDataService);
   });
 });

@@ -156,8 +156,9 @@
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background: var(--bs-main);
-  color: #fff;
+  background: white;
+  color: var(--color-img);
+  background-color: var(--bg-img);
   font-weight: bold;
   font-size: 30px;
   display: flex;

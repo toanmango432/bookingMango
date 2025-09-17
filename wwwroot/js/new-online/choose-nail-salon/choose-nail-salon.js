@@ -177,7 +177,6 @@ $(document).ready(async function () {
   $(document).on("click", ".item-salon", async function () {
     await salonStore.getState().getAllSalon();
     const store = salonStore.getState();
-    console.log("store: ", store);
     let allSalon = store.allSalon;
 
     const $this = $(this);

@@ -110,6 +110,8 @@ export function renderFooterTech_PageChooseOnlyTech() {
   return $wrapDirBtn;
 }
 function renderFirstTechAvailable(tech, isSelected) {
+  console.log("tech: ", tech);
+
   const firstChar = tech?.nickName?.charAt(0)?.toUpperCase() || "?";
 
   return `
@@ -119,7 +121,9 @@ function renderFirstTechAvailable(tech, isSelected) {
       <span class="icon-checked ${isSelected ? "selected" : ""}">
         <i class="fa-solid fa-check"></i>
       </span>
-      <div class="wrap-image">
+      <div
+        class="wrap-image"
+      >
         <img
           src="${tech?.imageFileName}"
           alt="${tech.nickName}"
@@ -167,6 +171,8 @@ function renderItemTech(staff) {
   );
 
   const firstChar = staff?.nickName?.charAt(0)?.toUpperCase() || "?";
+  const color = staff.color === "#FFFFFF" ? "#505050" : staff.color;
+
   return `
     <div
       class="item-tech item-tech-ctpage staff ${isStaff ? "selected" : ""}"
@@ -176,7 +182,10 @@ function renderItemTech(staff) {
       <span class="icon-checked ${isStaff ? "selected" : ""}"">
         <i class="fa-solid fa-check"></i>
       </span>
-      <div class="wrap-image">
+      <div
+        class="wrap-image"
+        style="--color-img: ${color}; --bg-img: ${color + "20"}"
+      >
         <img
           src="${staff.imageFileName}"
           alt="${staff.nickName}"

@@ -96,6 +96,8 @@ export async function renderCalendar(
     if (!isPast && !nonWorking) {
       day.addEventListener("click", async () => {
         selectedDate = new Date(currentYear, currentMonth, date);
+        const store = salonStore.getState();
+        const dataBooking = store.dataBooking;
 
         document
           .querySelectorAll(".day")
@@ -170,15 +172,12 @@ export async function buildSlotTimeMultiTechFromBooking({
     if (!dataBooking) return null;
 
     const userChoosing = dataBooking.users.find((u) => u.isChoosing === true);
-    console.log("userChoosing: ", userChoosing);
     if (!userChoosing) return null;
 
     // 1) Tính tổng duration per tech từ dataBooking
     const durationsMap = {}; // { [empId]: totalDuration }
     for (const cate of userChoosing.services || []) {
-      console.log("Service: ", cate);
       for (const item of cate.itemService || []) {
-        console.log("item: ", item);
         const emp = item.selectedStaff && item.selectedStaff.employeeID;
         if (!emp) continue;
         const base =
@@ -280,9 +279,8 @@ export function renderFooterChooseTime() {
   const dataBooking = store.dataBooking;
   const user = dataBooking.users.find((u) => u.isChoosing);
   // đã chọn service mới được phép next
-  const isNext = user.services.some((srv) => {
-    return srv.itemService.length > 0;
-  });
+  console.log("user: ", user);
+  const isNext = user.selectedTimeSlot ? true : false;
 
   const $wrapDirBtn = `
     <div class="wrap-dir-btn">
@@ -415,7 +413,7 @@ export function renderTimeSlotsForDate(dataBooking) {
     else groupName = "evening";
 
     let div = `
-    <div class="time-slot ${isActive ? "active" : ""}">
+    <div class="time-slot-1 ${isActive ? "active" : ""}">
       <span id="time-val">${cleanSlot}</span>
       <span>${getAMPM(slot)}</span>
       <div class="circle">
@@ -468,19 +466,20 @@ export function renderTimeSlotsForDate(dataBooking) {
   container.append(renderGroup("evening", "Evening", groups.evening));
 
   // click handler
-  container.off("click", ".time-slot");
+  container.off("click", ".time-slot-1.active");
 
   // mark selected slot nếu user đã chọn
   const user = dataBooking.users.find((u) => u.isChoosing);
   if (user && user.selectedTimeSlot) {
-    const match = container.find(".time-slot").filter(function () {
+    const match = container.find(".time-slot-1.active").filter(function () {
       return (
         $(this).find("span").first().text().trim() ===
         removeAmPm(user.selectedTimeSlot)
       );
     });
+    console.log("here: ", match);
     if (match.length) {
-      container.find(".time-slot").removeClass("selected");
+      container.find(".time-slot-1.active").removeClass("selected");
       match.first().addClass("selected");
     }
   }
@@ -791,8 +790,13 @@ $(document).ready(async function () {
     await ChooseTechForServices();
   });
 
-  $(document).on("click", ".time-slot", function () {
+  $(document).on("click", ".time-slot-1.active", function () {
     const $this = $(this);
+    const $wrap = $this.closest("#timeSlotsContainer");
+
+    // UI update ngay lập tức
+    $wrap.find(".time-slot-1.selected").removeClass("selected");
+    $this.addClass("selected");
     const valTime = $this.find("#time-val").text().trim();
 
     const store = salonStore.getState();
@@ -801,11 +805,44 @@ $(document).ready(async function () {
 
     user.selectedTimeSlot = valTime;
     salonStore.setState({ ...store, dataBooking });
+
+    // render lại footer
+    renderFooterChooseTime();
   });
 
   // popup verify user
 
   $(document).on("click", "#btn-next-choose-time", async function () {
+    const $this = $(this);
+
+    const store = salonStore.getState();
+    const dataBooking = store.dataBooking;
+    const userChoosing = dataBooking.users.find((u) => u.isChoosing);
+    if (!userChoosing.selectedTimeSlot) return;
+
+    // GUEST
+    const userHavePhone = dataBooking.users.find(
+      (u) => u.phoneNumber || u.email
+    );
+    const phoneEmailOrNull =
+      userHavePhone?.phoneNumber || userHavePhone?.email || "";
+    const htmlVerifyEmailPhone =
+      renderVerifyEmailPhoneContent(phoneEmailOrNull);
+    let height = 620;
+    let width = 560;
+    if (isMobile) {
+      height = 620;
+      width = "100%";
+    }
+    // const persistent = true;
+    const html = renderBasePopup(htmlVerifyEmailPhone, false, height, width);
+    $wrapNewOnline.append(html);
+    setTimeout(() => {
+      $(".overlay-screen").addClass("show");
+    }, 10);
+  });
+
+  $(document).on("click", ".btn-back-policies-1", function () {
     const store = salonStore.getState();
     const dataBooking = store.dataBooking;
     // GUEST
@@ -828,6 +865,27 @@ $(document).ready(async function () {
     setTimeout(() => {
       $(".overlay-screen").addClass("show");
     }, 10);
+  });
+
+  // back select payment
+  $(document).on("click", ".btn-back-payment-1", function () {
+    const policySetting = salonStore.getState().policySetting;
+
+    const htmlPoliciesForm = renderPoliciesForm(policySetting);
+    let height = 768;
+    let width = 886;
+    if (isMobile) {
+      height = 700;
+      width = "100%";
+    }
+    const persistent = true;
+    const html = renderBasePopup(htmlPoliciesForm, persistent, height, width);
+
+    $wrapNewOnline.append(html);
+    setTimeout(() => {
+      $(".overlay-screen").addClass("show");
+    }, 10);
+    // settime close
   });
 
   // Xử lý onChange input appointment-input
@@ -877,7 +935,23 @@ $(document).ready(async function () {
     }
 
     // clear input #appointment-input
-    $(document).on("click", ".clear-icon", function () {
+    $(document).on("click", ".clear-icon", function (e) {
+      const $btn = $(this);
+
+      // tạo span ripple
+      const $ripple = $("<span class='ripple'></span>");
+      const x = e.offsetX;
+      const y = e.offsetY;
+      $ripple.css({ top: y, left: x });
+
+      $btn.append($ripple);
+
+      // remove sau animation
+      setTimeout(() => {
+        $ripple.remove();
+      }, 600);
+
+      // logic clear input
       const $inputAppt = $("#appointment-input");
       $inputAppt.val("");
       clearInputError($inputAppt);

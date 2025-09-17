@@ -87,7 +87,7 @@
   font: normal normal 600 var(--s-16);
 }
 
-.time-slot {
+.time-slot-1 {
   position: relative;
   display: flex;
   padding: 14px 12px;
@@ -100,40 +100,36 @@
   cursor: not-allowed;
   transition: all 0.3s ease;
 }
-.time-slot.active {
+.time-slot-1.active {
   background: var(--Gray-Neutral-100, #fff);
   border: 1px solid var(--Gray-Neutral-90, #e5e5e5);
   background: var(--White, #fff);
   cursor: pointer;
 }
 
-.time-slot.active.selected .best-fit-text {
+.time-slot-1.active.selected .best-fit-text {
   display: none;
 }
-.time-slot.active.selected .circle {
+.time-slot-1.active.selected .circle {
   display: flex;
 }
 
-.time-slot.active:hover {
+.time-slot-1.active:hover {
   border: 1px solid var(--bs-main);
 }
-.time-slot span:first-child {
+.time-slot-1 span:first-child {
   font: normal normal 500 var(--s-15);
 }
-.time-slot span {
+.time-slot-1 span {
   font: normal normal 400 var(--s-15);
 }
-.time-slot.active.selected {
+.time-slot-1.active.selected {
   background: var(--bs-main);
   color: white;
   border: 1px solid var(--bs-main);
 }
 
-.time-slot.selected {
-  background-color: #d8e3dc;
-}
-
-.time-slot .circle {
+.time-slot-1 .circle {
   width: 21px;
   height: 21px;
   border: 2px solid var(--bs-main);
@@ -151,7 +147,7 @@
 }
 
 /* Dot bên trong khi selected */
-.time-slot.selected .circle .dot {
+.time-slot-1.selected .circle .dot {
   width: var(--px-12); /* 20 - 2*border - 2*padding = ~12 */
   height: var(--px-12);
   background-color: var(--bs-main);
@@ -162,8 +158,8 @@
 }
 
 /* Optional: smooth transition */
-.time-slot .circle,
-.time-slot .dot {
+.time-slot-1 .circle,
+.time-slot-1 .dot {
   transition: all 0.2s ease;
 }
 
@@ -409,13 +405,24 @@
   align-self: stretch;
 }
 .clear-icon {
+  height: 28px;
+  width: 28px;
   position: absolute;
-  right: var(--px-20);
-  top: 27px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  right: var(--px-24);
+  top: 25.5px;
   transform: translateY(-50%);
   cursor: pointer;
   color: #666;
   font-size: var(--px-14);
+  transition: all 0.3s ease;
+}
+.clear-icon:hover {
+  color: var(--bs-main);
+  border-radius: 100%;
+  border: 1px solid var(--bs-main);
 }
 
 .btn-back-emailPhone {
@@ -478,12 +485,12 @@
   font: normal normal 600 var(--s-20);
 }
 .btn-next-emailPhone-1 {
+  width: 50%;
   display: flex;
   padding: var(--px-12) var(--px-24);
   justify-content: center;
   align-items: flex-start;
   gap: var(--px-4);
-  flex: 1 0 0;
   border-radius: var(--px-12);
   border: 1px solid var(--bs-main);
   background: var(--bs-main, #0c7e2d);
@@ -939,29 +946,6 @@
   /* gap: 52px; */
   align-items: center;
 }
-.title-header-sumary {
-}
-.sub-time-sumary {
-}
-.wrap-list-sumary {
-  width: 100%;
-  display: flex;
-  gap: var(--px-24);
-  flex-wrap: wrap;
-  padding: var(--px-12) var(--px-24);
-}
-.item-sumary {
-  width: 49%;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  border-radius: var(--px-12);
-  border: 1px solid var(--Templates-1-Grey-Normal-500, #e6e6e6);
-  background: url(<path-to-image>) lightgray 50% / cover no-repeat, #fff;
-}
-.wrap-list-sumary > .item-sumary:only-child {
-  width: 100%;
-}
 
 .top-item-sumary {
   width: 100%;
@@ -1160,20 +1144,22 @@
 }
 
 .btn-skip-verify {
+  width: 50%;
   display: flex;
-  width: 196.333px;
-  height: 44px;
-  padding: 12px 16px;
+  padding: var(--px-12) var(--px-24);
   justify-content: center;
-  align-items: center;
-  border-radius: 8px;
-  background: var(--Pink-60, #ff538a);
+  align-items: flex-start;
+  gap: var(--px-4);
+  border-radius: var(--px-12);
+  background-color: transparent;
+  font: normal normal 600 var(--s-20);
   border: none;
-  color: white;
-  font: normal normal 600 var(--s-16);
+  color: #ff538a;
+  transition: all 0.3 ease;
 }
 .btn-skip-verify:hover {
   filter: brightness(0.95);
+  border: 1px solid #ff538a;
 }
 
 /* start css form register user */
@@ -1333,15 +1319,6 @@
   align-items: center;
   gap: var(--px-8);
   align-self: stretch;
-}
-.clear-icon {
-  position: absolute;
-  right: var(--px-20);
-  top: 27px;
-  transform: translateY(-50%);
-  cursor: pointer;
-  color: #666;
-  font-size: var(--px-14);
 }
 /* Bổ sung navigate register */
 .register-nav {

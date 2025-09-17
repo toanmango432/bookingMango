@@ -208,6 +208,8 @@ import {
 import { renderListPeTech_PageChooseServiceTech } from "../screen-choose-sertech/choose-service-for-tech/choose-service-for-tech.js";
 import { renderServices_PageChooseServiceTech } from "../screen-choose-sertech/choose-service-for-tech/choose-service-for-tech.js";
 import { ChooseTechForEachServices } from "../screen-choose-sertech/choose-tech-for-each-service/choose-tech-for-each-service.js";
+import { renderSumary } from "../summary/summary.js";
+
 $(document).ready(async function () {
   // Toggle giỏ hàng
   $(document).on("click", ".cart button", function (e) {
@@ -277,6 +279,14 @@ $(document).ready(async function () {
       const id = $(".item-ftcate.active").data("id");
       const cate = dataService.find((c) => c.item.id === id);
       renderServices_PageChooseServiceTech(cate?.item.listItem || []);
+    } else if (pageCurrent === PageCurrent.SUMMARY) {
+      console.log("hehre");
+      const store = salonStore.getState();
+      const databooking = store.dataBooking;
+      const dataServices = store.dataServices;
+
+      renderSumary(databooking, dataServices);
+      Cart(true);
     }
   });
 
@@ -326,6 +336,38 @@ $(document).ready(async function () {
       const id = $(".item-ftcate.active").data("id");
       const cate = dataServices.find((c) => c.item.id === id);
       renderServices_PageChooseServiceTech(cate?.item.listItem || []);
+    } else if (pageCurrent === PageCurrent.SUMMARY) {
+      const addonId = $(this).closest(".wrap-item-addon").data("addon-id");
+      const instanceId = $(this)
+        .closest(".wrap-item-addon")
+        .data("service-instance-id");
+
+      const store = salonStore.getState();
+      const dataBooking = store.dataBooking;
+      const listDataService = store.dataServices;
+
+      // tìm user đang chọn
+      const user = dataBooking.users.find((u) => u.isChoosing);
+      if (!user) return;
+
+      // cập nhật optionals trong user đó
+      user.services.forEach((cate) => {
+        cate.itemService.forEach((srv) => {
+          if (
+            instanceId == "undefined" ||
+            srv.serviceInstanceId === instanceId
+          ) {
+            srv.optionals = srv.optionals.filter(
+              (opt) => String(opt.id) !== String(addonId)
+            );
+          }
+        });
+      });
+      // set lại state
+      salonStore.setState({ ...store, dataBooking: { ...dataBooking } });
+
+      Cart(); // render lại giỏ
+      renderSumary(dataBooking, listDataService);
     }
   });
 

@@ -488,6 +488,7 @@ import {
   renderListPeTech_PageChooseServiceTech,
   renderServices_PageChooseServiceTech,
 } from "./choose-service-for-tech/choose-service-for-tech.js";
+import { renderSumary } from "../summary/summary.js";
 
 // hanle event
 $(document).ready(async function () {
@@ -706,7 +707,18 @@ $(document).ready(async function () {
       renderListPeTech_PageChooseServiceTech();
 
       // Load lại cart khi đang chỉ chọn add on hoặc đang có mở cart
-      // đang mở cart
+      const $cartActive = $(".content-cart.addon-pan");
+      if ($cartActive.length) {
+        Cart(true, true);
+      } else {
+        Cart();
+      }
+    } else if (pageCurrent === PageCurrent.SUMMARY) {
+      const store = salonStore.getState();
+      const dataBooking = store.dataBooking;
+      const dataServices = store.dataServices;
+      renderSumary(dataBooking, dataServices);
+      // Load lại cart khi đang chỉ chọn add on hoặc đang có mở cart
       const $cartActive = $(".content-cart.addon-pan");
       if ($cartActive.length) {
         Cart(true, true);

@@ -20,6 +20,7 @@ function renderFooterTech_PageChooseTech() {
   return $wrapDirBtn;
 }
 function renderFirstTechAvailable(tech) {
+  console.log("tech: ", tech);
   const store = salonStore.getState();
   const chooseStaffBefore = store.chooseStaffBefore || [];
   const isSelected = chooseStaffBefore.includes(tech.employeeID);
@@ -76,7 +77,7 @@ function renderItemTech(staff) {
 
   const isStaff = chooseStaffBefore.includes(staff.employeeID);
   const firstChar = staff?.nickName?.charAt(0)?.toUpperCase() || "?";
-
+  const color = staff.color === "#FFFFFF" ? "#505050" : staff.color;
   return `
     <div
       class="item-tech item-tech-sctpage staff ${isStaff ? "selected" : ""}"
@@ -86,7 +87,10 @@ function renderItemTech(staff) {
       <span class="icon-checked ${isStaff ? "selected" : ""}"">
         <i class="fa-solid fa-check"></i>
       </span>
-      <div class="wrap-image">
+      <div
+        class="wrap-image"
+        style="--color-img: ${color}; --bg-img: ${color + "20"}"
+      >
         <img
           src="${staff.imageFileName}"
           alt="${staff.nickName}"

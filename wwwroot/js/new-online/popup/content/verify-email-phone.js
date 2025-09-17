@@ -3,8 +3,10 @@ export function renderVerifyEmailPhoneContent(emailOrPhone, colorPrimary) {
   const store = salonStore.getState();
   const dataBooking = store.dataBooking;
   const owner = dataBooking.users[0];
-  const isSkipVerify = owner.phoneNumber ? true : false;
+  const cardChoosing = dataBooking.cardNumber.find((card) => card.isChoosing);
 
+  const isSkipVerify =
+    (owner.phoneNumber || owner.email) && cardChoosing ? true : false;
   return `
         <div class="popup-wrap-verify-emailPhone"
           style="
@@ -16,7 +18,7 @@ export function renderVerifyEmailPhoneContent(emailOrPhone, colorPrimary) {
           </div>
           <div class="container-verify-emailPhone">
             <input type="text" id="appointment-input" class="appointment-input" value="${
-              emailOrPhone ? emailOrPhone : ""
+              emailOrPhone ? formatPhoneNumber(emailOrPhone) : ""
             }" placeholder="Enter phone number or email">
             <span class="clear-icon">
               <i class="fa-solid fa-arrow-left"></i>
@@ -40,23 +42,21 @@ export function renderVerifyEmailPhoneContent(emailOrPhone, colorPrimary) {
             <label for="consent-checkbox">Input your number to consent to HANG NAILS & SPA SMS messages. Opt out with Stop</label>
           </div>
           <div class="button-container">
-            <button class="btn-back-emailPhone-1">Back</button>
+          ${
+            isSkipVerify
+              ? `<button id="skip-verify" class="btn-skip-verify">Skip verify</button>`
+              : ``
+          }
             <button class="btn-next-emailPhone-1" ${
               emailOrPhone ? "" : "disabled"
             }>Next</button>
-          </div>
-          <div class="btn-skip">
-            ${
-              isSkipVerify
-                ? `<button id="skip-verify" class="btn-skip-verify">Skip verify</button>`
-                : ``
-            }
           </div>
         </div>
       `;
 }
 import { salonStore } from "../../../store/new-online-store.js";
 import { renderSumary } from "../../summary/summary.js";
+import { formatPhoneNumber } from "../../../helper/format-phone.js";
 $(document).ready(async function () {
   $(document).on("click", "#skip-verify", async function () {
     const store = salonStore.getState();
@@ -65,7 +65,9 @@ $(document).ready(async function () {
     const listDataService = store.dataServices;
 
     // check lại cho phép skip
-    const isSkipVerify = owner.phoneNumber ? true : false;
+    const cardChoosing = dataBooking.cardNumber.find((card) => card.isChoosing);
+    const isSkipVerify =
+      (owner.phoneNumber || owner.email) && cardChoosing ? true : false;
     if (!isSkipVerify) return;
     renderSumary(dataBooking, listDataService);
   });

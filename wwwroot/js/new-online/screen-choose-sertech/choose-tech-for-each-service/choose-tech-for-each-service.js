@@ -43,6 +43,8 @@ export function renderFooterFor_PageChooseEachTech() {
   return $wrapDirBtn;
 }
 function renderFirstTechAvailable(tech, isSelected) {
+  console.log("tech: ", tech);
+
   const firstChar = tech?.nickName?.charAt(0)?.toUpperCase() || "?";
 
   return `
@@ -52,7 +54,9 @@ function renderFirstTechAvailable(tech, isSelected) {
       <span class="icon-checked ${isSelected ? "selected" : ""}">
         <i class="fa-solid fa-check"></i>
       </span>
-      <div class="wrap-image">
+      <div
+        class="wrap-image"
+      >
         <img
           src="${tech?.imageFileName}"
           alt="${tech.nickName}"
@@ -105,6 +109,8 @@ export function renderItemTech_PageChoseEachSer(staff) {
   const isStaff = srv?.selectedStaff?.employeeID === staff.employeeID;
 
   const firstChar = staff?.nickName?.charAt(0)?.toUpperCase() || "?";
+  const color = staff.color === "#FFFFFF" ? "#505050" : staff.color;
+
   return `
     <div
       class="item-petech item-tech-pepage staff ${isStaff ? "selected" : ""}"
@@ -114,7 +120,9 @@ export function renderItemTech_PageChoseEachSer(staff) {
       <span class="icon-checked ${isStaff ? "selected" : ""}"">
         <i class="fa-solid fa-check"></i>
       </span>
-      <div class="wrap-image">
+      <div class="wrap-image"
+        style="--color-img: ${color}; --bg-img: ${color + "20"}"
+      >
         <img
           src="${staff.imageFileName}"
           alt="${staff.nickName}"
