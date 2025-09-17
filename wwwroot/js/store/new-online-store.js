@@ -13,6 +13,12 @@ export const salonStore = {
   async load() {
     if (this._state) return this._state;
     let RVCNo = 336; // khởi tạo lần đầu
+    const path = window.location.pathname;
+    const parts = path.split("/");
+    const lastPart = parts[parts.length - 1];
+    if (lastPart && !isNaN(lastPart)) {
+      RVCNo = Number(lastPart);
+    }
     let selectedDate = new Date();
     let currentMonth = selectedDate.getMonth();
     let currentYear = selectedDate.getFullYear();
