@@ -29,7 +29,7 @@ function listSalon(group) {
 
                             </div>
                             <div class="salon-address">
-                                <h1 class="text-uppercase">${item?.storeName}</h1>
+                                <h1 class="text-uppercase text-storename">${item?.storeName}</h1>
                                 <div class="address">
                                     <span class="icon-address">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">

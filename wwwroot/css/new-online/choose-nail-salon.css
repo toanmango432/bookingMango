@@ -33,7 +33,7 @@
   padding: 20px;
   flex-direction: column;
   align-items: flex-end;
-  gap: 32px;
+  justify-content: space-between;
   flex-shrink: 0;
   border-radius: 12px;
   cursor: pointer;
@@ -41,6 +41,16 @@
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.15);
   border: 1px solid #c9c9c9;
   transition: border 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+.text-storename {
+  display: -webkit-box; /* cần cho -webkit-line-clamp */
+  -webkit-box-orient: vertical; /* cần cho -webkit-line-clamp */
+  -webkit-line-clamp: 3; /* số dòng tối đa */
+  overflow: hidden; /* ẩn phần dư và show ellipsis */
+  text-overflow: ellipsis; /* tốt để có ellipsis (chủ yếu 1 dòng nhưng vẫn hữu ích) */
+  /* tuỳ chọn hiển diện */
+  line-height: 1.3; /* thiết lập line-height rõ ràng */
+  max-height: calc(1.3em * 3); /* bảo đảm chiều cao khớp (tùy browser) */
 }
 
 .item-salon:hover {
