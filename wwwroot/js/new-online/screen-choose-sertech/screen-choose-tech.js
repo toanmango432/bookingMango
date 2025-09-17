@@ -280,7 +280,11 @@ $(document).ready(async function () {
 
     // render lại staff với trạng thái selected mới
     // lấy staff object tương ứng
-    const staff = store.listStaffUser.find((s) => s.employeeID === staffId);
+    const listStaff =
+      store.listStaffUser?.length > 0
+        ? store.listStaffUser
+        : await store.getListUserStaff();
+    const staff = listStaff.find((s) => s.employeeID === staffId);
     if (staff) {
       const newHtml = renderItemTech(staff);
       // replace DOM của staff này thôi

@@ -1067,6 +1067,8 @@ $(document).ready(async function () {
           closePopupContainerTemplate();
           // Reload dataBooking và back lại flow đã chọn
           const flowCur = store.flow;
+          salonStore.resetDataBooking();
+
           if (flowCur === SelecteFlow.SER) {
             await ScreenChooseService();
           } else {
@@ -1254,7 +1256,7 @@ $(document).ready(async function () {
       await ScreenChooseTech();
       pageNext = PageCurrent.CHOOSE_TECH;
     }
-
+    salonStore.resetDataBooking();
     salonStore.setState((prev) => ({
       ...prev,
       pageCurrent: pageNext,
