@@ -176,3 +176,12 @@
   justify-content: center;
   text-transform: uppercase;
 }
+
+@media (max-width: 768px) {
+  .list-salon {
+    padding: 20px;
+  }
+  .item-salon {
+    width: 100%;
+  }
+}

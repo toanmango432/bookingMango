@@ -107,3 +107,29 @@
 .item-sertech .text {
   font: normal normal 600 var(--s-14);
 }
+
+@media (max-width: 768px) {
+  .wrap-service-or-tech .wrap-content-sertech {
+    justify-content: flex-start;
+    padding: 16px;
+  }
+  .content-sertech {
+    width: 100%;
+    background-color: transparent;
+    padding: 0px;
+  }
+  .list-sertech {
+    width: 100%;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .title-sertech h3 {
+    text-align: center;
+  }
+  .title-sertech {
+    padding: 10px 0px;
+  }
+  .item-sertech {
+    width: 100%;
+  }
+}

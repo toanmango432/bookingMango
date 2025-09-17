@@ -6,6 +6,8 @@ export function Cart(isOpen = false, isAddOn = false) {
   const flowCur = store.flow;
   let totalCash = 0;
   let totalCard = 0;
+
+  const isMobile = $(window).width() <= 768;
   const userHtml = user.services
     .map((cate) =>
       cate.itemService
@@ -181,10 +183,15 @@ export function Cart(isOpen = false, isAddOn = false) {
     </div>
   `;
   $(".content-choose-sertech .overlay-nav-cart").remove(); // xoá trước khi append mới
-
-  requestAnimationFrame(() => {
-    $(".content-choose-sertech").append(htmlCart);
-  });
+  if (isMobile) {
+    requestAnimationFrame(() => {
+      $(".header-sertech").append(htmlCart);
+    });
+  } else {
+    requestAnimationFrame(() => {
+      $(".content-choose-sertech").append(htmlCart);
+    });
+  }
 }
 
 // import store

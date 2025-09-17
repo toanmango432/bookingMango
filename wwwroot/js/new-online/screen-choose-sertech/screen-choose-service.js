@@ -85,6 +85,7 @@ export async function ScreenChooseService() {
   const dataBooking = store.dataBooking;
   const user = dataBooking.users.find((u) => u.isChoosing);
 
+  const isMobile = $(window).width() <= 768;
   const salonChoosing = store.salonChoosing;
   let dataService = await store.getListDataService();
 
@@ -123,11 +124,15 @@ export async function ScreenChooseService() {
                               <path d="M12.1648 7.38766L13.2748 6.2636C12.3983 5.14888 11.7267 4.83289 11.3755 4.95156C9.15854 5.70079 8.76585 8.21291 8.74778 8.3016C8.6055 9 8.37724 11.8121 8.58767 12.7377C9.23862 15.601 14.1562 15.7945 14.4134 12.4149L14.3606 9.38807C13.8269 10.7374 13.6333 10.9309 13.2116 11.1111C11.3358 11.624 10.4727 9.87579 10.4366 9.24236C10.3593 7.88647 11.5396 7.79982 12.1648 7.38766Z" stroke="white" stroke-width="0.1"/>
                               <path d="M15.0875 12.7377C13.3642 17.6544 8.2904 15.6799 7.79359 12.6812C7.78663 12.6391 7.53951 12.9187 7.37227 14.2629C7.35493 14.4023 7.22157 20.7805 7.37227 21.5302C7.52296 22.2799 8.13672 22.4865 8.30154 22.4865C8.55859 22.4865 14.0692 22.5174 14.5113 22.4865C15.383 22.3672 15.4922 21.8281 15.5251 21.5302C15.5492 21.3113 15.6114 17.0921 15.5469 15.0078C15.5469 13.9688 15.125 12.6875 15.0875 12.7377Z" stroke="white" stroke-width="0.1"/>
                             </svg>
-                            SERVICE - I want to pick a services
+                            SERVICE ${
+                              !isMobile ? "- I want to pick a services" : ""
+                            }
                         </button>
                         <button id="flow-tech" class="btn-service" data-type="staff">
                             <i class="fa-solid fa-user-plus"></i>
-                            STAFF - I want to pick a technician
+                            STAFF ${
+                              !isMobile ? "- I want to pick a technician" : ""
+                            }
                         </button>
                     </div>
                 </div>
@@ -143,9 +148,13 @@ export async function ScreenChooseService() {
                         </div>
                     </div>
 
-                    <div class="wrap-search-ser">
-                        <input type="text" class="input-search-ser" placeholder="Search by name..."/>
-                        <button class="btn-search-toggle"><i class="fa-solid fa-magnifying-glass"></i></button>
+                    <div class="wrap-search-ser ${isMobile ? "active" : ""}">
+                        <input type="text" class="input-search-ser ${
+                          isMobile ? "active" : ""
+                        }" placeholder="Search by name..."/>
+                        <button class="btn-search-toggle ${
+                          isMobile ? "active" : ""
+                        }"><i class="fa-solid fa-magnifying-glass"></i></button>
                     </div>
                 </div>
 

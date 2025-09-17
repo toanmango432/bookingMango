@@ -48,7 +48,7 @@ function renderFirstTechAvailable(tech) {
           ${tech.nickName}
         </h2>
         <span class="sub-avail">
-          for maximun availability
+          for maximum availability
         </span>
         <span class="recommended-tech">
           <svg xmlns="http://www.w3.org/2000/svg" width="15" height="14" viewBox="0 0 15 14" fill="none">

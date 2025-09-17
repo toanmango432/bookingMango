@@ -74,8 +74,8 @@ export function initSliderFromElement(
 
   function updateButtons() {
     const maxOffset = track.scrollWidth - visibleWidth;
-    prevBtn.style.display = currentOffset <= 0 ? "none" : "block";
-    nextBtn.style.display = currentOffset >= maxOffset ? "none" : "block";
+    prevBtn.style.display = currentOffset <= 0 ? "none" : "flex";
+    nextBtn.style.display = currentOffset >= maxOffset ? "none" : "flex";
   }
 
   function moveSlider(direction) {

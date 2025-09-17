@@ -345,3 +345,18 @@
   flex-shrink: 0;
   margin-right: 8px;
 }
+
+@media (max-width: 768px) {
+  .wrap-cart .cart {
+    top: 16px;
+  }
+  .overlay-nav-cart {
+    z-index: 0;
+  }
+  .wrap-cart .content-cart {
+    width: 320px;
+  }
+  .overlay-nav-cart.open .cart {
+    right: 320px;
+  }
+}

@@ -35,6 +35,7 @@
 .header-sertech {
   height: 72px;
   display: flex;
+  flex-shrink: 0;
   width: 100%;
   justify-content: flex-end;
   align-items: center;
@@ -203,4 +204,32 @@
   text-overflow: ellipsis;
   max-width: 100%; /* kế thừa từ cha */
   vertical-align: bottom;
+}
+
+@media (max-width: 768px) {
+  .wrap-content-salon {
+    overflow: hidden;
+  }
+  .header-salon {
+    position: fixed;
+    top: 0px;
+    z-index: 1;
+    width: 100%;
+    border-radius: 0px;
+  }
+  .content-salon {
+    margin-top: 72px;
+  }
+  .item-salon {
+    width: 100%;
+  }
+  .header-sertech {
+    justify-content: flex-start;
+  }
+  .header-sertech .content {
+    margin-left: 20px;
+  }
+  .wrap-service-or-tech .wrap-content-sertech {
+    padding: 16px;
+  }
 }

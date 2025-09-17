@@ -270,3 +270,11 @@
 .addon-indicator-fortech .be-addOn_card {
   color: var(--text-color-primary);
 }
+
+@media (max-width: 768px) {
+  .choose-services .desc,
+  .choose-ftservices .desc,
+  .choose-ptechs .desc {
+    font-size: 13px;
+  }
+}

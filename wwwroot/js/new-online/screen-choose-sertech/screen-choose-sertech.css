@@ -737,3 +737,53 @@
   transform: translateX(0) scale(1);
   opacity: 1;
 }
+
+@media (max-width: 768px) {
+  .btn-service {
+    padding: 8px 24px;
+  }
+  .categories-search {
+    height: fit-content;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .categories-search .categories {
+    width: 100%;
+    background: white;
+    padding: 8px 45px;
+  }
+  .wrap-dir-btn {
+    width: 100%;
+    padding: 0 24px;
+  }
+  .dir-btn-back-ser,
+  .dir-btn-back-time,
+  .dir-btn-next-ser,
+  .dir-btn-next-time {
+    width: 50%;
+  }
+  .slider-btn-categories.prev {
+    left: 6px;
+  }
+  .slider-btn-categories.next {
+    right: 6px;
+  }
+  .slider-btn-categories {
+    width: var(--px-32);
+    height: var(--px-32);
+  }
+  .wrap-search-ser {
+    width: 94%;
+    padding: 0px 8px;
+  }
+  .wrap-search-ser.active .input-search-ser {
+    width: 100%;
+    right: 0px;
+  }
+  .choose-services {
+    margin: 12px 0 6px;
+  }
+  .btn-group-service {
+    padding: 6px 0px 8px 0px;
+  }
+}
