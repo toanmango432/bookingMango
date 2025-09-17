@@ -2,7 +2,9 @@ export function Cart(isOpen = false, isAddOn = false) {
   const store = salonStore.getState();
   const dataServices = store.dataServices;
   const dataBooking = store.dataBooking;
+  console.log;
   const user = dataBooking.users.find((u) => u.isChoosing);
+  const flowCur = store.flow;
   let totalCash = 0;
   let totalCard = 0;
   const userHtml = user.services
@@ -102,7 +104,11 @@ export function Cart(isOpen = false, isAddOn = false) {
                     </div>
                   </div>
                   <div class="staff-dura">
-                    <div id="select-staff-in-cart" class="cart-staff">${staffName}</div>
+                    <div id="${
+                      flowCur === SelecteFlow.SER
+                        ? "select-service-in-cart"
+                        : ""
+                    }" class="cart-staff">${staffName}</div>
                     <div class="cart-duration">${duration} mins</div>
                   </div>
                 </div>
@@ -186,6 +192,7 @@ export function Cart(isOpen = false, isAddOn = false) {
 import { salonStore } from "../../store/new-online-store.js";
 // import constant
 import { PageCurrent } from "../../constants/new-online.js";
+import { SelecteFlow } from "../../constants/new-online.js";
 // import component
 import { renderServices } from "../screen-choose-sertech/screen-choose-service.js";
 import { renderAddonPanel } from "../screen-choose-sertech/screen-choose-service.js";
@@ -349,23 +356,7 @@ $(document).ready(async function () {
   });
 
   // Chuyển page chọn tech cho service trong cart
-  $(document).on("click", "#select-staff-in-cart", async function () {
-    const $this = $(this);
-    const store = salonStore.getState();
-    if ($this.hasClass("not-ser")) {
-      console.log("Please back to choose service!");
-      return;
-    }
-    let listStaffUser = store.listStaffUser;
-    if (!listStaffUser) {
-      listStaffUser = await store.getListUserStaff();
-    }
-    // Chuyển page chọn tech cho từng service, chỉ chọn được 1 thợ cho 1 service
-    salonStore.setState({
-      ...store,
-      pageCurrent: PageCurrent.CHOOSE_TECH_FOR_SERVICE,
-    });
-
-    await ChooseTechForEachServices();
+  $(document).on("click", "#select-service-in-cart", async function () {
+    return;
   });
 });

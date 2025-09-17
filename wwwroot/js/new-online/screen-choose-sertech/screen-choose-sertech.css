@@ -300,6 +300,7 @@
   padding: 0px 8px 8px 24px;
   overflow-y: auto;
   flex: 1 0 0;
+  padding-top: 8px;
 }
 .wrap-service-card,
 .wrap-ftservice-card {
