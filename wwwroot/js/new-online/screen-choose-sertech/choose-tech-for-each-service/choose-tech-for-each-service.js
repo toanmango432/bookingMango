@@ -43,6 +43,8 @@ export function renderFooterFor_PageChooseEachTech() {
   return $wrapDirBtn;
 }
 function renderFirstTechAvailable(tech, isSelected) {
+  const firstChar = tech?.nickName?.charAt(0)?.toUpperCase() || "?";
+
   return `
     <div class="item-petech item-tech-pepage wrap-item-petech-first ${
       isSelected ? "selected" : ""
@@ -55,6 +57,11 @@ function renderFirstTechAvailable(tech, isSelected) {
           src="${tech?.imageFileName}"
           alt="${tech.nickName}"
           class="image-avail"
+          data-fallback="${firstChar}"
+          onerror="
+            const fb = this.getAttribute(&quot;data-fallback&quot;) || '?';
+            this.outerHTML = '<div class=&quot;image-fallback&quot;>' + fb + '</div>';
+          "
         />
       </div>
       <div class="left-item-petech">
@@ -97,6 +104,7 @@ export function renderItemTech_PageChoseEachSer(staff) {
 
   const isStaff = srv?.selectedStaff?.employeeID === staff.employeeID;
 
+  const firstChar = staff?.nickName?.charAt(0)?.toUpperCase() || "?";
   return `
     <div
       class="item-petech item-tech-pepage staff ${isStaff ? "selected" : ""}"
@@ -107,7 +115,16 @@ export function renderItemTech_PageChoseEachSer(staff) {
         <i class="fa-solid fa-check"></i>
       </span>
       <div class="wrap-image">
-        <img src="${staff.imageFileName}" alt="${staff.nickName}" />
+        <img
+          src="${staff.imageFileName}"
+          alt="${staff.nickName}"
+          class="image-avail"
+          data-fallback="${firstChar}"
+          onerror="
+            const fb = this.getAttribute(&quot;data-fallback&quot;) || '?';
+            this.outerHTML = '<div class=&quot;image-fallback&quot;>' + fb + '</div>';
+          "
+        />
       </div>
       <div class="staff-info">
         <div class="staff-name">

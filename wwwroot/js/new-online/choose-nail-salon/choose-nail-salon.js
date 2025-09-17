@@ -1,9 +1,13 @@
-// helper in
+// helper
 function listSalon(group) {
   return `
         <div class="list-salon">
             ${group
               .map((item) => {
+                const logo = item?.logo ? baseLogoSalon + item.logo : "";
+                const firstChar =
+                  item?.storeName?.charAt(0)?.toUpperCase() || "?";
+
                 return `
                     <div
                       class="item-salon"
@@ -12,14 +16,20 @@ function listSalon(group) {
                     >
                         <div class="infor-salon">
                             <div class="wrap-avt">
-                                <img src="${
-                                  baseLogoSalon + item?.logo
-                                }" alt="Image salon" class="avt-salon"/>
+                                <img
+                                  src="${logo}"
+                                  alt="Image salon"
+                                  class="avt-salon"
+                                  data-fallback="${firstChar}"
+                                  onerror="
+                                    const fb = this.getAttribute(&quot;data-fallback&quot;) || '?';
+                                    this.outerHTML = '<div class=&quot;image-fallback&quot;>' + fb + '</div>';
+                                  "
+                                />
+
                             </div>
                             <div class="salon-address">
-                                <h1 class="text-uppercase">${
-                                  item?.storeName
-                                }</h1>
+                                <h1 class="text-uppercase">${item?.storeName}</h1>
                                 <div class="address">
                                     <span class="icon-address">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
@@ -27,9 +37,7 @@ function listSalon(group) {
                                             <path d="M19.5 9.75C19.5 15.375 12.5 21 12.5 21C12.5 21 5.5 15.375 5.5 9.75C5.5 6.02208 8.63401 3 12.5 3C16.366 3 19.5 6.02208 19.5 9.75Z" stroke="#181818" stroke-opacity="0.7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                                         </svg>
                                     </span>
-                                    <span class="text-address">${
-                                      item?.addressLine
-                                    }</span>
+                                    <span class="text-address">${item?.addressLine}</span>
                                 </div>
                             </div>
                         </div>

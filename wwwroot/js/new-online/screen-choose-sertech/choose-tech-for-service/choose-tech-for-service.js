@@ -110,6 +110,8 @@ export function renderFooterTech_PageChooseOnlyTech() {
   return $wrapDirBtn;
 }
 function renderFirstTechAvailable(tech, isSelected) {
+  const firstChar = tech?.nickName?.charAt(0)?.toUpperCase() || "?";
+
   return `
     <div class="item-tech item-tech-ctpage wrap-item-tech-first ${
       isSelected ? "selected" : ""
@@ -122,6 +124,11 @@ function renderFirstTechAvailable(tech, isSelected) {
           src="${tech?.imageFileName}"
           alt="${tech.nickName}"
           class="image-avail"
+          data-fallback="${firstChar}"
+          onerror="
+            const fb = this.getAttribute(&quot;data-fallback&quot;) || '?';
+            this.outerHTML = '<div class=&quot;image-fallback&quot;>' + fb + '</div>';
+          "
         />
       </div>
       <div class="left-item-tech">
@@ -158,6 +165,8 @@ function renderItemTech(staff) {
       (srv) => srv.selectedStaff?.employeeID === staff.employeeID
     )
   );
+
+  const firstChar = staff?.nickName?.charAt(0)?.toUpperCase() || "?";
   return `
     <div
       class="item-tech item-tech-ctpage staff ${isStaff ? "selected" : ""}"
@@ -168,7 +177,16 @@ function renderItemTech(staff) {
         <i class="fa-solid fa-check"></i>
       </span>
       <div class="wrap-image">
-        <img src="${staff.imageFileName}" alt="${staff.nickName}" />
+        <img
+          src="${staff.imageFileName}"
+          alt="${staff.nickName}"
+          class="image-avail"
+          data-fallback="${firstChar}"
+          onerror="
+            const fb = this.getAttribute(&quot;data-fallback&quot;) || '?';
+            this.outerHTML = '<div class=&quot;image-fallback&quot;>' + fb + '</div>';
+          "
+        />
       </div>
       <div class="staff-info">
         <div class="staff-name">
