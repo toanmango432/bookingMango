@@ -4638,6 +4638,6 @@ $(document).ready(function () {
     dataWeb.banner = dataBannerPage;
 
     localStorage.setItem("dataTemplate", JSON.stringify(dataWeb));
-    window.open("https://localhost:7033/templates/1");
+    window.open(window.location.origin + "/templates/1");
   });
 });
