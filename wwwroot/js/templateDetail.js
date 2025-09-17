@@ -303,7 +303,6 @@ $(document).ready(async function () {
 
     const value = $appointInput.val();
     const resVerifyGetOtp = await sendOTP(value, res);
-    console.log("res: ", resVerifyGetOtp);
 
     if (resVerifyGetOtp && resVerifyGetOtp.status === 200) {
       const extraData = resVerifyGetOtp.extraData;

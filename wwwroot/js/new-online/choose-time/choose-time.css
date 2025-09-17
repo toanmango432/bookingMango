@@ -830,6 +830,10 @@
   border: 1px solid var(--Gray-2, #979797);
   background: rgba(255, 255, 255, 0.9);
 }
+.form-group-card-new label p,
+.form-row-card-new label p {
+  color: red;
+}
 .form-row-card-new {
   width: 96%;
   display: flex;

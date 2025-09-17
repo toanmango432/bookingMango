@@ -723,7 +723,7 @@ $(document).ready(async function () {
   const currentYear = store.currentYear;
   const currentDate = new Date();
   const daysOffNail = store.daysOffNail;
-  const RVCNo = store.RVCNo;
+
   // await store.getTimeKeySlot();
   await store.getTimeBeginCurDate(formatDateMMDDYYYY(currentDate)); // khởi tạo lịch ở ngày hiện tại
 
@@ -1581,6 +1581,9 @@ $(document).ready(async function () {
     return $wrap.find(selector).val().trim();
   }
   async function fillNewCard($wrapFormAddCard, dataBooking) {
+    const store = salonStore.getState();
+    const RVCNo = store.RVCNo;
+
     // map key trong object <=> id trong form
     const fieldMap = {
       cardHolderName: "#card-holder-name",

@@ -159,7 +159,7 @@
 /* Icon check ẩn khi chưa selected */
 .checkbox-confirm-sum .circle-check i {
   font-size: var(--px-12);
-  color: var(--color-cur-primary);
+  color: var(--bs-main);
   display: none;
 }
 
@@ -572,7 +572,7 @@
 }
 
 .confirm-title {
-  color: var(--color-cur-primary);
+  color: var(--bs-main);
   font: normal normal 600 var(--s-24);
 }
 
@@ -675,7 +675,7 @@
 .btn-request-another {
   width: 100%;
   max-width: 640px;
-  background: var(--color-cur-primary);
+  background: var(--bs-main);
   color: white;
   border: none;
   padding: var(--px-14) 18px;
@@ -768,7 +768,7 @@
 }
 .stroke-circle {
   transform-origin: var(--px-32) var(--px-32);
-  stroke: var(--color-cur-primary, #39b54a);
+  stroke: var(--bs-main, #39b54a);
   stroke-linecap: round;
   stroke-linejoin: round;
   paint-order: stroke fill markers; /* stroke drawn above fill for burst look */
