@@ -226,6 +226,9 @@
   justify-content: space-between;
   margin-bottom: 24px;
 }
+.new-sumary .container-sumary.not-ser {
+  margin-bottom: 44px;
+}
 .new-sumary .payment-method-item {
   width: 100%;
   display: flex;
@@ -410,7 +413,7 @@
   align-items: center;
   border: none;
   border-radius: 8px;
-  background: var(--Gray-Neutral-70, #aeaeae);
+  background: #aeaeae;
   color: white;
   font: normal normal 600 var(--s-16);
 }
@@ -426,9 +429,12 @@
   color: white;
   font: normal normal 600 var(--s-16);
 }
+.btn-add-guest.not-ser {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 .btn-back-sum:hover,
-.btn-add-guest:hover,
-.btn-back-sum {
+.btn-add-guest:hover {
   filter: brightness(0.95);
 }
 .wrap-item-addon {
@@ -929,4 +935,7 @@
   width: 2px;
   height: 100%;
   background-color: var(--text-color-primary);
+}
+.wrap-item-empty {
+  padding: 12px 32px;
 }

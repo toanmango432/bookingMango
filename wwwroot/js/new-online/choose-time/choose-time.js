@@ -285,15 +285,29 @@ export function renderFooterChooseTime() {
   const dataBooking = store.dataBooking;
   const user = dataBooking.users.find((u) => u.isChoosing);
   // đã chọn service mới được phép next
-  console.log("user: ", user);
   const isNext = user.selectedTimeSlot ? true : false;
+  // kiểm tra có slot nào active không
+  const hasAnySlotActive = $(".time-slot-1.active").length > 0;
+  console.log("active: ", $(".time-slot-1.active"));
+  console.log("has: ", hasAnySlotActive);
+
+  const backBtn = `
+    <button id="btn-back-choose-time" class="dir-btn-back-time text-uppercase">
+      ${!hasAnySlotActive ? '<span class="hand-anim">👉</span>' : ""} Back
+    </button>
+  `;
 
   const $wrapDirBtn = `
-    <div class="wrap-dir-btn">
-      <button id="btn-back-choose-time" class="dir-btn-back-ser text-uppercase">Back</button>
-      <button id="btn-next-choose-time" class="dir-btn-next-ser text-uppercase ${
+    <div class="wrap-dir-btn ${hasAnySlotActive ? "" : "not-ser"}">
+      ${backBtn}
+      <button id="btn-next-choose-time" class="dir-btn-next-time text-uppercase ${
         isNext ? "allow-next" : ""
       }">Next</button>
+      ${
+        !hasAnySlotActive
+          ? `<div class="tip-text">Please come back and choose another technician for a suitable time or choose a new date. </div>`
+          : ""
+      }
     </div>
   `;
   // nếu DOM đã có footer-dir thì append khi hàm được gọi
@@ -483,12 +497,16 @@ export function renderTimeSlotsForDate(dataBooking) {
         removeAmPm(user.selectedTimeSlot)
       );
     });
-    console.log("here: ", match);
     if (match.length) {
       container.find(".time-slot-1.active").removeClass("selected");
       match.first().addClass("selected");
     }
   }
+
+  const $footerDir = $(".footer-dir.footer-choose-time");
+  const $wrapDirBtn = renderFooterChooseTime();
+  $footerDir.empty();
+  $footerDir.append($wrapDirBtn);
 }
 
 export function roundUpToNearestInterval(date, interval = 20) {
@@ -589,7 +607,6 @@ export async function renderChooseTime() {
   const salonChoosing = store.salonChoosing;
 
   const htmlHeaderSalon = HeaderSalon(salonChoosing);
-  const $wrapDirBtn = renderFooterChooseTime();
 
   const htmlChooseTime = `
     <div id="section-date-time" class="wrap-calendar-timeslot">
@@ -662,7 +679,6 @@ export async function renderChooseTime() {
           </p>
         </div>
         <div class="footer-dir footer-choose-time">
-          ${$wrapDirBtn}
         </div>
       </div>
     </div>
@@ -670,6 +686,7 @@ export async function renderChooseTime() {
   const $wrapNewOnline = $(".wrap-newonline");
   $wrapNewOnline.empty();
   $wrapNewOnline.append(htmlPageChooseTime);
+
   Cart();
 
   return htmlPageChooseTime;

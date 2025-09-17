@@ -80,7 +80,12 @@ export function renderSumary(dataBooking, listDataService) {
 
   const htmlHeaderSalon = HeaderSalon(salonChoosing);
 
-  // Kiểm tra có user tất cả user chọn xong servce và timming
+  const owner = dataBooking.users[0];
+  const cardChoosing = dataBooking.cardNumber.find((card) => card.isChoosing);
+
+  let totalPayment = 0;
+  let totalDeposit = 0;
+
   const allSelected = dataBooking.users.every((user) => {
     return (
       Array.isArray(user.services) &&
@@ -90,33 +95,21 @@ export function renderSumary(dataBooking, listDataService) {
           Array.isArray(service.itemService) &&
           service.itemService.length > 0 &&
           service.itemService.every(
-            (item) => item.selectedStaff,
-            user.selectedDate && user.selectedTimeSlot
+            (item) =>
+              item.selectedStaff && user.selectedDate && user.selectedTimeSlot
           )
       )
     );
   });
-  if (!allSelected) {
-    $wrapNewOnline.append("");
-    return;
-  }
+  const isConfim = allSelected && dataBooking?.isConfirmBook;
 
-  const owner = dataBooking.users[0];
-  const cardChoosing = dataBooking.cardNumber.find((card) => card.isChoosing);
+  // kiểm tra có slot nào active không
+  const backBtn = `
+    <button id="back-summary" class="btn-back-sum text-uppercase">
+      ${!allSelected ? '<span class="hand-anim">👉</span>' : ""} Back
+    </button>
+  `;
 
-  // Kiểm tra mảng users
-  const hasUserWithService = dataBooking.users.some(
-    (user) => Array.isArray(user.services) && user.services.length > 0
-  );
-
-  if (!Array.isArray(dataBooking.users) || !hasUserWithService) {
-    return ``;
-  }
-
-  let totalPayment = 0;
-  let totalDeposit = 0;
-
-  const isConfim = dataBooking?.isConfirmBook;
   const htmlSumary = `
     <div class="wrap-content-salon bg-choose-time">
       <div class="header-sertech">
@@ -124,7 +117,9 @@ export function renderSumary(dataBooking, listDataService) {
       </div>
       <div class="content-choose-sertech">
         <div class="wrap-sumary new-sumary">
-            <div id="section-booking" class="container-sumary">
+            <div id="section-booking" class="container-sumary ${
+              allSelected ? "" : "not-ser"
+            }">
                 <div class="wrap-title">
                     <h2 class="title text-uppercase">Booking sumary</h2>
                 </div>
@@ -253,8 +248,17 @@ export function renderSumary(dataBooking, listDataService) {
                                 dataRefact.listServiceUser &&
                                 dataRefact.listServiceUser
                                   .map((item) => {
-                                    const services = item.services;
-                                    const itemService = item.itemService;
+                                    const services = item.services || [];
+                                    const itemService = item.itemService || [];
+
+                                    if (itemService.length === 0) {
+                                      // fallback khi không có service nào
+                                      return `
+                                        <div class="wrap-item-empty">
+                                          <p class="empty-service">No services selected</p>
+                                        </div>
+                                      `;
+                                    }
                                     return itemService
                                       .map((is) => {
                                         const optionalsHtml = (
@@ -401,14 +405,21 @@ export function renderSumary(dataBooking, listDataService) {
                       </svg>
                     </div>
                   </div>
-                  <div class="confirm-booking">
-                      <button id="back-summary" class="btn-back-sum text-uppercase">Back</button>
-                      <button id="add-guest" class="btn-add-guest text-uppercase">Add guest</button>
+                  <div class="confirm-booking ${allSelected ? "" : "not-ser"}">
+                      ${backBtn}
+                      <button id="add-guest" class="btn-add-guest ${
+                        allSelected ? "" : "not-ser"
+                      } text-uppercase">Add guest</button>
                       <button ${
                         isConfim ? "" : "disabled"
                       } class="btn-confirm-booking-1 text-uppercase">
                           Book now
                       </button>
+                      ${
+                        !allSelected
+                          ? `<div class="tip-text">Please return to select at least one service to book.</div>`
+                          : ""
+                      }
                   </div>
                 </div>
             </div>
@@ -419,6 +430,8 @@ export function renderSumary(dataBooking, listDataService) {
   Cart();
   // gán totalPayment cho dataBooking
   dataBooking.totalAmount = totalPayment;
+  console.log("htmlSumary: ", htmlSumary);
+  $wrapNewOnline.empty();
   $wrapNewOnline.append(htmlSumary);
 }
 
@@ -537,9 +550,23 @@ $(document).ready(async function () {
     if ($btn.find(".btn-loader").length === 0) {
       $btn.prepend('<span class="btn-loader"></span>');
     }
-
+    const allSelected = dataBooking.users.every((user) => {
+      return (
+        Array.isArray(user.services) &&
+        user.services.length > 0 &&
+        user.services.every(
+          (service) =>
+            Array.isArray(service.itemService) &&
+            service.itemService.length > 0 &&
+            service.itemService.every(
+              (item) =>
+                item.selectedStaff && user.selectedDate && user.selectedTimeSlot
+            )
+        )
+      );
+    });
     const dataBooking = store.dataBooking;
-    if (!dataBooking.isConfirmBook) return;
+    if (!dataBooking.isConfirmBook || !allSelected) return;
 
     // Chọn thẻ
     const cardChoosing = dataBooking.cardNumber.find((card) => card.isChoosing);
@@ -1089,15 +1116,35 @@ $(document).ready(async function () {
     const daysOffNail = store.daysOffNail;
     const RVCNo = store.RVCNo;
     const dataBooking = store.dataBooking;
-    const user = dataBooking.users.find((u) => u.isChoosing);
-
-    // Kiểm tra đã chọn service chưa trước khi next
-    const isNext = user.services.some((cate) =>
-      cate.itemService.some(
-        (srv) => srv.selectedStaff && Object.keys(srv.selectedStaff).length > 0
-      )
-    );
-    if (!isNext) return;
+    // Nếu chưa chọn service nào, quay lại flow chọn
+    const allSelected = dataBooking.users.every((user) => {
+      return (
+        Array.isArray(user.services) &&
+        user.services.length > 0 &&
+        user.services.every(
+          (service) =>
+            Array.isArray(service.itemService) &&
+            service.itemService.length > 0 &&
+            service.itemService.every(
+              (item) =>
+                item.selectedStaff && user.selectedDate && user.selectedTimeSlot
+            )
+        )
+      );
+    });
+    if (!allSelected) {
+      let pageNext;
+      const flowCur = store.flow;
+      if (flowCur === SelecteFlow.SER) {
+        await ScreenChooseService();
+        pageNext = PageCurrent.CHOOSE_SERVICE;
+      } else {
+        await ScreenChooseTech();
+        pageNext = PageCurrent.CHOOSE_TECH;
+      }
+      salonStore.setState({ ...store, pageCurrent: pageNext });
+      return;
+    }
 
     await renderChooseTime();
 
@@ -1119,6 +1166,23 @@ $(document).ready(async function () {
     const dataBooking = store.dataBooking;
     const userCur = dataBooking.users.find((u) => u.isChoosing);
     const owner = dataBooking.users[0];
+
+    const allSelected = dataBooking.users.every((user) => {
+      return (
+        Array.isArray(user.services) &&
+        user.services.length > 0 &&
+        user.services.every(
+          (service) =>
+            Array.isArray(service.itemService) &&
+            service.itemService.length > 0 &&
+            service.itemService.every(
+              (item) =>
+                item.selectedStaff && user.selectedDate && user.selectedTimeSlot
+            )
+        )
+      );
+    });
+    if (!allSelected) return;
 
     // cập nhật trạng thái của userCur
     userCur.isChoosing = false;

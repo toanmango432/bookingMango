@@ -772,6 +772,7 @@
   }
 }
 .btn-next-payment-1:disabled {
+  opacity: 0.5;
   cursor: not-allowed;
 }
 .btn-back-payment-1:hover,
