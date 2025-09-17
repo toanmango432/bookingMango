@@ -15,14 +15,14 @@ export function renderPaymentConfirmationForm(data = {}, colorPrimary) {
     dateTime = "May 14, 2025 at 2:00PM",
     paymentMethodLabel = "VISA",
     paymentMethodMasked = "Xxx Xxx Xxx 4008",
-    deposit = "60.00",
-    remaining = "60.00",
+    deposit = 60.0,
+    remaining = 60.0,
     requestAnotherCount = 50,
     currencyDeposit = "$",
   } = data;
 
   return `
-        <div class="wrap-popup-payment-confirmation"
+        <div class="wrap-popup-payment-confirmation-1"
           style="
             --color-cur-primary: ${
               typeof colorPrimary !== "undefined" ? colorPrimary : "#39b54a"

@@ -15,14 +15,14 @@ export function renderPaymentConfirmationForm(data = {}, colorPrimary) {
     dateTime = "May 14, 2025 at 2:00PM",
     paymentMethodLabel = "VISA",
     paymentMethodMasked = "Xxx Xxx Xxx 4008",
-    deposit = "60.00",
-    remaining = "60.00",
+    deposit = 60.0,
+    remaining = 60.0,
     requestAnotherCount = 50,
     currencyDeposit = "$",
   } = data;
 
   return `
-        <div class="wrap-popup-payment-confirmation"
+        <div class="wrap-popup-payment-confirmation-1"
           style="
             --color-cur-primary: ${
               typeof colorPrimary !== "undefined" ? colorPrimary : "#39b54a"
@@ -42,7 +42,7 @@ export function renderPaymentConfirmationForm(data = {}, colorPrimary) {
                   <div class="check-circle" aria-hidden="true">
                     <svg class="check-svg" viewBox="0 0 64 64" width="56" height="56" xmlns="http://www.w3.org/2000/svg">
                       <!-- fill circle -->
-                      <circle class="fill-circle" cx="32" cy="32" r="28" fill="var(--color-cur-primary)"></circle>
+                      <circle class="fill-circle" cx="32" cy="32" r="28" fill="var(--bs-main)"></circle>
 
                       <!-- stroke circle for animated border (no fill) -->
                       <circle class="stroke-circle" cx="32" cy="32" r="28" fill="none" stroke="#2d8e45" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
@@ -82,13 +82,15 @@ export function renderPaymentConfirmationForm(data = {}, colorPrimary) {
 
                     <div class="row">
                       <div class="label">Deposit Paid</div>
-                      <div class="value">${currencyDeposit + deposit}</div>
+                      <div class="value">${"$ " + deposit}</div>
                     </div>
                   </div>
 
                   <div class="remaining-wrapper">
                     <div class="remaining-label">Remaining Balance</div>
-                    <div class="remaining-amount">${"$ " + remaining}</div>
+                    <div class="remaining-amount">${
+                      "$ " + remaining.toFixed(2)
+                    }</div>
                   </div>
                 </div>
                 <div class="wrap-btn-request-another text-uppercase">

@@ -449,7 +449,7 @@ import { HeaderSalon } from "../header/header-salon.js";
 import { formatDateMMDDYYYY } from "../../helper/format-day.js";
 import { jsonToXml } from "../../helper/xlm-to-json.js";
 import { maskCardNumber } from "../../helper/format-card.js";
-import { renderPaymentConfirmationForm } from "../../popup/content/payment-confirm.js";
+import { renderPaymentConfirmationForm } from "../popup/content/payment-confirm.js";
 import { renderBasePopup } from "../popup/base.js";
 import { startConfirmAnimation } from "../../helper/confirm-animation.js";
 import { closePopupContainerTemplate } from "../../popup/close-popup.js";
@@ -1049,13 +1049,14 @@ $(document).ready(async function () {
 
     setTimeout(() => {
       startConfirmAnimation(1, {
-        selector: ".wrap-popup-payment-confirmation .check-circle",
-        buttonSelector: ".wrap-popup-payment-confirmation .btn-request-another",
+        selector: ".wrap-popup-payment-confirmation-1 .check-circle",
+        buttonSelector:
+          ".wrap-popup-payment-confirmation-1 .btn-request-another",
       });
       // Thêm đếm ngược 5 giây
       let countdownSeconds = 10;
       const countdownElement = $(
-        ".wrap-popup-payment-confirmation .countdown-seconds"
+        ".wrap-popup-payment-confirmation-1 .countdown-seconds"
       );
       const countdownInterval = setInterval(async () => {
         countdownSeconds -= 1;
@@ -1256,10 +1257,10 @@ $(document).ready(async function () {
       await ScreenChooseTech();
       pageNext = PageCurrent.CHOOSE_TECH;
     }
-    salonStore.resetDataBooking();
     salonStore.setState((prev) => ({
       ...prev,
       pageCurrent: pageNext,
     }));
+    salonStore.resetDataBooking();
   });
 });

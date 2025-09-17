@@ -1396,7 +1396,7 @@ select {
   background: var(--color-cur-primary);
   color: white;
   border: none;
-  padding: var(--px-14) 18px;
+  padding: var(--px-14) 48px var(--px-14) var(--px-14);
   border-radius: var(--px-10);
   font: normal normal 600 var(--s-20);
   cursor: pointer;
