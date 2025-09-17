@@ -343,7 +343,7 @@ export async function ScreenChooseServiceForTech() {
             <div class="content-choose-sertech">
                 <div class="choose-ftservices">
                     <div class="wrap-title">
-                        <h2 class="title">CHOOSE SERVICES</h2>
+                        <h2 class="title text-uppercase">Choose services</h2>
                     </div>
                     <p class="desc">
                       Select service for each techs

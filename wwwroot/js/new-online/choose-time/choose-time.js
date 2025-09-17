@@ -629,7 +629,7 @@ export async function renderChooseTime() {
       <div class="content-choose-sertech">
         <div class="text-choose-time">
           <div class="wrap-title">
-              <h2 class="title">CHOOSE SERVICES</h2>
+              <h2 class="title text-uppercase">Choose time</h2>
           </div>
           <p class="desc">
               Business Time: 9:00 AM - 9:00 PM
