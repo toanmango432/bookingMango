@@ -102,7 +102,7 @@ export function validatePhoneFormRegister($input) {
     const $errorMs = $input.next(".error-message");
     $errorMs.text("");
   } else if (val === "") {
-    showInputError($input, `Phone is required`, true);
+    showInputError($input, `Phone number is required`, true);
   } else if (!isPhone) {
     showInputError($input, `Phone is incorrect format!`, true);
   }

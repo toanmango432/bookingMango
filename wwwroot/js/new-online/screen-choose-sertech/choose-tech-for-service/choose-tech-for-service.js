@@ -138,7 +138,7 @@ function renderFirstTechAvailable(tech, isSelected) {
           ${tech.nickName}
         </h2>
         <span class="sub-avail">
-          for maximun availability
+          for maximum availability
         </span>
         <span class="recommended-tech">
           <svg xmlns="http://www.w3.org/2000/svg" width="15" height="14" viewBox="0 0 15 14" fill="none">
@@ -299,7 +299,7 @@ export async function ChooseTechForServices() {
                         <h2 class="title">Choose Technician</h2>
                     </div>
                     <p class="desc">
-                      Select tech for each services
+                      Select tech for service
                     </p>
                     <div class="wrap-search-tech">
                         <div class="container-search-tech">

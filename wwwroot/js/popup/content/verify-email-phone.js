@@ -7,7 +7,7 @@ export function renderVerifyEmailPhoneContent(emailOrPhone, colorPrimary) {
           "
         >
           <div class="title-appointment">
-            <h2>Please enter your cell phone number or email to make appointment</h2>
+            <h2>Please enter your cell phone number or email to make an appointment</h2>
           </div>
           <div class="container-verify-emailPhone">
             <input type="text" id="appointment-input" class="appointment-input" value="${

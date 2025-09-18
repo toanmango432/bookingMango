@@ -660,7 +660,7 @@ export async function renderChooseTime() {
         </div>
         <div class="wrap-help-support">
           <h4 class="ques-see">
-            Don’t See Your Time ?
+            Dont see your time?
           </h4>
           <p class="contact-to">
             <span class="icon-contact">
@@ -1240,7 +1240,7 @@ $(document).ready(async function () {
 
       const textErr = !isPhone
         ? "Phone is incorrect format."
-        : "Phone is required!";
+        : "Phone number is required!";
       $errorPhoneRegis.text(textErr);
       shakeError($errorPhoneRegis);
       hasError = true;

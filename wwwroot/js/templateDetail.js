@@ -634,7 +634,7 @@ $(document).ready(async function () {
 
       const textErr = !isPhone
         ? "Phone is incorrect format."
-        : "Phone is required!";
+        : "Phone number is required!";
       $errorPhoneRegis.text(textErr);
       shakeError($errorPhoneRegis);
       hasError = true;

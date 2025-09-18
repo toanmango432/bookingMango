@@ -43,7 +43,7 @@ export function ServiceOrTech() {
                                 </svg>
                             </span>
                             <span class="text text-uppercase">
-                                I want to pick a technician
+                                I want to choose a technician
                             </span>
                         </button>
                     </div>

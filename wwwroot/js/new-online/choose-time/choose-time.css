@@ -43,7 +43,6 @@
   grid-auto-rows: max-content; */
   flex-direction: column;
   gap: 16px;
-  gap: 8px; /* khoảng cách giữa các ô */
   padding: 8px 16px;
   flex: 1 0 0; /* có thể bỏ nếu không cần flex trong parent */
   overflow-x: hidden;
@@ -75,7 +74,7 @@
 .slot-group {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
 .slot-group-content {
   display: grid;

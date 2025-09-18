@@ -125,13 +125,13 @@ export async function ScreenChooseService() {
                               <path d="M15.0875 12.7377C13.3642 17.6544 8.2904 15.6799 7.79359 12.6812C7.78663 12.6391 7.53951 12.9187 7.37227 14.2629C7.35493 14.4023 7.22157 20.7805 7.37227 21.5302C7.52296 22.2799 8.13672 22.4865 8.30154 22.4865C8.55859 22.4865 14.0692 22.5174 14.5113 22.4865C15.383 22.3672 15.4922 21.8281 15.5251 21.5302C15.5492 21.3113 15.6114 17.0921 15.5469 15.0078C15.5469 13.9688 15.125 12.6875 15.0875 12.7377Z" stroke="white" stroke-width="0.1"/>
                             </svg>
                             SERVICE ${
-                              !isMobile ? "- I want to pick a services" : ""
+                              !isMobile ? "- I want to choose a service" : ""
                             }
                         </button>
                         <button id="flow-tech" class="btn-service" data-type="staff">
                             <i class="fa-solid fa-user-plus"></i>
                             STAFF ${
-                              !isMobile ? "- I want to pick a technician" : ""
+                              !isMobile ? "- I want to choose a technician" : ""
                             }
                         </button>
                     </div>
