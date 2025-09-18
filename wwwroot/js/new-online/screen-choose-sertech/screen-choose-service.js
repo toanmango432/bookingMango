@@ -869,8 +869,8 @@ $(document).ready(async function () {
       });
       return;
     }
-
-    const htmlConfirmReset = contentShowResetDataBooking();
+    const titleConfirm = "Change flow pick service";
+    const htmlConfirmReset = contentShowResetDataBooking(titleConfirm);
     let height = 300;
     let width = 600;
     if (isMobile) {
@@ -921,8 +921,9 @@ $(document).ready(async function () {
       });
       return;
     }
+    const titleConfirm = "Change flow pick technician";
 
-    const htmlConfirmReset = contentShowResetDataBooking();
+    const htmlConfirmReset = contentShowResetDataBooking(titleConfirm);
     let height = 300;
     let width = 600;
     if (isMobile) {

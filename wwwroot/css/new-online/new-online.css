@@ -205,7 +205,9 @@
   max-width: 100%; /* kế thừa từ cha */
   vertical-align: bottom;
 }
-
+.content-req-reset h2 {
+  font: normal normal 600 var(--s-20);
+}
 @media (max-width: 768px) {
   .wrap-content-salon {
     overflow: hidden;

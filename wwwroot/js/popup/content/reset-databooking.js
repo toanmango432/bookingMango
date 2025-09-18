@@ -1,15 +1,16 @@
 // Content policies
-export function contentShowResetDataBooking() {
+export function contentShowResetDataBooking(title) {
   return `
         <div class="wrap-popup-reset-databooking">
           <div class="content-req-reset">
+            <h2>${title}</h2>
             <span class="text-req-reset">
-                After changing to this option you will have to re-select the service and technician, are you sure you want to change the stream and choose again from the beginning?
+              Making this change will clear your current picks. Would you like to choose anew?
             </span>
           </div>
           <div class="button-container">
             <button class="btn-back-reset">Cancel</button>
-            <button class="btn-confirm-reset">Accept</button>
+            <button class="btn-confirm-reset">Confirm Change</button>
           </div>
         </div>
       `;
