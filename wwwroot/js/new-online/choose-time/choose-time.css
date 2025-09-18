@@ -1548,3 +1548,93 @@ select {
   cursor: pointer;
 }
 /* end css popup content info */
+
+@media (max-width: 768px) {
+  .day-name {
+    min-width: 44px;
+    font-size: 16px;
+    padding: var(--px-8) var(--px-12);
+  }
+  .calendar {
+    width: 100%;
+    padding: 12px;
+  }
+  .container-choose-time .line-ca-ti {
+    width: 100%;
+    height: 1px;
+  }
+  .timeslot {
+    width: 100%;
+    min-height: 600px;
+  }
+  .time-slot-1 span:first-child {
+    font: normal normal 500 var(--s-12);
+  }
+  .time-slot-1 span {
+    font: normal normal 500 var(--s-12);
+  }
+  .time-slot-1 {
+    padding: 12px;
+  }
+  .slot-group-content {
+    grid-template-columns: repeat(4, 1fr);
+    row-gap: 10px;
+    column-gap: 10px;
+  }
+  .container-choose-time .calendar-grid {
+    gap: 2px;
+  }
+  .day.past {
+    font: normal normal 500 var(--s-16);
+  }
+  .day.active {
+    font: normal normal 500 var(--s-16);
+  }
+  .day {
+    font: normal normal 500 var(--s-16);
+  }
+  .title-appointment h2 {
+    font: normal normal 500 var(--s-16);
+  }
+  .appointment-input {
+    font: normal normal 500 var(--s-14);
+  }
+  .consent-container label {
+    font: normal normal 500 var(--s-16);
+  }
+  .popup-wrap-verify-emailPhone {
+    padding: 24px 16px 16px 16px;
+  }
+  .title-payment {
+    font: normal normal 600 var(--s-16);
+  }
+  .wrap-popup-payment-methods .subtitle .subtitle-text {
+    font: normal normal 500 var(--s-14);
+  }
+  .add-new-card-btn-1 {
+    font: normal normal 500 var(--s-16);
+  }
+  .payment-method-item {
+    height: 48px;
+  }
+  .sub-deposit-1r {
+    font: normal normal 500 var(--s-16);
+  }
+  .sub-deposit-1l {
+    font: normal normal 500 var(--s-16);
+  }
+  .cur-deposit {
+    align-items: center;
+  }
+  .clear-icon {
+    height: 24px;
+    top: 23px;
+  }
+  .wrap-name-method {
+    gap: 0px;
+  }
+  .wrap-popup-payment-methods,
+  .wrap-popup-policies {
+    padding: 24px 16px 16px 16px;
+  }
+}

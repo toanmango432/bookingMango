@@ -232,4 +232,11 @@
   .wrap-service-or-tech .wrap-content-sertech {
     padding: 16px;
   }
+  .wrap-newonline .btn-closepopup {
+    right: 0px;
+    top: 12px;
+  }
+  .wrap-name-method {
+    gap: 0px;
+  }
 }

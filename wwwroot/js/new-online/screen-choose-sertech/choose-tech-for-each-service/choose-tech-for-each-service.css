@@ -559,3 +559,43 @@
 .addon-indicator-forser .be-addOn_card {
   color: var(--text-color-primary);
 }
+
+@media (max-width: 768px) {
+  .choose-techs {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .wrap-search-tech .container-search-tech {
+    width: 100%;
+    padding: 0px 12px;
+  }
+  .wrap-search-tech .input-search-tech {
+    width: 100%;
+  }
+  .wrap-search-tech .btn-search-toggle {
+    right: 13px;
+  }
+  .list-techs {
+    grid-template-columns: repeat(1, 1fr);
+    padding: 8px;
+  }
+  .choose-multitech {
+    height: 54px;
+  }
+  .wrap-choose-multitech {
+    padding: 0px 8px;
+    margin-top: 8px;
+  }
+  .choose-multitech .text-c-multitech {
+    font: normal normal 600 var(--s-14);
+  }
+  .choose-multitech .icon-c-multitech {
+    width: 40px;
+    height: 40px;
+    padding: 6px;
+  }
+  .footer-dir {
+    height: 78px;
+  }
+}

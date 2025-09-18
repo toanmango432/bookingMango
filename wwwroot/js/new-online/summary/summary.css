@@ -939,3 +939,122 @@
 .wrap-item-empty {
   padding: 12px 32px;
 }
+
+@media (max-width: 768px) {
+  .new-sumary {
+    width: 92%;
+  }
+  .container-sumary .wrap-title {
+    padding-top: 12px;
+  }
+  .new-sumary .container-sumary {
+    gap: 12px;
+  }
+  .top-item-sumary .user-book {
+    flex-direction: column;
+  }
+  .top-item-sumary .user-book .left-info-sum .phone {
+    font-size: 14px;
+  }
+  .top-item-sumary .user-book .right-info-sum {
+    gap: 8px;
+    justify-content: flex-start;
+  }
+  .header-item-sumary {
+    top: 84px;
+  }
+  .header-item-sumary .item {
+    font-size: 11px;
+    padding: 4px 6px 4px 12px;
+  }
+  .body-item-sumary {
+    margin-top: 106px;
+  }
+  .wrap-item-content {
+    padding: 8px 4px;
+  }
+  .item-content .text-name-service,
+  .header-item-sumary .name-service {
+    width: 30%;
+  }
+  .item-content .text-name-tech,
+  .header-item-sumary .name-tech {
+    width: 32.5%;
+  }
+  .item-content .text-time-dura,
+  .header-item-sumary .name-dura {
+    width: 13%;
+  }
+  .wrap-item-content .item {
+    padding: 4px 6px 4px 12px;
+    font-size: 10px;
+  }
+  .total-pay .text-total-amount {
+    width: 45%;
+  }
+  .total-pay .text-total-times {
+    width: 25.5%;
+  }
+  .total-pay .text-total-price {
+    width: 29.5%;
+  }
+  .wrap-item-content .btn-remove-service {
+    top: 7px;
+  }
+  .total-pay {
+    padding: 4px;
+  }
+  .body-item-sumary {
+    margin-bottom: 40px;
+  }
+
+  .item-content .text-name-service {
+    padding: 4px 6px 4px 24px;
+  }
+  .add-ticket-note {
+    padding: 4px 8px;
+  }
+  .input-note {
+    padding: 4px;
+    font-size: 14px;
+  }
+  .total-book {
+    padding: 8px;
+    gap: 4px;
+  }
+  .depo-text,
+  .total-text {
+    font-size: 16px;
+  }
+  .total-value {
+    font-size: 16px;
+  }
+  .depo-text {
+    font-size: 24px;
+  }
+  .depo-value {
+    font-size: 24px;
+  }
+  .text-checkbox-confirm {
+    font-size: 14px;
+  }
+  .new-sumary .confirm-booking {
+    height: 44px;
+    padding: 0px;
+  }
+  .btn-back-sum {
+    width: 100px;
+  }
+  .btn-add-guest {
+    width: 120px;
+  }
+  .confirm-booking .btn-confirm-booking-1 {
+    width: 130px;
+  }
+  .btn-add-guest,
+  .btn-back-sum,
+  .confirm-booking .btn-confirm-booking-1 {
+    font-size: 14px;
+    padding: 8px;
+  }
+}

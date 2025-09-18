@@ -280,4 +280,9 @@
   .choose-services {
     margin: 12px 0 0px 0px;
   }
+  .choose-services .wrap-title .title,
+  .choose-ftservices .wrap-title .title,
+  .choose-ptechs .wrap-title .title {
+    font: normal normal 600 var(--s-14);
+  }
 }

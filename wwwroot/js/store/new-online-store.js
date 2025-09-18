@@ -76,6 +76,8 @@ export const salonStore = {
 
         const resDataServices = [];
         dataCategories.forEach((itemCar) => {
+          if (!itemCar.isShowOB) return; // không show ra categoies isShowOB false
+
           const objCar = { item: {} };
           const categoryID = itemCar.categoryID;
 

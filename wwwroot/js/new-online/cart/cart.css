@@ -407,4 +407,7 @@
   .d-price-discount-addon {
     gap: 4px;
   }
+  .cart-addon-wrapper svg {
+    top: -45px;
+  }
 }
