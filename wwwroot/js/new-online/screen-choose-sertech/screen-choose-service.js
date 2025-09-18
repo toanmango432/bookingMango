@@ -834,11 +834,41 @@ $(document).ready(async function () {
 
   // Chuyển đổi flow
   // 1 Chọn service trước khi chọn tech
-  $(document).on("click", "#flow-ser", function () {
+  $(document).on("click", "#flow-ser", async function () {
     const $this = $(this);
     const flowActive = $this.hasClass("active");
     if (flowActive) return;
     selectFlow = SelecteFlow.SER;
+
+    // Kiểm tra nếu người dùng có đang chọn tech or service thì hiện popup confirm
+    const store = salonStore.getState();
+    const chooseStaffBefore = store.chooseStaffBefore;
+    const dataBooking = store.dataBooking;
+    const hasAnyService = dataBooking.users.some(
+      (user) =>
+        Array.isArray(user.services) &&
+        user.services.some(
+          (service) =>
+            Array.isArray(service.itemService) && service.itemService.length > 0
+        )
+    );
+
+    if (chooseStaffBefore.length === 0 && !hasAnyService) {
+      let pageNext;
+      if (selectFlow === SelecteFlow.SER) {
+        await ScreenChooseService();
+        pageNext = PageCurrent.CHOOSE_SERVICE;
+      } else {
+        await ScreenChooseTech();
+        pageNext = PageCurrent.CHOOSE_TECH;
+      }
+      salonStore.setState({
+        ...store,
+        flow: selectFlow,
+        pageCurrent: pageNext,
+      });
+      return;
+    }
 
     const htmlConfirmReset = contentShowResetDataBooking();
     let height = 300;
@@ -856,11 +886,41 @@ $(document).ready(async function () {
     }, 10);
   });
   // 1 Chọn tech trước khi chọn service
-  $(document).on("click", "#flow-tech", function () {
+  $(document).on("click", "#flow-tech", async function () {
     const $this = $(this);
     const flowActive = $this.hasClass("active");
     if (flowActive) return;
     selectFlow = SelecteFlow.TECH;
+
+    // Kiểm tra nếu người dùng có đang chọn tech or service thì hiện popup confirm
+    const store = salonStore.getState();
+    const chooseStaffBefore = store.chooseStaffBefore;
+    const dataBooking = store.dataBooking;
+    const hasAnyService = dataBooking.users.some(
+      (user) =>
+        Array.isArray(user.services) &&
+        user.services.some(
+          (service) =>
+            Array.isArray(service.itemService) && service.itemService.length > 0
+        )
+    );
+
+    if (chooseStaffBefore.length === 0 && !hasAnyService) {
+      let pageNext;
+      if (selectFlow === SelecteFlow.SER) {
+        await ScreenChooseService();
+        pageNext = PageCurrent.CHOOSE_SERVICE;
+      } else {
+        await ScreenChooseTech();
+        pageNext = PageCurrent.CHOOSE_TECH;
+      }
+      salonStore.setState({
+        ...store,
+        flow: selectFlow,
+        pageCurrent: pageNext,
+      });
+      return;
+    }
 
     const htmlConfirmReset = contentShowResetDataBooking();
     let height = 300;
