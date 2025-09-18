@@ -226,10 +226,14 @@ function renderServiceItemHTML(serviceItem, selectedServices) {
         </div>
         <div class="service-price">
           <span class="pcash">
-            $${serviceItem.priceRental.toFixed(2)} Cash
+            $${serviceItem.priceRental.toFixed(
+              2
+            )} <span class="text-u">Cash</span>
           </span> /
           <span class="pcard">
-            $${serviceItem.priceRental.toFixed(2)} Card
+            $${serviceItem.priceRental.toFixed(
+              2
+            )} <span class="text-u">Card</span>
           </span>
         </div>
         <div class="bot-item-service">
@@ -328,10 +332,14 @@ export function renderServices(listItem) {
             </div>
             <div class="service-price">
               <span class="pcash">
-                $${serviceItem.priceRental.toFixed(2)} Cash
+                $${serviceItem.priceRental.toFixed(
+                  2
+                )} <span class="text-u">Cash</span>
               </span> /
               <span class="pcard">
-                $${serviceItem.priceRental.toFixed(2)} Card
+                $${serviceItem.priceRental.toFixed(
+                  2
+                )} <span class="text-u">Card</span>
               </span>
             </div>
             <div class="bot-item-service">

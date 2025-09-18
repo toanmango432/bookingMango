@@ -421,6 +421,10 @@
       "PackagePath": "staticwebassets/js/new-online/header/header-salon.js"
     },
     {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/helper/next-form-register.js",
+      "PackagePath": "staticwebassets/js/new-online/helper/next-form-register.js"
+    },
+    {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/helper/send-otp.js",
       "PackagePath": "staticwebassets/js/new-online/helper/send-otp.js"
     },

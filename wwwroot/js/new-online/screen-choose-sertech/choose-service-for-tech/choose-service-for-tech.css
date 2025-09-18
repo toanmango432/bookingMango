@@ -277,4 +277,7 @@
   .choose-ptechs .desc {
     font-size: 13px;
   }
+  .choose-services {
+    margin: 12px 0 0px 0px;
+  }
 }

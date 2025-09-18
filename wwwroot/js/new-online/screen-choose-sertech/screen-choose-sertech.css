@@ -780,10 +780,94 @@
     width: 100%;
     right: 0px;
   }
-  .choose-services {
-    margin: 12px 0 6px;
-  }
   .btn-group-service {
     padding: 6px 0px 8px 0px;
+  }
+  .item-cate {
+    height: 36px;
+    border: 1px solid #c9c9c9;
+  }
+  .item-cate.active {
+    background-color: transparent;
+    border: none;
+    position: relative;
+  }
+  /* mặc định: ẩn gạch */
+  .item-cate::after {
+    content: "";
+    position: absolute;
+    bottom: 0px;
+    left: 0;
+    height: 3px;
+    width: 0;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    background-color: var(--bs-main);
+    transition: width 0.3s ease;
+  }
+  .item-cate.active::after {
+    width: 100%;
+  }
+  .item-cate.active .name-cate,
+  .item-ftcate.active .name-cate {
+    color: var(--text-color-primary);
+  }
+  .item-cate .count,
+  .item-ftcate .count {
+    display: flex;
+    width: 24px;
+    height: 24px;
+    padding: 8px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 22px;
+    background: #ecf8fb;
+    color: var(--bs-main);
+  }
+  .choose-services {
+    margin: 12px 0px 6px;
+  }
+  .list-services {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 8px;
+  }
+  .service-title {
+    font: normal normal 600 var(--s-13);
+  }
+  .service-price .pcash,
+  .service-price .pcard {
+    font: normal normal 600 var(--s-13);
+  }
+  .service-price .pcash .text-u,
+  .service-price .pcard .text-u {
+    font: normal normal 500 var(--s-10);
+  }
+  .addon-indicator {
+    font: normal normal 500 var(--s-10);
+  }
+  .wrap-service-card,
+  .wrap-ftservice-card {
+    height: 100px;
+  }
+  .service-card {
+    padding: 0px 0px 0px 16px;
+  }
+  .dis-addOn {
+    width: 8px;
+    height: 64px;
+    top: 18px;
+  }
+  .dis-addOn i {
+    font-size: 10px;
+    position: relative;
+    left: -1px;
+  }
+  .addon-indicator {
+    width: fit-content;
+    padding: 6px;
+  }
+  .wrap-cart .content-cart.addon-pan {
+    right: 0px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08), 0 4px 6px rgba(0, 0, 0, 0.06);
   }
 }

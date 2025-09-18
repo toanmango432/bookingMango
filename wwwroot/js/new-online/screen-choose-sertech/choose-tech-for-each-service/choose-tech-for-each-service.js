@@ -281,7 +281,8 @@ export function renderListPeSer(forceChoose = false) {
                     <div class="cart-prices">
                       <span class="cashaddon-in-cart">$${price.toFixed(
                         2
-                      )}</span> |
+                      )}</span>
+                      <span class="line-cs">|</span>
                       <span class="cardaddon-in-cart">$${price.toFixed(
                         2
                       )}</span>

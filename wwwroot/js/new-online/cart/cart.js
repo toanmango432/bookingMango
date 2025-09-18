@@ -56,7 +56,8 @@ export function Cart(isOpen = false, isAddOn = false) {
                         <span class="addon-price">
                           <span class="cashser-in-cart">$${priceAfterDiscount.toFixed(
                             2
-                          )}</span> |
+                          )}</span>
+                          <span class="line-cc">|</span>
                           <span class="cardser-in-cart">$${optPrice.toFixed(
                             2
                           )}</span>

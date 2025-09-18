@@ -531,6 +531,7 @@ $(document).ready(async function () {
   });
 
   $(document).on("click", ".btn-confirm-booking-1", async function () {
+    // debugger;
     const store = salonStore.getState();
     const isMobile = $(window).width() <= 768;
 
@@ -546,6 +547,8 @@ $(document).ready(async function () {
     if ($btn.find(".btn-loader").length === 0) {
       $btn.prepend('<span class="btn-loader"></span>');
     }
+    const dataBooking = store.dataBooking;
+    console.log("dataBooking: ", dataBooking);
     const allSelected = dataBooking.users.every((user) => {
       return (
         Array.isArray(user.services) &&
@@ -561,7 +564,7 @@ $(document).ready(async function () {
         )
       );
     });
-    const dataBooking = store.dataBooking;
+
     if (!dataBooking.isConfirmBook || !allSelected) return;
 
     // Chọn thẻ

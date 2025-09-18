@@ -355,8 +355,56 @@
   }
   .wrap-cart .content-cart {
     width: 320px;
+    padding: 24px 12px;
   }
   .overlay-nav-cart.open .cart {
     right: 320px;
+  }
+  .overlay-nav-cart.open.addon-pan .cart {
+    right: 320px;
+  }
+  .wrap-cart .content-cart.addon-pan {
+    right: 0px;
+  }
+  .wrap-nav-addOn .addon-pannel {
+    box-shadow: -6px -6px 12px rgba(0, 0, 0, 0.25),
+      -2px -2px 6px rgba(0, 0, 0, 0.15);
+  }
+  .cart-prices {
+    align-items: center;
+  }
+  .cart-prices .cashaddon-in-cart,
+  .cart-prices .cardaddon-in-cart {
+    font: normal normal 600 var(--s-13);
+  }
+  .staff-dura .cart-duration {
+    font: normal normal 500 var(--s-13);
+  }
+  .addon-price .cashser-in-cart,
+  .addon-price .cardser-in-cart {
+    font: normal normal 600 var(--s-13);
+  }
+  .addon-price {
+    display: flex;
+    gap: 1px;
+  }
+  .cart-addon {
+    margin-top: 0px;
+    padding: 6px;
+  }
+  .line-cc {
+    line-height: 15px;
+  }
+  .cart-title {
+    font: normal normal 600 var(--s-16);
+  }
+  .cart-staff {
+    font: normal normal 500 var(--s-14);
+  }
+  .cart-staff::after {
+    bottom: 0px;
+  }
+  .d-price-discount-addon {
+    gap: 4px;
   }
 }
