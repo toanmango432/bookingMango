@@ -15,6 +15,7 @@ export async function sendOTP(inputValue, type) {
 
   const store = salonStore.getState();
   const RVCNo = store.RVCNo;
+  const telInput = store.telInput;
 
   const isMobile = $(window).width() <= 768;
   const $wrapNewOnline = $(".wrap-newonline");
@@ -88,7 +89,7 @@ export async function sendOTP(inputValue, type) {
         // chưa verify, cần gửi OTP
         return await fetchAPI.get(
           `/api/user/verifycode?phone=${phoneUnformat}&portalCode=${encodeURIComponent(
-            "+84"
+            telInput
           )}&isMail=false`
         );
       } else if (resVerifyAccount.status === 202) {
@@ -253,7 +254,7 @@ export async function sendOTP(inputValue, type) {
         // chưa verify, cần gửi OTP
         return await fetchAPI.get(
           `/api/user/verifycode?phone=${emailVerify}&portalCode=${encodeURIComponent(
-            "+84"
+            telInput
           )}&isMail=true`
         );
       } else if (resVerifyAccount.status === 202) {

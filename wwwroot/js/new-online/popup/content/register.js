@@ -3,6 +3,7 @@ import { typeRequire, typeInput } from "../../../constants/template-online.js";
 export function renderRegisterForm(
   dataRegis,
   fieldEntered = null,
+  actionCur,
   colorPrimary
 ) {
   const valCheckDis =
@@ -95,10 +96,12 @@ export function renderRegisterForm(
           </div>
           <div class="regis-message-error"></div>
           <div class="button-container">
-            <button class="btn-back-verify-register">Back</button>
-            <button class="btn-next-verify-register-1" ${
-              isDisabled ? "" : "disabled"
-            }>Sign Up</button>
+            <button class="btn-back-verify-register-1">Back</button>
+            <button
+              class="btn-next-verify-register-1"
+              ${isDisabled ? "" : "disabled"}
+              data-accur=${actionCur}
+            >Sign Up</button>
           </div>
         </div>
       `;

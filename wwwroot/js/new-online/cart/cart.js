@@ -117,9 +117,18 @@ export function Cart(isOpen = false, isAddOn = false) {
                   <div class="staff-dura">
                     <div id="${
                       flowCur === SelecteFlow.SER
-                        ? "select-service-in-cart"
-                        : ""
-                    }" class="cart-staff">${staffName}</div>
+                        ? "select-tech-in-cart"
+                        : "select-service-in-cart"
+                    }"
+                      class="cart-staff"
+                      data-id-cate=${cate.idService}
+                      data-id-selected=${srv.idItemService}
+                      data-id-selected-instance=${
+                        srv.serviceInstanceId || "undefined"
+                      }
+                    >
+                      ${staffName}
+                    </div>
                     <div class="cart-duration">${duration} mins</div>
                   </div>
                 </div>
@@ -225,7 +234,7 @@ import { renderListPeTech_PageChooseServiceTech } from "../screen-choose-sertech
 import { renderServices_PageChooseServiceTech } from "../screen-choose-sertech/choose-service-for-tech/choose-service-for-tech.js";
 import { ChooseTechForEachServices } from "../screen-choose-sertech/choose-tech-for-each-service/choose-tech-for-each-service.js";
 import { renderSumary } from "../summary/summary.js";
-
+import { ChooseTechForServices } from "../screen-choose-sertech/choose-tech-for-service/choose-tech-for-service.js";
 $(document).ready(async function () {
   // Toggle giỏ hàng
   $(document).on("click", ".cart button", function (e) {
@@ -413,7 +422,34 @@ $(document).ready(async function () {
   });
 
   // Chuyển page chọn tech cho service trong cart
-  $(document).on("click", "#select-service-in-cart", async function () {
+  $(document).on("click", "#select-tech-in-cart", async function () {
+    const $this = $(this);
+    const store = salonStore.getState();
+    const isBookMultipleTech = store.isBookMultipleTech;
+
+    if (isBookMultipleTech) {
+      // Chuyển page chọn tech cho từng service, chỉ chọn được 1 thợ cho 1 service
+      const idCate = $this.data("id-cate");
+      const idItemServiceSlected =
+        $this.data("id-selected-instance") !== "undefined"
+          ? $this.data("id-selected-instance")
+          : $this.data("id-selected");
+
+      salonStore.setState({
+        ...store,
+        pageCurrent: PageCurrent.CHOOSE_TECH_FOR_SERVICE,
+      });
+      await ChooseTechForEachServices({ idCate, idItemServiceSlected });
+    } else {
+      // Chuyển tới page chọn duy nhất một thợ
+      salonStore.setState({
+        ...store,
+        pageCurrent: PageCurrent.CHOOSE_ONLY_TECH,
+      });
+
+      await ChooseTechForServices();
+    }
     return;
   });
+  $(document).on("click", "#select-service-in-cart", async function () {});
 });

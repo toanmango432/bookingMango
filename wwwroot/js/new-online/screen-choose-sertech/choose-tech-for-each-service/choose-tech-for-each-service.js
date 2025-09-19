@@ -213,7 +213,7 @@ export function renderListStaff_PageChoseEachSer(listUserStaff) {
   }
 }
 
-export function renderListPeSer(forceChoose = false) {
+export function renderListPeSer(forceChoose = false, objIdSelected = null) {
   // forceChoose = true: nếu muốn chọn lại active cho itemService, thường dùng khi từ page khác vào page này
   const store = salonStore.getState();
   const dataBooking = store.dataBooking;
@@ -397,18 +397,45 @@ export function renderListPeSer(forceChoose = false) {
   if (forceChoose || !itemServiceChoosing) {
     // tìm item đầu tiên chưa có staff
     let firstNoStaff = null;
-    outer: for (const cate of user.services) {
-      for (const srv of cate.itemService) {
-        if (!srv.selectedStaff || Object.keys(srv.selectedStaff).length === 0) {
+
+    // Ưu tiên chọn service/item nếu có truyền objIdSelected
+    if (objIdSelected && objIdSelected.idCate && objIdSelected.idItemService) {
+      const cateTarget = user.services.find(
+        (cate) => cate.idService === objIdSelected.idCate
+      );
+      if (cateTarget) {
+        const itemTarget = cateTarget.itemService.find(
+          (srv) => srv.idItemService === objIdSelected.idItemService
+        );
+        if (itemTarget) {
           firstNoStaff = {
-            idService: cate.idService,
-            idItemService: srv.idItemService,
+            idService: cateTarget.idService,
+            idItemService: itemTarget.idItemService,
           };
-          break outer;
+        }
+      }
+    }
+
+    if (!firstNoStaff) {
+      console.log("1");
+      outer: for (const cate of user.services) {
+        for (const srv of cate.itemService) {
+          if (
+            !srv.selectedStaff ||
+            Object.keys(srv.selectedStaff).length === 0
+          ) {
+            firstNoStaff = {
+              idService: cate.idService,
+              idItemService: srv.idItemService,
+            };
+            break outer;
+          }
         }
       }
     }
     if (!firstNoStaff) {
+      console.log("2");
+
       // fallback: item đầu tiên
       const first = user.services[0]?.itemService[0];
       if (first) {
@@ -434,7 +461,7 @@ export function renderListPeSer(forceChoose = false) {
   return htmlPeSer;
 }
 
-export async function ChooseTechForEachServices() {
+export async function ChooseTechForEachServices(objIdSelectd) {
   const store = salonStore.getState();
   const dataBooking = store.dataBooking;
   const user = dataBooking.users.find((u) => u.isChoosing);
@@ -479,7 +506,7 @@ export async function ChooseTechForEachServices() {
   const $wrapNewOnline = $(".wrap-newonline");
   $wrapNewOnline.empty();
   $wrapNewOnline.append(htmlScreenChooseTech);
-  renderListPeSer(true); //
+  renderListPeSer(true, objIdSelectd); //
   renderListStaff_PageChoseEachSer(listStaffUser);
   // render cart
   Cart();

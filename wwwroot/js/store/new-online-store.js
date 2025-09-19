@@ -22,6 +22,7 @@ export const salonStore = {
     let selectedDate = new Date();
     let currentMonth = selectedDate.getMonth();
     let currentYear = selectedDate.getFullYear();
+    let telInput;
 
     // --- DATA BOOKING mặc định ---
     // --- DATA BOOKING mặc định ---
@@ -386,6 +387,7 @@ export const salonStore = {
           currencyDeposit: currencyDepositRes,
           paymentDeposit: paymentDepositRes,
           isBookMultipleTech: resSetting?.data?.BookMultipleTech === "1",
+          telInput: resSetting?.data?.TelInput || "+84",
         });
         return resSetting;
       } catch (e) {

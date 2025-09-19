@@ -707,8 +707,12 @@ import { sendOTP } from "../helper/send-otp.js";
 // import constant
 import { PageCurrent } from "../../constants/new-online.js";
 import { monthNames, dayNames } from "../../constants/days-weeks.js";
-import { typeRequire } from "../../constants/template-online.js";
+import {
+  actionCurRegister,
+  typeRequire,
+} from "../../constants/template-online.js";
 import { typeInput } from "../../constants/template-online.js";
+import { SelecteFlow } from "../../constants/new-online.js";
 // import content popup
 import { renderVerifyEmailPhoneContent } from "../popup/content/verify-email-phone.js";
 import { renderBasePopup } from "../popup/base.js";
@@ -735,7 +739,8 @@ import { formatExpiryDate } from "../../helper/format-card.js";
 import { isValidExpiryDate } from "../../helper/format-card.js";
 import { isValidCVV } from "../../helper/format-card.js";
 import { unformatCardNumber } from "../../helper/format-card.js";
-
+import { ScreenChooseService } from "../screen-choose-sertech/screen-choose-service.js";
+import { ScreenChooseTech } from "../screen-choose-sertech/screen-choose-tech.js";
 $(document).ready(async function () {
   const store = salonStore.getState();
   let currentMonth = store.currentMonth;
@@ -1017,6 +1022,7 @@ $(document).ready(async function () {
     const store = salonStore.getState();
     const dataBooking = store.dataBooking;
     const RVCNo = store.RVCNo;
+
     const $appointInput = $("#appointment-input");
     const res = validateEmailPhoneInput($appointInput);
     if (!res) return;
@@ -1104,7 +1110,30 @@ $(document).ready(async function () {
       }
     } else if (resVerifyGetOtp && resVerifyGetOtp.status === 201) {
       // chưa đăng ký qua đăng ký
-      nextFormRegister(dataBooking);
+      nextFormRegister(actionCurRegister.CREATE_NEW);
+    } else if (resVerifyGetOtp && resVerifyGetOtp.status === 500) {
+      const telInput = store.telInput;
+
+      const phoneWhere = [
+        {
+          telInput: "+1",
+          where: "US",
+          message: "Enter your US phone number (numbers only, 10 digits).",
+        },
+      ];
+
+      // tìm đối tượng matching
+      const matchPhone = phoneWhere.find((p) => p.telInput === telInput);
+
+      if (matchPhone) {
+        $(".container-verify-emailPhone .error-message")
+          .text(matchPhone.message)
+          .show();
+      } else {
+        $(".container-verify-emailPhone .error-message")
+          .text("Invalid phone number.")
+          .show();
+      }
     } else {
       // console.log("! status 200");
     }
@@ -1314,12 +1343,14 @@ $(document).ready(async function () {
       localStorage.setItem("refreshTokens_bot", refreshTokens_bot);
 
       // Lưu thông tin vào dataBooking
-      dataBooking.users[0].email = resRegis?.data?.email;
-      dataBooking.users[0].phoneNumber = resRegis?.data?.phone;
-      dataBooking.users[0].id = resRegis?.data?.id;
+      const userChoosing = dataBooking.users.find((u) => u.isChoosing);
+
+      userChoosing.email = resRegis?.data?.email;
+      userChoosing.phoneNumber = resRegis?.data?.phone;
+      userChoosing.id = resRegis?.data?.id;
       // res chỉ trả về fullName
-      dataBooking.users[0].firstName = valFirstRegis;
-      dataBooking.users[0].lastName = valLastRegis;
+      userChoosing.firstName = valFirstRegis;
+      userChoosing.lastName = valLastRegis;
 
       salonStore.setState((prev) => ({
         ...prev,
@@ -1339,6 +1370,56 @@ $(document).ready(async function () {
           showConfirmButton: false,
         },
       });
+      // chuyển tới page cần thiết
+      const accur = $this.data("accur");
+      if (accur === actionCurRegister.CREATE_NEW) {
+        const newStore = salonStore.getState();
+        const newDataBooking = newStore.dataBooking;
+
+        // quay lại đăng nhập
+        const userHavePhone = newDataBooking.users.find(
+          (u) => u.phoneNumber || u.email
+        );
+        const phoneEmailOrNull =
+          userHavePhone?.phoneNumber || userHavePhone?.email || "";
+        const htmlVerifyEmailPhone =
+          renderVerifyEmailPhoneContent(phoneEmailOrNull);
+        let height = 620;
+        let width = 560;
+        if (isMobile) {
+          height = 620;
+          width = "100%";
+        }
+        // const persistent = true;
+        const html = renderBasePopup(
+          htmlVerifyEmailPhone,
+          false,
+          height,
+          width
+        );
+        $wrapNewOnline.append(html);
+        setTimeout(() => {
+          $(".overlay-screen").addClass("show");
+        }, 10);
+      } else if (accur === actionCurRegister.ADDING_GUEST) {
+        const flow = store.flow;
+        if (flow === SelecteFlow.SER) {
+          await ScreenChooseService(); // append screen choose service
+
+          const newStore = salonStore.getState();
+          salonStore.setState({
+            ...newStore,
+            pageCurrent: PageCurrent.CHOOSE_SERVICE,
+          });
+        } else if (flow === SelecteFlow.TECH) {
+          await ScreenChooseTech();
+          const newStore = salonStore.getState();
+          salonStore.setState({
+            ...newStore,
+            pageCurrent: PageCurrent.CHOOSE_TECH,
+          });
+        }
+      }
     } catch (e) {
       console.error("[on.next-verify-register]", {
         message: e.message,

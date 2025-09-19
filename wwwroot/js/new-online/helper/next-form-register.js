@@ -2,29 +2,27 @@ import { renderRegisterForm } from "../popup/content/register.js";
 import { renderBasePopup } from "../popup/base.js";
 // import constant
 import { typeInput } from "../../constants/template-online.js";
+import { salonStore } from "../../store/new-online-store.js";
 
-export function nextFormRegister(dataBooking) {
+export function nextFormRegister(actionCur) {
+  const store = salonStore.getState();
+  const dataBooking = store.dataBooking;
+  const userBooking = dataBooking.users.find((u) => u.isChoosing);
+
   let fieldEntered;
   const isMobile = $(window).width() <= 768;
   const $wrapNewOnline = $(".wrap-newonline");
 
-  const user = dataBooking.users[0];
   const dataRegis = {};
-  if (user.email?.trim()) {
+  if (userBooking.email?.trim()) {
     fieldEntered = typeInput.EMAIL;
-    dataRegis.email = user.email.trim();
-    user.phoneNumber = "";
-    user.firstName = "";
-    user.lastName = "";
-  } else if (user.phoneNumber?.trim()) {
+    dataRegis.email = userBooking.email.trim();
+  } else if (userBooking.phoneNumber?.trim()) {
     fieldEntered = typeInput.PHONE;
-    dataRegis.phoneNumber = user.phoneNumber.trim();
-    user.email = "";
-    user.firstName = "";
-    user.lastName = "";
+    dataRegis.phoneNumber = userBooking.phoneNumber.trim();
   }
 
-  const htmlFormRegis = renderRegisterForm(dataRegis, fieldEntered);
+  const htmlFormRegis = renderRegisterForm(dataRegis, fieldEntered, actionCur);
   const persistent = true;
   let height = 762;
   let width = 886;

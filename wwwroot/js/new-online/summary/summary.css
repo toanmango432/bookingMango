@@ -940,6 +940,198 @@
   padding: 12px 32px;
 }
 
+/* start css popup content verify */
+.popup-wrap-addguest {
+  background: white;
+  display: flex;
+  padding: var(--px-32);
+  flex-direction: column;
+  align-items: center;
+  gap: var(--px-24);
+  border-radius: var(--px-24);
+  background: #fff;
+  box-shadow: 0 0 var(--px-12) 0 rgba(0, 0, 0, 0.16);
+}
+.title-addguest {
+  width: 100%;
+}
+.title-addguest h2 {
+  color: #eb5781;
+  font: normal normal 500 var(--s-20);
+  line-height: var(--px-24); /* 120% */
+  margin-bottom: 0px;
+}
+.container-addguest {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  gap: var(--px-8);
+  align-self: stretch;
+  border-radius: var(--px-10);
+  background: #fff;
+  margin-bottom: 0px;
+}
+.appointment-input {
+  color: var(--text-color-primary);
+  font: normal normal 400 var(--s-16);
+  line-height: var(--px-20);
+  border-radius: var(--px-10);
+  border: 1px solid var(--Gray-Neutral-65, #a0a0a0);
+  background: #fff;
+  display: flex;
+  flex: 1 0 0;
+  padding: var(--px-14) var(--px-12);
+  align-items: center;
+  gap: var(--px-8);
+  align-self: stretch;
+}
+.appointment-input:focus-visible {
+  outline: 2px solid var(--bs-main);
+  border: none;
+}
+
+.consent-container {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--px-8);
+  align-self: stretch;
+}
+.consent-container .wrap-icon-checked {
+  width: var(--px-20);
+  height: var(--px-20);
+  background-color: var(--bs-main);
+  color: white;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  justify-content: center;
+  border-radius: var(--px-16);
+  font-size: var(--px-12);
+  position: relative;
+  top: var(--px-4);
+}
+.consent-container label {
+  color: var(--text-color-primary);
+  font: normal normal 300 var(--s-20);
+  line-height: var(--px-24); /* 120% */
+}
+.button-container {
+  display: flex;
+  align-items: center;
+  gap: var(--px-8);
+  align-self: stretch;
+}
+.clear-icon-addguest {
+  height: 28px;
+  width: 28px;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  right: var(--px-12);
+  top: 25.5px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #666;
+  font-size: var(--px-14);
+  transition: all 0.3s ease;
+}
+.clear-icon-addguest:hover {
+  color: var(--bs-main);
+  border-radius: 100%;
+  border: 1px solid var(--bs-main);
+}
+
+.btn-back-addguest {
+  display: flex;
+  padding: var(--px-12) var(--px-24);
+  justify-content: center;
+  align-items: center;
+  gap: var(--px-4);
+  flex: 1 0 0;
+  border-radius: var(--px-12);
+  border: 1px solid var(--bs-main);
+  background: var(--Foundation-Green-Light, #e6eee8);
+  color: var(--text-color-primary);
+  font: normal normal 600 var(--s-20);
+}
+.btn-skipguest {
+  display: flex;
+  padding: var(--px-12) var(--px-24);
+  justify-content: center;
+  align-items: flex-start;
+  gap: var(--px-4);
+  flex: 1 0 0;
+  border-radius: var(--px-12);
+  border: 1px solid var(--bs-main);
+  background: var(--bs-main);
+  color: white;
+  font: normal normal 600 var(--s-20);
+}
+.btn-skipguest:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.btn-skipguest:hover {
+  filter: brightness(0.9);
+}
+
+.btn-back-addguest:hover {
+  filter: brightness(0.95);
+  cursor: pointer;
+}
+
+.error-message {
+  color: red;
+  font-size: var(--px-14);
+  padding-left: var(--px-8);
+  margin-bottom: 0px;
+}
+
+.btn-back-addguest {
+  display: flex;
+  padding: var(--px-12) var(--px-24);
+  justify-content: center;
+  align-items: center;
+  gap: var(--px-4);
+  flex: 1 0 0;
+  border-radius: var(--px-12);
+  border: 1px solid var(--bs-main);
+  background: var(--Foundation-Green-Light, #e6eee8);
+  color: var(--text-color-primary);
+  font: normal normal 600 var(--s-20);
+}
+.btn-skipguest {
+  width: 50%;
+  display: flex;
+  padding: var(--px-12) var(--px-24);
+  justify-content: center;
+  align-items: flex-start;
+  gap: var(--px-4);
+  border-radius: var(--px-12);
+  border: 1px solid var(--bs-main);
+  background: var(--bs-main, #0c7e2d);
+  color: white;
+  font: normal normal 600 var(--s-20);
+}
+.btn-skipguest:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.btn-skipguest:hover {
+  filter: brightness(0.9);
+}
+
+.btn-back-addguest:hover {
+  filter: brightness(0.95);
+  cursor: pointer;
+}
+.btn-back-addguest:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+/* end css content add guest */
+
 @media (max-width: 768px) {
   .new-sumary {
     width: 92%;

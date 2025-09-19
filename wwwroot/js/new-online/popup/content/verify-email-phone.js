@@ -7,6 +7,7 @@ export function renderVerifyEmailPhoneContent(emailOrPhone, colorPrimary) {
 
   const isSkipVerify =
     (owner.phoneNumber || owner.email) && cardChoosing ? true : false;
+
   return `
         <div class="popup-wrap-verify-emailPhone"
           style="

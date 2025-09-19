@@ -175,7 +175,8 @@ export function renderSumary(dataBooking, listDataService) {
                         } else {
                           console.log("Unprocessed");
                         }
-                        const fullName = userBooking?.lastName;
+                        const fullName =
+                          userBooking.firstName + " " + userBooking?.lastName;
                         return `
                         <div class="item-sumary" data-id="${userBooking.id}">
                           <div class="top-item-sumary">
@@ -190,6 +191,8 @@ export function renderSumary(dataBooking, listDataService) {
                                     : "Not Name"
                                 }</h2>
                                 <h2 class="phone">${
+                                  userBooking?.phoneNumber ||
+                                  userBooking?.email ||
                                   owner?.phoneNumber ||
                                   owner?.email ||
                                   "Not info"
@@ -452,6 +455,10 @@ import { salonStore } from "../../store/new-online-store.js";
 import { dayNames, monthNames } from "../../constants/days-weeks.js";
 import { SelecteFlow } from "../../constants/new-online.js";
 import { PageCurrent } from "../../constants/new-online.js";
+import {
+  typeInput,
+  actionCurRegister,
+} from "../../constants/template-online.js";
 // import component
 import { fetchAPI } from "../../site.js";
 import { HeaderSalon } from "../header/header-salon.js";
@@ -469,8 +476,13 @@ import { updateCalendarData } from "../choose-time/choose-time.js";
 import { renderCalendar } from "../choose-time/choose-time.js";
 import { ScreenChooseService } from "../screen-choose-sertech/screen-choose-service.js";
 import { ScreenChooseTech } from "../screen-choose-sertech/screen-choose-tech.js";
-
+// import popup
+import { renderAddGuestContent } from "../../popup/content/add-guest.js";
+import { nextFormRegister } from "../helper/next-form-register.js";
 $(document).ready(async function () {
+  const isMobile = $(window).width() <= 768;
+  const $wrapNewOnline = $(".wrap-newonline");
+
   // Confirm payment final
   $(document).on("click", ".checkbox-confirm-sum", function () {
     const store = salonStore.getState();
@@ -533,9 +545,7 @@ $(document).ready(async function () {
   $(document).on("click", ".btn-confirm-booking-1", async function () {
     // debugger;
     const store = salonStore.getState();
-    const isMobile = $(window).width() <= 768;
 
-    const $wrapNewOnline = $(".wrap-newonline");
     const $btn = $(this);
     // Tránh bấm nhiều lần
     if ($btn.hasClass("loading")) return;
@@ -1183,6 +1193,134 @@ $(document).ready(async function () {
     });
     if (!allSelected) return;
 
+    const htmlAddGuest = renderAddGuestContent();
+    let height = 620;
+    let width = 560;
+    if (isMobile) {
+      height = 620;
+      width = "100%";
+    }
+    // const persistent = true;
+    const html = renderBasePopup(htmlAddGuest, false, height, width);
+    $wrapNewOnline.append(html);
+    setTimeout(() => {
+      $(".overlay-screen").addClass("show");
+    }, 10);
+  });
+  // next add guest by val name
+  $(document).on("click", ".btn-back-addguest", async function () {
+    closePopupContainerTemplate();
+  });
+  // Bắt input change
+  $(document).on("input", "#addguest-input", async function () {
+    const $this = $(this);
+    const store = salonStore.getState();
+    const RVCNo = store.RVCNo;
+
+    const dataBooking = store.dataBooking;
+    const userCur = dataBooking.users.find((u) => u.isChoosing);
+    const owner = dataBooking.users[0];
+
+    // chỉ giữ lại số
+    let val = $this.val().replace(/\D/g, "");
+    // giới hạn tối đa 10 số
+    if (val.length > 10) {
+      val = val.slice(0, 10);
+    }
+
+    // cập nhật lại input
+    $this.val(val);
+
+    if (val.length === 10) {
+      const url = `/api/client/getbyphone?RVCNo=${RVCNo}&phone=${val}`;
+      try {
+        const resCheckCus = await fetchAPI.get(url);
+
+        if (resCheckCus.status === 300) {
+          // chưa đăng ký trong hệ thống, đá qua đăng ký
+          // lưu lại phone đã nhập
+          userCur.isChoosing = false;
+
+          // Tạo guest và isChoosing cho guest này
+          let guest = {
+            id: dataBooking.users.length,
+            firstName: "",
+            lastName: "",
+            phoneNumber: val,
+            email: null,
+            gender: null,
+            services: [],
+            selectedDate: new Date(),
+            selectedTimeSlot: null,
+            isSelecting: false,
+            isChoosing: true,
+          };
+          dataBooking.users.push(guest);
+          salonStore.setState((prev) => ({
+            ...prev,
+            dataBooking,
+          }));
+          nextFormRegister(actionCurRegister.ADDING_GUEST);
+        } else if (resCheckCus.status === 200) {
+          // phone đã đăng ký, fill thông tin cho guest mới và đá qua book
+          // cập nhật trạng thái của userCur
+          userCur.isChoosing = false;
+
+          // Tạo guest và isChoosing cho guest này
+          let guest = {
+            id: resCheckCus.customerID,
+            firstName: resCheckCus.firstName,
+            lastName: resCheckCus.lastName,
+            phoneNumber: resCheckCus.contactPhone,
+            email: null,
+            gender: null,
+            services: [],
+            selectedDate: new Date(),
+            selectedTimeSlot: null,
+            isSelecting: false,
+            isChoosing: true,
+          };
+          dataBooking.users.push(guest);
+          salonStore.setState((prev) => ({
+            ...prev,
+            dataBooking,
+          }));
+
+          const flow = store.flow;
+          if (flow === SelecteFlow.SER) {
+            await ScreenChooseService(); // append screen choose service
+
+            const store = salonStore.getState();
+            salonStore.setState({
+              ...store,
+              pageCurrent: PageCurrent.CHOOSE_SERVICE,
+            });
+          } else if (flow === SelecteFlow.TECH) {
+            await ScreenChooseTech();
+            const store = salonStore.getState();
+            salonStore.setState({
+              ...store,
+              pageCurrent: PageCurrent.CHOOSE_TECH,
+            });
+          }
+        } else {
+          console.log("Not yet handle");
+        }
+      } catch (e) {
+        console.error("[getcustomer]", e);
+      }
+    }
+  });
+  // skip add guest
+  $(document).on("click", ".btn-skipguest", async function () {
+    const $this = $(this);
+    const val = $this.val().trim();
+    if (!val) return;
+
+    const store = salonStore.getState();
+    const dataBooking = store.dataBooking;
+    const userCur = dataBooking.users.find((u) => u.isChoosing);
+    const owner = dataBooking.users[0];
     // cập nhật trạng thái của userCur
     userCur.isChoosing = false;
 
@@ -1224,6 +1362,7 @@ $(document).ready(async function () {
       });
     }
   });
+
   $(document).on("input", "#note-ticket", function () {
     const $this = $(this);
   });
