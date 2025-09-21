@@ -426,7 +426,6 @@ export function renderListPeSer(forceChoose = false, objIdSelected = null) {
     }
 
     if (!firstNoStaff) {
-      console.log("1");
       outer: for (const cate of user.services) {
         for (const srv of cate.itemService) {
           if (
@@ -443,8 +442,6 @@ export function renderListPeSer(forceChoose = false, objIdSelected = null) {
       }
     }
     if (!firstNoStaff) {
-      console.log("2");
-
       // fallback: item đầu tiên
       const first = user.services[0]?.itemService[0];
       if (first) {

@@ -9,6 +9,7 @@ export function renderRegisterForm(
   const valCheckDis =
     fieldEntered === typeInput.EMAIL ? dataRegis.email : dataRegis.phoneNumber;
   const isDisabled = dataRegis.firstName && dataRegis.lastName && valCheckDis;
+  console.log("field");
   return `
         <div class="wrap-popup-register"
           style="

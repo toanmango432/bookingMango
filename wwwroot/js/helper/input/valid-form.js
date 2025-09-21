@@ -1,6 +1,7 @@
 import { isValidPhoneNumber } from "../format-phone.js";
 import { templateStore } from "../../store/template-store.js";
 import { shakeError } from "../shake-error.js";
+import { showInputError } from "../shake-error.js";
 
 // BLUR firstName
 export function validateFirstNameInput($input) {

@@ -42,6 +42,11 @@ export function renderVerifyEmailPhoneContent(emailOrPhone, colorPrimary) {
             </span>
             <label for="consent-checkbox">Input your number to consent to HANG NAILS & SPA SMS messages. Opt out with Stop</label>
           </div>
+          <div class="wrap-btn-create">
+            <button id="btn-create-new" class="btn-create-new text-uppercase">
+              Create new client
+            </button>
+          </div>
           <div class="button-container">
           ${
             isSkipVerify
@@ -59,6 +64,10 @@ import { salonStore } from "../../../store/new-online-store.js";
 import { renderSumary } from "../../summary/summary.js";
 import { formatPhoneNumber } from "../../../helper/format-phone.js";
 import { PageCurrent } from "../../../constants/new-online.js";
+// import helper
+import { nextFormRegister } from "../../helper/next-form-register.js";
+// import constant
+import { actionCurRegister } from "../../../constants/template-online.js";
 $(document).ready(async function () {
   $(document).on("click", "#skip-verify", async function () {
     const store = salonStore.getState();
@@ -77,5 +86,8 @@ $(document).ready(async function () {
       pageCurrent: PageCurrent.SUMMARY,
     }));
     renderSumary(dataBooking, listDataService);
+  });
+  $(document).on("click", "#btn-create-new", function () {
+    nextFormRegister(actionCurRegister.CREATE_NEW);
   });
 });

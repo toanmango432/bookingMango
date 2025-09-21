@@ -521,6 +521,7 @@ import {
   renderServices_PageChooseServiceTech,
 } from "./choose-service-for-tech/choose-service-for-tech.js";
 import { renderSumary } from "../summary/summary.js";
+import { renderListPeSer } from "./choose-tech-for-each-service/choose-tech-for-each-service.js";
 
 // hanle event
 $(document).ready(async function () {
@@ -714,6 +715,7 @@ $(document).ready(async function () {
     });
     // Tuỳ pageCurrent mà render lại component cần thiết
     const pageCurrent = store.pageCurrent;
+    console.log("PageCur: ", pageCurrent);
     if (pageCurrent === PageCurrent.CHOOSE_SERVICE) {
       // Load lại service khi thay đổi addOn
       let cateId = $(".item-cate.active").data("id");
@@ -731,6 +733,15 @@ $(document).ready(async function () {
       } else {
         Cart();
       }
+    } else if (pageCurrent === PageCurrent.CHOOSE_ONLY_TECH) {
+      // Load lại cart khi đang chỉ chọn add on hoặc đang có mở cart
+      // đang mở cart
+      const $cartActive = $(".content-cart.addon-pan");
+      if ($cartActive.length) {
+        Cart(true, true);
+      } else {
+        Cart();
+      }
     } else if (pageCurrent === PageCurrent.CHOOSE_SERVICE_FOR_TECH) {
       // khởi tạo lần đầu renderServices_PageChooseServiceTech
       const id = $(".item-ftcate.active").data("id");
@@ -739,6 +750,16 @@ $(document).ready(async function () {
       renderListPeTech_PageChooseServiceTech();
 
       // Load lại cart khi đang chỉ chọn add on hoặc đang có mở cart
+      const $cartActive = $(".content-cart.addon-pan");
+      if ($cartActive.length) {
+        Cart(true, true);
+      } else {
+        Cart();
+      }
+    } else if (pageCurrent === PageCurrent.CHOOSE_TECH_FOR_SERVICE) {
+      renderListPeSer();
+      // Load lại cart khi đang chỉ chọn add on hoặc đang có mở cart
+      // đang mở cart
       const $cartActive = $(".content-cart.addon-pan");
       if ($cartActive.length) {
         Cart(true, true);

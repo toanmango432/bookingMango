@@ -166,6 +166,8 @@
   background-color: var(--bs-main) !important;
   color: white !important;
 }
+.day.unactive {
+}
 
 .day {
   display: flex;

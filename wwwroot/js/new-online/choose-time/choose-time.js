@@ -867,6 +867,32 @@ $(document).ready(async function () {
       $(".overlay-screen").addClass("show");
     }, 10);
   });
+  $(document).on("click", ".btn-back-verify-register-1", async function () {
+    const store = salonStore.getState();
+    const dataBooking = store.dataBooking;
+    const user = dataBooking.users.find((u) => u.isChoosing);
+    // reset
+    user.phoneNumber = "";
+    user.email = "";
+    salonStore((prev) => ({
+      ...prev,
+      dataBooking,
+    }));
+
+    const htmlVerifyEmailPhone = renderVerifyEmailPhoneContent();
+    let height = 620;
+    let width = 560;
+    if (isMobile) {
+      height = 620;
+      width = "100%";
+    }
+    // const persistent = true;
+    const html = renderBasePopup(htmlVerifyEmailPhone, false, height, width);
+    $wrapNewOnline.append(html);
+    setTimeout(() => {
+      $(".overlay-screen").addClass("show");
+    }, 10);
+  });
 
   $(document).on("click", ".btn-back-policies-1", function () {
     const store = salonStore.getState();

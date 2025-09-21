@@ -1132,6 +1132,20 @@
 }
 /* end css content add guest */
 
+/* css form login */
+.wrap-btn-create .btn-create-new {
+  background-color: transparent;
+  color: var(--bs-main);
+  border: none;
+  font: normal normal 600 var(--s-16);
+  padding: 8px 16px;
+  border-radius: 8px;
+}
+.wrap-btn-create .btn-create-new:hover {
+  border: 1px solid var(--bs-main);
+  filter: brightness(0.95);
+}
+
 @media (max-width: 768px) {
   .new-sumary {
     width: 92%;

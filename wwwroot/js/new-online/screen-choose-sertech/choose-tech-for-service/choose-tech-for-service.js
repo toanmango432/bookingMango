@@ -386,7 +386,11 @@ $(document).ready(async function () {
   // btn back tech to services
   $(document).on("click", "#btn-back-tech", async function () {
     const $this = $(this);
-
+    // redirect page
+    salonStore.setState((prev) => ({
+      ...prev,
+      pageCurrent: PageCurrent.CHOOSE_SERVICE,
+    }));
     await ScreenChooseService();
   });
 
@@ -464,6 +468,8 @@ $(document).ready(async function () {
   $(document).on("click", ".choose-multitech", async function () {
     const $this = $(this);
     const store = salonStore.getState();
+    const dataBooking = store.dataBooking;
+    const user = dataBooking.users.find((u) => u.isChoosing);
     //
     const isChooseMultiSer = user.services.some((srv) => {
       return srv.itemService.length > 1;
