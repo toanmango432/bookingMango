@@ -699,6 +699,7 @@ import { HeaderSalon } from "../header/header-salon.js";
 import { formatDateMMDDYYYY } from "../../helper/format-day.js";
 import { findMultiTechStarts } from "../../helper/free-time/slot-time-available.js";
 import { ChooseTechForServices } from "../screen-choose-sertech/choose-tech-for-service/choose-tech-for-service.js";
+import { ScreenChooseServiceForTech } from "../screen-choose-sertech/choose-service-for-tech/choose-service-for-tech.js";
 import { Cart } from "../cart/cart.js";
 // help function
 import { validateEmailPhoneInput } from "../../helper/input/valid-form.js";
@@ -808,12 +809,23 @@ $(document).ready(async function () {
 
   $(document).on("click", "#btn-back-choose-time", async function () {
     const store = salonStore.getState();
-    // Chuyển tới page chọn duy nhất một thợ
-    salonStore.setState({
-      ...store,
-      pageCurrent: PageCurrent.CHOOSE_ONLY_TECH,
-    });
-    await ChooseTechForServices();
+    // check flow
+    const flow = store.flow;
+    if (flow === SelecteFlow.SER) {
+      // Chuyển tới page chọn duy nhất một thợ
+      salonStore.setState({
+        ...store,
+        pageCurrent: PageCurrent.CHOOSE_ONLY_TECH,
+      });
+      await ChooseTechForServices();
+    } else if (flow === SelecteFlow.TECH) {
+      // Chuyển page chọn nhiều service cho tech, có thể chọn nhiều service cho 1 tech và 1 service chọn nhiều tech,
+      salonStore.setState({
+        ...store,
+        pageCurrent: PageCurrent.CHOOSE_SERVICE_FOR_TECH,
+      });
+      await ScreenChooseServiceForTech();
+    }
   });
 
   $(document).on("click", ".time-slot-1.active", function () {
@@ -1169,25 +1181,44 @@ $(document).ready(async function () {
   $(document).on("click", ".btn-next-policies-1", async function () {
     const store = salonStore.getState();
     const dataBooking = store.dataBooking;
-    const contentPaymentMethod = renderPaymentMethodsForm(dataBooking);
-    let height = 776;
-    let width = 886;
-    if (isMobile) {
-      height = 676;
-      width = "100%";
+    const owner = dataBooking.users[0];
+    // kiểm tra nếu client chưa có card đá vào add new card, ngược lại vào chọn card
+    if (dataBooking.cardNumber.length > 0) {
+      const contentPaymentMethod = renderPaymentMethodsForm(dataBooking);
+      let height = 776;
+      let width = 886;
+      if (isMobile) {
+        height = 676;
+        width = "100%";
+      }
+      const html = renderBasePopup(contentPaymentMethod, false, height, width);
+      $wrapNewOnline.append(html);
+      setTimeout(() => {
+        $(".overlay-screen").addClass("show");
+      }, 10);
+    } else {
+      let height = 776;
+      let width = 886;
+      if (isMobile) {
+        height = "96%";
+        width = "100%";
+      }
+      const htmlAddNewMethod = renderAddNewMethod();
+      const persistent = true;
+      const html = renderBasePopup(htmlAddNewMethod, persistent, height, width);
+
+      $wrapNewOnline.append(html);
+      setTimeout(() => {
+        $(".overlay-screen").addClass("show");
+      }, 10);
     }
-    const html = renderBasePopup(contentPaymentMethod, false, height, width);
-    $wrapNewOnline.append(html);
-    setTimeout(() => {
-      $(".overlay-screen").addClass("show");
-    }, 10);
   });
   // add new card
   $(document).on("click", ".add-new-card-btn-1", function () {
-    let height = "96%";
+    let height = 776;
     let width = 886;
     if (isMobile) {
-      height = 676;
+      height = "96%";
       width = "100%";
     }
     const htmlAddNewMethod = renderAddNewMethod();
@@ -1200,7 +1231,9 @@ $(document).ready(async function () {
     }, 10);
   });
   // back: add new card
-  $(document).on("click", ".btn-back-add-card", function () {
+  $(document).on("click", ".btn-back-add-card-1", function () {
+    const store = salonStore.getState();
+    const dataBooking = store.dataBooking;
     let height = 776;
     let width = 886;
     if (isMobile) {

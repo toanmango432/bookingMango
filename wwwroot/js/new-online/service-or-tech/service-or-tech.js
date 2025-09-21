@@ -2,6 +2,8 @@ export function ServiceOrTech() {
   const $wrapNewOnline = $(".wrap-newonline");
   const store = salonStore.getState();
   const salonChoosing = store.salonChoosing;
+  const allSalon = store.allSalon;
+
   const htmlHeaderSalon = HeaderSalon(salonChoosing);
 
   const htmlSerOrTech = `
@@ -12,12 +14,16 @@ export function ServiceOrTech() {
             <div class="wrap-content-sertech">
                 <div class="content-sertech">
                     <div class="title-sertech">
-                        <button class="back-salon">
+                    ${
+                      allSalon?.length > 0
+                        ? `<button class="back-salon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
                                 <path d="M10.07 5.92969L4 11.9997L10.07 18.0697" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
                                 <path d="M20.9999 12H4.16992" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
-                        </button>
+                        </button>`
+                        : ""
+                    }
                         <h3 class="text-uppercase">Pick a service or choose your technician</h3>
                     </div>
                     <div class="list-sertech">

@@ -99,6 +99,7 @@ export function renderAddNewMethod(colorPrimary) {
               <input type="text" id="card-zip" placeholder="Zip">
             </div>
           </div>
+          <!--
           <div class="form-group-card-sub">
             <div class="checkbox-add-card">
               <div class="circle-add-card">
@@ -107,6 +108,7 @@ export function renderAddNewMethod(colorPrimary) {
               <span>Save my card</span>
             </div>
           </div>
+          -->
           <div class="button-container">
             <button class="btn-back-add-card-1">Back</button>
             <button class="btn-add-card-1">Add</button>

@@ -2,6 +2,7 @@ export function renderListPeTech_PageChooseServiceTech(forceChoose = false) {
   const store = salonStore.getState();
   const { dataBooking, listStaffUser } = store;
   let itemTechChoosing = store.itemTechChoosing;
+  let isSameTime = store.isSameTime;
   const user = dataBooking.users.find((u) => u.isChoosing);
   const isHidePrice = store.isHidePrice;
 
@@ -144,7 +145,64 @@ export function renderListPeTech_PageChooseServiceTech(forceChoose = false) {
     })
     .join("");
 
-  $(".list-petech").html(htmlListPeTech);
+  $(".wrap-list-petech").empty(); // làm mới trước khi append;
+  $(".wrap-list-petech").append(
+    `<div class="list-petech">${htmlListPeTech}</div>`
+  );
+
+  // Chỉ hiện start same time khi có ít nhất 2 itemService
+  const totalSelected = user.services.reduce(
+    (count, cate) => count + cate.itemService.length,
+    0
+  );
+  let isValidSameTime = false;
+  if (totalSelected >= 2) {
+    isValidSameTime = true;
+    let allHaveStaff = true;
+    user.services.forEach((cate) => {
+      cate.itemService.forEach((srv) => {
+        if (!srv.selectedStaff || !srv.selectedStaff.employeeID) {
+          allHaveStaff = false;
+        }
+      });
+      isValidSameTime = allHaveStaff;
+    });
+  }
+  if (!isValidSameTime) {
+    isSameTime = false;
+    salonStore.setState((prev) => ({
+      ...prev,
+      isSameTime,
+    }));
+  }
+  const htmlSameTime = `
+  ${
+    totalSelected >= 2
+      ? `
+        <div class="wrap-sametime-op">
+            <div class="copy-time">
+                <input
+                    id="select-sametime"
+                    type="checkbox"
+                    ${isSameTime ? "checked" : ""}
+                    class="toggle-switch"
+                    ${!isValidSameTime ? "disabled" : ""}
+                    title="${
+                      !isValidSameTime
+                        ? "You can only select this if each service has a different staff"
+                        : ""
+                    }"
+                />
+                <span class="text-same-time">Start on same time</span>
+            </div>
+            <span class="guide-sametime">
+                Use this if you want multiple services done at the same time with different techs
+            </span>
+        </div>
+      `
+      : ""
+  } `;
+  $(".wrap-list-petech").append(htmlSameTime);
 }
 
 function renderFooterService() {
@@ -334,7 +392,6 @@ export async function ScreenChooseServiceForTech() {
   const store = salonStore.getState();
   const dataBooking = store.dataBooking;
   const user = dataBooking.users.find((u) => u.isChoosing);
-  console.log("user: ", user);
 
   const salonChoosing = store.salonChoosing;
   let dataService = await store.getListDataService();
@@ -382,7 +439,10 @@ export async function ScreenChooseServiceForTech() {
                   </div>
                 </div>
                 <div class="persers-petechs">
-                  <div class="list-petech"></div>
+                  <div class="container-list-petech">
+                    <div class="wrap-list-petech">
+                    </div>
+                  </div>
                   <div class="line-one"></div>
                   <div class="list-pesers3"></div>
                 </div>
