@@ -261,36 +261,57 @@ $(document).ready(async function () {
     const staffId = $this.data("id");
 
     const store = salonStore.getState();
+    const isBookMultipleTech = store.isBookMultipleTech;
     let chooseStaffBefore = store.chooseStaffBefore || [];
 
-    // kiểm tra staff có trong danh sách chưa
-    const isExist = chooseStaffBefore.includes(staffId);
+    if (isBookMultipleTech) {
+      // --- Trường hợp cho phép chọn nhiều tech ---
+      const isExist = chooseStaffBefore.includes(staffId);
 
-    if (isExist) {
-      // nếu click staff đã chọn => bỏ chọn
-      chooseStaffBefore = chooseStaffBefore.filter((id) => id !== staffId);
+      if (isExist) {
+        // Nếu click staff đã chọn => bỏ chọn
+        chooseStaffBefore = chooseStaffBefore.filter((id) => id !== staffId);
+      } else {
+        // Nếu chưa có => thêm vào
+        chooseStaffBefore.push(staffId);
+      }
     } else {
-      // nếu chưa có => thêm vào
-      chooseStaffBefore.push(staffId);
+      // --- Trường hợp chỉ cho phép chọn 1 tech duy nhất ---
+      if (chooseStaffBefore.length === 1 && chooseStaffBefore[0] === staffId) {
+        // Nếu click lại staff đang chọn => bỏ chọn hết
+        chooseStaffBefore = [];
+      } else {
+        // Nếu chọn staff khác => chỉ giữ staff này
+        chooseStaffBefore = [staffId];
+      }
     }
 
-    // cập nhật lại store
-    salonStore.setState({ ...store, chooseStaffBefore });
+    // Cập nhật lại store
+    const dataBooking = store.dataBooking;
+    const user = dataBooking.users.find((u) => u.isChoosing);
+    user.services = []; // reset
+    salonStore.setState({
+      ...store,
+      dataBooking,
+      chooseStaffBefore,
+    });
 
-    // render lại staff với trạng thái selected mới
-    // lấy staff object tương ứng
+    // Render lại staff với trạng thái selected mới
     const listStaff =
       store.listStaffUser?.length > 0
         ? store.listStaffUser
         : await store.getListUserStaff();
-    const staff = listStaff.find((s) => s.employeeID === staffId);
-    if (staff) {
-      const newHtml = renderItemTech(staff);
-      // replace DOM của staff này thôi
-      $this.replaceWith(newHtml);
-    }
 
-    // render lại footer (cập nhật nút Next nếu cần)
+    // Lặp qua tất cả staff trong danh sách và re-render (để trạng thái chính xác)
+    listStaff.forEach((staff) => {
+      const $staffEl = $(`.item-tech-sctpage[data-id="${staff.employeeID}"]`);
+      if ($staffEl.length) {
+        const newHtml = renderItemTech(staff);
+        $staffEl.replaceWith(newHtml);
+      }
+    });
+
+    // Render lại footer (cập nhật nút Next nếu cần)
     renderFooterTech_PageChooseTech();
   });
 

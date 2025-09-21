@@ -600,14 +600,18 @@ $(document).ready(async function () {
 
   // Xử lý chọn staff tại đây, setting multitech thì cho phép chọn nhiều tech cho các service, nếu không thì xử lý chọn 1 tech cho tất cả service
   // cũng gán tất cả service đã chọn bằng staff được chọn
-  $(document).on("click", ".item-tech-pepage", function () {
+  $(document).on("click", ".item-tech-pepage", async function () {
     const $this = $(this);
     if ($this.hasClass("not-ser")) {
       console.log("Please back to choose service!");
       return;
     }
     const store = salonStore.getState();
-    const listStaffUser = store.listStaffUser;
+    const listStaffUser =
+      store.listStaffUser.length > 0
+        ? store.listStaffUser
+        : await store.getListUserStaff();
+
     const dataBooking = store.dataBooking;
     const user = dataBooking.users.find((u) => u.isChoosing);
 

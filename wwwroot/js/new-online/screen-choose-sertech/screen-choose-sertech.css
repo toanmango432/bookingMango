@@ -322,10 +322,12 @@
   position: relative;
   transition: border 0.3s ease;
 }
-.wrap-service-card:hover {
+.wrap-service-card:hover,
+.wrap-ftservice-card:hover {
   border: 1px solid var(--bs-main);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background-color: #d9f2f6;
 }
 
 .wrap-service-card.selected {
@@ -365,7 +367,7 @@
   gap: 8px;
   flex: 1 0 0;
   align-self: stretch;
-  background-color: white;
+  /* background-color: white; */
   border-radius: 6px;
   cursor: pointer;
 }

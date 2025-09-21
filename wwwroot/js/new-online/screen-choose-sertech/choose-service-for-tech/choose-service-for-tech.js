@@ -334,6 +334,7 @@ export async function ScreenChooseServiceForTech() {
   const store = salonStore.getState();
   const dataBooking = store.dataBooking;
   const user = dataBooking.users.find((u) => u.isChoosing);
+  console.log("user: ", user);
 
   const salonChoosing = store.salonChoosing;
   let dataService = await store.getListDataService();

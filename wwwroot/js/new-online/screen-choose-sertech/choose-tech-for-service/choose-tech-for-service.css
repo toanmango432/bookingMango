@@ -107,6 +107,7 @@
   border: 1px solid var(--bs-main);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background-color: #d9f2f6;
 }
 
 /* search */
