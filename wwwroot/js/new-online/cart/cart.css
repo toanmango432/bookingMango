@@ -220,12 +220,20 @@
   font-weight: 600;
 }
 .cart-prices {
+  display: flex;
+  gap: 2px;
   color: #e3066a;
   font-weight: 500;
+}
+.cart-prices.hide-price {
+  display: none;
 }
 .cart-addon .addon-discount {
   color: #f28500;
   font: normal normal 500 var(--s-10);
+}
+.cart-addon .addon-discount.hide-price {
+  display: none;
 }
 .cart-prices .cardaddon-in-cart {
   color: var(--text-color-primary);
@@ -233,6 +241,9 @@
 .d-title-price {
   display: flex;
   justify-content: space-between;
+}
+.addon-price.hide-price {
+  display: none;
 }
 .addon-price .cashser-in-cart {
   font: normal normal 600 var(--s-14);
@@ -278,10 +289,6 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-}
-.cart-prices {
-  display: flex;
-  gap: 2px;
 }
 .staff-dura {
   display: flex;
@@ -388,6 +395,10 @@
     display: flex;
     gap: 1px;
   }
+  .addon-price.hide-price {
+    display: none;
+  }
+
   .cart-addon {
     margin-top: 0px;
     padding: 6px;

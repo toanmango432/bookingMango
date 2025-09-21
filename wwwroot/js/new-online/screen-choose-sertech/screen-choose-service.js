@@ -196,6 +196,9 @@ export async function ScreenChooseService() {
   return htmlScreenChooseService;
 }
 function renderServiceItemHTML(serviceItem, selectedServices) {
+  const store = salonStore.getState();
+  const isHidePrice = store.isHidePrice;
+
   const matchedService = selectedServices.find(
     (s) => s.idItemService === serviceItem.id
   );
@@ -224,7 +227,7 @@ function renderServiceItemHTML(serviceItem, selectedServices) {
         <div class="service-title text-uppercase">
           ${serviceItem.title}
         </div>
-        <div class="service-price">
+        <div class="service-price ${isHidePrice ? "hide-price" : ""}">
           <span class="pcash">
             $${serviceItem.priceRental.toFixed(
               2
@@ -242,12 +245,16 @@ function renderServiceItemHTML(serviceItem, selectedServices) {
               ? `<div class="addon-indicator">
                     <span class="be-addOn">
                       ${addonCount} Add on
-                      <span class="be-addOn_cash">
-                        $ ${addOnTotalPrice.toFixed(2)}
-                      </span>
-                      <span class="partiti">|</span>
-                      <span class="be-addOn_card">
-                        $ ${addOnTotalPrice.toFixed(2)}
+                      <span class="w-price-addon ${
+                        isHidePrice ? "hide-price" : ""
+                      }">
+                        <span class="be-addOn_cash">
+                          $ ${addOnTotalPrice.toFixed(2)}
+                        </span>
+                        <span class="partiti">|</span>
+                        <span class="be-addOn_card">
+                          $ ${addOnTotalPrice.toFixed(2)}
+                        </span>
                       </span>
                     </span>
                   </div>`
@@ -288,6 +295,8 @@ export function renderServices(listItem) {
   const store = salonStore.getState();
   const dataBooking = store.dataBooking;
   const user = dataBooking.users.find((u) => u.isChoosing);
+  const isHidePrice = store.isHidePrice;
+
   const selectedServices = [];
 
   if (user) {
@@ -330,7 +339,7 @@ export function renderServices(listItem) {
             <div class="service-title text-uppercase">
               ${serviceItem.title}
             </div>
-            <div class="service-price">
+            <div class="service-price ${isHidePrice ? "hide-price" : ""}">
               <span class="pcash">
                 $${serviceItem.priceRental.toFixed(
                   2
@@ -348,6 +357,9 @@ export function renderServices(listItem) {
                   ? `<div class="addon-indicator">
                         <span class="be-addOn">
                           ${addonCount} Add on
+                        <span class="w-price-addon ${
+                          isHidePrice ? "hide-price" : ""
+                        }">
                           <span class="be-addOn_cash">
                             $ ${addOnTotalPrice.toFixed(2)}
                           </span>
@@ -355,6 +367,7 @@ export function renderServices(listItem) {
                           <span class="be-addOn_card">
                             $ ${addOnTotalPrice.toFixed(2)}
                           </span>
+                        </span>
                         </span>
                       </div>`
                   : ""
@@ -380,6 +393,8 @@ export function renderAddonPanel(itemService, employeeID) {
   const dataBooking = store.dataBooking;
   const user = dataBooking.users.find((u) => u.isChoosing);
   if (!user) return;
+
+  const isHidePrice = store.isHidePrice;
 
   let currentService = null;
   let serviceInstanceId = null;
@@ -447,7 +462,7 @@ export function renderAddonPanel(itemService, employeeID) {
                       </div>
                     </div>
                     <span>${opt.title}</span>
-                    <span class="cash-card">
+                    <span class="cash-card ${isHidePrice ? "hide-price" : ""}">
                       <p class="addOn-cash">
                         $${opt.price}
                       </p>

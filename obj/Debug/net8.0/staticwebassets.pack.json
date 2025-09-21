@@ -553,6 +553,10 @@
       "PackagePath": "staticwebassets/js/popup/close-popup.js"
     },
     {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/popup/content/add-guest.js",
+      "PackagePath": "staticwebassets/js/popup/content/add-guest.js"
+    },
+    {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/popup/content/add-new-payment.js",
       "PackagePath": "staticwebassets/js/popup/content/add-new-payment.js"
     },

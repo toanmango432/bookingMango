@@ -4,6 +4,8 @@ export function Cart(isOpen = false, isAddOn = false) {
   const dataBooking = store.dataBooking;
   const user = dataBooking.users.find((u) => u.isChoosing);
   const flowCur = store.flow;
+  const isHidePrice = store.isHidePrice;
+
   let totalCash = 0;
   let totalCard = 0;
 
@@ -61,7 +63,9 @@ export function Cart(isOpen = false, isAddOn = false) {
                     <div class="d-price-discount-addon">
                       <div class="d-title-price">
                         <span class="addon-title">${opt.title}</span>
-                        <span class="addon-price">
+                        <span class="addon-price ${
+                          isHidePrice ? "hide-price" : ""
+                        }">
                           <span class="cashser-in-cart">$${priceAfterDiscount.toFixed(
                             2
                           )}</span>
@@ -73,7 +77,9 @@ export function Cart(isOpen = false, isAddOn = false) {
                       </div>
                       ${
                         opt.priceDiscount
-                          ? `<div class="addon-discount">Discount ($${opt.priceDiscount})</div>`
+                          ? `<div class="addon-discount ${
+                              isHidePrice ? "hide-price" : ""
+                            }">Discount ($${opt.priceDiscount})</div>`
                           : ""
                       }
                     </div>
@@ -104,7 +110,7 @@ export function Cart(isOpen = false, isAddOn = false) {
                 <div class="d-wrap-header-dura ${hasAddon ? "has-add-bt" : ""}">
                   <div class="cart-item-header">
                     <div class="cart-title">${srv.title}</div>
-                    <div class="cart-prices">
+                    <div class="cart-prices ${isHidePrice ? "hide-price" : ""}">
                       <span class="cashaddon-in-cart">$${price.toFixed(
                         2
                       )}</span>

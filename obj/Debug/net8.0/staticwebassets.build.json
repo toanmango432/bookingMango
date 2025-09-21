@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "srPJbCyS2kgP+rSDCMP32tiZdNek+4e3CVH4c3i+VS4=",
+  "Hash": "VCJ2g/BRnhJnEHZWB5A/8i/S3g/hEgNbUNjhyBPg3rM=",
   "Source": "OnlineStore",
   "BasePath": "_content/OnlineStore",
   "Mode": "Default",
@@ -2656,6 +2656,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/js/popup/close-popup.js"
+    },
+    {
+      "Identity": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/popup/content/add-guest.js",
+      "SourceId": "OnlineStore",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/",
+      "BasePath": "_content/OnlineStore",
+      "RelativePath": "js/popup/content/add-guest.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/js/popup/content/add-guest.js"
     },
     {
       "Identity": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/popup/content/add-new-payment.js",

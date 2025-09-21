@@ -220,6 +220,7 @@ export function renderListPeSer(forceChoose = false, objIdSelected = null) {
   const user = dataBooking.users.find((u) => u.isChoosing);
   let itemServiceChoosing = store.itemServiceChoosing;
   let isSameTime = store.isSameTime;
+  const isHidePrice = store.isHidePrice;
 
   // Kiểm tra có itemService nào được chọn không
   const hasAnyItemService =
@@ -255,13 +256,17 @@ export function renderListPeSer(forceChoose = false, objIdSelected = null) {
                           <div class="addon-indicator-forser">
                             <span class="be-addOn">
                               ${totalAddonCount} Add on
-                              <span class="be-addOn_cash">$${totalAddonPrice.toFixed(
-                                2
-                              )}</span>
-                              <span class="partiti">|</span>
-                              <span class="be-addOn_card">$${totalAddonPrice.toFixed(
-                                2
-                              )}</span>
+                              <span class="w-price-addon ${
+                                isHidePrice ? "hide-price" : ""
+                              }">
+                                <span class="be-addOn_cash">$${totalAddonPrice.toFixed(
+                                  2
+                                )}</span>
+                                <span class="partiti">|</span>
+                                <span class="be-addOn_card">$${totalAddonPrice.toFixed(
+                                  2
+                                )}</span>
+                              </span>
                             </span>
                           </div>
                         `;
@@ -278,7 +283,7 @@ export function renderListPeSer(forceChoose = false, objIdSelected = null) {
                 <div class="d-wrap-header-serd">
                   <div class="cart-item-header">
                     <div class="cart-title">${srv.title}</div>
-                    <div class="cart-prices">
+                    <div class="cart-prices ${isHidePrice ? "hide-price" : ""}">
                       <span class="cashaddon-in-cart">$${price.toFixed(
                         2
                       )}</span>
@@ -399,13 +404,17 @@ export function renderListPeSer(forceChoose = false, objIdSelected = null) {
     let firstNoStaff = null;
 
     // Ưu tiên chọn service/item nếu có truyền objIdSelected
-    if (objIdSelected && objIdSelected.idCate && objIdSelected.idItemService) {
+    if (
+      objIdSelected &&
+      objIdSelected.idCate &&
+      objIdSelected.idItemServiceSlected
+    ) {
       const cateTarget = user.services.find(
         (cate) => cate.idService === objIdSelected.idCate
       );
       if (cateTarget) {
         const itemTarget = cateTarget.itemService.find(
-          (srv) => srv.idItemService === objIdSelected.idItemService
+          (srv) => srv.idItemService === objIdSelected.idItemServiceSlected
         );
         if (itemTarget) {
           firstNoStaff = {

@@ -3,6 +3,7 @@ export function renderListPeTech_PageChooseServiceTech(forceChoose = false) {
   const { dataBooking, listStaffUser } = store;
   let itemTechChoosing = store.itemTechChoosing;
   const user = dataBooking.users.find((u) => u.isChoosing);
+  const isHidePrice = store.isHidePrice;
 
   let chooseStaffBefore = store.chooseStaffBefore || [];
 
@@ -86,13 +87,17 @@ export function renderListPeTech_PageChooseServiceTech(forceChoose = false) {
                           <div class="addon-indicator-fortech">
                             <span class="be-addOn">
                               ${totalAddonCount} Add on
-                              <span class="be-addOn_cash">$${totalAddonPrice.toFixed(
-                                2
-                              )}</span>
-                              <span class="partiti">|</span>
-                              <span class="be-addOn_card">$${totalAddonPrice.toFixed(
-                                2
-                              )}</span>
+                              <span class="w-price-addon ${
+                                isHidePrice ? "hide-price" : ""
+                              }">
+                                <span class="be-addOn_cash">$${totalAddonPrice.toFixed(
+                                  2
+                                )}</span>
+                                <span class="partiti">|</span>
+                                <span class="be-addOn_card">$${totalAddonPrice.toFixed(
+                                  2
+                                )}</span>
+                              </span>
                             </span>
                           </div>
                         `;
@@ -183,6 +188,8 @@ function renderFooterService() {
 // Hàm render 1 item service
 // Hàm dựng HTML cho 1 service
 function renderServiceItem(serviceItem, selectedServices, itemTechChoosing) {
+  const store = salonStore.getState();
+  const isHidePrice = store.isHidePrice;
   const hasAddon = serviceItem.listOptionAddOn?.length > 0;
 
   // Lấy tất cả tech đã chọn service này
@@ -225,7 +232,7 @@ function renderServiceItem(serviceItem, selectedServices, itemTechChoosing) {
         <div class="service-title text-uppercase">
           ${serviceItem.title}
         </div>
-        <div class="service-price">
+        <div class="service-price ${isHidePrice ? "hide-price" : ""}">
           <span class="pcash">
             $${serviceItem.priceRental.toFixed(2)}
             <span class="text-method">Cash</span>
@@ -242,11 +249,17 @@ function renderServiceItem(serviceItem, selectedServices, itemTechChoosing) {
                     <span class="be-addOn">
                       ${addonCount} Add on
                       <span class="be-addOn_cash">
-                        $ ${addOnTotalPrice.toFixed(2)}
-                      </span>
-                      <span class="partiti">|</span>
-                      <span class="be-addOn_card">
-                        $ ${addOnTotalPrice.toFixed(2)}
+                        <span class="w-price-addon ${
+                          isHidePrice ? "hide-price" : ""
+                        }">
+                          <span>
+                            $ ${addOnTotalPrice.toFixed(2)}
+                          </span>
+                          <span class="partiti">|</span>
+                          <span class="be-addOn_card">
+                            $ ${addOnTotalPrice.toFixed(2)}
+                          </span>
+                        </span>
                       </span>
                     </span>
                   </div>`

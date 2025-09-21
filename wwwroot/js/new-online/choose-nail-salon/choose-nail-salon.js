@@ -206,6 +206,9 @@ $(document).ready(async function () {
       salonChoosing: salonChoosing,
     });
 
+    // lấy setting sau khi đổi RVCNo
+    await salonStore.getState().getDataSetting();
+
     // đổi route mà không reload
     history.pushState({}, "", `/new-online/${rvcNoChoose}`);
     ServiceOrTech();

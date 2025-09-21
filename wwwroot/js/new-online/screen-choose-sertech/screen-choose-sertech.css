@@ -372,6 +372,9 @@
 .service-price {
   align-self: stretch;
 }
+.service-price.hide-price {
+  display: none;
+}
 .service-price .pcash {
   font: normal normal 600 var(--s-18);
   color: #f44c7f;
@@ -402,6 +405,9 @@
   border: 1px solid var(--Pink, #f44c7f);
   font: normal normal 500 var(--s-13);
   color: #f44c7f;
+}
+.w-price-addon.hide-price {
+  display: none;
 }
 .addon-indicator .partiti {
   color: #c9c9c9;
@@ -579,6 +585,9 @@
   font-weight: 600;
   display: flex;
   justify-content: flex-end;
+}
+.addon-item .cash-card.hide-price {
+  display: none;
 }
 .addon-item .cash-card .addOn-cash {
   color: #f44c7f;
@@ -846,6 +855,8 @@
   }
   .addon-indicator {
     font: normal normal 500 var(--s-10);
+    width: fit-content;
+    padding: 6px;
   }
   .wrap-service-card,
   .wrap-ftservice-card {
@@ -863,10 +874,6 @@
     font-size: 10px;
     position: relative;
     left: -1px;
-  }
-  .addon-indicator {
-    width: fit-content;
-    padding: 6px;
   }
   .wrap-cart .content-cart.addon-pan {
     right: 0px;

@@ -11,8 +11,6 @@ import { renderPoliciesForm } from "../popup/content/policies.js";
 
 // Hàm dùng để gửi OTP (email hoặc phone)
 export async function sendOTP(inputValue, type) {
-  await salonStore.getState().getDataSetting();
-
   const store = salonStore.getState();
   const RVCNo = store.RVCNo;
   const telInput = store.telInput;

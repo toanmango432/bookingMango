@@ -363,6 +363,7 @@ export const salonStore = {
     let currencyDeposit;
     let policySetting;
     let isBookMultipleTech = true;
+    let isHidePrice = false;
 
     const getDataSetting = async () => {
       const store = salonStore.getState();
@@ -372,8 +373,6 @@ export const salonStore = {
         const resSetting = await fetchAPI.get(
           `/api/store/getsettingonlinebook?RVCNo=${newRVCNo}`
         );
-        // dataSetting = resSetting?.data;
-
         const DepositData = resSetting?.data?.Deposit;
         const parts = DepositData.split("|");
         let isDepositRes = parts[0] === "1";
@@ -388,6 +387,7 @@ export const salonStore = {
           paymentDeposit: paymentDepositRes,
           isBookMultipleTech: resSetting?.data?.BookMultipleTech === "1",
           telInput: resSetting?.data?.TelInput || "+84",
+          isHidePrice: resSetting?.data?.HidePrice || false,
         });
         return resSetting;
       } catch (e) {
@@ -447,6 +447,7 @@ export const salonStore = {
       currencyDeposit,
       policySetting,
       isBookMultipleTech,
+      isHidePrice,
       popupFlowCountdownInterval,
       // slots time
       slotTimeMultiTech,
