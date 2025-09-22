@@ -195,9 +195,36 @@ export async function ScreenChooseService() {
   }, 100);
   return htmlScreenChooseService;
 }
+
+export function funcDisplayPrice(serviceItem, { isHidePrice, priceDisplay }) {
+  if (priceDisplay === "0") {
+    return `<div class="service-price ${isHidePrice ? "hide-price" : ""}">
+          <span class="pcard">
+            $${serviceItem.basePrice.toFixed(2)}
+          </span>
+        </div>`;
+  } else if (priceDisplay === "1") {
+    //
+    console.log("Display total 2 price ?");
+  } else if (priceDisplay === "2") {
+    return `<div class="service-price ${isHidePrice ? "hide-price" : ""}">
+          <span class="pcash">
+            $${serviceItem.baseCashPrice.toFixed(
+              2
+            )} <span class="text-u">Cash</span>
+          </span> /
+          <span class="pcard">
+            $${serviceItem.basePrice.toFixed(
+              2
+            )} <span class="text-u">Card</span>
+          </span>
+        </div>`;
+  }
+}
 function renderServiceItemHTML(serviceItem, selectedServices) {
   const store = salonStore.getState();
   const isHidePrice = store.isHidePrice;
+  const priceDisplay = store.priceDisplay;
 
   const matchedService = selectedServices.find(
     (s) => s.idItemService === serviceItem.id
@@ -227,18 +254,7 @@ function renderServiceItemHTML(serviceItem, selectedServices) {
         <div class="service-title text-uppercase">
           ${serviceItem.title}
         </div>
-        <div class="service-price ${isHidePrice ? "hide-price" : ""}">
-          <span class="pcash">
-            $${serviceItem.priceRental.toFixed(
-              2
-            )} <span class="text-u">Cash</span>
-          </span> /
-          <span class="pcard">
-            $${serviceItem.priceRental.toFixed(
-              2
-            )} <span class="text-u">Card</span>
-          </span>
-        </div>
+        ${funcDisplayPrice(serviceItem, { isHidePrice, priceDisplay })}
         <div class="bot-item-service">
           ${
             addonCount > 0
@@ -260,6 +276,7 @@ function renderServiceItemHTML(serviceItem, selectedServices) {
                   </div>`
               : ""
           }
+          </div>
           ${
             serviceItem.description
               ? `<div class="info-icon">
@@ -269,7 +286,6 @@ function renderServiceItemHTML(serviceItem, selectedServices) {
                 </div>`
               : ""
           }
-        </div>
       </div>
     </div>
   `;
@@ -300,6 +316,7 @@ export function renderServices(listItem) {
   const dataBooking = store.dataBooking;
   const user = dataBooking.users.find((u) => u.isChoosing);
   const isHidePrice = store.isHidePrice;
+  const priceDisplay = store.priceDisplay;
 
   const selectedServices = [];
 
@@ -344,18 +361,7 @@ export function renderServices(listItem) {
             <div class="service-title text-uppercase">
               ${serviceItem.title}
             </div>
-            <div class="service-price ${isHidePrice ? "hide-price" : ""}">
-              <span class="pcash">
-                $${serviceItem.priceRental.toFixed(
-                  2
-                )} <span class="text-u">Cash</span>
-              </span> /
-              <span class="pcard">
-                $${serviceItem.priceRental.toFixed(
-                  2
-                )} <span class="text-u">Card</span>
-              </span>
-            </div>
+            ${funcDisplayPrice(serviceItem, { isHidePrice, priceDisplay })}
             <div class="bot-item-service">
               ${
                 addonCount > 0
@@ -377,6 +383,7 @@ export function renderServices(listItem) {
                       </div>`
                   : ""
               }
+              </div>
               ${
                 serviceItem.description
                   ? `<div class="info-icon">
@@ -386,7 +393,6 @@ export function renderServices(listItem) {
                   </div>`
                   : ""
               }
-            </div>
           </div>
         </div>
     `;
@@ -472,11 +478,11 @@ export function renderAddonPanel(itemService, employeeID) {
                     </div>
                     <span>${opt.title}</span>
                     <span class="cash-card ${isHidePrice ? "hide-price" : ""}">
-                      <p class="addOn-cash">
-                        $${opt.price}
-                      </p>
                       <p class="addOn-card">
-                        / $${opt.price}
+                         $${opt.price + " "}
+                      </p>
+                      <p class="addOn-cash">
+                         $${opt.priceDiscount}
                       </p>
                     </span>
                   </label>
@@ -590,12 +596,14 @@ $(document).ready(async function () {
 
   $(document).on("click", ".wrap-service-card", async function () {
     const store = salonStore.getState();
-    let dataService = store.dataServices;
+    let dataService =
+      store.dataServices.length > 0
+        ? store.dataServices
+        : await store.getListDataService();
 
     let isUnSelected = true;
     const serviceId = $(this).data("iditem");
     const cateId = $(".item-cate.active").data("id");
-
     const cate = dataService.find((c) => c.item.id === cateId);
     const itemService = cate?.item.listItem.find((s) => s.id === serviceId);
     if (!itemService) return;
@@ -620,7 +628,8 @@ $(document).ready(async function () {
       cateInUser.itemService.push({
         idItemService: itemService.id,
         title: itemService.title,
-        price: itemService.priceRental,
+        price: itemService.basePrice,
+        cashPrice: itemService.baseCashPrice,
         duration: itemService.timetext,
         selectedStaff: {},
         optionals: [],
@@ -645,6 +654,7 @@ $(document).ready(async function () {
       dataBooking: dataBooking,
     }));
     // load item service sau khi chọn service
+    console.log("itemSer: ", itemService);
     rerenderServiceItem(itemService);
     // Load lại cart
     Cart();

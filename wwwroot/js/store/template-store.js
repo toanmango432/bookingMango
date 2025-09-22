@@ -65,7 +65,7 @@ export const templateStore = {
               const ser = {
                 id: itemSer.itemID,
                 title: itemSer.itemName,
-                priceRental: itemSer.basePrice,
+                baseCashPrice: itemSer.basePrice,
                 timetext: itemSer.duration,
                 listOptionAddOn: itemSer.listAddOn.map((iAdd) => ({
                   id: iAdd.addOnID,

@@ -941,14 +941,14 @@ const onlineStore = {
             {
               title: "Essential Pedicure 1",
               subTitle: "Hydrating Pedi Salt Soak 1",
-              priceRental: "$45",
+              baseCashPrice: "$45",
               timetext: "40min",
               userSelected: {},
             },
             {
               title: "Essential Pedicure 2",
               subTitle: "Hydrating Pedi Salt Soak 1",
-              priceRental: "$45",
+              baseCashPrice: "$45",
               timetext: "40min",
               userSelected: {},
             },
@@ -971,14 +971,14 @@ const onlineStore = {
             {
               title: "Essential Pedicure 1",
               subTitle: "Hydrating Pedi Salt Soak 1",
-              priceRental: "$45",
+              baseCashPrice: "$45",
               timetext: "40min",
               userSelected: {},
             },
             {
               title: "Essential Pedicure 2",
               subTitle: "Hydrating Pedi Salt Soak 1",
-              priceRental: "$45",
+              baseCashPrice: "$45",
               timetext: "40min",
               userSelected: {},
             },
@@ -3471,7 +3471,7 @@ function renderServiceCard(item) {
         <p class="thin-mid-14">${item.subTitle}</p>
       </div>
       <div class="right-card">
-        <p class="bold-medium-20">${item.priceRental}</p>
+        <p class="bold-medium-20">${item.baseCashPrice}</p>
         <p class="bold-mid-12">${item.timetext}</p>
       </div>
     </div>

@@ -716,6 +716,9 @@
   border-radius: var(--px-12);
   background: var(--Gray-4, rgba(209, 209, 209, 0.2));
 }
+.payment-summary.hide-price {
+  display: none;
+}
 .sub-deposit {
   display: flex;
   width: 100%;
@@ -1060,18 +1063,6 @@
   gap: var(--px-8);
   justify-content: end;
 }
-/* .action-item-ser .edit-item-ser {
-  background: transparent;
-  border: none;
-  color: #905a01;
-  margin-bottom: 0px;
-  padding: var(--px-4);
-  border-radius: var(--px-4);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-} */
 .action-item-ser .delete-item-ser {
   background: transparent;
   color: red;

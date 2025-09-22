@@ -305,7 +305,7 @@ export function renderServiceCard(
             ${
               isHidePrice
                 ? ""
-                : `<p id="service-price" class="bold-medium-20">${cardItem.priceRental} $</p>`
+                : `<p id="service-price" class="bold-medium-20">${cardItem.baseCashPrice} $</p>`
             }
             <p id="service-duration" class="bold-mid-12 ${
               isHidePrice ? "is-hide-price" : ""
@@ -1113,7 +1113,7 @@ $(document).ready(async function () {
           idItemService,
           title: itemSelected.title,
           duration: itemSelected.timetext,
-          price: itemSelected.priceRental,
+          price: itemSelected.baseCashPrice,
           selectedStaff: {
             ...staffSelecting,
             timeSlots,
@@ -1129,7 +1129,7 @@ $(document).ready(async function () {
             idItemService,
             title: itemSelected.title,
             duration: itemSelected.timetext,
-            price: itemSelected.priceRental,
+            price: itemSelected.baseCashPrice,
             selectedStaff: {
               ...staffSelecting,
               timeSlots,
@@ -1406,7 +1406,7 @@ $(document).ready(async function () {
       } else {
         serviceItemExit = {
           idItemService,
-          price: itemSelected.priceRental,
+          price: itemSelected.baseCashPrice,
           duration: itemSelected.timetext,
           selectedStaff: {
             ...staffSelecting,
@@ -1421,7 +1421,7 @@ $(document).ready(async function () {
         itemService: [
           {
             idItemService,
-            price: itemSelected.priceRental,
+            price: itemSelected.baseCashPrice,
             duration: itemSelected.timetext,
             selectedStaff: {
               ...staffSelecting,
@@ -1553,7 +1553,7 @@ $(document).ready(async function () {
       itemServiceInUser = {
         idItemService,
         title: itemService.title,
-        price: itemService.priceRental,
+        price: itemService.baseCashPrice,
         duration: itemService.timetext,
         selectedStaff: null,
         optionals: [], // dùng mảng

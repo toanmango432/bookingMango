@@ -86,6 +86,15 @@
   width: 17%;
   margin-bottom: 0px;
 }
+.item-content .text-time-dura.hide-price {
+  width: 41.5%;
+  justify-content: center;
+}
+.header-item-sumary .name-dura.hide-price {
+  width: 41.5%;
+  justify-content: center;
+  margin-bottom: 0px;
+}
 .item-content .text-price-service,
 .header-item-sumary .name-price {
   width: 24.5%;
@@ -93,6 +102,14 @@
   margin-bottom: 0px;
   justify-content: flex-end;
 }
+.item-content .text-price-service.hide-price {
+  display: none;
+}
+
+.header-item-sumary .name-price.hide-price {
+  display: none;
+}
+
 .total-pay {
   width: 100%;
   position: absolute;
@@ -114,7 +131,11 @@
   width: 13%;
   margin-bottom: 0px;
 }
-
+.total-pay .text-total-times.hide-price {
+  width: 41.5%;
+  justify-content: center;
+  margin-bottom: 0px;
+}
 .total-pay .text-total-price {
   width: 28.5%;
   margin-bottom: 0px;
@@ -122,11 +143,15 @@
   color: red;
   justify-content: flex-end;
 }
+.total-pay .text-total-price.hide-price {
+  display: none;
+}
 .wrap-bottom-sum {
   height: 308px;
   width: 100%;
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
   gap: 12px;
 }
 .checkbox-confirm {
@@ -392,6 +417,9 @@
   align-self: stretch;
   border-radius: 8px;
   background: var(--White, #fff);
+}
+.total-book.hide-price {
+  display: none;
 }
 .total-book .total-1 {
   display: flex;

@@ -95,8 +95,8 @@ export const salonStore = {
               const ser = {
                 id: itemSer.itemID,
                 title: itemSer.itemName,
-                priceRental: itemSer.basePrice,
-                priceCash: itemSer.baseCashPrice,
+                basePrice: itemSer.basePrice,
+                baseCashPrice: itemSer.baseCashPrice,
                 timetext: itemSer.duration,
                 description: itemSer.description,
                 listOptionAddOn: itemSer.listAddOn.map((iAdd) => ({
@@ -365,6 +365,7 @@ export const salonStore = {
     let policySetting;
     let isBookMultipleTech = true;
     let isHidePrice = false;
+    let priceDisplay;
 
     const getDataSetting = async () => {
       const store = salonStore.getState();
@@ -388,7 +389,8 @@ export const salonStore = {
           paymentDeposit: paymentDepositRes,
           isBookMultipleTech: resSetting?.data?.BookMultipleTech === "1",
           telInput: resSetting?.data?.TelInput || "+84",
-          isHidePrice: resSetting?.data?.HidePrice || false,
+          isHidePrice: resSetting?.data?.HidePrice === "1" || false,
+          priceDisplay: resSetting?.data?.PriceDisplay || "0",
         });
         return resSetting;
       } catch (e) {
@@ -449,6 +451,7 @@ export const salonStore = {
       policySetting,
       isBookMultipleTech,
       isHidePrice,
+      priceDisplay,
       popupFlowCountdownInterval,
       // slots time
       slotTimeMultiTech,

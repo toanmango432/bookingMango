@@ -45,6 +45,7 @@ export function renderPaymentMethodsForm(
 ) {
   const store = salonStore.getState();
   const dataServices = store.dataServices;
+  const isHidePrice = store.isHidePrice;
 
   const numberCard = dataBooking.cardNumber;
   const totalPayment = CalTotalPayment(dataBooking, dataServices);
@@ -96,7 +97,7 @@ export function renderPaymentMethodsForm(
               .join("")
           }
           </div>
-          <div class="payment-summary">
+          <div class="payment-summary ${isHidePrice ? "hide-price" : ""}">
             <div class="sub-deposit">
               <span class="sub-deposit-1r">
                 Total

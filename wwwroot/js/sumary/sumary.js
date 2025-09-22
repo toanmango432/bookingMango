@@ -30,7 +30,7 @@ function buildServiceSummary(data, listDataService) {
             return {
               title: matchedItem.title,
               subTitle: matchedItem.subTitle,
-              priceRental: matchedItem.priceRental,
+              baseCashPrice: matchedItem.baseCashPrice,
               timetext: matchedItem.timetext,
               selectedStaff: item.selectedStaff,
               optionals: item.optionals ?? [],
@@ -101,7 +101,7 @@ export function renderSumary(dataBooking, listDataService) {
   }
 
   function getTotalPrice(service) {
-    const basePrice = parsePrice(service.priceRental);
+    const basePrice = parsePrice(service.baseCashPrice);
 
     const optionalTotal = (service.optionals || []).reduce((sum, opt) => {
       return sum + parsePrice(opt.price);

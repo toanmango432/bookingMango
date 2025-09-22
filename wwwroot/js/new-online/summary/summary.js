@@ -26,7 +26,8 @@ export function buildServiceSummary(data, listDataService) {
             return {
               title: matchedItem.title,
               subTitle: matchedItem.subTitle,
-              priceRental: matchedItem.priceRental,
+              basePrice: matchedItem.basePrice,
+              baseCashPrice: matchedItem.baseCashPrice,
               timetext: matchedItem.timetext,
               selectedStaff: item.selectedStaff,
               optionals: item.optionals ?? [],
@@ -48,18 +49,24 @@ export function buildServiceSummary(data, listDataService) {
 export function parsePrice(priceStr) {
   // Bỏ ký tự $ và chuyển sang số
   if (typeof priceStr === "number") return priceStr;
+  console.log("check: ", priceStr);
   return parseFloat(priceStr.replace("$", "")) || 0;
 }
 export function getTotalPrice(service) {
-  const basePrice = parsePrice(service.priceRental);
+  console.log("service: ", service);
+  const baseCashPrice = parsePrice(service.baseCashPrice);
+  const basePrice = parsePrice(service.basePrice);
 
+  const optionalTotalBaseCash = (service.optionals || []).reduce((sum, opt) => {
+    return sum + parsePrice(opt.price);
+  }, 0);
   const optionalTotal = (service.optionals || []).reduce((sum, opt) => {
     return sum + parsePrice(opt.price);
   }, 0);
 
-  const total = basePrice + optionalTotal;
+  const totalCash = baseCashPrice + optionalTotalBaseCash;
 
-  return total.toFixed(2);
+  return totalCash.toFixed(2);
 }
 
 export function parseTime(timeStr) {
@@ -74,6 +81,7 @@ export function renderSumary(dataBooking, listDataService) {
   $wrapNewOnline.empty();
   const salonChoosing = store.salonChoosing;
   const paymentDeposit = parseFloat(store?.paymentDeposit);
+  const isHidePrice = store.isHidePrice;
 
   const htmlHeaderSalon = HeaderSalon(salonChoosing);
 
@@ -239,8 +247,12 @@ export function renderSumary(dataBooking, listDataService) {
                               <div class="wrap-header">
                                 <p class="item name-service text-uppercase">Services</p>
                                 <p class="item name-tech text-uppercase">Tech</p>
-                                <p class="item name-dura text-uppercase">Duration</p>
-                                <p class="item name-price text-uppercase">Price</p>
+                                <p class="item name-dura text-uppercase ${
+                                  isHidePrice ? "hide-price" : ""
+                                }">Duration</p>
+                                <p class="item name-price text-uppercase ${
+                                  isHidePrice ? "hide-price" : ""
+                                }">Price</p>
                               </div>
                           </div>
                           <div class="body-item-sumary">
@@ -291,12 +303,20 @@ export function renderSumary(dataBooking, listDataService) {
                                                     <p class="item-addon text-name-service name-addon">${
                                                       opt.title
                                                     }</p>
-                                                    <p class="item-addon text-time-dura time-dura-addon">${
-                                                      opt.timedura || "0 min"
-                                                    }</p>
-                                                    <p class="item-addon text-price-service price-addon">$ ${(
-                                                      opt.price || 0
-                                                    ).toFixed(2)}</p>
+                                                    <p class="item-addon text-time-dura time-dura-addon ${
+                                                      isHidePrice
+                                                        ? "hide-price"
+                                                        : ""
+                                                    }">${
+                                              opt.timedura || "0 min"
+                                            }</p>
+                                                    <p class="item-addon text-price-service price-addon ${
+                                                      isHidePrice
+                                                        ? "hide-price"
+                                                        : ""
+                                                    }">$ ${(
+                                              opt.price || 0
+                                            ).toFixed(2)}</p>
                                                   </div>
                                                 </div>
                                               </div>`;
@@ -323,12 +343,18 @@ export function renderSumary(dataBooking, listDataService) {
                                                     <p class="item text-name-tech text-uppercase">${
                                                       is.selectedStaff?.nickName
                                                     }</p>
-                                                    <p class="item text-time-dura">${
-                                                      is?.timetext
-                                                    }</p>
-                                                    <p class="item text-price-service">$ ${getTotalPrice(
-                                                      is
-                                                    )}</p>
+                                                    <p class="item text-time-dura ${
+                                                      isHidePrice
+                                                        ? "hide-price"
+                                                        : ""
+                                                    }">${is?.timetext}</p>
+                                                    <p class="item text-price-service ${
+                                                      isHidePrice
+                                                        ? "hide-price"
+                                                        : ""
+                                                    }">$ ${getTotalPrice(
+                                          is
+                                        )}</p>
                                                   </div>
                                                   ${optionalsHtml}
                                               </div>
@@ -341,10 +367,12 @@ export function renderSumary(dataBooking, listDataService) {
                           </div>
                           <div class="total-pay">
                               <p class="item text-total-amount text-uppercase">Total ${totalServices} item</p>
-                              <p class="item text-total-times">${totalMinutes} min</p>
-                              <p class="item text-total-price">$ ${userTotalPayment.toFixed(
-                                2
-                              )}</p>
+                              <p class="item text-total-times ${
+                                isHidePrice ? "hide-price" : ""
+                              }">${totalMinutes} min</p>
+                              <p class="item text-total-price ${
+                                isHidePrice ? "hide-price" : ""
+                              }">$ ${userTotalPayment.toFixed(2)}</p>
                           </div>
                         </div>
                     `;
@@ -358,7 +386,7 @@ export function renderSumary(dataBooking, listDataService) {
                     </svg>
                     <input id="note-ticket" placeholder="Add ticket note..." class="input-note"/>
                   </div>
-                  <div class="total-book">
+                  <div class="total-book ${isHidePrice ? "hide-price" : ""}">
                     <span class="total-1">
                         <span class="total-text">
                           Total

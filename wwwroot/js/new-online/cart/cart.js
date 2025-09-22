@@ -1,3 +1,10 @@
+export function funcDisPriceCart(isHidePrice, { basePrice, baseCashPrice }) {
+  return `<div class="cart-prices ${isHidePrice ? "hide-price" : ""}">
+            <span class="cashaddon-in-cart">$${basePrice.toFixed(2)}</span>
+            <span class="line-ss">|</span>
+            <span class="cardaddon-in-cart">$${baseCashPrice.toFixed(2)}</span>
+          </div>`;
+}
 export function Cart(isOpen = false, isAddOn = false) {
   const store = salonStore.getState();
   const dataServices = store.dataServices;
@@ -15,21 +22,24 @@ export function Cart(isOpen = false, isAddOn = false) {
       cate.itemService
         .map((srv) => {
           const staffName = srv.selectedStaff?.nickName || "Select Tech";
+
           const price = srv.price || 0;
+          const priceCash = srv.priceCash || 0;
+
           const duration = srv.duration || 0;
 
-          totalCash += price;
           totalCard += price;
+          totalCash += priceCash;
 
           const optionalsHtml = srv.optionals
             .map((opt, i) => {
-              const optPrice = opt.price || 0;
+              // const optPrice = opt.price || 0;
               const priceAfterDiscount = opt.priceDiscount
-                ? optPrice - opt.priceDiscount
-                : optPrice;
+                ? opt.priceDiscount
+                : opt.price;
 
               totalCash += priceAfterDiscount;
-              totalCard += optPrice;
+              totalCard += priceAfterDiscount;
 
               return `
                 <div class="cart-addon-wrapper">

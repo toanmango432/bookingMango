@@ -248,6 +248,8 @@ function renderFooterService() {
 function renderServiceItem(serviceItem, selectedServices, itemTechChoosing) {
   const store = salonStore.getState();
   const isHidePrice = store.isHidePrice;
+  const priceDisplay = store.priceDisplay;
+
   const hasAddon = serviceItem.listOptionAddOn?.length > 0;
 
   // Lấy tất cả tech đã chọn service này
@@ -290,16 +292,7 @@ function renderServiceItem(serviceItem, selectedServices, itemTechChoosing) {
         <div class="service-title text-uppercase">
           ${serviceItem.title}
         </div>
-        <div class="service-price ${isHidePrice ? "hide-price" : ""}">
-          <span class="pcash">
-            $${serviceItem.priceRental.toFixed(2)}
-            <span class="text-method">Cash</span>
-          </span> /
-          <span class="pcard">
-            $${serviceItem.priceRental.toFixed(2)}
-            <span class="text-method">Card</span>
-          </span>
-        </div>
+        ${funcDisplayPrice(serviceItem, { isHidePrice, priceDisplay })}
         <div class="bot-item-service">
           ${
             addonCount > 0
@@ -324,15 +317,6 @@ function renderServiceItem(serviceItem, selectedServices, itemTechChoosing) {
               : ""
           }
           ${
-            serviceItem.description
-              ? `<div class="info-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="29" height="28" viewBox="0 0 29 28" fill="none">
-                    <path d="M14.5 12.8333V18.6667M14.5 24.5C8.70101 24.5 4 19.799 4 14C4 8.20101 8.70101 3.5 14.5 3.5C20.299 3.5 25 8.20101 25 14C25 19.799 20.299 24.5 14.5 24.5ZM14.5581 9.33333V9.45L14.4419 9.45023V9.33333H14.5581Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-              </div>`
-              : ""
-          }
-          ${
             selectedByList.length
               ? `<div class="selected-by">
                   <span>Selected by: <b>${selectedByList.join(", ")}</b></span>
@@ -340,6 +324,15 @@ function renderServiceItem(serviceItem, selectedServices, itemTechChoosing) {
               : ""
           }
         </div>
+        ${
+          serviceItem.description
+            ? `<div class="info-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="29" height="28" viewBox="0 0 29 28" fill="none">
+                    <path d="M14.5 12.8333V18.6667M14.5 24.5C8.70101 24.5 4 19.799 4 14C4 8.20101 8.70101 3.5 14.5 3.5C20.299 3.5 25 8.20101 25 14C25 19.799 20.299 24.5 14.5 24.5ZM14.5581 9.33333V9.45L14.4419 9.45023V9.33333H14.5581Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+              </div>`
+            : ""
+        }
       </div>
     </div>
   `;
@@ -496,6 +489,7 @@ import { initSliderFromElement } from "../../choose-nail-salon/choose-nail-salon
 // import constant
 import { monthNames, dayNames } from "../../../constants/days-weeks.js";
 // import component
+import { funcDisplayPrice } from "../screen-choose-service.js";
 import { renderContentDesSer } from "../../popup/content/content-descser.js";
 import { renderBasePopup } from "../../popup/base.js";
 import { renderTrackCate } from "../screen-choose-service.js";
@@ -582,7 +576,8 @@ $(document).ready(async function () {
           serviceInstanceId,
           idItemService: itemService.id,
           title: itemService.title,
-          price: itemService.priceRental,
+          price: itemService.basePrice,
+          cashPrice: itemService.baseCashPrice,
           duration: itemService.timetext,
           selectedStaff: {
             employeeID: techActive.employeeID,
@@ -604,7 +599,8 @@ $(document).ready(async function () {
         serviceInstanceId,
         idItemService: itemService.id,
         title: itemService.title,
-        price: itemService.priceRental,
+        price: itemService.basePrice,
+        cashPrice: itemService.baseCashPrice,
         duration: itemService.timetext,
         selectedStaff: {
           employeeID: techActive.employeeID,

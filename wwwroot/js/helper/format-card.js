@@ -1,6 +1,6 @@
 // format card number
 export function formatCardNumber(value) {
-  const digits = value.replace(/\D/g, ""); // giữ lại số
+  const digits = value.replace(/\D/g, "").slice(0, 16); // giữ lại số
   return (
     digits
       .match(/.{1,4}/g) // tách thành từng block 4 số
