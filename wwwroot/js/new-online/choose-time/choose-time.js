@@ -726,6 +726,7 @@ import { shakeError } from "../../helper/shake-error.js";
 import { isValidEmail } from "../../helper/input/valid-form.js";
 import { renderSumary } from "../summary/summary.js";
 import { nextFormRegister } from "../helper/next-form-register.js";
+import { renderDescBlackList } from "../popup/content/desc-blacklist.js";
 import { unFormatPhoneNumber } from "../../helper/format-phone.js";
 import { alertCustom } from "../../site.js";
 import { clearInputError } from "../../helper/shake-error.js";

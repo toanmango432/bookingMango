@@ -8,6 +8,7 @@ import { typeInput, typeBookingEnum } from "../../constants/template-online.js";
 import { salonStore } from "../../store/new-online-store.js";
 import { colorPrimary } from "../../templateDetail.js";
 import { renderPoliciesForm } from "../popup/content/policies.js";
+import { renderDescBlackList } from "../popup/content/desc-blacklist.js";
 
 // Hàm dùng để gửi OTP (email hoặc phone)
 export async function sendOTP(inputValue, type) {
@@ -104,6 +105,21 @@ export async function sendOTP(inputValue, type) {
             name: e.name,
           });
         }
+      } else if (resVerifyAccount.status === 203) {
+        const mess = resVerifyAccount?.message || "N/A";
+        const htmlDescbl = renderDescBlackList(mess);
+        const persistent = false;
+        let height = 362;
+        let width = 586;
+        if (isMobile) {
+          height = 400;
+          width = "100%";
+        }
+        const html = renderBasePopup(htmlDescbl, persistent, height, width);
+        $wrapNewOnline.append(html);
+        setTimeout(() => {
+          $(".overlay-screen").addClass("show");
+        }, 10);
       } else if (resVerifyAccount.status === 200) {
         // tồn tại và verified
         // Xử lý khi typeBooking đang là GUEST hay FAMILY
@@ -359,6 +375,21 @@ export async function sendOTP(inputValue, type) {
 
         $(".wrap-advertise-page").css({ display: "none" });
         return null; // Không cần OTP nữa
+      } else if (resVerifyAccount.status === 203) {
+        const mess = resVerifyAccount?.message || "N/A";
+        const htmlDescbl = renderDescBlackList(mess);
+        const persistent = false;
+        let height = 362;
+        let width = 586;
+        if (isMobile) {
+          height = 400;
+          width = "100%";
+        }
+        const html = renderBasePopup(htmlDescbl, persistent, height, width);
+        $wrapNewOnline.append(html);
+        setTimeout(() => {
+          $(".overlay-screen").addClass("show");
+        }, 10);
       }
     } catch (e) {
       console.error("[sendOTP]: error", {

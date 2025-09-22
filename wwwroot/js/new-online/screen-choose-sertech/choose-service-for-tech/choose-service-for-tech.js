@@ -325,7 +325,11 @@ function renderServiceItem(serviceItem, selectedServices, itemTechChoosing) {
           }
           ${
             serviceItem.description
-              ? `<div class="info-icon"><i class="fa-solid fa-circle-info"></i></div>`
+              ? `<div class="info-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="29" height="28" viewBox="0 0 29 28" fill="none">
+                    <path d="M14.5 12.8333V18.6667M14.5 24.5C8.70101 24.5 4 19.799 4 14C4 8.20101 8.70101 3.5 14.5 3.5C20.299 3.5 25 8.20101 25 14C25 19.799 20.299 24.5 14.5 24.5ZM14.5581 9.33333V9.45L14.4419 9.45023V9.33333H14.5581Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+              </div>`
               : ""
           }
           ${
@@ -490,10 +494,10 @@ import { HeaderSalon } from "../../header/header-salon.js";
 import { Cart } from "../../cart/cart.js";
 import { initSliderFromElement } from "../../choose-nail-salon/choose-nail-salon.js";
 // import constant
-import { idStaffDefault } from "../../../constants/template-online.js";
 import { monthNames, dayNames } from "../../../constants/days-weeks.js";
 // import component
-import { ChooseTechForServices } from "../choose-tech-for-service/choose-tech-for-service.js";
+import { renderContentDesSer } from "../../popup/content/content-descser.js";
+import { renderBasePopup } from "../../popup/base.js";
 import { renderTrackCate } from "../screen-choose-service.js";
 import { renderAddonPanel } from "../screen-choose-service.js";
 import { ScreenChooseTech } from "../screen-choose-tech.js";
@@ -513,6 +517,8 @@ $(document).ready(async function () {
   const RVCNo = store.RVCNo;
   const dataBooking = store.dataBooking;
   const $wrapNewOnline = $(".wrap-newonline");
+
+  const isMobile = $(window).width() <= 768;
 
   $(document).on("click", ".wrap-ftservice-card", async function () {
     const isUnSelected = true; // True: Cho phép bỏ chọn nếu item service đã chọn
@@ -721,5 +727,35 @@ $(document).ready(async function () {
         dataBooking
       );
     });
+  });
+  $(document).on("click", ".info-icon", function (e) {
+    e.stopPropagation();
+    const $this = $(this);
+    const idItemSer = $this.closest(".wrap-service-card").data("iditem");
+    const idCate = $(".item-cate.active").data("id");
+
+    const store = salonStore.getState();
+    const dataServices = store.dataServices;
+    console.log("datasSER: ", dataServices);
+    console.log("idCate: ", idCate);
+
+    const cate = dataServices.find((ser) => ser.item.id === idCate);
+    console.log("cate: ", cate);
+    const iser = cate?.item?.listItem.find((is) => is.id === idItemSer);
+
+    console.log("check: ", iser);
+
+    const contentDescSer = renderContentDesSer(iser);
+    let height = 276;
+    let width = 586;
+    if (isMobile) {
+      height = 376;
+      width = "100%";
+    }
+    const html = renderBasePopup(contentDescSer, false, height, width);
+    $wrapNewOnline.append(html);
+    setTimeout(() => {
+      $(".overlay-screen").addClass("show");
+    }, 10);
   });
 });

@@ -98,6 +98,7 @@ export const salonStore = {
                 priceRental: itemSer.basePrice,
                 priceCash: itemSer.baseCashPrice,
                 timetext: itemSer.duration,
+                description: itemSer.description,
                 listOptionAddOn: itemSer.listAddOn.map((iAdd) => ({
                   id: iAdd.addOnID,
                   title: iAdd.itemName,

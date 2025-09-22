@@ -272,6 +272,27 @@
 .addon-indicator-fortech .be-addOn_card {
   color: var(--text-color-primary);
 }
+.wrap-popup-descser {
+  display: flex;
+  height: 100%;
+  padding: var(--px-32);
+  flex-direction: column;
+  align-items: center;
+  border-radius: var(--px-24);
+  background: #fff;
+  box-shadow: 0 0 var(--px-12) 0 rgba(0, 0, 0, 0.16);
+}
+.wrap-popup-descser .content-descser {
+  width: 100%;
+  font: normal normal 500 var(--s-18);
+}
+.wrap-popup-descser .title-descser {
+  width: 100%;
+}
+.wrap-popup-descser .title-descser .title-ds {
+  width: 100%;
+  font: normal normal 600 var(--s-20);
+}
 
 @media (max-width: 768px) {
   .choose-services .desc,

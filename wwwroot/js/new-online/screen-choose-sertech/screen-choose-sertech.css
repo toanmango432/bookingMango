@@ -451,12 +451,14 @@
 }
 
 .info-icon {
+  width: 28px;
+  height: 28px;
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 18px;
+  right: -24px;
   font-size: 16px;
-  color: #888;
   transition: color 0.2s;
+  aspect-ratio: 1/1;
 }
 
 .info-icon:hover {

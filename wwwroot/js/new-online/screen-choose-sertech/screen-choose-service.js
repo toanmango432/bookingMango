@@ -262,7 +262,11 @@ function renderServiceItemHTML(serviceItem, selectedServices) {
           }
           ${
             serviceItem.description
-              ? `<div class="info-icon"><i class="fa-solid fa-circle-info"></i></div>`
+              ? `<div class="info-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="29" height="28" viewBox="0 0 29 28" fill="none">
+                    <path d="M14.5 12.8333V18.6667M14.5 24.5C8.70101 24.5 4 19.799 4 14C4 8.20101 8.70101 3.5 14.5 3.5C20.299 3.5 25 8.20101 25 14C25 19.799 20.299 24.5 14.5 24.5ZM14.5581 9.33333V9.45L14.4419 9.45023V9.33333H14.5581Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>`
               : ""
           }
         </div>
@@ -328,6 +332,7 @@ export function renderServices(listItem) {
         <div
           class="wrap-service-card ${isSelected ? "selected" : ""}"
           data-iditem="${serviceItem.id}"
+
         >
           <span class="icon-checked ${isSelected ? "selected" : ""}"">
             <i class="fa-solid fa-check"></i>
@@ -374,7 +379,11 @@ export function renderServices(listItem) {
               }
               ${
                 serviceItem.description
-                  ? `<div class="info-icon"><i class="fa-solid fa-circle-info"></i></div>`
+                  ? `<div class="info-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="29" height="28" viewBox="0 0 29 28" fill="none">
+                      <path d="M14.5 12.8333V18.6667M14.5 24.5C8.70101 24.5 4 19.799 4 14C4 8.20101 8.70101 3.5 14.5 3.5C20.299 3.5 25 8.20101 25 14C25 19.799 20.299 24.5 14.5 24.5ZM14.5581 9.33333V9.45L14.4419 9.45023V9.33333H14.5581Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>`
                   : ""
               }
             </div>
