@@ -455,7 +455,7 @@ export function renderSumary(dataBooking, listDataService) {
       </div>
     </div>
     `;
-  Cart();
+  // Cart();
   // gán totalPayment cho dataBooking
   dataBooking.totalAmount = totalPayment;
   $wrapNewOnline.empty();

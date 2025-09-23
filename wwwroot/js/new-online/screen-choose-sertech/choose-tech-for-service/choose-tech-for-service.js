@@ -223,7 +223,9 @@ function renderItemTech(staff) {
               </svg>
               <span>Upcoming Day Of</span>
             </span>
-            <span class="icon-show-day-off">
+            <span id="show-timeof-tech" class="icon-show-day-off" data-idstaff="${
+              staff.employeeID
+            }">
               <svg xmlns="http://www.w3.org/2000/svg" width="17" height="16" viewBox="0 0 17 16" fill="none">
                 <path d="M7.1655 3.33464H5.96549C5.21876 3.33464 4.84511 3.33464 4.5599 3.47996C4.30901 3.60779 4.10519 3.81162 3.97736 4.0625C3.83203 4.34772 3.83203 4.72136 3.83203 5.4681V10.5348C3.83203 11.2815 3.83203 11.6547 3.97736 11.9399C4.10519 12.1908 4.30901 12.395 4.5599 12.5228C4.84483 12.668 5.21803 12.668 5.9633 12.668H11.0341C11.7794 12.668 12.152 12.668 12.437 12.5228C12.6878 12.395 12.8924 12.1906 13.0202 11.9397C13.1654 11.6548 13.1654 11.282 13.1654 10.5367V9.33464M13.832 6.0013V2.66797M13.832 2.66797H10.4987M13.832 2.66797L9.16536 7.33464" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>

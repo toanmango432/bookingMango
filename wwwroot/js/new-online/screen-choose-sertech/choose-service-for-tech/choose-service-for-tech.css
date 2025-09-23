@@ -272,7 +272,8 @@
 .addon-indicator-fortech .be-addOn_card {
   color: var(--text-color-primary);
 }
-.wrap-popup-descser {
+.wrap-popup-descser,
+.wrap-popup-daysoff-tech {
   display: flex;
   height: 100%;
   padding: var(--px-32);
@@ -282,6 +283,23 @@
   background: #fff;
   box-shadow: 0 0 var(--px-12) 0 rgba(0, 0, 0, 0.16);
 }
+.wrap-popup-daysoff-tech .title-daysoff-tech {
+  width: 100%;
+}
+.wrap-popup-daysoff-tech .title-daysoff-tech .title-dotec {
+  font: normal normal 600 var(--s-20);
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.wrap-popup-daysoff-tech .content-daysoff-tech {
+  width: 100%;
+}
+.content-daysoff-tech .list-daysoff-tech {
+  padding-left: 40px;
+}
+
 .wrap-popup-descser .content-descser {
   width: 100%;
   font: normal normal 500 var(--s-18);

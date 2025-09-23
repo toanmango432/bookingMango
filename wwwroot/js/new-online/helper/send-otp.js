@@ -9,6 +9,9 @@ import { salonStore } from "../../store/new-online-store.js";
 import { colorPrimary } from "../../templateDetail.js";
 import { renderPoliciesForm } from "../popup/content/policies.js";
 import { renderDescBlackList } from "../popup/content/desc-blacklist.js";
+import { renderSumary } from "../summary/summary.js";
+import { renderAddNewMethod } from "../popup/content/add-new-payment.js";
+import { renderPaymentMethodsForm } from "../popup/content/choose-payment.js";
 
 // Hàm dùng để gửi OTP (email hoặc phone)
 export async function sendOTP(inputValue, type) {
@@ -144,11 +147,6 @@ export async function sendOTP(inputValue, type) {
           dataBooking: newDataBooking,
         });
 
-        if (typeBooking === typeBookingEnum.GUESTS) {
-          // Add thêm 1 Guest rỗng
-          $(".btn-increase").trigger("click");
-        }
-
         // lấy listcard authorized tại đây
         const owner = newDataBooking.users[0];
         const customerID = owner.id;
@@ -165,49 +163,99 @@ export async function sendOTP(inputValue, type) {
             }
           }
         }
-
-        // get list card authorized
-        try {
-          const listCardAuthorized = await fetchAPI.post(
-            `/api/card/getlistcardauthorize?RCPCustomer=${rcpCustomer}&CustomerID=${customerID}&RVCNo=${RVCNo}&TypeAuthorize=1`
+        // Tránh gọi list card mà không cần deposit
+        const isDeposit = store.isDeposit;
+        if (isDeposit) {
+          // get list card authorized
+          try {
+            const listCardAuthorized = await fetchAPI.post(
+              `/api/card/getlistcardauthorize?RCPCustomer=${rcpCustomer}&CustomerID=${customerID}&RVCNo=${RVCNo}&TypeAuthorize=1`
+            );
+            if (listCardAuthorized.data)
+              newDataBooking.cardNumber = listCardAuthorized.data;
+            else return;
+          } catch (e) {
+            console.error("[sendOTP - list card authorized]", e.error);
+          }
+        }
+        console.log("newDataBooking");
+        // Hiện popup chính sách nếu setting bật
+        const isPolicy = store.isPolicy;
+        if (isPolicy) {
+          const contentPolicies = renderPoliciesForm(
+            policySetting,
+            colorPrimary
           );
-          if (listCardAuthorized.data)
-            newDataBooking.cardNumber = listCardAuthorized.data;
-          else return;
-        } catch (e) {
-          console.error("[sendOTP - list card authorized]", e.error);
-        }
-        const contentPolicies = renderPoliciesForm(policySetting, colorPrimary);
-        let height = 768;
-        let width = 886;
-        if (isMobile) {
-          height = 700;
-          width = "100%";
-        }
-        const persistent = true;
-        const html = renderBasePopup(
-          contentPolicies,
-          persistent,
-          height,
-          width
-        );
+          let height = 768;
+          let width = 886;
+          if (isMobile) {
+            height = 700;
+            width = "100%";
+          }
+          const persistent = true;
+          const html = renderBasePopup(
+            contentPolicies,
+            persistent,
+            height,
+            width
+          );
 
-        $wrapNewOnline.append(html);
-        // count downtime
-        if (!popupFlowCountdownInterval) {
-          startPopupFlowCountdown(1800);
+          $wrapNewOnline.append(html);
+          // count downtime
+          if (!popupFlowCountdownInterval) {
+            startPopupFlowCountdown(1800);
+          }
+
+          setTimeout(() => {
+            $(".overlay-screen").addClass("show");
+          }, 10);
+        } else if (!isPolicy && isDeposit) {
+          // Nếu không có chính sách và có deposit thì tự động trigger next policies
+          if (newDataBooking.cardNumber.length > 0) {
+            const contentPaymentMethod =
+              renderPaymentMethodsForm(newDataBooking);
+            let height = 776;
+            let width = 886;
+            if (isMobile) {
+              height = 676;
+              width = "100%";
+            }
+            const html = renderBasePopup(
+              contentPaymentMethod,
+              false,
+              height,
+              width
+            );
+            $wrapNewOnline.append(html);
+            setTimeout(() => {
+              $(".overlay-screen").addClass("show");
+            }, 10);
+          } else {
+            let height = 776;
+            let width = 886;
+            if (isMobile) {
+              height = "96%";
+              width = "100%";
+            }
+            const htmlAddNewMethod = renderAddNewMethod();
+            const persistent = true;
+            const html = renderBasePopup(
+              htmlAddNewMethod,
+              persistent,
+              height,
+              width
+            );
+
+            $wrapNewOnline.append(html);
+            setTimeout(() => {
+              $(".overlay-screen").addClass("show");
+            }, 10);
+          }
+        } else {
+          // qua sumary luôn
+          const dataServices = store.dataServices;
+          renderSumary(dataBooking, dataServices);
         }
-
-        setTimeout(() => {
-          $(".overlay-screen").addClass("show");
-        }, 10);
-
-        if (newDataBooking.type !== typeBookingEnum.ME) {
-          $(".wrap-input-guests").removeClass("hidden");
-          updateGuestSection(newDataBooking);
-        }
-
-        $(".wrap-advertise-page").css({ display: "none" });
         return null; // Không cần OTP nữa
       }
     } catch (e) {
@@ -308,11 +356,6 @@ export async function sendOTP(inputValue, type) {
           dataBooking: newDataBooking,
         });
 
-        if (typeBooking === typeBookingEnum.GUESTS) {
-          // Add thêm 1 Guest rỗng
-          $(".btn-increase").trigger("click");
-        }
-
         // lấy listcard authorized tại đây
         const owner = newDataBooking.users[0];
         const customerID = owner.id;
@@ -329,51 +372,101 @@ export async function sendOTP(inputValue, type) {
             }
           }
         }
-
-        // get list card authorized
-        try {
-          const listCardAuthorized = await fetchAPI.post(
-            `/api/card/getlistcardauthorize?RCPCustomer=${rcpCustomer}&CustomerID=${customerID}&RVCNo=${RVCNo}&TypeAuthorize=1`
-          );
-          if (listCardAuthorized.data)
-            newDataBooking.cardNumber = listCardAuthorized.data;
-          else {
-            console.log("Lỗi lấy danh sách thẻ thanh toán");
+        // Tránh gọi list card mà không cần deposit
+        const isDeposit = store.isDeposit;
+        if (isDeposit) {
+          // get list card authorized
+          try {
+            const listCardAuthorized = await fetchAPI.post(
+              `/api/card/getlistcardauthorize?RCPCustomer=${rcpCustomer}&CustomerID=${customerID}&RVCNo=${RVCNo}&TypeAuthorize=1`
+            );
+            if (listCardAuthorized.data)
+              newDataBooking.cardNumber = listCardAuthorized.data;
+            else {
+              console.log("Lỗi lấy danh sách thẻ thanh toán");
+            }
+          } catch (e) {
+            console.error("[sendOTP - list card authorized]", e.error);
           }
-        } catch (e) {
-          console.error("[sendOTP - list card authorized]", e.error);
-        }
-        const contentPolicies = renderPoliciesForm(policySetting, colorPrimary);
-        let height = 768;
-        let width = 886;
-        if (isMobile) {
-          height = 700;
-          width = "100%";
-        }
-        const persistent = true;
-        const html = renderBasePopup(
-          contentPolicies,
-          persistent,
-          height,
-          width
-        );
-
-        $wrapNewOnline.append(html);
-        // count downtime
-        if (!popupFlowCountdownInterval) {
-          startPopupFlowCountdown(1800);
         }
 
-        setTimeout(() => {
-          $(".overlay-screen").addClass("show");
-        }, 10);
+        // Hiện popup chính sách nếu setting bật
+        const isPolicy = store.isPolicy;
+        if (isPolicy) {
+          const contentPolicies = renderPoliciesForm(
+            policySetting,
+            colorPrimary
+          );
+          let height = 768;
+          let width = 886;
+          if (isMobile) {
+            height = 700;
+            width = "100%";
+          }
+          const persistent = true;
+          const html = renderBasePopup(
+            contentPolicies,
+            persistent,
+            height,
+            width
+          );
 
-        if (newDataBooking.type !== typeBookingEnum.ME) {
-          $(".wrap-input-guests").removeClass("hidden");
-          updateGuestSection(newDataBooking);
+          $wrapNewOnline.append(html);
+          // count downtime
+          if (!popupFlowCountdownInterval) {
+            startPopupFlowCountdown(1800);
+          }
+
+          setTimeout(() => {
+            $(".overlay-screen").addClass("show");
+          }, 10);
+        } else if (!isPolicy && isDeposit) {
+          // Nếu không có chính sách và có deposit thì tự động trigger next policies
+          if (newDataBooking.cardNumber.length > 0) {
+            const contentPaymentMethod =
+              renderPaymentMethodsForm(newDataBooking);
+            let height = 776;
+            let width = 886;
+            if (isMobile) {
+              height = 676;
+              width = "100%";
+            }
+            const html = renderBasePopup(
+              contentPaymentMethod,
+              false,
+              height,
+              width
+            );
+            $wrapNewOnline.append(html);
+            setTimeout(() => {
+              $(".overlay-screen").addClass("show");
+            }, 10);
+          } else {
+            let height = 776;
+            let width = 886;
+            if (isMobile) {
+              height = "96%";
+              width = "100%";
+            }
+            const htmlAddNewMethod = renderAddNewMethod();
+            const persistent = true;
+            const html = renderBasePopup(
+              htmlAddNewMethod,
+              persistent,
+              height,
+              width
+            );
+
+            $wrapNewOnline.append(html);
+            setTimeout(() => {
+              $(".overlay-screen").addClass("show");
+            }, 10);
+          }
+        } else {
+          // qua sumary luôn
+          const dataServices = store.dataServices;
+          renderSumary(dataBooking, dataServices);
         }
-
-        $(".wrap-advertise-page").css({ display: "none" });
         return null; // Không cần OTP nữa
       } else if (resVerifyAccount.status === 203) {
         const mess = resVerifyAccount?.message || "N/A";

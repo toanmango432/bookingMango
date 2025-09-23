@@ -25,6 +25,18 @@ export async function renderCalendar(
   dataBooking
 ) {
   const store = salonStore.getState();
+  const RVCNo = store.RVCNo;
+  const month = store.currentMonth;
+  const year = store.currentYear;
+
+  fetchStoreOffDays(RVCNo, month, year).then((daysOff) => {
+    daysOffNail[month + 1] = daysOff; // lưu lại theo key tháng
+    // update store
+    console.log("daysOffNail", daysOffNail);
+    salonStore.setState({ ...store, daysOffNail: { ...daysOffNail } });
+    if (typeof callback === "function") callback();
+  });
+
   const daysEl = document.getElementById("days");
   const monthYearEl = document.getElementById("monthYear");
   const daysOff = store.daysOffNail || {};
@@ -334,7 +346,6 @@ export function updateCalendarData(month, year, rvcNo, daysOffNail, callback) {
     daysOffNail[month + 1] = daysOff; // lưu lại theo key tháng
     // update store
     salonStore.setState({ ...store, daysOffNail: { ...daysOffNail } });
-    console.log("daysOffNail updated:", daysOffNail);
     if (typeof callback === "function") callback();
   });
 }
@@ -403,6 +414,8 @@ export function renderTimeSlotsForDate(dataBooking) {
   const timeKeySlot = store.timeKeySlot;
   const timeBeginCurDate = store.timeBeginCurDate;
   const slotTimeForSelect = store.slotTimeForSelect || [];
+  console.log("slotTimeForSelect", slotTimeForSelect);
+  console.log("timeBeginCurDate", timeBeginCurDate);
   const container = $("#timeSlotsContainer");
   container.empty();
 
@@ -412,13 +425,32 @@ export function renderTimeSlotsForDate(dataBooking) {
 
   let start, end;
 
-  if (!timeBeginCurDate) {
+  if (!timeBeginCurDate || slotTimeForSelect.length === 0) {
+    // fallback mặc định
     start = "08:00";
     end = "22:00";
   } else {
-    start = parseTimeTo24h(timeBeginCurDate.startTime); // "10:00"
-    end = parseTimeTo24h(timeBeginCurDate.endTime); // "20:00"
+    // parse giờ của timeBeginCurDate
+    const curStart = parseTimeTo24h(timeBeginCurDate.startTime); // ví dụ "09:00"
+    const curEnd = parseTimeTo24h(timeBeginCurDate.endTime); // ví dụ "21:00"
+
+    // slot đầu tiên và cuối cùng
+    const slotFirst = parseTimeTo24h(slotTimeForSelect[0].time);
+    const slotLast = parseTimeTo24h(
+      slotTimeForSelect[slotTimeForSelect.length - 1].time
+    );
+
+    // so sánh string "HH:mm" bằng cách convert sang phút
+    const toMinutes = (hhmm) => {
+      const [h, m] = hhmm.split(":").map(Number);
+      return h * 60 + m;
+    };
+
+    start = toMinutes(curStart) < toMinutes(slotFirst) ? curStart : slotFirst;
+    end = toMinutes(curEnd) > toMinutes(slotLast) ? curEnd : slotLast;
   }
+
+  console.log("start", start, "end", end);
 
   // Tạo toàn bộ slots theo interval
   const slots = generateTimeSlotsDynamic(selectedDate, start, end, timeKeySlot);
@@ -532,16 +564,22 @@ export function roundUpToNearestInterval(date, interval = 20) {
 }
 
 function parseTimeTo24h(timeStr) {
-  // timeStr: "10:00 AM" hoặc "08:00 PM"
-  const [time, modifier] = timeStr.split(" ");
-  let [hours, minutes] = time.split(":").map(Number);
+  if (!timeStr) return ""; // fallback nếu null/undefined
 
-  if (modifier.toUpperCase() === "PM" && hours !== 12) {
-    hours += 12;
+  const parts = timeStr.split(" ");
+  let [hours, minutes] = parts[0].split(":").map(Number);
+  const modifier = parts[1]; // có thể undefined
+
+  if (modifier) {
+    const mod = modifier.toUpperCase();
+    if (mod === "PM" && hours !== 12) {
+      hours += 12;
+    }
+    if (mod === "AM" && hours === 12) {
+      hours = 0;
+    }
   }
-  if (modifier.toUpperCase() === "AM" && hours === 12) {
-    hours = 0;
-  }
+  // nếu không có modifier => giữ nguyên (giả định dạng 24h)
 
   return `${hours.toString().padStart(2, "0")}:${minutes
     .toString()
@@ -881,28 +919,79 @@ $(document).ready(async function () {
     const store = salonStore.getState();
     const dataBooking = store.dataBooking;
     const userChoosing = dataBooking.users.find((u) => u.isChoosing);
+    const dataServices = store.dataServices;
+    // Nếu owner có thông tin rồi thì qua thẳng sumary cần phone/email và đã chọn card thanh toán
     if (!userChoosing.selectedTimeSlot) return;
 
-    // GUEST
-    const userHavePhone = dataBooking.users.find(
-      (u) => u.phoneNumber || u.email
-    );
-    const phoneEmailOrNull =
-      userHavePhone?.phoneNumber || userHavePhone?.email || "";
-    const htmlVerifyEmailPhone =
-      renderVerifyEmailPhoneContent(phoneEmailOrNull);
-    let height = 620;
-    let width = 560;
-    if (isMobile) {
-      height = 620;
-      width = "100%";
+    const owner = dataBooking.users[0];
+    const cardNumber = dataBooking.cardNumber || [];
+    const cardChoosing = dataBooking.cardNumber.find((card) => card.isChoosing);
+
+    if ((owner.phoneNumber || owner.email) && cardChoosing) {
+      // qua sumary
+      renderSumary(dataBooking, dataServices);
+    } else if ((owner.phoneNumber || owner.email) && cardNumber.length === 0) {
+      // chưa có thẻ thanh toán, qua page add thẻ mới
+      let height = 776;
+      let width = 886;
+      if (isMobile) {
+        height = "96%";
+        width = "100%";
+      }
+      const htmlAddNewMethod = renderAddNewMethod();
+      const persistent = true;
+      const html = renderBasePopup(htmlAddNewMethod, persistent, height, width);
+
+      $wrapNewOnline.append(html);
+      setTimeout(() => {
+        $(".overlay-screen").addClass("show");
+      }, 10);
+    } else if (
+      (owner.phoneNumber || owner.email) &&
+      !cardChoosing &&
+      cardNumber.length > 0
+    ) {
+      // đã có thẻ nhưng chưa chọn thẻ thanh toán, qua chọn thẻ thanh toán
+      let height = 620;
+      let width = 560;
+      if (isMobile) {
+        height = 620;
+        width = "100%";
+      }
+      const htmlPaymentMethodsForm = renderPaymentMethodsForm(dataBooking);
+      const persistent = true;
+      const html = renderBasePopup(
+        htmlPaymentMethodsForm,
+        persistent,
+        height,
+        width
+      );
+      $wrapNewOnline.append(html);
+      setTimeout(() => {
+        $(".overlay-screen").addClass("show");
+      }, 10);
+    } else {
+      // GUEST
+      const userHavePhone = dataBooking.users.find(
+        (u) => u.phoneNumber || u.email
+      );
+      const phoneEmailOrNull =
+        userHavePhone?.phoneNumber || userHavePhone?.email || "";
+      const htmlVerifyEmailPhone =
+        renderVerifyEmailPhoneContent(phoneEmailOrNull);
+      let height = 620;
+      let width = 560;
+      if (isMobile) {
+        height = 620;
+        width = "100%";
+      }
+      // const persistent = true;
+      const html = renderBasePopup(htmlVerifyEmailPhone, false, height, width);
+      $wrapNewOnline.append(html);
+      setTimeout(() => {
+        $(".overlay-screen").addClass("show");
+      }, 10);
     }
-    // const persistent = true;
-    const html = renderBasePopup(htmlVerifyEmailPhone, false, height, width);
-    $wrapNewOnline.append(html);
-    setTimeout(() => {
-      $(".overlay-screen").addClass("show");
-    }, 10);
   });
   $(document).on("click", ".btn-back-verify-register-1", async function () {
     const store = salonStore.getState();
