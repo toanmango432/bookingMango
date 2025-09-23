@@ -371,6 +371,7 @@ export const salonStore = {
     let showCallSalon = false;
     let isConfirm = false;
     let isPolicy = false;
+    let storeInfo = null;
 
     const getDataSetting = async () => {
       const store = salonStore.getState();
@@ -402,6 +403,7 @@ export const salonStore = {
           showCallSalon: resSetting?.data?.ShowCallSalon === "1" || false,
           isConfirm: resSetting?.data?.IsConfirm === "1" || false,
           isPolicy: resSetting?.data?.isPolicy === "1" || false,
+          storeInfo: resSetting?.data?.StoreInfo || null,
         });
         return resSetting;
       } catch (e) {
@@ -469,6 +471,7 @@ export const salonStore = {
       showCallSalon,
       isConfirm,
       isPolicy,
+      storeInfo,
       //
       popupFlowCountdownInterval,
       // slots time

@@ -596,6 +596,8 @@ function getUniqueStaff(dataBooking) {
 export async function renderChooseTime() {
   const store = salonStore.getState();
   const dataBooking = store.dataBooking;
+  const showCallSalon = store.showCallSalon;
+  const storeInfo = store.storeInfo;
 
   const listStaff = getUniqueStaff(dataBooking);
   const htmlListStaff = listStaff.map((item) => item).join(", ");
@@ -641,6 +643,29 @@ export async function renderChooseTime() {
       </div>
     </div>
     `;
+
+  const htmlPhoneCallSalon = `
+    <div class="wrap-help-support">
+      <h4 class="ques-see">
+        Dont see your time?
+      </h4>
+      <p class="contact-to">
+        <span class="icon-contact">
+          <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
+            <path d="M9 19.2578H8.5C4.5 19.2578 2.5 18.2578 2.5 13.2578V8.25781C2.5 4.25781 4.5 2.25781 8.5 2.25781H16.5C20.5 2.25781 22.5 4.25781 22.5 8.25781V13.2578C22.5 17.2578 20.5 19.2578 16.5 19.2578H16C15.69 19.2578 15.39 19.4078 15.2 19.6578L13.7 21.6578C13.04 22.5378 11.96 22.5378 11.3 21.6578L9.8 19.6578C9.64 19.4378 9.27 19.2578 9 19.2578Z" stroke="black" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M16.4965 11.2578H16.5054" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12.4955 11.2578H12.5045" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M8.49451 11.2578H8.50349" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span class="need-help">Need help?</span>
+        <span class="call-us">Call Us: </span>
+        <span class="phone-contact">${
+          formatPhoneNumber(storeInfo?.phone) || "N/A"
+        }</span>
+      </p>
+    </div>
+  `;
   const htmlPageChooseTime = `
     <div class="wrap-content-salon bg-choose-time">
       <div class="header-sertech">
@@ -658,24 +683,7 @@ export async function renderChooseTime() {
         <div class="content-choose-time">
           ${htmlChooseTime}
         </div>
-        <div class="wrap-help-support">
-          <h4 class="ques-see">
-            Dont see your time?
-          </h4>
-          <p class="contact-to">
-            <span class="icon-contact">
-              <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
-                <path d="M9 19.2578H8.5C4.5 19.2578 2.5 18.2578 2.5 13.2578V8.25781C2.5 4.25781 4.5 2.25781 8.5 2.25781H16.5C20.5 2.25781 22.5 4.25781 22.5 8.25781V13.2578C22.5 17.2578 20.5 19.2578 16.5 19.2578H16C15.69 19.2578 15.39 19.4078 15.2 19.6578L13.7 21.6578C13.04 22.5378 11.96 22.5378 11.3 21.6578L9.8 19.6578C9.64 19.4378 9.27 19.2578 9 19.2578Z" stroke="black" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M16.4965 11.2578H16.5054" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M12.4955 11.2578H12.5045" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M8.49451 11.2578H8.50349" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </span>
-            <span class="need-help">Need help?</span>
-            <span class="call-us">Call Us: </span>
-            <span class="phone-contact">(384) 334-2234</span>
-          </p>
-        </div>
+        ${showCallSalon ? htmlPhoneCallSalon : ""}
         <div class="footer-dir footer-choose-time">
         </div>
       </div>
