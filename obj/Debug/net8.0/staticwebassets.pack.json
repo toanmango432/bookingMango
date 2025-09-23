@@ -465,6 +465,14 @@
       "PackagePath": "staticwebassets/js/new-online/popup/content/choose-payment.js"
     },
     {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/popup/content/content-descser.js",
+      "PackagePath": "staticwebassets/js/new-online/popup/content/content-descser.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/popup/content/desc-blacklist.js",
+      "PackagePath": "staticwebassets/js/new-online/popup/content/desc-blacklist.js"
+    },
+    {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/popup/content/notify.js",
       "PackagePath": "staticwebassets/js/new-online/popup/content/notify.js"
     },

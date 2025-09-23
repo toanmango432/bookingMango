@@ -366,6 +366,11 @@ export const salonStore = {
     let isBookMultipleTech = true;
     let isHidePrice = false;
     let priceDisplay;
+    let hideNoRequest = false;
+    let loginWithPassword = false;
+    let showCallSalon = false;
+    let isConfirm = false;
+    let isPolicy = false;
 
     const getDataSetting = async () => {
       const store = salonStore.getState();
@@ -391,6 +396,12 @@ export const salonStore = {
           telInput: resSetting?.data?.TelInput || "+84",
           isHidePrice: resSetting?.data?.HidePrice === "1" || false,
           priceDisplay: resSetting?.data?.PriceDisplay || "0",
+          hideNoRequest: resSetting?.data?.HideNoRequest === "1" || false,
+          loginWithPassword:
+            resSetting?.data?.LoginWithPassword === "1" || false,
+          showCallSalon: resSetting?.data?.ShowCallSalon === "1" || false,
+          isConfirm: resSetting?.data?.IsConfirm === "1" || false,
+          isPolicy: resSetting?.data?.isPolicy === "1" || false,
         });
         return resSetting;
       } catch (e) {
@@ -444,6 +455,7 @@ export const salonStore = {
       getTimeKeySlot,
       timeBeginCurDate,
       getTimeBeginCurDate,
+      // setting
       dataSetting,
       paymentDeposit,
       isDeposit,
@@ -452,6 +464,12 @@ export const salonStore = {
       isBookMultipleTech,
       isHidePrice,
       priceDisplay,
+      hideNoRequest,
+      loginWithPassword,
+      showCallSalon,
+      isConfirm,
+      isPolicy,
+      //
       popupFlowCountdownInterval,
       // slots time
       slotTimeMultiTech,

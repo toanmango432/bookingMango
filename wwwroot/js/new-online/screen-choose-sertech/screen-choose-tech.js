@@ -148,12 +148,13 @@ function renderListStaff_PageChooseTech(listUserStaff) {
   const store = salonStore.getState();
   const dataBooking = store.dataBooking;
   const user = dataBooking.users.find((u) => u.isChoosing);
+  const hideNoRequest = store.hideNoRequest;
 
   // staff idStaffDefault (Next Available)
   const techAvailable = listUserStaff.find(
     (s) => s.employeeID === idStaffDefault
   );
-  if (techAvailable) {
+  if (techAvailable && hideNoRequest) {
     const isSelected9999 = user?.services.some((cate) =>
       cate.itemService.some(
         (srv) => srv.selectedStaff?.employeeID === idStaffDefault
