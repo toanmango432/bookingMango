@@ -421,9 +421,7 @@ export const salonStore = {
     let slotTimeForSelect = [];
 
     // ngày nghỉ của tiệm
-    let daysOffNail = {
-      8: [8, 9, 10, 12, 20, 22], // August: non-working days
-    };
+    let daysOffNail = {};
     // salon choosing
     let salonChoosing = {};
     let itemServiceChoosing = {};

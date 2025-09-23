@@ -727,8 +727,11 @@ $(document).ready(async function () {
   $(document).on("click", ".info-icon", function (e) {
     e.stopPropagation();
     const $this = $(this);
-    const idItemSer = $this.closest(".wrap-service-card").data("iditem");
-    const idCate = $(".item-cate.active").data("id");
+    const idItemSer =
+      $this.closest(".wrap-service-card").data("iditem") ||
+      $this.closest(".wrap-ftservice-card").data("iditem");
+    const idCate =
+      $(".item-cate.active").data("id") || $(".item-ftcate.active").data("id");
 
     const store = salonStore.getState();
     const dataServices = store.dataServices;

@@ -27,6 +27,8 @@ export async function renderCalendar(
   const store = salonStore.getState();
   const daysEl = document.getElementById("days");
   const monthYearEl = document.getElementById("monthYear");
+  const daysOff = store.daysOffNail || {};
+  console.log("daysOffNail", daysOff);
 
   // if (!daysEl || !monthYearEl) return;
   daysEl.innerHTML = "";
@@ -121,6 +123,16 @@ export async function renderCalendar(
           oldEmpID: null,
         });
         renderTimeSlotsForDate(dataBooking);
+
+        // append time business
+        const newStore = salonStore.getState();
+        const timeBeginCurDate = newStore.timeBeginCurDate;
+        const $timeBusiness = $(".time-busines.desc");
+        $timeBusiness.text(
+          `Business Time: ${timeBeginCurDate?.startTime || "08:00 AM"} - ${
+            timeBeginCurDate?.endTime || "10:00 PM"
+          }`
+        );
       });
     }
     daysEl.appendChild(day);
@@ -322,6 +334,7 @@ export function updateCalendarData(month, year, rvcNo, daysOffNail, callback) {
     daysOffNail[month + 1] = daysOff; // lưu lại theo key tháng
     // update store
     salonStore.setState({ ...store, daysOffNail: { ...daysOffNail } });
+    console.log("daysOffNail updated:", daysOffNail);
     if (typeof callback === "function") callback();
   });
 }
@@ -605,6 +618,7 @@ export async function renderChooseTime() {
   await store.getTimeKeySlot();
 
   const salonChoosing = store.salonChoosing;
+  const timeBeginCurDate = store.timeBeginCurDate;
 
   const htmlHeaderSalon = HeaderSalon(salonChoosing);
 
@@ -676,8 +690,10 @@ export async function renderChooseTime() {
           <div class="wrap-title">
               <h2 class="title text-uppercase">Choose time</h2>
           </div>
-          <p class="desc">
-              Business Time: 9:00 AM - 9:00 PM
+          <p class="time-busines desc">
+              Business Time: ${timeBeginCurDate?.startTime || "08:00 AM"} - ${
+    timeBeginCurDate?.endTime || "10:00 PM"
+  }
           </p>
         </div>
         <div class="content-choose-time">
