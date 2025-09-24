@@ -733,9 +733,22 @@
   color: var(--Gray-Neutral-50, #747474);
   font: normal normal 500 var(--s-14);
 }
+.sub-depositcash-1l {
+  color: #f44c7f;
+  font: normal normal 600 var(--s-14);
+  position: relative;
+}
 .sub-deposit-1l {
   color: var(--text-color-primary);
   font: normal normal 600 var(--s-14);
+}
+.sub-depositcash-1l::after {
+  content: "";
+  width: 1px;
+  height: 100%;
+  background-color: #979797;
+  position: absolute;
+  right: -4px;
 }
 .sub-deposit-2r {
   display: flex;
@@ -1120,7 +1133,7 @@
   margin-bottom: 0px;
 }
 
-.total-pay .text-total-price {
+.total-pay .wrap-cash-base {
   width: 24.5%;
   margin-bottom: 0px;
   text-align: right;

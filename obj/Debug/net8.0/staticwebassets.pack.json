@@ -5,6 +5,10 @@
       "PackagePath": "staticwebassets/OnlineStore.bundle.scp.css"
     },
     {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/assets/images/background-cart-nail/Ảnh màn hình 2025-08-22 lúc 10.16.54.png",
+      "PackagePath": "staticwebassets/assets/images/background-cart-nail/Ảnh màn hình 2025-08-22 lúc 10.16.54.png"
+    },
+    {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/assets/images/background-cart-nail/bg-cart.png",
       "PackagePath": "staticwebassets/assets/images/background-cart-nail/bg-cart.png"
     },
@@ -463,6 +467,10 @@
     {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/popup/content/choose-payment.js",
       "PackagePath": "staticwebassets/js/new-online/popup/content/choose-payment.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/popup/content/content-days-off-tech.js",
+      "PackagePath": "staticwebassets/js/new-online/popup/content/content-days-off-tech.js"
     },
     {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/popup/content/content-descser.js",

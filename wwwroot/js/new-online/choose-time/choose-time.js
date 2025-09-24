@@ -1295,8 +1295,16 @@ $(document).ready(async function () {
   $(document).on("click", ".btn-next-policies-1", async function () {
     const store = salonStore.getState();
     const dataBooking = store.dataBooking;
+    const dataServices = store.dataServices;
     const owner = dataBooking.users[0];
+    const isDeposit = store.isDeposit;
+    if (!isDeposit) {
+      // nếu không yêu cầu deposit qua luôn sumary
+      renderSumary(dataBooking, dataServices);
+      return;
+    }
     // kiểm tra nếu client chưa có card đá vào add new card, ngược lại vào chọn card
+
     if (dataBooking.cardNumber.length > 0) {
       const contentPaymentMethod = renderPaymentMethodsForm(dataBooking);
       let height = 776;

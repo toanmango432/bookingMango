@@ -1,5 +1,30 @@
+export function renderDisPriceOnPopupChoosePayment(
+  { isHidePrice, priceDisplay },
+  { totalPayment, totalCashPayment }
+) {
+  if (priceDisplay === "0") {
+    return `<span class="wrap-cash-base ${isHidePrice ? "hide-price" : ""}">
+            <span class="sub-deposit-1l">
+              ${"$" + totalPayment.toFixed(2)}
+            </span>
+          </span>`;
+  } else if (priceDisplay === "1") {
+    console.log("Display total 2 price?");
+  } else if (priceDisplay === "2") {
+    return `<span class="wrap-cash-base ${isHidePrice ? "hide-price" : ""}">
+              <span class="sub-depositcash-1l">
+                ${"$" + totalCashPayment.toFixed(2)}
+              </span>
+              <span class="sub-deposit-1l">
+                ${"$" + totalPayment.toFixed(2)}
+              </span>
+            </span>`;
+  }
+}
+
 export function CalTotalPayment(dataBooking, listDataService) {
   let total = 0;
+  let totalCash = 0;
 
   (dataBooking.users || []).forEach((userBooking) => {
     const dataRefact = buildServiceSummary(userBooking, listDataService);
@@ -10,18 +35,19 @@ export function CalTotalPayment(dataBooking, listDataService) {
       dataRefact.listServiceUser.forEach((item) => {
         item.itemService.forEach((is) => {
           // cộng tiền service + optionals
-          total += Number(getTotalPrice(is) || 0);
+          total += Number(getTotalPrice(is).total || 0);
+          totalCash += Number(getTotalPrice(is).totalCash || 0);
         });
       });
     }
   });
 
-  return total;
+  return { total, totalCash };
 }
 
 export function PaymentDeposit(dataBooking, dataServices) {
   const store = salonStore.getState();
-  const totalPayment = CalTotalPayment(dataBooking, dataServices);
+  const totalPayment = CalTotalPayment(dataBooking, dataServices).total;
   const paymentDeposit = store?.paymentDeposit;
 
   if (dataBooking?.currencyDeposit === "%") {
@@ -46,9 +72,13 @@ export function renderPaymentMethodsForm(
   const store = salonStore.getState();
   const dataServices = store.dataServices;
   const isHidePrice = store.isHidePrice;
+  const priceDisplay = store.priceDisplay;
 
   const numberCard = dataBooking.cardNumber;
-  const totalPayment = CalTotalPayment(dataBooking, dataServices);
+  const caclTotal = CalTotalPayment(dataBooking, dataServices);
+
+  const totalPayment = caclTotal.total;
+  const totalCashPayment = caclTotal.totalCash;
   return `
         <div
           class="wrap-popup-payment-methods"
@@ -102,9 +132,10 @@ export function renderPaymentMethodsForm(
               <span class="sub-deposit-1r">
                 Total
               </span>
-              <span class="sub-deposit-1l">
-                ${"$" + totalPayment.toFixed(2)}
-              </span>
+              ${renderDisPriceOnPopupChoosePayment(
+                { isHidePrice, priceDisplay },
+                { totalPayment, totalCashPayment }
+              )}
             </div>
             <div class="cur-deposit">
               <span class="sub-deposit-2r">

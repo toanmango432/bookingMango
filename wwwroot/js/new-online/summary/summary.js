@@ -1,3 +1,107 @@
+// total deposit sumary
+export function renderDisSumaryTotalDeposit(
+  { isHidePrice, priceDisplay },
+  { totalPayment, totalCashPayment }
+) {
+  if (priceDisplay === "0") {
+    return `<span class="total-value">
+            <span class="total-price">
+              ${"$" + totalPayment.toFixed(2)}
+            </span>
+          </span>`;
+  } else if (priceDisplay === "1") {
+    console.log("Display total 2 price?");
+  } else if (priceDisplay === "2") {
+    return `<span class="total-value ${isHidePrice ? "hide-price" : ""}">
+              <span class="total-cash">
+                ${"$" + totalCashPayment.toFixed(2)}
+              </span>
+              <span class="total-price">
+                ${"$" + totalPayment.toFixed(2)}
+              </span>
+            </span>`;
+  }
+}
+// total item 1 user sumary
+export function renderDisTotalItemSumary(
+  { isHidePrice, priceDisplay },
+  { userTotalPayment, userTotalCashPayment }
+) {
+  if (priceDisplay === "0") {
+    return `<p class="item wrap-cash-base">
+              <span class="text-total-price ${isHidePrice ? "hide-price" : ""}">
+                $ ${userTotalPayment.toFixed(2)}
+              </span>
+            </p>`;
+  } else if (priceDisplay === "1") {
+    console.log("Display total 2 price?");
+  } else if (priceDisplay === "2") {
+    return `<p class="item wrap-cash-base ${isHidePrice ? "hide-price" : ""}">
+            <span class="text-total-price-cash">
+              $ ${userTotalCashPayment.toFixed(2)}
+            </span>
+            <span class="text-total-price">
+              $ ${userTotalPayment.toFixed(2)}
+            </span>
+          </p>`;
+  }
+}
+// addon item sumary
+export function renderDisAddonSumary(
+  { isHidePrice, priceDisplay },
+  { price, priceCash }
+) {
+  if (priceDisplay === "0") {
+    return `<p class="wrap-cash-base">
+            <span
+              class="item-addon text-price-service price-addon ${
+                isHidePrice ? "hide-price" : ""
+              }"
+            >
+              $ ${(price || 0).toFixed(2)}
+            </span>
+          </p>`;
+  } else if (priceDisplay === "1") {
+    console.log("Display total 2 price?");
+  } else if (priceDisplay === "2") {
+    return `<p class="wrap-cash-base ${isHidePrice ? "hide-price" : ""}">
+              <span
+                class="item-addon text-pricecash-service price-addon">
+                $ ${(priceCash || 0).toFixed(2)}
+              </span>
+              <span
+                class="item-addon text-price-service price-addon"
+              >
+                $ ${(price || 0).toFixed(2)}
+              </span>
+            </p>`;
+  }
+}
+// item service sumary
+export function renderDisItemSumary(
+  { isHidePrice, priceDisplay },
+  { basePrice, baseCashPrice }
+) {
+  if (priceDisplay === "0") {
+    return `<p class="item wrap-cash-base ${isHidePrice ? "hide-price" : ""}">
+              <span class="text-price-service">
+                $ ${basePrice}
+              </span>
+            </p>`;
+  } else if (priceDisplay === "1") {
+    console.log("Display total 2 price?");
+  } else if (priceDisplay === "2") {
+    return `<p class="item wrap-cash-base ${isHidePrice ? "hide-price" : ""}">
+              <span class="text-pricecash-service">
+                $ ${baseCashPrice}
+              </span>
+              <span class="text-price-service">
+                $ ${basePrice}
+              </span>
+            </p>`;
+  }
+}
+
 export function buildServiceSummary(data, listDataService) {
   const dataService = data.services;
 
@@ -53,20 +157,20 @@ export function parsePrice(priceStr) {
   return parseFloat(priceStr.replace("$", "")) || 0;
 }
 export function getTotalPrice(service) {
-  console.log("service: ", service);
   const baseCashPrice = parsePrice(service.baseCashPrice);
   const basePrice = parsePrice(service.basePrice);
 
   const optionalTotalBaseCash = (service.optionals || []).reduce((sum, opt) => {
-    return sum + parsePrice(opt.price);
+    return sum + parsePrice(opt.priceCash);
   }, 0);
   const optionalTotal = (service.optionals || []).reduce((sum, opt) => {
     return sum + parsePrice(opt.price);
   }, 0);
 
   const totalCash = baseCashPrice + optionalTotalBaseCash;
+  const total = basePrice + optionalTotal;
 
-  return totalCash.toFixed(2);
+  return { totalCash: totalCash.toFixed(2), total: total.toFixed(2) };
 }
 
 export function parseTime(timeStr) {
@@ -82,6 +186,7 @@ export function renderSumary(dataBooking, listDataService) {
   const salonChoosing = store.salonChoosing;
   const paymentDeposit = parseFloat(store?.paymentDeposit);
   const isHidePrice = store.isHidePrice;
+  const priceDisplay = store.priceDisplay;
 
   const htmlHeaderSalon = HeaderSalon(salonChoosing);
 
@@ -89,6 +194,7 @@ export function renderSumary(dataBooking, listDataService) {
   const cardChoosing = dataBooking.cardNumber.find((card) => card.isChoosing);
 
   let totalPayment = 0;
+  let totalCashPayment = 0;
   let totalDeposit = 0;
 
   const allSelected = dataBooking.users.every((user) => {
@@ -140,6 +246,7 @@ export function renderSumary(dataBooking, listDataService) {
                         let totalServices = 0;
                         let totalMinutes = 0;
                         let userTotalPayment = 0;
+                        let userTotalCashPayment = 0;
 
                         if (
                           dataRefact.listServiceUser &&
@@ -160,18 +267,25 @@ export function renderSumary(dataBooking, listDataService) {
                                 0
                               );
                               totalMinutes += optionalMins;
+
                               userTotalPayment += Number(
-                                getTotalPrice(is) || 0
+                                getTotalPrice(is).total || 0
+                              );
+                              userTotalCashPayment += Number(
+                                getTotalPrice(is).totalCash || 0
                               );
                             });
                           });
                         }
                         // save total amount
                         // cộng dồn vào tổng của cả booking
-                        totalPayment = CalTotalPayment(
+                        let calcTotal = CalTotalPayment(
                           dataBooking,
                           listDataService
                         );
+
+                        totalPayment = calcTotal.total;
+                        totalCashPayment = calcTotal.totalCash;
 
                         if (dataBooking?.currencyDeposit === "%") {
                           totalDeposit = (
@@ -310,19 +424,23 @@ export function renderSumary(dataBooking, listDataService) {
                                                     }">${
                                               opt.timedura || "0 min"
                                             }</p>
-                                                    <p class="item-addon text-price-service price-addon ${
-                                                      isHidePrice
-                                                        ? "hide-price"
-                                                        : ""
-                                                    }">$ ${(
-                                              opt.price || 0
-                                            ).toFixed(2)}</p>
+                                                    ${renderDisAddonSumary(
+                                                      {
+                                                        isHidePrice,
+                                                        priceDisplay,
+                                                      },
+                                                      {
+                                                        price: opt.price,
+                                                        priceCash:
+                                                          opt.priceCash,
+                                                      }
+                                                    )}
                                                   </div>
                                                 </div>
                                               </div>`;
                                           })
                                           .join("");
-
+                                        console.log("is: ", is);
                                         return `
                                             <div class="wrap-item-content"
                                               data-id=${services.id}
@@ -348,13 +466,18 @@ export function renderSumary(dataBooking, listDataService) {
                                                         ? "hide-price"
                                                         : ""
                                                     }">${is?.timetext}</p>
-                                                    <p class="item text-price-service ${
-                                                      isHidePrice
-                                                        ? "hide-price"
-                                                        : ""
-                                                    }">$ ${getTotalPrice(
-                                          is
-                                        )}</p>
+                                                    ${renderDisItemSumary(
+                                                      {
+                                                        isHidePrice,
+                                                        priceDisplay,
+                                                      },
+                                                      {
+                                                        basePrice:
+                                                          is.basePrice || 0,
+                                                        baseCashPrice:
+                                                          is.baseCashPrice || 0,
+                                                      }
+                                                    )}
                                                   </div>
                                                   ${optionalsHtml}
                                               </div>
@@ -370,9 +493,10 @@ export function renderSumary(dataBooking, listDataService) {
                               <p class="item text-total-times ${
                                 isHidePrice ? "hide-price" : ""
                               }">${totalMinutes} min</p>
-                              <p class="item text-total-price ${
-                                isHidePrice ? "hide-price" : ""
-                              }">$ ${userTotalPayment.toFixed(2)}</p>
+                              ${renderDisTotalItemSumary(
+                                { isHidePrice, priceDisplay },
+                                { userTotalPayment, userTotalCashPayment }
+                              )}
                           </div>
                         </div>
                     `;
@@ -391,9 +515,10 @@ export function renderSumary(dataBooking, listDataService) {
                         <span class="total-text">
                           Total
                         </span>
-                        <span class="total-value">
-                          ${"$" + totalPayment.toFixed(2)}
-                        </span>
+                        ${renderDisSumaryTotalDeposit(
+                          { isHidePrice, priceDisplay },
+                          { totalPayment, totalCashPayment }
+                        )}
                     </span>
                     <span class="total-2">
                         <span class="depo-text">
@@ -458,6 +583,7 @@ export function renderSumary(dataBooking, listDataService) {
   // Cart();
   // gán totalPayment cho dataBooking
   dataBooking.totalAmount = totalPayment;
+  dataBooking.totalCashAmount = totalCashPayment;
   $wrapNewOnline.empty();
   $wrapNewOnline.append(htmlSumary);
 }

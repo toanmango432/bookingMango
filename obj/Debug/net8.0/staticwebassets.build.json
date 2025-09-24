@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "iH+tqAMwVefsiSPeBSEEGPaTNWxsPMKLjQ35JKOWB0Y=",
+  "Hash": "s4qX9cZ9Ri+/QTYfDAkKqgG17uCAQgpV9ziXduRB1/U=",
   "Source": "OnlineStore",
   "BasePath": "_content/OnlineStore",
   "Mode": "Default",
@@ -53,6 +53,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/obj/Debug/net8.0/scopedcss/projectbundle/OnlineStore.bundle.scp.css"
+    },
+    {
+      "Identity": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/assets/images/background-cart-nail/Ảnh màn hình 2025-08-22 lúc 10.16.54.png",
+      "SourceId": "OnlineStore",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/",
+      "BasePath": "_content/OnlineStore",
+      "RelativePath": "assets/images/background-cart-nail/Ảnh màn hình 2025-08-22 lúc 10.16.54.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/assets/images/background-cart-nail/Ảnh màn hình 2025-08-22 lúc 10.16.54.png"
     },
     {
       "Identity": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/assets/images/background-cart-nail/bg-cart.png",
@@ -2238,6 +2257,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/js/new-online/popup/content/choose-payment.js"
+    },
+    {
+      "Identity": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/popup/content/content-days-off-tech.js",
+      "SourceId": "OnlineStore",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/",
+      "BasePath": "_content/OnlineStore",
+      "RelativePath": "js/new-online/popup/content/content-days-off-tech.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/js/new-online/popup/content/content-days-off-tech.js"
     },
     {
       "Identity": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/new-online/popup/content/content-descser.js",

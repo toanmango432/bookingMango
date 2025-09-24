@@ -150,7 +150,7 @@ export function renderListPeTech_PageChooseServiceTech(forceChoose = false) {
     `<div class="list-petech">${htmlListPeTech}</div>`
   );
 
-  // Chỉ hiện start same time khi có ít nhất 2 itemService
+  // Chỉ hiện start same time khi có ít nhất 2 itemService và và 2 thợ
   const totalSelected = user.services.reduce(
     (count, cate) => count + cate.itemService.length,
     0
@@ -577,7 +577,7 @@ $(document).ready(async function () {
           idItemService: itemService.id,
           title: itemService.title,
           price: itemService.basePrice,
-          cashPrice: itemService.baseCashPrice,
+          priceCash: itemService.baseCashPrice,
           duration: itemService.timetext,
           selectedStaff: {
             employeeID: techActive.employeeID,
@@ -600,7 +600,7 @@ $(document).ready(async function () {
         idItemService: itemService.id,
         title: itemService.title,
         price: itemService.basePrice,
-        cashPrice: itemService.baseCashPrice,
+        priceCash: itemService.baseCashPrice,
         duration: itemService.timetext,
         selectedStaff: {
           employeeID: techActive.employeeID,

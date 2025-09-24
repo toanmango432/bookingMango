@@ -589,7 +589,7 @@
 .addon-item .cash-card {
   font-weight: 600;
   display: flex;
-  gap: 4px;
+  gap: 8px;
   justify-content: flex-end;
 }
 .addon-item .cash-card.hide-price {
@@ -598,21 +598,24 @@
 .addon-item .cash-card .addOn-cash {
   color: #f44c7f;
   text-align: right;
+  position: relative;
 }
+.addon-item .cash-card .addOn-cash::after {
+  content: "";
+  width: 1px;
+  height: 75%;
+  background-color: #c9c9c9;
+  position: absolute;
+  right: -4px;
+  top: 4px;
+}
+
 .addon-item .cash-card .addOn-card {
   position: relative;
   color: #747474;
   text-align: right;
 }
-.addon-item .cash-card .addOn-card::after {
-  content: "";
-  position: absolute;
-  bottom: 50%;
-  right: 0px;
-  background-color: #747474;
-  height: 1px;
-  width: 100%;
-}
+/* */
 
 /* Footer */
 .addon-footer {

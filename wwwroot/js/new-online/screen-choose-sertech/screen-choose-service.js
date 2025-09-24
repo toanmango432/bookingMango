@@ -1,3 +1,61 @@
+export function renderAddOnInItemService(
+  { isHidePrice, priceDisplay },
+  { addonCount, addOnTotalPrice, addOnTotalPriceCash }
+) {
+  if (priceDisplay === "0") {
+    return `<div class="addon-indicator">
+            <span class="be-addOn">
+              ${addonCount} Add on
+              <span class="w-price-addon ${isHidePrice ? "hide-price" : ""}">
+                <span class="be-addOn_card">
+                  $ ${addOnTotalPrice.toFixed(2)}
+                </span>
+              </span>
+            </span>
+          </div>`;
+  } else if (priceDisplay === "1") {
+    console.log("Display total 2 price ?");
+  } else if (priceDisplay === "2") {
+    return `<div class="addon-indicator">
+              <span class="be-addOn">
+                ${addonCount} Add on
+                <span class="w-price-addon ${isHidePrice ? "hide-price" : ""}">
+                  <span class="be-addOn_cash">
+                    $ ${addOnTotalPriceCash.toFixed(2)}
+                  </span>
+                  <span class="partiti">|</span>
+                  <span class="be-addOn_card">
+                    $ ${addOnTotalPrice.toFixed(2)}
+                  </span>
+                </span>
+              </span>
+            </div>`;
+  }
+}
+export function renderAddonInLeftPanelAddon(
+  { isHidePrice, priceDisplay },
+  { basePrice, priceCash }
+) {
+  console.log("priceCash: ", priceCash);
+  if (priceDisplay === "0") {
+    return `<span class="cash-card ${isHidePrice ? "hide-price" : ""}">
+              <p class="addOn-card">
+                  $${basePrice}
+              </p>
+            </span>`;
+  } else if (priceDisplay === "1") {
+    console.log("Display total 2 price ?");
+  } else if (priceDisplay === "2") {
+    return `<span class="cash-card ${isHidePrice ? "hide-price" : ""}">
+              <p class="addOn-cash">
+                  $${priceCash + " "}
+              </p>
+              <p class="addOn-card">
+                  $${basePrice}
+              </p>
+            </span>`;
+  }
+}
 export function renderTrackCate(
   dataService,
   classItem = "item-cate",
@@ -231,9 +289,15 @@ function renderServiceItemHTML(serviceItem, selectedServices) {
   );
   const isSelected = Boolean(matchedService);
   const addonCount = matchedService?.optionals?.length || 0;
+
   const addOnTotalPrice =
     matchedService?.optionals?.reduce(
       (sum, opt) => sum + (opt.price || 0),
+      0
+    ) || 0;
+  const addOnTotalPriceCash =
+    matchedService?.optionals?.reduce(
+      (sum, opt) => sum + (opt.priceCash || 0),
       0
     ) || 0;
 
@@ -258,22 +322,14 @@ function renderServiceItemHTML(serviceItem, selectedServices) {
         <div class="bot-item-service">
           ${
             addonCount > 0
-              ? `<div class="addon-indicator">
-                    <span class="be-addOn">
-                      ${addonCount} Add on
-                      <span class="w-price-addon ${
-                        isHidePrice ? "hide-price" : ""
-                      }">
-                        <span class="be-addOn_cash">
-                          $ ${addOnTotalPrice.toFixed(2)}
-                        </span>
-                        <span class="partiti">|</span>
-                        <span class="be-addOn_card">
-                          $ ${addOnTotalPrice.toFixed(2)}
-                        </span>
-                      </span>
-                    </span>
-                  </div>`
+              ? renderAddOnInItemService(
+                  { isHidePrice, priceDisplay },
+                  {
+                    addonCount,
+                    addOnTotalPrice,
+                    addOnTotalPriceCash: addOnTotalPriceCash,
+                  }
+                )
               : ""
           }
           </div>
@@ -345,6 +401,11 @@ export function renderServices(listItem) {
           (sum, opt) => sum + (opt.price || 0),
           0
         ) || 0;
+      const addOnTotalPriceCash =
+        matchedService?.optionals?.reduce(
+          (sum, opt) => sum + (opt.priceCash || 0),
+          0
+        ) || 0;
       return `
         <div
           class="wrap-service-card ${isSelected ? "selected" : ""}"
@@ -365,22 +426,14 @@ export function renderServices(listItem) {
             <div class="bot-item-service">
               ${
                 addonCount > 0
-                  ? `<div class="addon-indicator">
-                        <span class="be-addOn">
-                          ${addonCount} Add on
-                        <span class="w-price-addon ${
-                          isHidePrice ? "hide-price" : ""
-                        }">
-                          <span class="be-addOn_cash">
-                            $ ${addOnTotalPrice.toFixed(2)}
-                          </span>
-                          <span class="partiti">|</span>
-                          <span class="be-addOn_card">
-                            $ ${addOnTotalPrice.toFixed(2)}
-                          </span>
-                        </span>
-                        </span>
-                      </div>`
+                  ? renderAddOnInItemService(
+                      { isHidePrice, priceDisplay },
+                      {
+                        addonCount,
+                        addOnTotalPrice,
+                        addOnTotalPriceCash: addOnTotalPriceCash,
+                      }
+                    )
                   : ""
               }
               </div>
@@ -410,6 +463,7 @@ export function renderAddonPanel(itemService, employeeID) {
   if (!user) return;
 
   const isHidePrice = store.isHidePrice;
+  const priceDisplay = store.priceDisplay;
 
   let currentService = null;
   let serviceInstanceId = null;
@@ -469,6 +523,7 @@ export function renderAddonPanel(itemService, employeeID) {
             ${itemService.listOptionAddOn
               .map((opt) => {
                 const isSelected = selectedOptIds.includes(opt.id);
+                console.log("opt:", opt);
                 return `
                   <label class="addon-item" data-id="${opt.id}">
                     <div class="checkbox-addOn ${isSelected ? "selected" : ""}">
@@ -477,14 +532,10 @@ export function renderAddonPanel(itemService, employeeID) {
                       </div>
                     </div>
                     <span>${opt.title}</span>
-                    <span class="cash-card ${isHidePrice ? "hide-price" : ""}">
-                      <p class="addOn-card">
-                         $${opt.price + " "}
-                      </p>
-                      <p class="addOn-cash">
-                         $${opt.priceDiscount}
-                      </p>
-                    </span>
+                    ${renderAddonInLeftPanelAddon(
+                      { isHidePrice, priceDisplay },
+                      { basePrice: opt.price, priceCash: opt.priceCash }
+                    )}
                   </label>
                 `;
               })
@@ -625,11 +676,12 @@ $(document).ready(async function () {
     );
     if (!existingService) {
       // Thêm itemService
+      console.log("Thêm service: ", itemService);
       cateInUser.itemService.push({
         idItemService: itemService.id,
         title: itemService.title,
         price: itemService.basePrice,
-        cashPrice: itemService.baseCashPrice,
+        priceCash: itemService.baseCashPrice,
         duration: itemService.timetext,
         selectedStaff: {},
         optionals: [],

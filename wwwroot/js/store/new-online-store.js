@@ -101,9 +101,10 @@ export const salonStore = {
                 description: itemSer.description,
                 listOptionAddOn: itemSer.listAddOn.map((iAdd) => ({
                   id: iAdd.addOnID,
-                  title: iAdd.itemName,
-                  price: iAdd.price,
-                  priceDiscount: iAdd.priceDiscount,
+                  title: iAdd?.itemName,
+                  price: iAdd?.price,
+                  priceDiscount: iAdd?.priceDiscount,
+                  priceCash: iAdd?.priceCash || 0,
                   timedura: iAdd.duration,
                 })),
               };
@@ -462,6 +463,7 @@ export const salonStore = {
       currencyDeposit,
       policySetting,
       isBookMultipleTech,
+      telInput,
       isHidePrice,
       priceDisplay,
       hideNoRequest,

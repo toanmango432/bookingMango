@@ -95,14 +95,19 @@
   justify-content: center;
   margin-bottom: 0px;
 }
-.item-content .text-price-service,
 .header-item-sumary .name-price {
   width: 24.5%;
   text-align: right;
   margin-bottom: 0px;
   justify-content: flex-end;
 }
-.item-content .text-price-service.hide-price {
+.item-content .wrap-cash-base {
+  width: 26.5%;
+  text-align: right;
+  margin-bottom: 0px;
+  justify-content: flex-end;
+}
+.item-content .wrap-cash-base.hide-price {
   display: none;
 }
 
@@ -136,14 +141,14 @@
   justify-content: center;
   margin-bottom: 0px;
 }
-.total-pay .text-total-price {
+.total-pay .wrap-cash-base {
   width: 28.5%;
   margin-bottom: 0px;
   text-align: right;
   color: red;
   justify-content: flex-end;
 }
-.total-pay .text-total-price.hide-price {
+.total-pay .wrap-cash-base.hide-price {
   display: none;
 }
 .wrap-bottom-sum {
@@ -371,11 +376,21 @@
   gap: 12px;
   padding: 8px 12px 8px 24px;
 }
-.wrap-item-content .item-addon {
+.wrap-item-content .text-name-service {
   display: flex;
   align-items: flex-start;
   gap: 12px;
   padding: 8px 12px 8px 40px;
+}
+.wrap-item-content .text-time-dura,
+.wrap-item-content .wrap-cash-base {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px 12px 8px 24px;
+}
+.wrap-item-content .time-dura-addon {
+  padding: 8px 12px 8px 20px;
 }
 
 .total-pay .item {
@@ -472,11 +487,11 @@
 .wrap-item-addon svg.first {
   position: absolute;
   left: 10px;
-  top: -10px;
+  top: -14px;
 }
 .wrap-item-addon svg {
   position: absolute;
-  top: -25px;
+  top: -29px;
   left: 10.5px;
 }
 
@@ -491,7 +506,7 @@
   height: 24px;
   background-color: white;
   position: absolute;
-  top: 8px;
+  top: 4px;
   left: 36px;
 }
 .wrap-item-addon .btn-remove-addon:hover {
@@ -510,7 +525,7 @@
   height: 24px;
   background-color: white;
   position: absolute;
-  top: 7px;
+  top: 4px;
 }
 .wrap-item-content .btn-remove-service:hover {
   border-color: #d96a00; /* border cam đậm hơn */
@@ -521,8 +536,22 @@
 .name-addon {
   width: 57% !important;
 }
-.price-addon {
-  width: 26% !important;
+.text-pricecash-service {
+  color: #f44c7f;
+  font: normal normal 500 var(--s-14);
+  position: relative;
+}
+.text-pricecash-service::after {
+  content: "";
+  width: 1px;
+  height: 100%;
+  background-color: #979797;
+  position: absolute;
+  right: -6px;
+}
+.text-price-service {
+  color: var(--text-color-primary);
+  font: normal normal 500 var(--s-14);
 }
 .edit-sumary {
   min-width: 72px;
@@ -538,7 +567,23 @@
   font: normal normal 500 var(--s-14);
 }
 .total-value {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
   font: normal normal 600 var(--s-14);
+}
+.total-value .total-cash {
+  color: #f44c7f;
+  position: relative;
+}
+.total-value .total-cash::after {
+  content: "";
+  width: 1px;
+  height: 100%;
+  background-color: #979797;
+  position: absolute;
+  right: -4px;
 }
 .depo-value {
   font: normal normal 600 var(--s-28);
@@ -1172,6 +1217,29 @@
 .wrap-btn-create .btn-create-new:hover {
   border: 1px solid var(--bs-main);
   filter: brightness(0.95);
+}
+.wrap-cash-base {
+  display: flex;
+  gap: 8px;
+  align-self: center;
+}
+.wrap-cash-base.hide-price {
+  display: none;
+}
+.total-pay .text-total-price {
+  color: red;
+}
+.total-pay .text-total-price-cash {
+  color: #f44c7f;
+  position: relative;
+}
+.total-pay .text-total-price-cash::after {
+  content: "";
+  width: 1px;
+  height: 100%;
+  background-color: #979797;
+  position: absolute;
+  right: -6px;
 }
 
 @media (max-width: 768px) {
