@@ -8,9 +8,7 @@ export function renderDisPriceOnPopupChoosePayment(
               ${"$" + totalPayment.toFixed(2)}
             </span>
           </span>`;
-  } else if (priceDisplay === "1") {
-    console.log("Display total 2 price?");
-  } else if (priceDisplay === "2") {
+  } else if (priceDisplay === "2" || priceDisplay === "1") {
     return `<span class="wrap-cash-base ${isHidePrice ? "hide-price" : ""}">
               <span class="sub-depositcash-1l">
                 ${"$" + totalCashPayment.toFixed(2)}
