@@ -1044,9 +1044,9 @@ $(document).ready(async function () {
     closePopupContainerTemplate();
   });
   $(document).on("click", ".btn-confirm-reset", async function () {
-    const store = salonStore.getState();
     // reset databooking
     salonStore.resetDataBooking();
+    const store = salonStore.getState();
     // reset chọn thợ
     salonStore.setState({ ...store, chooseStaffBefore: [] });
 

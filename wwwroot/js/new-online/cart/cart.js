@@ -61,6 +61,7 @@ export function renderDisPriceItemAddonCart(
   }
 }
 export function Cart(isOpen = false, isAddOn = false) {
+  console.log("check here");
   const store = salonStore.getState();
   const dataServices = store.dataServices;
   const dataBooking = store.dataBooking;
