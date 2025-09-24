@@ -32,7 +32,6 @@ export async function renderCalendar(
   fetchStoreOffDays(RVCNo, month, year).then((daysOff) => {
     daysOffNail[month + 1] = daysOff; // lưu lại theo key tháng
     // update store
-    console.log("daysOffNail", daysOffNail);
     salonStore.setState({ ...store, daysOffNail: { ...daysOffNail } });
     if (typeof callback === "function") callback();
   });
@@ -40,7 +39,6 @@ export async function renderCalendar(
   const daysEl = document.getElementById("days");
   const monthYearEl = document.getElementById("monthYear");
   const daysOff = store.daysOffNail || {};
-  console.log("daysOffNail", daysOff);
 
   // if (!daysEl || !monthYearEl) return;
   daysEl.innerHTML = "";
@@ -414,8 +412,6 @@ export function renderTimeSlotsForDate(dataBooking) {
   const timeKeySlot = store.timeKeySlot;
   const timeBeginCurDate = store.timeBeginCurDate;
   const slotTimeForSelect = store.slotTimeForSelect || [];
-  console.log("slotTimeForSelect", slotTimeForSelect);
-  console.log("timeBeginCurDate", timeBeginCurDate);
   const container = $("#timeSlotsContainer");
   container.empty();
 
@@ -450,8 +446,6 @@ export function renderTimeSlotsForDate(dataBooking) {
     end = toMinutes(curEnd) > toMinutes(slotLast) ? curEnd : slotLast;
   }
 
-  console.log("start", start, "end", end);
-
   // Tạo toàn bộ slots theo interval
   const slots = generateTimeSlotsDynamic(selectedDate, start, end, timeKeySlot);
   // Set slot nào active
@@ -477,7 +471,7 @@ export function renderTimeSlotsForDate(dataBooking) {
 
     let div = `
     <div class="time-slot-1 ${isActive ? "active" : ""}">
-      <span id="time-val">${cleanSlot}</span>
+      <span id="time-val">${convertTo12Hour(cleanSlot)}</span>
       <span>${getAMPM(slot)}</span>
       <div class="circle">
         <div class="dot">
@@ -584,6 +578,20 @@ function parseTimeTo24h(timeStr) {
   return `${hours.toString().padStart(2, "0")}:${minutes
     .toString()
     .padStart(2, "0")}`;
+}
+function convertTo12Hour(time24) {
+  // tách giờ và phút
+  const [hourStr, minute] = time24.split(":");
+  let hour = parseInt(hourStr, 10);
+
+  // chuyển đổi
+  if (hour === 0) {
+    hour = 12; // 00 giờ -> 12
+  } else if (hour > 12) {
+    hour = hour - 12; // 13..23 -> 1..11
+  }
+
+  return `${hour}:${minute}`;
 }
 
 export function getAMPM(timeStr) {

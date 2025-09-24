@@ -9,9 +9,7 @@ export function renderDisSumaryTotalDeposit(
               ${"$" + totalPayment.toFixed(2)}
             </span>
           </span>`;
-  } else if (priceDisplay === "1") {
-    console.log("Display total 2 price?");
-  } else if (priceDisplay === "2") {
+  } else if (priceDisplay === "2" || priceDisplay === "1") {
     return `<span class="total-value ${isHidePrice ? "hide-price" : ""}">
               <span class="total-cash">
                 ${"$" + totalCashPayment.toFixed(2)}
@@ -33,9 +31,7 @@ export function renderDisTotalItemSumary(
                 $ ${userTotalPayment.toFixed(2)}
               </span>
             </p>`;
-  } else if (priceDisplay === "1") {
-    console.log("Display total 2 price?");
-  } else if (priceDisplay === "2") {
+  } else if (priceDisplay === "2" || priceDisplay === "1") {
     return `<p class="item wrap-cash-base ${isHidePrice ? "hide-price" : ""}">
             <span class="text-total-price-cash">
               $ ${userTotalCashPayment.toFixed(2)}
@@ -51,7 +47,7 @@ export function renderDisAddonSumary(
   { isHidePrice, priceDisplay },
   { price, priceCash }
 ) {
-  if (priceDisplay === "0") {
+  if (priceDisplay === "0" || priceDisplay === "1") {
     return `<p class="wrap-cash-base">
             <span
               class="item-addon text-price-service price-addon ${
@@ -61,8 +57,6 @@ export function renderDisAddonSumary(
               $ ${(price || 0).toFixed(2)}
             </span>
           </p>`;
-  } else if (priceDisplay === "1") {
-    console.log("Display total 2 price?");
   } else if (priceDisplay === "2") {
     return `<p class="wrap-cash-base ${isHidePrice ? "hide-price" : ""}">
               <span
@@ -82,14 +76,12 @@ export function renderDisItemSumary(
   { isHidePrice, priceDisplay },
   { basePrice, baseCashPrice }
 ) {
-  if (priceDisplay === "0") {
+  if (priceDisplay === "0" || priceDisplay === "1") {
     return `<p class="item wrap-cash-base ${isHidePrice ? "hide-price" : ""}">
               <span class="text-price-service">
                 $ ${basePrice}
               </span>
             </p>`;
-  } else if (priceDisplay === "1") {
-    console.log("Display total 2 price?");
   } else if (priceDisplay === "2") {
     return `<p class="item wrap-cash-base ${isHidePrice ? "hide-price" : ""}">
               <span class="text-pricecash-service">
@@ -440,7 +432,6 @@ export function renderSumary(dataBooking, listDataService) {
                                               </div>`;
                                           })
                                           .join("");
-                                        console.log("is: ", is);
                                         return `
                                             <div class="wrap-item-content"
                                               data-id=${services.id}
@@ -633,10 +624,12 @@ import { ScreenChooseTech } from "../screen-choose-sertech/screen-choose-tech.js
 // import popup
 import { renderAddGuestContent } from "../../popup/content/add-guest.js";
 import { nextFormRegister } from "../helper/next-form-register.js";
+let timeoutId = null;
+let countdownIntervalId = null;
 $(document).ready(async function () {
   const isMobile = $(window).width() <= 768;
   const $wrapNewOnline = $(".wrap-newonline");
-
+  let isUserClicked = false; // flag
   // Confirm payment final
   $(document).on("click", ".checkbox-confirm-sum", function () {
     const store = salonStore.getState();
@@ -748,29 +741,31 @@ $(document).ready(async function () {
     const rcpCustomer = user0.rcpCustomer;
     const appointmentID = 0;
     const customerID = user0.id;
-    const cardAuthorize = cardChoosing.cardAuthorize;
+    const cardAuthorize = cardChoosing?.cardAuthorize;
     const totalAmount = dataBooking.totalAmount || 0; // để tính remaining cho bill
     const rcvNo = store.RVCNo;
     const typeAuth = 1;
-    const idCard = cardChoosing.id;
+    const idCard = cardChoosing?.id || null;
 
     let dataAddDeposit;
-    try {
-      const urlAddDeposit =
-        `/api/card/adddeposit?RCPCustomer=${rcpCustomer}&AppointmentID=${appointmentID}&CustomerID=${customerID}&AuthorizeCardID=${cardAuthorize}&Amount=${totalAmount}&RVCNo=${rcvNo}&TypeAuthorize=${typeAuth}&ID=${idCard}`.replace(
-          /\s+/g,
-          ""
-        );
-      dataAddDeposit = await fetchAPI.get(urlAddDeposit);
-    } catch (e) {
-      console.error("[on.btn-next-payment]", {
-        message: e.message,
-        stack: e.stack,
-        name: e.name,
-      });
-      $btn.removeClass("loading").prop("disabled", false);
-      $btn.find(".btn-loader").remove();
-      return;
+    if (cardAuthorize && idCard) {
+      try {
+        const urlAddDeposit =
+          `/api/card/adddeposit?RCPCustomer=${rcpCustomer}&AppointmentID=${appointmentID}&CustomerID=${customerID}&AuthorizeCardID=${cardAuthorize}&Amount=${totalAmount}&RVCNo=${rcvNo}&TypeAuthorize=${typeAuth}&ID=${idCard}`.replace(
+            /\s+/g,
+            ""
+          );
+        dataAddDeposit = await fetchAPI.get(urlAddDeposit);
+      } catch (e) {
+        console.error("[on.btn-next-payment]", {
+          message: e.message,
+          stack: e.stack,
+          name: e.name,
+        });
+        $btn.removeClass("loading").prop("disabled", false);
+        $btn.find(".btn-loader").remove();
+        return;
+      }
     }
 
     // Tạo danh sách AppointmentSubject
@@ -1214,8 +1209,8 @@ $(document).ready(async function () {
       image: "/assets/images/payment-success/img-succes-payment.png",
       ticketNumber: dataBookXLM.appointmentID,
       dateTime: dataBookXLM.bookedDate,
-      paymentMethodLabel: findCardChoosing.cardType,
-      paymentMethodMasked: maskCardNumber(findCardChoosing.last4),
+      paymentMethodLabel: findCardChoosing?.cardType || null,
+      paymentMethodMasked: maskCardNumber(findCardChoosing?.last4 || null),
       deposit: dataBooking.paymentDeposit,
       remaining:
         dataBooking.totalAmount - parseFloat(dataBooking.paymentDeposit),
@@ -1237,23 +1232,30 @@ $(document).ready(async function () {
       $(".overlay-screen").addClass("show");
     }, 10);
 
-    setTimeout(() => {
+    timeoutId = setTimeout(() => {
+      if (isUserClicked) return;
       startConfirmAnimation(1, {
         selector: ".wrap-popup-payment-confirmation-1 .check-circle",
         buttonSelector:
           ".wrap-popup-payment-confirmation-1 .btn-request-another",
       });
-      // Thêm đếm ngược 5 giây
+      // Thêm đếm ngược 10 giây
       let countdownSeconds = 10;
       const countdownElement = $(
         ".wrap-popup-payment-confirmation-1 .countdown-seconds"
       );
-      const countdownInterval = setInterval(async () => {
+      countdownIntervalId = setInterval(async () => {
+        if (isUserClicked) {
+          clearInterval(countdownIntervalId);
+          countdownIntervalId = null;
+          return;
+        }
         countdownSeconds -= 1;
         countdownElement.text(countdownSeconds);
 
         if (countdownSeconds <= 0) {
-          clearInterval(countdownInterval);
+          clearInterval(countdownIntervalId);
+          countdownIntervalId = null;
           // Đóng popup
           closePopupContainerTemplate();
           // Reload dataBooking và back lại flow đã chọn
@@ -1602,7 +1604,18 @@ $(document).ready(async function () {
   });
   $(document).on("click", ".btn-request-another", async function () {
     const $this = $(this);
+    isUserClicked = true;
+    // Hủy các timer đang chờ
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+      timeoutId = null;
+    }
+    if (countdownIntervalId) {
+      clearInterval(countdownIntervalId);
+      countdownIntervalId = null;
+    }
     const store = salonStore.getState();
+    salonStore.resetDataBooking();
 
     const flowCur = store.flow;
     let pageNext;
@@ -1617,6 +1630,5 @@ $(document).ready(async function () {
       ...prev,
       pageCurrent: pageNext,
     }));
-    salonStore.resetDataBooking();
   });
 });

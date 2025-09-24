@@ -72,13 +72,18 @@ export function renderPaymentConfirmationForm(data = {}, colorPrimary) {
                       <div class="value">${dateTime}</div>
                     </div>
 
-                    <div class="row">
+                    ${
+                      paymentMethodMasked
+                        ? `<div class="row">
                       <div class="label">Payment Method</div>
                       <div class="value payment-method">
                         <span class="pm-badge">${paymentMethodLabel}</span>
-                        <span class="pm-text">${paymentMethodMasked}</span>
+
+                          <span class="pm-text">${paymentMethodMasked}</span>
                       </div>
-                    </div>
+                    </div>`
+                        : ""
+                    }
 
                     <div class="row">
                       <div class="label">Deposit Paid</div>

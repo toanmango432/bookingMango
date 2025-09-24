@@ -5,14 +5,11 @@ export function funcDisPriceItemSerCart(
   if (isHidePrice) {
     return ``;
   }
-  if (priceDisplay === "0") {
+  if (priceDisplay === "0" || priceDisplay === "1") {
     // Hiển thị giá gốc
     return `<div class="cart-prices">
             <span class="cardaddon-in-cart">$${basePrice.toFixed(2)}</span>
           </div>`;
-  } else if (priceDisplay === "1") {
-    // Hiển thị total?
-    console.log("priceDisplay not yet handle: ", priceDisplay);
   } else if (priceDisplay === "2") {
     return `<div class="cart-prices ${isHidePrice ? "hide-price" : ""}">
               <span class="cashaddon-in-cart">$${baseCashPrice.toFixed(
@@ -23,16 +20,38 @@ export function funcDisPriceItemSerCart(
             </div>`;
   }
 }
+export function funcDisPriceTotal(
+  { isHidePrice, priceDisplay },
+  { totalCard, totalCash }
+) {
+  if (priceDisplay === "0") {
+    return `<div class="end-cart ${isHidePrice ? "hide-price" : ""}">
+                <div class="total-card">
+                  <span class="left">Total Card:</span>
+                  <span class="text-price-card">$${totalCard.toFixed(2)}</span>
+                </div>
+              </div>`;
+  } else if (priceDisplay === "1" || priceDisplay === "2") {
+    return `<div class="end-cart ${isHidePrice ? "hide-price" : ""}">
+              <div class="total-cash">
+                <span class="left">Total Cash:</span>
+                <span class="text-price-cash">$${totalCash.toFixed(2)}</span>
+              </div>
+              <div class="total-card">
+                <span class="left">Total Card:</span>
+                <span class="text-price-card">$${totalCard.toFixed(2)}</span>
+              </div>
+            </div>`;
+  }
+}
 export function renderDisPriceItemAddonCart(
   { isHidePrice, priceDisplay },
   { basePrice, priceCash }
 ) {
-  if (priceDisplay === "0") {
+  if (priceDisplay === "0" || priceDisplay === "1") {
     return `<span class="addon-price ${isHidePrice ? "hide-price" : ""}">
               <span class="cardser-in-cart">$${basePrice.toFixed(2)}</span>
             </span>`;
-  } else if (priceDisplay === "1") {
-    console.log("priceDisplay not yet handle: ", priceDisplay);
   } else if (priceDisplay === "2") {
     return `<span class="addon-price ${isHidePrice ? "hide-price" : ""}">
               <span class="cashser-in-cart">$${priceCash.toFixed(2)}</span>
@@ -62,7 +81,6 @@ export function Cart(isOpen = false, isAddOn = false) {
 
           const price = srv.price || 0;
           const priceCash = srv.priceCash || 0;
-          console.log("price: ", price);
           const duration = srv.duration || 0;
 
           totalCard += price;
@@ -229,16 +247,10 @@ export function Cart(isOpen = false, isAddOn = false) {
           <div class="wrap-cart-item">
             ${userHtml}
           </div>
-          <div class="end-cart">
-            <div class="total-cash">
-              <span class="left">Total Cash:</span>
-              <span class="text-price-cash">$${totalCash.toFixed(2)}</span>
-            </div>
-            <div class="total-card">
-              <span class="left">Total Card:</span>
-              <span class="text-price-card">$${totalCard.toFixed(2)}</span>
-            </div>
-          </div>
+          ${funcDisPriceTotal(
+            { isHidePrice, priceDisplay },
+            { totalCard, totalCash }
+          )}
         </div>
       </div>
     </div>

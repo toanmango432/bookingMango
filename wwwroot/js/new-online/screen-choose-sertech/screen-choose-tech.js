@@ -171,7 +171,7 @@ function renderListStaff_PageChooseTech(listUserStaff) {
   const techAvailable = listUserStaff.find(
     (s) => s.employeeID === idStaffDefault
   );
-  if (techAvailable && hideNoRequest) {
+  if (techAvailable && !hideNoRequest) {
     const isSelected9999 = user?.services.some((cate) =>
       cate.itemService.some(
         (srv) => srv.selectedStaff?.employeeID === idStaffDefault

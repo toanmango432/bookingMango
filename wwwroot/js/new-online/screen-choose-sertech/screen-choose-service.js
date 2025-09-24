@@ -2,7 +2,7 @@ export function renderAddOnInItemService(
   { isHidePrice, priceDisplay },
   { addonCount, addOnTotalPrice, addOnTotalPriceCash }
 ) {
-  if (priceDisplay === "0") {
+  if (priceDisplay === "0" || priceDisplay === "1") {
     return `<div class="addon-indicator">
             <span class="be-addOn">
               ${addonCount} Add on
@@ -13,8 +13,6 @@ export function renderAddOnInItemService(
               </span>
             </span>
           </div>`;
-  } else if (priceDisplay === "1") {
-    console.log("Display total 2 price ?");
   } else if (priceDisplay === "2") {
     return `<div class="addon-indicator">
               <span class="be-addOn">
@@ -37,14 +35,12 @@ export function renderAddonInLeftPanelAddon(
   { basePrice, priceCash }
 ) {
   console.log("priceCash: ", priceCash);
-  if (priceDisplay === "0") {
+  if (priceDisplay === "0" || priceDisplay === "1") {
     return `<span class="cash-card ${isHidePrice ? "hide-price" : ""}">
               <p class="addOn-card">
                   $${basePrice}
               </p>
             </span>`;
-  } else if (priceDisplay === "1") {
-    console.log("Display total 2 price ?");
   } else if (priceDisplay === "2") {
     return `<span class="cash-card ${isHidePrice ? "hide-price" : ""}">
               <p class="addOn-cash">
@@ -255,15 +251,12 @@ export async function ScreenChooseService() {
 }
 
 export function funcDisplayPrice(serviceItem, { isHidePrice, priceDisplay }) {
-  if (priceDisplay === "0") {
+  if (priceDisplay === "0" || priceDisplay === "1") {
     return `<div class="service-price ${isHidePrice ? "hide-price" : ""}">
           <span class="pcard">
             $${serviceItem.basePrice.toFixed(2)}
           </span>
         </div>`;
-  } else if (priceDisplay === "1") {
-    //
-    console.log("Display total 2 price ?");
   } else if (priceDisplay === "2") {
     return `<div class="service-price ${isHidePrice ? "hide-price" : ""}">
           <span class="pcash">
@@ -676,7 +669,6 @@ $(document).ready(async function () {
     );
     if (!existingService) {
       // Thêm itemService
-      console.log("Thêm service: ", itemService);
       cateInUser.itemService.push({
         idItemService: itemService.id,
         title: itemService.title,
@@ -706,7 +698,6 @@ $(document).ready(async function () {
       dataBooking: dataBooking,
     }));
     // load item service sau khi chọn service
-    console.log("itemSer: ", itemService);
     rerenderServiceItem(itemService);
     // Load lại cart
     Cart();

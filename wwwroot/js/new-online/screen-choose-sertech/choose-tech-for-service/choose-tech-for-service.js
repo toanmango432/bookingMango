@@ -248,7 +248,7 @@ export function renderListStaff_PageChooseOnlyTech(listStaffUser) {
   const techAvailable = listStaffUser.find(
     (s) => s.employeeID === idStaffDefault
   );
-  if (techAvailable && hideNoRequest) {
+  if (techAvailable && !hideNoRequest) {
     const isSelected9999 = user?.services.some((cate) =>
       cate.itemService.some(
         (srv) => srv.selectedStaff?.employeeID === idStaffDefault
