@@ -178,6 +178,7 @@ export function renderListStaff_PageChoseEachSer(listUserStaff) {
   const store = salonStore.getState();
   const dataBooking = store.dataBooking;
   const user = dataBooking.users.find((u) => u.isChoosing);
+  const hideNoRequest = store.hideNoRequest;
 
   const $activeSer = $(".serd-item.active");
   const serviceId = $activeSer.data("service-id");
@@ -189,7 +190,7 @@ export function renderListStaff_PageChoseEachSer(listUserStaff) {
   const techAvailable = listUserStaff.find(
     (s) => s.employeeID === idStaffDefault
   );
-  if (techAvailable) {
+  if (techAvailable && !hideNoRequest) {
     const cate = user?.services.find((c) => c.idService === serviceId);
     const srv = cate?.itemService.find(
       (s) => s.idItemService === itemServiceId
