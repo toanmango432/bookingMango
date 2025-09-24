@@ -1008,7 +1008,7 @@ $(document).ready(async function () {
     // reset
     user.phoneNumber = "";
     user.email = "";
-    salonStore((prev) => ({
+    salonStore.setState((prev) => ({
       ...prev,
       dataBooking,
     }));
