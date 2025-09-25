@@ -999,7 +999,6 @@
   align-items: center;
 }
 .edit-sumary {
-  min-width: 100px;
   justify-content: center;
   gap: var(--px-8);
   border-radius: var(--px-4);
@@ -1011,7 +1010,7 @@
   padding: var(--px-4);
 }
 .delete-sumary {
-  min-width: 100px;
+  width: fit-content;
   justify-content: center;
   gap: var(--px-8);
   border-radius: var(--px-4);

@@ -305,7 +305,7 @@
 }
 .top-item-sumary .user-book .left-info-sum .name {
   padding: var(--px-8) 0px var(--px-8);
-  font: normal normal 600 var(--s-16);
+  font: normal normal 600 var(--s-14);
   position: relative;
   padding-right: 16px;
 }
@@ -320,7 +320,7 @@
 }
 
 .top-item-sumary .user-book .left-info-sum .phone {
-  font: normal normal 500 var(--s-16);
+  font: normal normal 500 var(--s-14);
   padding-left: 16px;
 }
 
@@ -559,7 +559,7 @@
   display: none;
 }
 .edit-sumary {
-  min-width: 72px;
+  width: fit-content;
   justify-content: flex-end;
 }
 .edit-sumary span {

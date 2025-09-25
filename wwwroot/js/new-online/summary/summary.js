@@ -229,7 +229,7 @@ export function renderSumary(dataBooking, listDataService) {
 
                 <div class="wrap-list-sumary">
                     ${dataBooking.users
-                      .map((userBooking) => {
+                      .map((userBooking, idex) => {
                         const dataRefact = buildServiceSummary(
                           userBooking,
                           listDataService
@@ -278,8 +278,9 @@ export function renderSumary(dataBooking, listDataService) {
 
                         totalPayment = calcTotal.total;
                         totalCashPayment = calcTotal.totalCash;
-
+                        console.log("dataBooking: ", dataBooking);
                         if (dataBooking?.currencyDeposit === "%") {
+                          console.log("check 2");
                           totalDeposit = (
                             (totalPayment * paymentDeposit) /
                             100
@@ -289,6 +290,8 @@ export function renderSumary(dataBooking, listDataService) {
                         } else {
                           console.log("Unprocessed");
                         }
+                        console.log("paymentDeposit: ", paymentDeposit);
+                        console.log("totalDeposit: ", totalDeposit);
                         const fullName =
                           userBooking.firstName + " " + userBooking?.lastName;
                         return `
@@ -329,18 +332,24 @@ export function renderSumary(dataBooking, listDataService) {
                                     <svg xmlns="http://www.w3.org/2000/svg" width="17" height="16" viewBox="0 0 17 16" fill="none">
                                       <path d="M16.1218 4.45017L14.7017 5.87029C14.5123 6.05963 14.323 6.05963 14.1336 5.87029L10.6306 2.36733C10.4413 2.17798 10.4413 1.98863 10.6306 1.79928L12.0508 0.379161C12.6188 -0.188887 13.5656 -0.188887 14.1336 0.379161L16.0271 2.27265C16.6898 2.93537 16.6898 3.88212 16.1218 4.45017ZM9.39988 3.12472L1.16319 11.3614L0.500467 15.1484C0.405792 15.6218 0.879165 16.0951 1.35254 16.0005L5.13952 15.3377L13.3762 7.10105C13.5656 6.91171 13.5656 6.72236 13.3762 6.53301L9.96792 3.12472C9.77857 2.93537 9.58922 2.93537 9.39988 3.12472ZM4.38212 10.604C4.19277 10.4147 4.19277 10.1306 4.38212 9.94129L9.21053 5.11289C9.39988 4.92354 9.6839 4.92354 9.87325 5.11289C9.96792 5.39691 9.96792 5.68094 9.87325 5.77561L5.04485 10.604C4.8555 10.7934 4.57147 10.7934 4.38212 10.604ZM3.24603 13.2549H4.76082V14.391L2.77266 14.7697L1.82591 13.8229L2.20461 11.8348H3.3407V13.2549H3.24603Z" fill="#505062"/>
                                     </svg>
-                                    <span class="text-uppercase">Edit</span>
+                                    ${
+                                      idex < 1
+                                        ? `<span class="text-uppercase">Edit</span>`
+                                        : ""
+                                    }
                                   </button>
                                 </p>
                                 <p class="item-right-info">
                                   ${
                                     owner.id !== userBooking.id
                                       ? `
-                                      <button id="delete-sumary-1" class="delete-sumary third" data-id=${userBooking.id}>
+                                      <button id="delete-sumary-1" class="delete-sumary third" data-id=${
+                                        userBooking.id
+                                      }>
                                           <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
                                           <path d="M14.8359 10.7598V17.7598M10.8359 10.7598V17.7598M6.83594 6.75977V18.5598C6.83594 19.6799 6.83594 20.2395 7.05392 20.6674C7.24567 21.0437 7.55141 21.3502 7.92773 21.542C8.35514 21.7598 8.91493 21.7598 10.0328 21.7598H15.639C16.7569 21.7598 17.3159 21.7598 17.7433 21.542C18.1197 21.3502 18.4264 21.0437 18.6182 20.6674C18.8359 20.24 18.8359 19.6808 18.8359 18.5629V6.75977M6.83594 6.75977H8.83594M6.83594 6.75977H4.83594M8.83594 6.75977H16.8359M8.83594 6.75977C8.83594 5.82788 8.83594 5.36217 8.98818 4.99463C9.19117 4.50457 9.58026 4.11499 10.0703 3.91201C10.4379 3.75977 10.9041 3.75977 11.8359 3.75977H13.8359C14.7678 3.75977 15.2338 3.75977 15.6013 3.91201C16.0914 4.11499 16.4806 4.50457 16.6836 4.99463C16.8358 5.36217 16.8359 5.82788 16.8359 6.75977M16.8359 6.75977H18.8359M18.8359 6.75977H20.8359" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                                           </svg>
-                                          Delete
+                                         ${idex < 1 ? `DELETE` : ""}
                                       </button>
                                       `
                                       : ""
@@ -1502,51 +1511,51 @@ $(document).ready(async function () {
   $(document).on("click", ".btn-skipguest", async function () {
     const $this = $(this);
     const val = $this.val().trim();
-    if (!val) return;
-
-    const store = salonStore.getState();
-    const dataBooking = store.dataBooking;
-    const userCur = dataBooking.users.find((u) => u.isChoosing);
-    const owner = dataBooking.users[0];
-    // cập nhật trạng thái của userCur
-    userCur.isChoosing = false;
-
-    // Tạo guest và isChoosing cho guest này
-    let guest = {
-      id: dataBooking.users.length + 1,
-      firstName: owner.firstName,
-      lastName: owner.lastName + " G" + dataBooking.users.length,
-      phoneNumber: null,
-      email: null,
-      gender: null,
-      services: [],
-      selectedDate: new Date(),
-      selectedTimeSlot: null,
-      isSelecting: false,
-      isChoosing: true,
-    };
-    dataBooking.users.push(guest);
-    salonStore.setState((prev) => ({
-      ...prev,
-      dataBooking,
-    }));
-
-    const flow = store.flow;
-    if (flow === SelecteFlow.SER) {
-      await ScreenChooseService(); // append screen choose service
-
+    if (!val) {
       const store = salonStore.getState();
-      salonStore.setState({
-        ...store,
-        pageCurrent: PageCurrent.CHOOSE_SERVICE,
-      });
-    } else if (flow === SelecteFlow.TECH) {
-      await ScreenChooseTech();
-      const store = salonStore.getState();
-      salonStore.setState({
-        ...store,
-        pageCurrent: PageCurrent.CHOOSE_TECH,
-      });
+      const dataBooking = store.dataBooking;
+      const userCur = dataBooking.users.find((u) => u.isChoosing);
+      const owner = dataBooking.users[0];
+      // cập nhật trạng thái của userCur
+      userCur.isChoosing = false;
+
+      // Tạo guest và isChoosing cho guest này
+      let guest = {
+        id: dataBooking.users.length + 1,
+        firstName: owner.firstName,
+        lastName: owner.lastName + " G" + dataBooking.users.length,
+        phoneNumber: null,
+        email: null,
+        gender: null,
+        services: [],
+        selectedDate: new Date(),
+        selectedTimeSlot: null,
+        isSelecting: false,
+        isChoosing: true,
+      };
+      dataBooking.users.push(guest);
+      salonStore.setState((prev) => ({
+        ...prev,
+        dataBooking,
+      }));
+
+      const flow = store.flow;
+      if (flow === SelecteFlow.SER) {
+        await ScreenChooseService(); // append screen choose service
+
+        const store = salonStore.getState();
+        salonStore.setState({
+          ...store,
+          pageCurrent: PageCurrent.CHOOSE_SERVICE,
+        });
+      } else if (flow === SelecteFlow.TECH) {
+        await ScreenChooseTech();
+        const store = salonStore.getState();
+        salonStore.setState({
+          ...store,
+          pageCurrent: PageCurrent.CHOOSE_TECH,
+        });
+      }
     }
   });
 
