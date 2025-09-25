@@ -398,9 +398,10 @@
   flex-direction: column;
 }
 .addon-indicator {
+  width: fit-content;
   display: inline;
   display: flex;
-  padding: 8px;
+  padding: 8px 16px;
   justify-content: center;
   align-items: flex-end;
   gap: 4px;
@@ -408,6 +409,11 @@
   border: 1px solid var(--Pink, #f44c7f);
   font: normal normal 500 var(--s-13);
   color: #f44c7f;
+}
+.addon-indicator.in-tech-left {
+  position: absolute;
+  bottom: 8px;
+  right: 16px;
 }
 .w-price-addon.hide-price {
   display: none;

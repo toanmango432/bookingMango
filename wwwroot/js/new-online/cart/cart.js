@@ -61,7 +61,6 @@ export function renderDisPriceItemAddonCart(
   }
 }
 export function Cart(isOpen = false, isAddOn = false) {
-  console.log("check here");
   const store = salonStore.getState();
   const dataServices = store.dataServices;
   const dataBooking = store.dataBooking;
@@ -69,6 +68,7 @@ export function Cart(isOpen = false, isAddOn = false) {
   const flowCur = store.flow;
   const isHidePrice = store.isHidePrice;
   const priceDisplay = store.priceDisplay;
+  console.log("price: ", priceDisplay);
 
   let totalCash = 0;
   let totalCard = 0;

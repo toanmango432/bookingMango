@@ -240,7 +240,7 @@
   bottom: 14px;
 }
 .ser-of-tech.see-more:hover {
-  filter: brightness(0.95);
+  filter: brightness(0.9);
 }
 .ser-of-tech.see-more::after {
   content: "";

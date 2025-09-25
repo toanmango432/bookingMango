@@ -1,9 +1,10 @@
 export function renderAddOnInItemService(
   { isHidePrice, priceDisplay },
-  { addonCount, addOnTotalPrice, addOnTotalPriceCash }
+  { addonCount, addOnTotalPrice, addOnTotalPriceCash },
+  className = ""
 ) {
   if (priceDisplay === "0" || priceDisplay === "1") {
-    return `<div class="addon-indicator">
+    return `<div class="addon-indicator ${className}">
             <span class="be-addOn">
               ${addonCount} Add on
               <span class="w-price-addon ${isHidePrice ? "hide-price" : ""}">

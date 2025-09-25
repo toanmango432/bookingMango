@@ -201,6 +201,9 @@
   font-weight: 600;
   background-color: white;
 }
+.end-cart.hide-price {
+  display: none;
+}
 .total-cash,
 .total-card {
   display: flex;

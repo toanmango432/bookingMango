@@ -471,7 +471,9 @@ export function renderTimeSlotsForDate(dataBooking) {
 
     let div = `
     <div class="time-slot-1 ${isActive ? "active" : ""}">
-      <span id="time-val">${convertTo12Hour(cleanSlot)}</span>
+      <span id="time-val" data-time="${cleanSlot}">${convertTo12Hour(
+      cleanSlot
+    )}</span>
       <span>${getAMPM(slot)}</span>
       <div class="circle">
         <div class="dot">
@@ -906,7 +908,7 @@ $(document).ready(async function () {
     // UI update ngay lập tức
     $wrap.find(".time-slot-1.selected").removeClass("selected");
     $this.addClass("selected");
-    const valTime = $this.find("#time-val").text().trim();
+    const valTime = $this.find("#time-val").data("time");
 
     const store = salonStore.getState();
     const dataBooking = store.dataBooking;
@@ -1189,13 +1191,13 @@ $(document).ready(async function () {
 
     const value = $appointInput.val();
     const resVerifyGetOtp = await sendOTP(value, res);
-
+    console.log("resVerifu: ", resVerifyGetOtp);
     if (resVerifyGetOtp && resVerifyGetOtp.status === 200) {
       const extraData = resVerifyGetOtp.extraData;
       dataBooking.users[0] = {
         ...dataBooking.users[0],
         email: extraData?.mail,
-        phoneNumber: extraData?.contactPhone,
+        phoneNumber: extraData?.contactPhone || value,
         firstName: extraData?.firstName,
         lastName: extraData?.lastName,
         rcpCustomer: extraData?.rcpCustomer,
@@ -1522,7 +1524,15 @@ $(document).ready(async function () {
       const resRegis = await fetchAPI.post("/api/user/register", payloadRegis);
       if (resRegis.status !== 200) {
         const $errorRes = $(".regis-message-error");
-        $errorRes.text();
+        const errorText = $errorRes.text().trim();
+        if (errorText === resRegis?.message) {
+          shakeError($errorRes);
+        } else {
+          $errorRes.text(
+            resRegis?.message ||
+              "An error occurred please contact the administrator"
+          );
+        }
         return;
       }
       // token & refreshTokens
@@ -1814,6 +1824,7 @@ $(document).ready(async function () {
     salonStore.setState({ dataBooking });
 
     const emailVerify = dataBooking.users[0].email;
+    console.log("emailVerify: ", emailVerify);
 
     const optCode = getOtpCode();
     try {
@@ -1822,6 +1833,18 @@ $(document).ready(async function () {
           phoneVerify || emailVerify
         }&verifyCode=${optCode}`
       );
+      if (resVerifyCode.status !== 200) {
+        const $errorMess = $(".error-message.send-otp");
+        const textEr = $errorMess.text().trim();
+        if (resVerifyCode?.message === textEr) {
+          shakeError($errorMess);
+        } else {
+          $errorMess.text(
+            resVerifyCode?.message ||
+              "Please enter at least 1 of the 2 fields email or phone number!"
+          );
+        }
+      }
       if (resVerifyCode.status === 200) {
         const htmlPoliciesForm = renderPoliciesForm(policySetting);
         let height = 768;
@@ -1850,6 +1873,55 @@ $(document).ready(async function () {
         name: e.name,
       });
     }
+  });
+  $(document).on("click", ".resend-btn", async function () {
+    const $this = $(this);
+
+    // Nếu đang disabled thì không làm gì
+    if ($this.is(":disabled") || $this.hasClass("disabled")) {
+      e.preventDefault();
+      return;
+    }
+
+    const store = salonStore.getState();
+    const dataBooking = store.dataBooking;
+    const telInput = store.telInput;
+    console.log("databooking: ", dataBooking);
+    console.log("telInput: ", telInput);
+    const phoneVerify = unFormatPhoneNumber(
+      JSON.parse(JSON.stringify(dataBooking.users[0]?.phoneNumber || ""))
+    );
+    console.log("phoneVerify: ", phoneVerify);
+    await fetchAPI.get(
+      `/api/user/verifycode?phone=${phoneVerify}&portalCode=${encodeURIComponent(
+        telInput
+      )}&isMail=false`
+    );
+  });
+  $(document).on("click", ".btn-back-verify-1", function () {
+    const $this = $(this);
+    const store = salonStore.getState();
+    const dataBooking = store.dataBooking;
+
+    const userHavePhone = dataBooking.users.find(
+      (u) => u.phoneNumber || u.email
+    );
+    const phoneEmailOrNull =
+      userHavePhone?.phoneNumber || userHavePhone?.email || "";
+    const htmlVerifyEmailPhone =
+      renderVerifyEmailPhoneContent(phoneEmailOrNull);
+    let height = 620;
+    let width = 560;
+    if (isMobile) {
+      height = 620;
+      width = "100%";
+    }
+    // const persistent = true;
+    const html = renderBasePopup(htmlVerifyEmailPhone, false, height, width);
+    $wrapNewOnline.append(html);
+    setTimeout(() => {
+      $(".overlay-screen").addClass("show");
+    }, 10);
   });
   // === START: VALID SESSION CREDIT
   function validateField($input, showError = true) {

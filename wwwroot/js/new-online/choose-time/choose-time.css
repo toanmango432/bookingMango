@@ -1457,6 +1457,9 @@
   font-weight: bold;
   cursor: pointer;
 }
+.resend-btn:hover {
+  filter: brightness(0.9);
+}
 .resend-btn.disabled {
   color: gray;
   pointer-events: none;

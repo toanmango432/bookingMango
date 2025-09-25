@@ -204,7 +204,7 @@ export function renderSumary(dataBooking, listDataService) {
       )
     );
   });
-  const isConfim = allSelected && dataBooking?.isConfirmBook;
+  const isConfirm = allSelected && dataBooking?.isConfirmBook;
 
   // kiểm tra có slot nào active không
   const backBtn = `
@@ -555,7 +555,7 @@ export function renderSumary(dataBooking, listDataService) {
                         allSelected ? "" : "not-ser"
                       } text-uppercase">Add guest</button>
                       <button ${
-                        isConfim ? "" : "disabled"
+                        isConfirm ? "" : "disabled"
                       } class="btn-confirm-booking-1 text-uppercase">
                           Book now
                       </button>
@@ -692,6 +692,7 @@ $(document).ready(async function () {
   $(document).on("click", ".btn-confirm-booking-1", async function () {
     // debugger;
     const store = salonStore.getState();
+    const isConfirm = store.isConfirm;
 
     const $btn = $(this);
     // Tránh bấm nhiều lần
@@ -705,7 +706,6 @@ $(document).ready(async function () {
       $btn.prepend('<span class="btn-loader"></span>');
     }
     const dataBooking = store.dataBooking;
-    console.log("dataBooking: ", dataBooking);
     const allSelected = dataBooking.users.every((user) => {
       return (
         Array.isArray(user.services) &&
@@ -809,18 +809,19 @@ $(document).ready(async function () {
       minDate.getHours()
     ).padStart(2, "0")}:${String(minDate.getMinutes()).padStart(2, "0")}:00`;
 
-    // Hàm tính EndTime cho mỗi user
+    // Hàm tính EndTime cho mỗi user (đã hỗ trợ isSameTime)
+
     function buildUserEndTimes(dataBooking) {
       const results = [];
       dataBooking.users.forEach((user) => {
         let earliestStart = null;
-        let totalDuration = 0;
+        const itemDurations = []; // lưu duration từng item (phút)
 
         user.services.forEach((service) => {
           service.itemService.forEach((item) => {
-            const staff = item.selectedStaff;
             if (!user?.selectedDate || !user?.selectedTimeSlot) return;
 
+            // lấy start candidate để tìm earliestStart
             const [month, day, year] = formatDateMMDDYYYY(
               user.selectedDate
             ).split("/");
@@ -831,31 +832,42 @@ $(document).ready(async function () {
             let [hour, minute] = timeStr.split(":");
 
             const start = new Date(
-              parseInt(year),
-              parseInt(month) - 1,
-              parseInt(day),
-              parseInt(hour),
-              parseInt(minute),
+              parseInt(year, 10),
+              parseInt(month, 10) - 1,
+              parseInt(day, 10),
+              parseInt(hour, 10),
+              parseInt(minute || "0", 10),
               0
             );
 
-            if (!earliestStart || start < earliestStart) {
-              earliestStart = start;
-            }
+            if (!earliestStart || start < earliestStart) earliestStart = start;
 
-            let itemDuration = item.duration || 0;
-            if (item.optionals?.length > 0) {
+            // tính duration của item (bao gồm optionals)
+            let itemDuration = Number(item.duration) || 0;
+            if (Array.isArray(item.optionals) && item.optionals.length > 0) {
               itemDuration += item.optionals.reduce(
-                (sum, opt) => sum + (opt.timedura || 0),
+                (sum, opt) => sum + (Number(opt.timedura) || 0),
                 0
               );
             }
-            totalDuration += itemDuration;
+            itemDurations.push(itemDuration);
           });
         });
 
         if (earliestStart) {
-          const end = new Date(earliestStart.getTime() + totalDuration * 60000);
+          let end;
+          if (user.isSameTime) {
+            // Nếu cùng start, end = earliestStart + max(itemDurations)
+            const maxDuration = itemDurations.length
+              ? Math.max(...itemDurations)
+              : 0;
+            end = new Date(earliestStart.getTime() + maxDuration * 60000);
+          } else {
+            // nối tiếp như cũ: end = earliestStart + sum(itemDurations)
+            const totalDuration = itemDurations.reduce((a, b) => a + b, 0);
+            end = new Date(earliestStart.getTime() + totalDuration * 60000);
+          }
+
           const formatted = `${String(end.getMonth() + 1).padStart(
             2,
             "0"
@@ -870,7 +882,8 @@ $(document).ready(async function () {
           ).padStart(2, "0")}`;
           results.push(formatted);
         } else {
-          results.push(minDateStr); // Dự phòng nếu không có thời gian
+          // Dự phòng nếu không có thời gian, dùng minDateStr (như cũ)
+          results.push(minDateStr);
         }
       });
       return results;
@@ -945,11 +958,24 @@ $(document).ready(async function () {
       return `${MM}-${DD}-${YYYY} ${HH}:${mm}:${SS}`;
     }
 
-    // Hàm tạo danh sách Item cho mỗi user
+    // Hàm tạo danh sách Item cho mỗi user (hỗ trợ isSameTime)
+
     function buildItemListForUser(user, apptIndex) {
       let index = 0;
       const listItemDetail = [];
       let prevEndTime = null;
+
+      // chuẩn bị baseStart (chuỗi start mặc định từ user.selectedTimeSlot)
+      let baseStart = null;
+      if (user.selectedDate && user.selectedTimeSlot) {
+        let timeStr = user.selectedTimeSlot.trim();
+        if (timeStr.endsWith("AM") || timeStr.endsWith("PM")) {
+          timeStr = timeStr.slice(0, -2);
+        }
+        baseStart = `${formatDateMMDDYYYY(user.selectedDate)} ${timeStr}:00`;
+      }
+
+      const isSameTime = !!user.isSameTime;
 
       user.services.forEach((service) => {
         service.itemService.forEach((itemService) => {
@@ -965,21 +991,27 @@ $(document).ready(async function () {
             });
           }
 
+          // Quyết định StartTime:
+          // - Nếu isSameTime === true -> luôn dùng baseStart (mọi service cùng start)
+          // - Ngược lại: nếu prevEndTime có thì nối tiếp, còn không thì baseStart
           let startTime;
-          if (prevEndTime) {
-            startTime = prevEndTime;
+          if (isSameTime) {
+            startTime = baseStart;
           } else {
-            let timeStr = user.selectedTimeSlot.trim();
-            if (timeStr.endsWith("AM") || timeStr.endsWith("PM")) {
-              timeStr = timeStr.slice(0, -2);
+            if (prevEndTime) {
+              startTime = prevEndTime;
+            } else {
+              startTime = baseStart;
             }
-            startTime = `${formatDateMMDDYYYY(
-              user.selectedDate
-            )} ${timeStr}:00`;
           }
 
+          // Tính EndTime dựa trên startTime + totalDuration
           const endTime = calcEndTime(startTime, totalDuration);
-          prevEndTime = endTime;
+
+          // Nếu không isSameTime thì cập nhật prevEndTime để nối tiếp cho item tiếp theo
+          if (!isSameTime) {
+            prevEndTime = endTime;
+          }
 
           listItemDetail.push({
             Index: index++,
@@ -1021,7 +1053,6 @@ $(document).ready(async function () {
 
       dataBooking.users.forEach((user, userIndex) => {
         const listItemDetail = buildItemListForUser(user, apptIndex);
-
         // Tính TotalAmount cho user này
         let userTotalAmount = 0;
         listItemDetail.forEach((item) => {
@@ -1115,11 +1146,11 @@ $(document).ready(async function () {
           DepositAmount: dataBooking.paymentDeposit || 0,
           CrearteBy: "0",
           IsBookOnline: "1",
-          IsConfirmOB: "0",
+          IsConfirmOB: isConfirm,
           BarcodeTicket: "",
           TotalDuration: userTotalDuration,
           IDParty: "0",
-          IsStartAllSameTime: "0",
+          IsStartAllSameTime: user.isSameTime ? "1" : "0",
           ApptIndex: String(apptIndex),
           Detail: {
             ApptIndex: String(apptIndex),
@@ -1144,7 +1175,7 @@ $(document).ready(async function () {
     const payloadBookXLM = {
       RVCNo: store.RVCNo,
       xml: xmlString,
-      isConfirm: "0",
+      isConfirm: isConfirm,
       CustomerID: customerID.toString(),
     };
 

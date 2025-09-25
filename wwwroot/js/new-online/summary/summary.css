@@ -555,6 +555,9 @@
   color: var(--text-color-primary);
   font: normal normal 500 var(--s-14);
 }
+.text-price-service.hide-price {
+  display: none;
+}
 .edit-sumary {
   min-width: 72px;
   justify-content: flex-end;

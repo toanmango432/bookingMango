@@ -5,6 +5,7 @@ export function renderListPeTech_PageChooseServiceTech(forceChoose = false) {
   let isSameTime = store.isSameTime;
   const user = dataBooking.users.find((u) => u.isChoosing);
   const isHidePrice = store.isHidePrice;
+  const priceDisplay = store.priceDisplay;
 
   let chooseStaffBefore = store.chooseStaffBefore || [];
 
@@ -69,13 +70,18 @@ export function renderListPeTech_PageChooseServiceTech(forceChoose = false) {
       }, 0);
 
       // Tính tổng AddOn (tất cả service)
-      let totalAddonCount = 0;
-      let totalAddonPrice = 0;
+      let addonCount = 0;
+      let addOnTotalPrice = 0;
+      let totalAddonPriceCash = 0;
       servicesOfStaff.forEach((s) => {
         if (Array.isArray(s.optionals)) {
-          totalAddonCount += s.optionals.length;
-          totalAddonPrice += s.optionals.reduce(
+          addonCount += s.optionals.length;
+          addOnTotalPrice += s.optionals.reduce(
             (sum, opt) => sum + (opt.price || 0),
+            0
+          );
+          totalAddonPriceCash += s.optionals.reduce(
+            (sum, opt) => sum + (opt.priceCash || 0),
             0
           );
         }
@@ -83,25 +89,16 @@ export function renderListPeTech_PageChooseServiceTech(forceChoose = false) {
 
       // Build dòng AddOn tổng
       let optionalsHtml = "";
-      if (totalAddonCount > 0) {
-        optionalsHtml = `
-                          <div class="addon-indicator-fortech">
-                            <span class="be-addOn">
-                              ${totalAddonCount} Add on
-                              <span class="w-price-addon ${
-                                isHidePrice ? "hide-price" : ""
-                              }">
-                                <span class="be-addOn_cash">$${totalAddonPrice.toFixed(
-                                  2
-                                )}</span>
-                                <span class="partiti">|</span>
-                                <span class="be-addOn_card">$${totalAddonPrice.toFixed(
-                                  2
-                                )}</span>
-                              </span>
-                            </span>
-                          </div>
-                        `;
+      if (addonCount > 0) {
+        optionalsHtml = renderAddOnInItemService(
+          { isHidePrice, priceDisplay },
+          {
+            addonCount,
+            addOnTotalPrice,
+            addOnTotalPriceCash: totalAddonPriceCash,
+          },
+          "in-tech-left"
+        );
       }
 
       // Build service blocks
@@ -272,6 +269,11 @@ function renderServiceItem(serviceItem, selectedServices, itemTechChoosing) {
       (sum, opt) => sum + (opt.price || 0),
       0
     ) || 0;
+  const addOnTotalPriceCash =
+    matchedActiveService?.optionals?.reduce(
+      (sum, opt) => sum + (opt.priceCash || 0),
+      0
+    ) || 0;
 
   // Lấy danh sách tất cả tech đã chọn service này
   const selectedByList = matchedServices
@@ -296,24 +298,14 @@ function renderServiceItem(serviceItem, selectedServices, itemTechChoosing) {
         <div class="bot-item-service">
           ${
             addonCount > 0
-              ? `<div class="addon-indicator">
-                    <span class="be-addOn">
-                      ${addonCount} Add on
-                      <span class="be-addOn_cash">
-                        <span class="w-price-addon ${
-                          isHidePrice ? "hide-price" : ""
-                        }">
-                          <span>
-                            $ ${addOnTotalPrice.toFixed(2)}
-                          </span>
-                          <span class="partiti">|</span>
-                          <span class="be-addOn_card">
-                            $ ${addOnTotalPrice.toFixed(2)}
-                          </span>
-                        </span>
-                      </span>
-                    </span>
-                  </div>`
+              ? renderAddOnInItemService(
+                  { isHidePrice, priceDisplay },
+                  {
+                    addonCount,
+                    addOnTotalPrice,
+                    addOnTotalPriceCash: addOnTotalPriceCash,
+                  }
+                )
               : ""
           }
           ${
@@ -489,6 +481,7 @@ import { initSliderFromElement } from "../../choose-nail-salon/choose-nail-salon
 // import constant
 import { monthNames, dayNames } from "../../../constants/days-weeks.js";
 // import component
+import { renderAddOnInItemService } from "../screen-choose-service.js";
 import { funcDisplayPrice } from "../screen-choose-service.js";
 import { renderContentDesSer } from "../../popup/content/content-descser.js";
 import { renderBasePopup } from "../../popup/base.js";
@@ -735,14 +728,9 @@ $(document).ready(async function () {
 
     const store = salonStore.getState();
     const dataServices = store.dataServices;
-    console.log("datasSER: ", dataServices);
-    console.log("idCate: ", idCate);
 
     const cate = dataServices.find((ser) => ser.item.id === idCate);
-    console.log("cate: ", cate);
     const iser = cate?.item?.listItem.find((is) => is.id === idItemSer);
-
-    console.log("check: ", iser);
 
     const contentDescSer = renderContentDesSer(iser);
     let height = 276;
@@ -756,5 +744,9 @@ $(document).ready(async function () {
     setTimeout(() => {
       $(".overlay-screen").addClass("show");
     }, 10);
+  });
+  $(document).on("click", ".ser-of-tech.see-more", function (e) {
+    e.stopPropagation();
+    $(".overlay-nav-cart").toggleClass("open");
   });
 });

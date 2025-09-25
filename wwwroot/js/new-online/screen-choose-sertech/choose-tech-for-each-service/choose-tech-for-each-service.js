@@ -135,7 +135,9 @@ export function renderItemTech_PageChoseEachSer(staff) {
       <div class="staff-info">
         <div class="staff-name">
           <span>${staff.nickName || staff.firstName}</span>
-          <span class="desc-staff">
+          ${
+            staff.note
+              ? `<span class="desc-staff" data-id=${staff?.employeeID}>
             <svg xmlns="http://www.w3.org/2000/svg" width="19" height="18" viewBox="0 0 19 18" fill="none">
               <mask id="mask0_3984_111267" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="19" height="18">
                 <path d="M18.5 0H0.5V18H18.5V0Z" fill="white"/>
@@ -144,7 +146,9 @@ export function renderItemTech_PageChoseEachSer(staff) {
                 <path d="M3.06941 5.7H10.1914M3.06941 7.608H10.1914M3.06941 11.562H7.79141M10.1914 0V3.504M3.06941 0V3.504M3.06941 9.546H7.79141M12.5194 9.696V1.638H1.19141V15.3H7.64141M12.2014 17.31H10.0414V15.216L15.6694 9.624L17.5414 11.49L12.2014 17.31Z" stroke="currentColor" stroke-width="1.2"/>
               </g>
             </svg>
-          </span>
+          </span>`
+              : ""
+          }
         </div>
         <div class="wrap-staff-sub">
           <div class="staff-sub">
@@ -566,8 +570,15 @@ $(document).ready(async function () {
   $(document).on("change", "#select-sametime", function () {
     const $this = $(this);
     const isCopySameTime = $this.prop("checked");
+    const store = salonStore.getState();
+    const dataBooking = store.dataBooking;
+    const user = dataBooking.users.find((u) => u.isChoosing);
+    user.isSameTime = isCopySameTime;
 
-    salonStore.setState({ ...store, isSameTime: isCopySameTime });
+    salonStore.setState((prev) => ({
+      ...prev,
+      dataBooking,
+    }));
   });
 
   $(document).on("click", ".serd-item", function () {

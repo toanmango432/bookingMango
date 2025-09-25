@@ -370,7 +370,7 @@ export const salonStore = {
     let hideNoRequest = false;
     let loginWithPassword = false;
     let showCallSalon = false;
-    let isConfirm = false;
+    let isConfirm = "0";
     let isPolicy = false;
     let storeInfo = null;
 
@@ -402,7 +402,7 @@ export const salonStore = {
           loginWithPassword:
             resSetting?.data?.LoginWithPassword === "1" || false,
           showCallSalon: resSetting?.data?.ShowCallSalon === "1" || false,
-          isConfirm: resSetting?.data?.IsConfirm === "1" || false,
+          isConfirm: resSetting?.data?.isConfirm == "0" ? "1" : "0",
           isPolicy: resSetting?.data?.isPolicy === "1" || false,
           storeInfo: resSetting?.data?.StoreInfo || null,
         });
@@ -427,8 +427,6 @@ export const salonStore = {
     let salonChoosing = {};
     let itemServiceChoosing = {};
     let itemTechChoosing = {};
-    // start same time
-    let isSameTime = false;
     let chooseStaffBefore = [];
     let flow;
     let pageCurrent;
@@ -483,8 +481,6 @@ export const salonStore = {
       salonChoosing,
       itemServiceChoosing,
       itemTechChoosing,
-      // copy same time
-      isSameTime,
       // lưu staff khi chưa chọn service
       chooseStaffBefore,
       flow, // flow chọn tech hoặc chọn service trước
