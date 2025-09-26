@@ -326,4 +326,9 @@
   .choose-ptechs .wrap-title .title {
     font: normal normal 600 var(--s-14);
   }
+  .wrap-popup-descser,
+  .wrap-popup-daysoff-tech {
+    width: 90%;
+    border-radius: 12px;
+  }
 }

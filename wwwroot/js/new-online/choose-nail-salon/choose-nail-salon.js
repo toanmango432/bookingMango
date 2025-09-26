@@ -1,7 +1,7 @@
 // helper
-function listSalon(group) {
+function listSalon(group, className) {
   return `
-        <div class="list-salon">
+        <div class="list-salon ${className}">
             ${group
               .map((item) => {
                 const logo = item?.logo ? baseLogoSalon + item.logo : "";
@@ -114,6 +114,7 @@ export async function ChooseNailSalon() {
   }
 
   const $wrapNewOnline = $(".wrap-newonline");
+  const isMobile = $(window).width() <= 768;
 
   const chunkArray = (array, size) => {
     const result = [];
@@ -132,23 +133,27 @@ export async function ChooseNailSalon() {
             <div class="header-salon">
                 ${htmlHeaderLocation}
             </div>
-            <div class="content-salon">
-                <div class="slider-booking">
-                    <div class="slider-track-salon">
-                        ${chunkArr
-                          .map((group) => {
-                            const htmlListSalon = listSalon(group);
-                            return htmlListSalon;
-                          })
-                          .join("")}
-                    </div>
-                    <button class="slider-btn-booking prev">
-                        <i class="fa-solid fa-chevron-left"></i>
-                    </button>
-                    <button class="slider-btn-booking next">
-                        <i class="fa-solid fa-chevron-right"></i>
-                    </button>
-                </div>
+            <div class="content-salon ${isMobile ? "mbs8" : ""}">
+            ${
+              isMobile
+                ? `${listSalon(chunkArr.flat(), "mbs8")}`
+                : `<div class="slider-booking">
+                  <div class="slider-track-salon">
+                      ${chunkArr
+                        .map((group) => {
+                          const htmlListSalon = listSalon(group);
+                          return htmlListSalon;
+                        })
+                        .join("")}
+                  </div>
+                  <button class="slider-btn-booking prev">
+                      <i class="fa-solid fa-chevron-left"></i>
+                  </button>
+                  <button class="slider-btn-booking next">
+                      <i class="fa-solid fa-chevron-right"></i>
+                  </button>
+                </div>`
+            }
             </div>
         </div>
     `;

@@ -70,7 +70,7 @@
   flex: 1 1 calc(50% - 16px);
   background: #fff;
   border-radius: 12px;
-  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   padding: 16px;
   display: flex;
@@ -425,4 +425,18 @@
   margin-top: 6px;
   text-align: center;
   bottom: 6px;
+}
+
+@media (max-width: 768px) {
+  .item-tech,
+  .wrap-item-tech-first {
+    position: relative;
+    padding: 8px;
+    align-items: start;
+  }
+  .item-tech .wrap-image {
+    height: 80px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  }
 }

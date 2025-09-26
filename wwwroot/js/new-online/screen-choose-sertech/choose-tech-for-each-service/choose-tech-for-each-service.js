@@ -109,6 +109,7 @@ export function renderItemTech_PageChoseEachSer(staff) {
   const firstChar = staff?.nickName?.charAt(0)?.toUpperCase() || "?";
   const color = staff.color === "#FFFFFF" ? "#505050" : staff.color;
 
+  const isMobile = $(window).width() <= 768;
   return `
     <div
       class="item-petech item-tech-pepage staff ${isStaff ? "selected" : ""}"
@@ -154,7 +155,10 @@ export function renderItemTech_PageChoseEachSer(staff) {
           staff.offDay
             ? `<div class="wrap-staff-sub">
                 <div class="staff-sub">
-                  <span class="schedule">
+                ${
+                  isMobile
+                    ? ``
+                    : `<span class="schedule">
                     <svg xmlns="http://www.w3.org/2000/svg" width="17" height="16" viewBox="0 0 17 16" fill="none">
                       <path d="M5.83203 1.33203V3.33203" stroke="currentColor" stroke-width="1.2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
                       <path d="M11.168 1.33203V3.33203" stroke="currentColor" stroke-width="1.2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
@@ -165,8 +169,11 @@ export function renderItemTech_PageChoseEachSer(staff) {
                       <path d="M6.02889 11.1341H6.03488" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                     <span>Upcoming Day Of</span>
-                  </span>
-                  <span id="show-timeof-tech" class="icon-show-day-off" data-idstaff="${staff.employeeID}">
+                  </span>`
+                }
+                  <span id="show-timeof-tech" class="icon-show-day-off" data-idstaff="${
+                    staff.employeeID
+                  }">
                     <svg xmlns="http://www.w3.org/2000/svg" width="17" height="16" viewBox="0 0 17 16" fill="none">
                       <path d="M7.1655 3.33464H5.96549C5.21876 3.33464 4.84511 3.33464 4.5599 3.47996C4.30901 3.60779 4.10519 3.81162 3.97736 4.0625C3.83203 4.34772 3.83203 4.72136 3.83203 5.4681V10.5348C3.83203 11.2815 3.83203 11.6547 3.97736 11.9399C4.10519 12.1908 4.30901 12.395 4.5599 12.5228C4.84483 12.668 5.21803 12.668 5.9633 12.668H11.0341C11.7794 12.668 12.152 12.668 12.437 12.5228C12.6878 12.395 12.8924 12.1906 13.0202 11.9397C13.1654 11.6548 13.1654 11.282 13.1654 10.5367V9.33464M13.832 6.0013V2.66797M13.832 2.66797H10.4987M13.832 2.66797L9.16536 7.33464" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
@@ -191,6 +198,7 @@ export function renderListStaff_PageChoseEachSer(listUserStaff) {
   const $activeSer = $(".serd-item.active");
   const serviceId = $activeSer.data("service-id");
   const itemServiceId = $activeSer.data("item-service-id");
+  const isMobile = $(window).width() <= 768;
 
   let htmlListTech = "";
 
@@ -220,6 +228,63 @@ export function renderListStaff_PageChoseEachSer(listUserStaff) {
   if (!hasAnyItemService) {
     $(".list-petechs").addClass("not-ser");
   }
+
+  // Mobile gắn start on sametim cuối list techs
+  if (isMobile) {
+    let isSameTime = store.isSameTime;
+    const $pertechs = $(".persers-petechs");
+    // Chỉ hiện start same time khi có ít nhất 2 itemService
+    const totalSelected = user.services.reduce(
+      (count, cate) => count + cate.itemService.length,
+      0
+    );
+    // Kiểm tra xem tất cả itemService có staff khác nhau không
+    let isValidSameTime = false;
+    if (totalSelected >= 2) {
+      isValidSameTime = true;
+      // TRƯỜNG HỢP KHÔNG QUAN TRỌNG TRÙNG TECH
+      let allHaveStaff = true;
+      user.services.forEach((cate) => {
+        cate.itemService.forEach((srv) => {
+          if (!srv.selectedStaff || !srv.selectedStaff.employeeID) {
+            allHaveStaff = false;
+          }
+        });
+        isValidSameTime = allHaveStaff;
+      });
+    }
+    if (!isValidSameTime) {
+      isSameTime = false;
+      salonStore.setState({ ...store, isSameTime: isSameTime });
+    }
+    const htmlSameTime = `${
+      totalSelected >= 2
+        ? `
+                <div class="wrap-sametime-op">
+                    <div class="copy-time">
+                        <input
+                            id="select-sametime"
+                            type="checkbox"
+                            ${isSameTime ? "checked" : ""}
+                            class="toggle-switch"
+                            ${!isValidSameTime ? "disabled" : ""}
+                            title="${
+                              !isValidSameTime
+                                ? "You can only select this if each service has a different staff"
+                                : ""
+                            }"
+                        />
+                        <span class="text-same-time">Start on same time</span>
+                    </div>
+                    <span class="guide-sametime">
+                        Use this if you want multiple services done at the same time with different techs
+                    </span>
+                </div>
+              `
+        : ""
+    }`;
+    $pertechs.append(htmlSameTime);
+  }
 }
 
 export function renderListPeSer(forceChoose = false, objIdSelected = null) {
@@ -230,6 +295,8 @@ export function renderListPeSer(forceChoose = false, objIdSelected = null) {
   let itemServiceChoosing = store.itemServiceChoosing;
   let isSameTime = store.isSameTime;
   const isHidePrice = store.isHidePrice;
+
+  const isMobile = $(window).width() <= 768;
 
   // Kiểm tra có itemService nào được chọn không
   const hasAnyItemService =
@@ -327,20 +394,6 @@ export function renderListPeSer(forceChoose = false, objIdSelected = null) {
     // Hiện tại chỉ cần check có chọn 2 service không là start on same time được, không quan trọng tech trùng service
     // Confirm by : a.Trí :v
     isValidSameTime = true;
-
-    // Comment xử lý chọn start on same time cho trường hợp mỗi service mỗi tech khác nhau
-    // const staffIds = [];
-    // let allHaveStaff = true;
-
-    // user.services.forEach((cate) => {
-    //   cate.itemService.forEach((srv) => {
-    //     if (srv.selectedStaff?.employeeID) {
-    //       staffIds.push(srv.selectedStaff.employeeID);
-    //     } else {
-    //       allHaveStaff = false;
-    //     }
-    //   });
-    // });
     // TRƯỜNG HỢP KHÔNG QUAN TRỌNG TRÙNG TECH
     let allHaveStaff = true;
     user.services.forEach((cate) => {
@@ -351,10 +404,6 @@ export function renderListPeSer(forceChoose = false, objIdSelected = null) {
       });
       isValidSameTime = allHaveStaff;
     });
-
-    // Hợp lệ khi tất cả đều có staff và không có staff trùng nhau
-    // const uniqueStaff = new Set(staffIds);
-    // isValidSameTime = allHaveStaff && staffIds.length === uniqueStaff.size;
   }
   if (!isValidSameTime) {
     isSameTime = false;
@@ -375,7 +424,7 @@ export function renderListPeSer(forceChoose = false, objIdSelected = null) {
             }
         </div>
        ${
-         totalSelected >= 2
+         totalSelected >= 2 && !isMobile
            ? `
               <div class="wrap-sametime-op">
                   <div class="copy-time">
@@ -485,6 +534,8 @@ export async function ChooseTechForEachServices(objIdSelectd) {
   const salonChoosing = store.salonChoosing;
 
   const htmlHeaderSalon = HeaderSalon(salonChoosing);
+  const isMobile = $(window).width() <= 768;
+
   // Render footer
   const $wrapDirBtn = renderFooterFor_PageChooseEachTech();
   const htmlScreenChooseTech = `
@@ -494,8 +545,8 @@ export async function ChooseTechForEachServices(objIdSelectd) {
             </div>
             <div class="content-choose-sertech">
                 <div class="choose-techs">
-                    <div class="wrap-title">
-                        <h2 class="title">Choose Technician</h2>
+                    <div class="wrap-title text-uppercase">
+                        <h2 class="title mb-0">Choose Technician</h2>
                     </div>
                     <p class="desc">
                       Select tech for service

@@ -190,7 +190,12 @@
 
 .slider-categories {
   width: 100%;
-  overflow: hidden;
+  overflow-x: auto; /* Cho phép cuộn ngang */
+  overflow-y: hidden;
+  scroll-behavior: smooth; /* mượt khi scroll */
+}
+.slider-categories::-webkit-scrollbar {
+  display: none; /* Ẩn thanh scrollbar nếu muốn */
 }
 .slider-categories .slider-track-categories {
   width: 100%;
@@ -775,6 +780,11 @@
 }
 
 @media (max-width: 768px) {
+  .popup-container-template {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
   .btn-service {
     padding: 8px 24px;
   }
@@ -819,6 +829,10 @@
   .btn-group-service {
     padding: 6px 0px 8px 0px;
   }
+  .btn-group-service button svg {
+    width: 20px;
+    height: 20px;
+  }
   .item-cate {
     height: 36px;
     border: 1px solid #c9c9c9;
@@ -862,10 +876,12 @@
   }
   .choose-services {
     margin: 12px 0px 6px;
+    height: 116px;
   }
   .list-services {
     grid-template-columns: repeat(2, 1fr);
     padding: 8px;
+    margin-top: 4px;
   }
   .service-title {
     font: normal normal 600 var(--s-13);

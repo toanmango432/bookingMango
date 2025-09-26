@@ -225,6 +225,10 @@
   .content-salon {
     margin-top: 72px;
   }
+
+  .content-salon.mbs8 {
+    overflow-y: hidden;
+  }
   .item-salon {
     width: 100%;
   }
@@ -238,8 +242,8 @@
     padding: 16px;
   }
   .wrap-newonline .btn-closepopup {
-    right: 0px;
-    top: 12px;
+    right: 7px;
+    top: 9px;
   }
   .wrap-name-method {
     gap: 0px;

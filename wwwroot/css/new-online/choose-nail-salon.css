@@ -181,6 +181,19 @@
   .list-salon {
     padding: 20px;
   }
+  .list-salon.mbs8 {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: flex-end;
+    align-content: start;
+    gap: 32px;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+    background: #eceef0;
+    overflow-y: scroll;
+  }
   .item-salon {
     width: 100%;
   }

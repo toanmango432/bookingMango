@@ -7,7 +7,8 @@ export function renderBasePopup(
   innerContentHTML,
   persistent = false,
   height = 620,
-  width = 560
+  width = 560,
+  cusStyle
 ) {
   // Clear popup cũ nếu có
   $(".overlay-screen").remove();
@@ -18,6 +19,7 @@ export function renderBasePopup(
             style="
               height: ${formatUnit(height)};
               width: ${formatUnit(width)};
+              ${cusStyle}
             "
           >
             ${innerContentHTML}

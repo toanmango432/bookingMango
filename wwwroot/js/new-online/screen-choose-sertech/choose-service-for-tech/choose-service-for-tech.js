@@ -736,7 +736,7 @@ $(document).ready(async function () {
     let height = 276;
     let width = 586;
     if (isMobile) {
-      height = 376;
+      height = 200;
       width = "100%";
     }
     const html = renderBasePopup(contentDescSer, false, height, width);

@@ -329,7 +329,7 @@ function renderServiceItemHTML(serviceItem, selectedServices) {
           </div>
           ${
             serviceItem.description
-              ? `<div class="info-icon">
+              ? `<div class="info-icon ${addonCount > 0 ? "has-addon" : ""}">
                   <svg xmlns="http://www.w3.org/2000/svg" width="29" height="28" viewBox="0 0 29 28" fill="none">
                     <path d="M14.5 12.8333V18.6667M14.5 24.5C8.70101 24.5 4 19.799 4 14C4 8.20101 8.70101 3.5 14.5 3.5C20.299 3.5 25 8.20101 25 14C25 19.799 20.299 24.5 14.5 24.5ZM14.5581 9.33333V9.45L14.4419 9.45023V9.33333H14.5581Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
@@ -433,7 +433,9 @@ export function renderServices(listItem) {
               </div>
               ${
                 serviceItem.description
-                  ? `<div class="info-icon">
+                  ? `<div class="info-icon ${
+                      addonCount > 0 ? "has-addon" : ""
+                    }">
                     <svg xmlns="http://www.w3.org/2000/svg" width="29" height="28" viewBox="0 0 29 28" fill="none">
                       <path d="M14.5 12.8333V18.6667M14.5 24.5C8.70101 24.5 4 19.799 4 14C4 8.20101 8.70101 3.5 14.5 3.5C20.299 3.5 25 8.20101 25 14C25 19.799 20.299 24.5 14.5 24.5ZM14.5581 9.33333V9.45L14.4419 9.45023V9.33333H14.5581Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
