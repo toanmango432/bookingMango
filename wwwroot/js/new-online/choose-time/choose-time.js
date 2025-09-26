@@ -1077,91 +1077,95 @@ $(document).ready(async function () {
   });
 
   // Xử lý onChange input appointment-input
+  function updateNextButtonState() {
+    const $wrapCheckPoli = $(".wrap-icon-checked");
+    const $inputAppt = $("#appointment-input");
+    const $btnNext = $(".btn-next-emailPhone-1");
+
+    const isChecked = $wrapCheckPoli.hasClass("active");
+    const val = $inputAppt.val().trim();
+    const digits = val.replace(/\D/g, "");
+
+    const isPhone =
+      isValidPhoneNumber(val) || (digits.length === 10 && /^\d+$/.test(digits));
+    const isEmail = isValidEmail(val);
+
+    const isValidInput = val !== "" && (isPhone || isEmail);
+
+    // Điều kiện hợp lệ để enable
+    if (isChecked && isValidInput) {
+      $btnNext.prop("disabled", false);
+    } else {
+      $btnNext.prop("disabled", true);
+    }
+  }
+
+  // Toggle icon check
+  $(document).on("click", ".wrap-icon-checked", function () {
+    $(this).toggleClass("active");
+    updateNextButtonState();
+  });
+
+  // Validate input
   $(document).on("input", "#appointment-input", function () {
     const $this = $(this);
-
-    const store = salonStore.getState();
-    const dataBooking = store.dataBooking;
-    const owner = dataBooking.users[0];
-
-    let val = $this.val().trim();
-    const $error = $this.siblings(".error-message");
-
+    const val = $this.val().trim();
     const digits = val.replace(/\D/g, "");
+    const $error = $this.siblings(".error-message");
 
     let isPhone = false;
     let isEmail = false;
 
-    // Check nếu là phone đủ 10 số
     if (digits.length === 10 && /^\d+$/.test(digits)) {
-      val = formatPhoneNumber(digits); // Format lại hiển thị
-      $this.val(val); // Gán lại giá trị vào input
+      $this.val(formatPhoneNumber(digits));
       isPhone = true;
     } else {
-      // Nếu đang ở dạng đã format mà không còn đủ 10 số → gỡ format
       if (val.includes("(") || val.includes(")") || val.includes("-")) {
         if (digits.length !== 10) {
-          val = digits;
-          $this.val(val);
+          $this.val(digits);
         }
       }
-
       isPhone = isValidPhoneNumber(val);
       isEmail = isValidEmail(val);
     }
 
-    // So sánh với phone owner
-    const ownerPhone = owner?.phoneNumber?.replace(/\D/g, ""); // chuẩn hoá digits
-    if (isPhone && digits === ownerPhone) {
-      if ($("#skip-verify").length === 0) {
-        $(".btn-skip").html(
-          `<button id="skip-verify" class="btn-skip-verify">Skip Verify</button>`
-        );
-      }
-    } else {
-      $("#skip-verify").remove();
-    }
-
-    // clear input #appointment-input
-    $(document).on("click", ".clear-icon", function (e) {
-      const $btn = $(this);
-
-      // tạo span ripple
-      const $ripple = $("<span class='ripple'></span>");
-      const x = e.offsetX;
-      const y = e.offsetY;
-      $ripple.css({ top: y, left: x });
-
-      $btn.append($ripple);
-
-      // remove sau animation
-      setTimeout(() => {
-        $ripple.remove();
-      }, 600);
-
-      // logic clear input
-      const $inputAppt = $("#appointment-input");
-      $inputAppt.val("");
-      clearInputError($inputAppt);
-      $inputAppt.focus();
-      $("#skip-verify").remove();
-    });
-
-    // Cập nhật lỗi
     if (val === "") {
       $this.addClass("is-invalid");
       $error.text("Email or phone is required.");
-      // $('.btn-next-emailPhone').prop('disabled', true)
-    } else if (val !== "" && !isPhone && !isEmail) {
+    } else if (!isPhone && !isEmail) {
       $this.addClass("is-invalid");
       $error.text("Email or phone is incorrect format.");
-      // $('.btn-next-emailPhone').prop('disabled', true)
     } else {
       $this.removeClass("is-invalid");
       $error.text("");
-      // Cho phép next
-      $(".btn-next-emailPhone-1").prop("disabled", false);
     }
+
+    updateNextButtonState();
+  });
+
+  // clear input #appointment-input
+  $(document).on("click", ".clear-icon", function (e) {
+    const $btn = $(this);
+
+    // tạo span ripple
+    const $ripple = $("<span class='ripple'></span>");
+    const x = e.offsetX;
+    const y = e.offsetY;
+    $ripple.css({ top: y, left: x });
+
+    $btn.append($ripple);
+
+    // remove sau animation
+    setTimeout(() => {
+      $ripple.remove();
+    }, 600);
+
+    // logic clear input
+    const $inputAppt = $("#appointment-input");
+    $inputAppt.val("");
+    clearInputError($inputAppt);
+    $inputAppt.focus();
+    $("#skip-verify").remove();
   });
   // Xử lý blur input apointment-input
   $(document).on("blur", "#appointment-input", function () {
@@ -1186,8 +1190,11 @@ $(document).ready(async function () {
     const RVCNo = store.RVCNo;
 
     const $appointInput = $("#appointment-input");
+    const $wrapCheckPoli = $(".wrap-icon-checked");
+    const isChecked = $wrapCheckPoli.hasClass("active");
+
     const res = validateEmailPhoneInput($appointInput);
-    if (!res) return;
+    if (!res || !isChecked) return;
 
     const value = $appointInput.val();
     const resVerifyGetOtp = await sendOTP(value, res);

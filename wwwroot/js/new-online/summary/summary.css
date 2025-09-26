@@ -1068,37 +1068,6 @@
   border: none;
 }
 
-.consent-container {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--px-8);
-  align-self: stretch;
-}
-.consent-container .wrap-icon-checked {
-  width: var(--px-20);
-  height: var(--px-20);
-  background-color: var(--bs-main);
-  color: white;
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-  justify-content: center;
-  border-radius: var(--px-16);
-  font-size: var(--px-12);
-  position: relative;
-  top: var(--px-4);
-}
-.consent-container label {
-  color: var(--text-color-primary);
-  font: normal normal 300 var(--s-20);
-  line-height: var(--px-24); /* 120% */
-}
-.button-container {
-  display: flex;
-  align-items: center;
-  gap: var(--px-8);
-  align-self: stretch;
-}
 .clear-icon-addguest {
   height: 28px;
   width: 28px;

@@ -348,7 +348,6 @@
   display: flex;
   flex-direction: column;
   position: relative;
-  padding: 0px var(--px-12);
   gap: var(--px-8);
   align-self: stretch;
   border-radius: var(--px-10);
@@ -380,31 +379,36 @@
   gap: var(--px-8);
   align-self: stretch;
 }
+
 .consent-container .wrap-icon-checked {
   width: var(--px-20);
   height: var(--px-20);
-  background-color: var(--bs-main);
-  color: white;
+  background-color: white; /* mặc định trắng */
+  border: 2px solid var(--bs-main); /* viền main */
   display: flex;
-  align-items: center;
   flex-shrink: 0;
+  align-items: center;
   justify-content: center;
   border-radius: var(--px-16);
-  font-size: var(--px-12);
+  cursor: pointer;
   position: relative;
-  top: var(--px-4);
+  top: 2px;
 }
-.consent-container label {
-  color: var(--text-color-primary);
-  font: normal normal 300 var(--s-20);
-  line-height: var(--px-24); /* 120% */
+
+.consent-container .wrap-icon-checked svg {
+  display: none; /* ẩn icon khi chưa check */
 }
-.button-container {
-  display: flex;
-  align-items: center;
-  gap: var(--px-8);
-  align-self: stretch;
+
+.consent-container .wrap-icon-checked.active {
+  background-color: var(--bs-main); /* nền main */
+  border-color: var(--bs-main); /* bỏ viền */
 }
+
+.consent-container .wrap-icon-checked.active svg {
+  display: block; /* hiện icon */
+  stroke: white; /* icon trắng */
+}
+
 .clear-icon {
   height: 28px;
   width: 28px;
@@ -1257,88 +1261,6 @@
 }
 /* end css form register user */
 
-/* start css popup content verify */
-.popup-wrap-verify-emailPhone {
-  background: white;
-  display: flex;
-  padding: var(--px-32);
-  flex-direction: column;
-  align-items: center;
-  gap: var(--px-24);
-  border-radius: var(--px-24);
-  background: #fff;
-  box-shadow: 0 0 var(--px-12) 0 rgba(0, 0, 0, 0.16);
-}
-.title-appointment {
-}
-.title-appointment h2 {
-  color: var(--text-color-primary);
-  text-align: center;
-  font: normal normal 500 var(--s-20);
-  line-height: var(--px-24); /* 120% */
-  margin-bottom: 0px;
-}
-.container-verify-emailPhone {
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  padding: 0px var(--px-12);
-  gap: var(--px-8);
-  align-self: stretch;
-  border-radius: var(--px-10);
-  background: #fff;
-  margin-bottom: 0px;
-}
-.appointment-input {
-  color: var(--text-color-primary);
-  font: normal normal 400 var(--s-16);
-  line-height: var(--px-20);
-  border-radius: var(--px-10);
-  border: 1px solid var(--Gray-Neutral-65, #a0a0a0);
-  background: #fff;
-  display: flex;
-  flex: 1 0 0;
-  padding: var(--px-14) var(--px-12);
-  align-items: center;
-  gap: var(--px-8);
-  align-self: stretch;
-}
-.appointment-input:focus-visible {
-  outline: 2px solid var(--bs-main);
-  border: none;
-}
-
-.consent-container {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--px-8);
-  align-self: stretch;
-}
-.consent-container .wrap-icon-checked {
-  width: var(--px-20);
-  height: var(--px-20);
-  background-color: var(--bs-main);
-  color: white;
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-  justify-content: center;
-  border-radius: var(--px-16);
-  font-size: var(--px-12);
-  position: relative;
-  top: var(--px-4);
-}
-.consent-container label {
-  color: var(--text-color-primary);
-  font: normal normal 300 var(--s-20);
-  line-height: var(--px-24); /* 120% */
-}
-.button-container {
-  display: flex;
-  align-items: center;
-  gap: var(--px-8);
-  align-self: stretch;
-}
 /* Bổ sung navigate register */
 .register-nav {
 }
