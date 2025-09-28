@@ -81,7 +81,7 @@ export function renderFooterTech_PageChooseOnlyTech() {
 
   const hasAnyItemService =
     user?.services?.some((cate) => cate.itemService?.length > 0) ?? false;
-
+  const isMobile = $(window).width() <= 786;
   // Nút back có thêm hand khi chưa có service
   const backBtn = `
     <button id="btn-back-tech" class="dir-btn-back-tech text-uppercase">
@@ -97,7 +97,9 @@ export function renderFooterTech_PageChooseOnlyTech() {
     </div>
     ${
       !hasAnyItemService
-        ? `<div class="tip-text">Please go back to select service</div>`
+        ? `<div class="tip-text ${
+            isMobile ? "mobile" : ""
+          }">Please go back to select service</div>`
         : ""
     }
   `;

@@ -15,6 +15,7 @@ export function renderFooterFor_PageChooseEachTech() {
     user?.services?.some((cate) => cate.itemService?.length > 0) ?? false;
 
   const isNext = allServicesHaveStaff(user);
+  const isMobile = $(window).width() <= 768;
   // Nút back có thêm hand khi chưa có service
   const backBtn = `
     <button id="btn-back-cetech" class="dir-btn-back-tech text-uppercase">
@@ -30,7 +31,9 @@ export function renderFooterFor_PageChooseEachTech() {
     </div>
     ${
       !hasAnyItemService
-        ? `<div class="tip-text">Please go back to select service</div>`
+        ? `<div class="tip-text ${
+            isMobile ? "mobile" : ""
+          }">Please go back to select service</div>`
         : ""
     }
   `;
@@ -283,7 +286,20 @@ export function renderListStaff_PageChoseEachSer(listUserStaff) {
               `
         : ""
     }`;
-    $pertechs.append(htmlSameTime);
+
+    if (totalSelected >= 2) {
+      const $wrap = $pertechs.find(".wrap-sametime-op");
+      if ($wrap.length) {
+        // thay thế
+        $wrap.replaceWith(htmlSameTime);
+      } else {
+        // thêm mới
+        $pertechs.append(htmlSameTime);
+      }
+    } else {
+      // nếu không đủ điều kiện thì xoá đi cho sạch
+      $pertechs.find(".wrap-sametime-op").remove();
+    }
   }
 }
 

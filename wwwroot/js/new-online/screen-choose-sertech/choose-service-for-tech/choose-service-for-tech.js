@@ -8,6 +8,7 @@ export function renderListPeTech_PageChooseServiceTech(forceChoose = false) {
   const priceDisplay = store.priceDisplay;
 
   let chooseStaffBefore = store.chooseStaffBefore || [];
+  const isMobile = $(window).width() <= 786;
 
   // Nếu chưa chọn tech nào thì alert và return
   if (chooseStaffBefore.length === 0) {
@@ -172,34 +173,104 @@ export function renderListPeTech_PageChooseServiceTech(forceChoose = false) {
       isSameTime,
     }));
   }
-  const htmlSameTime = `
-  ${
-    totalSelected >= 2
-      ? `
-        <div class="wrap-sametime-op">
-            <div class="copy-time">
-                <input
-                    id="select-sametime"
-                    type="checkbox"
-                    ${isSameTime ? "checked" : ""}
-                    class="toggle-switch"
-                    ${!isValidSameTime ? "disabled" : ""}
-                    title="${
-                      !isValidSameTime
-                        ? "You can only select this if each service has a different staff"
-                        : ""
-                    }"
-                />
-                <span class="text-same-time">Start on same time</span>
-            </div>
-            <span class="guide-sametime">
-                Use this if you want multiple services done at the same time with different techs
-            </span>
-        </div>
-      `
-      : ""
-  } `;
-  $(".wrap-list-petech").append(htmlSameTime);
+
+  if (!isMobile) {
+    const htmlSameTime = `
+    ${
+      totalSelected >= 2
+        ? `
+          <div class="wrap-sametime-op">
+              <div class="copy-time">
+                  <input
+                      id="select-sametime"
+                      type="checkbox"
+                      ${isSameTime ? "checked" : ""}
+                      class="toggle-switch"
+                      ${!isValidSameTime ? "disabled" : ""}
+                      title="${
+                        !isValidSameTime
+                          ? "You can only select this if each service has a different staff"
+                          : ""
+                      }"
+                  />
+                  <span class="text-same-time">Start on same time</span>
+              </div>
+              <span class="guide-sametime">
+                  Use this if you want multiple services done at the same time with different techs
+              </span>
+          </div>
+        `
+        : ""
+    } `;
+    $(".wrap-list-petech").append(htmlSameTime);
+  } else {
+    // Mobile gắn start on sametim cuối list techs
+    const $pertechs = $(".persers-petechs");
+    // Chỉ hiện start same time khi có ít nhất 2 itemService
+    const totalSelected = user.services.reduce(
+      (count, cate) => count + cate.itemService.length,
+      0
+    );
+    // Kiểm tra xem tất cả itemService có staff khác nhau không
+    let isValidSameTime = false;
+    if (totalSelected >= 2) {
+      isValidSameTime = true;
+      // TRƯỜNG HỢP KHÔNG QUAN TRỌNG TRÙNG TECH
+      let allHaveStaff = true;
+      user.services.forEach((cate) => {
+        cate.itemService.forEach((srv) => {
+          if (!srv.selectedStaff || !srv.selectedStaff.employeeID) {
+            allHaveStaff = false;
+          }
+        });
+        isValidSameTime = allHaveStaff;
+      });
+    }
+    if (!isValidSameTime) {
+      isSameTime = false;
+      salonStore.setState({ ...store, isSameTime: isSameTime });
+    }
+    const htmlSameTime = `${
+      totalSelected >= 2
+        ? `
+                <div class="wrap-sametime-op mbs-serfortech">
+                    <div class="copy-time">
+                        <input
+                            id="select-sametime"
+                            type="checkbox"
+                            ${isSameTime ? "checked" : ""}
+                            class="toggle-switch"
+                            ${!isValidSameTime ? "disabled" : ""}
+                            title="${
+                              !isValidSameTime
+                                ? "You can only select this if each service has a different staff"
+                                : ""
+                            }"
+                        />
+                        <span class="text-same-time">Start on same time</span>
+                    </div>
+                    <span class="guide-sametime">
+                        Use this if you want multiple services done at the same time with different techs
+                    </span>
+                </div>
+              `
+        : ""
+    }`;
+
+    if (totalSelected >= 2) {
+      const $wrap = $pertechs.find(".wrap-sametime-op");
+      if ($wrap.length) {
+        // thay thế
+        $wrap.replaceWith(htmlSameTime);
+      } else {
+        // thêm mới
+        $pertechs.append(htmlSameTime);
+      }
+    } else {
+      // nếu không đủ điều kiện thì xoá đi cho sạch
+      $pertechs.find(".wrap-sametime-op").remove();
+    }
+  }
 }
 
 function renderFooterService() {
@@ -318,7 +389,7 @@ function renderServiceItem(serviceItem, selectedServices, itemTechChoosing) {
         </div>
         ${
           serviceItem.description
-            ? `<div class="info-icon">
+            ? `<div class="info-icon serfortech">
                   <svg xmlns="http://www.w3.org/2000/svg" width="29" height="28" viewBox="0 0 29 28" fill="none">
                     <path d="M14.5 12.8333V18.6667M14.5 24.5C8.70101 24.5 4 19.799 4 14C4 8.20101 8.70101 3.5 14.5 3.5C20.299 3.5 25 8.20101 25 14C25 19.799 20.299 24.5 14.5 24.5ZM14.5581 9.33333V9.45L14.4419 9.45023V9.33333H14.5581Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
@@ -392,6 +463,7 @@ export async function ScreenChooseServiceForTech() {
   const htmlHeaderSalon = HeaderSalon(salonChoosing);
   // Lấy categories từ API
   const htmlCategories = renderTrackCate(dataService, "item-ftcate");
+  const isMobile = $(window).width() <= 786;
 
   // Render footer
   const $wrapDirBtn = renderFooterService();
@@ -421,7 +493,7 @@ export async function ScreenChooseServiceForTech() {
                       </div>
                   </div>
                 </div>
-                <div class="wrap-search-ftser mt-3 mb-3">
+                <div class="wrap-search-ftser ${isMobile ? "" : "mt-3"}">
                   <div class="container-search-ftser">
                     <input type="text" class="input-search-ftser" placeholder="Search by name..."/>
                     <button class="btn-search-toggle"><i class="fa-solid fa-magnifying-glass"></i></button>

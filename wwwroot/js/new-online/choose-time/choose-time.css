@@ -1508,7 +1508,7 @@ select {
   }
   .timeslot {
     width: 100%;
-    min-height: 600px;
+    min-height: 880px;
   }
   .time-slot-1 span:first-child {
     font: normal normal 500 var(--s-12);

@@ -48,7 +48,7 @@ export function renderDisAddonSumary(
   { price, priceCash }
 ) {
   if (priceDisplay === "0" || priceDisplay === "1") {
-    return `<p class="wrap-cash-base">
+    return `<p class="wrap-cash-base addon">
             <span
               class="item-addon text-price-service price-addon ${
                 isHidePrice ? "hide-price" : ""
@@ -58,7 +58,7 @@ export function renderDisAddonSumary(
             </span>
           </p>`;
   } else if (priceDisplay === "2") {
-    return `<p class="wrap-cash-base ${isHidePrice ? "hide-price" : ""}">
+    return `<p class="wrap-cash-base addon ${isHidePrice ? "hide-price" : ""}">
               <span
                 class="item-addon text-pricecash-service price-addon">
                 $ ${(priceCash || 0).toFixed(2)}
@@ -184,6 +184,7 @@ export function renderSumary(dataBooking, listDataService) {
 
   const owner = dataBooking.users[0];
   const cardChoosing = dataBooking.cardNumber.find((card) => card.isChoosing);
+  const isMobile = $(window).width() <= 786;
 
   let totalPayment = 0;
   let totalCashPayment = 0;
@@ -339,7 +340,10 @@ export function renderSumary(dataBooking, listDataService) {
                                     }
                                   </button>
                                 </p>
-                                <p class="item-right-info">
+                                ${
+                                  idex < 1
+                                    ? ``
+                                    : `<p class="item-right-info">
                                   ${
                                     owner.id !== userBooking.id
                                       ? `
@@ -354,7 +358,8 @@ export function renderSumary(dataBooking, listDataService) {
                                       `
                                       : ""
                                   }
-                                </p>
+                                </p>`
+                                }
                               </div>
                             </div>
                           </div>
@@ -570,7 +575,9 @@ export function renderSumary(dataBooking, listDataService) {
                       </button>
                       ${
                         !allSelected
-                          ? `<div class="tip-text">Please return to select at least one service to book.</div>`
+                          ? `<div class="tip-text ${
+                              isMobile ? "mobile" : ""
+                            }">Please return to select at least one service to book.</div>`
                           : ""
                       }
                   </div>

@@ -1218,36 +1218,41 @@
 
 @media (max-width: 768px) {
   .new-sumary {
-    width: 92%;
+    width: 100%;
+    padding: 0px 8px;
+    margin: 0px;
   }
   .container-sumary .wrap-title {
     padding-top: 12px;
   }
   .new-sumary .container-sumary {
-    gap: 12px;
+    margin-bottom: 4px;
+    gap: 4px;
   }
   .top-item-sumary .user-book {
     flex-direction: column;
   }
   .top-item-sumary .user-book .left-info-sum .phone {
-    font-size: 14px;
+    font-size: 12px;
+    padding: 12px 4px 4px 4px;
   }
   .top-item-sumary .user-book .right-info-sum {
     gap: 8px;
     justify-content: flex-start;
   }
   .header-item-sumary {
-    top: 84px;
+    top: 60px;
   }
   .header-item-sumary .item {
     font-size: 11px;
     padding: 4px 6px 4px 12px;
   }
   .body-item-sumary {
-    margin-top: 106px;
+    margin-top: 80px;
+    padding-bottom: 8px;
   }
   .wrap-item-content {
-    padding: 8px 4px;
+    padding: 4px 4px 0px 4px;
   }
   .item-content .text-name-service,
   .header-item-sumary .name-service {
@@ -1267,12 +1272,32 @@
   }
   .total-pay .text-total-amount {
     width: 45%;
+    display: flex;
+    align-items: center;
   }
   .total-pay .text-total-times {
-    width: 25.5%;
+    width: 33%;
+    font-size: 12px;
+    padding: 8px;
+    justify-content: flex-end;
+    align-items: center;
   }
-  .total-pay .text-total-price {
-    width: 29.5%;
+  .total-pay .wrap-cash-base {
+    font-size: 12px;
+    padding: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    justify-content: flex-end;
+    align-items: end;
+    width: 22%;
+  }
+  .total-book {
+    height: 54px;
+  }
+
+  .total-pay .text-total-price-cash::after {
+    display: none;
   }
   .wrap-item-content .btn-remove-service {
     top: 7px;
@@ -1281,12 +1306,19 @@
     padding: 4px;
   }
   .body-item-sumary {
-    margin-bottom: 40px;
+    margin-bottom: 45px;
   }
 
   .item-content .text-name-service {
     padding: 4px 6px 4px 24px;
   }
+  .item-content .text-name-service.name-addon {
+    padding: 4px 6px 4px 42px;
+  }
+  .time-dura-addon {
+    font-size: 10px;
+  }
+
   .add-ticket-note {
     padding: 4px 8px;
   }
@@ -1305,21 +1337,30 @@
   .total-value {
     font-size: 16px;
   }
-  .depo-text {
-    font-size: 24px;
-  }
+  .depo-text,
   .depo-value {
-    font-size: 24px;
+    font-size: 18px;
   }
   .text-checkbox-confirm {
+    line-height: 1.2;
     font-size: 14px;
   }
+  .new-sumary .payment-method-item {
+    height: 40px;
+  }
   .new-sumary .confirm-booking {
-    height: 44px;
+    height: 38px;
     padding: 0px;
+  }
+  .total-book .total-2 {
+    height: 22px;
   }
   .btn-back-sum {
     width: 100px;
+  }
+  .wrap-bottom-sum {
+    height: 236px;
+    gap: 8px;
   }
   .btn-add-guest {
     width: 120px;
@@ -1332,5 +1373,44 @@
   .confirm-booking .btn-confirm-booking-1 {
     font-size: 14px;
     padding: 8px;
+  }
+  .container-sumary .wrap-title .title {
+    font-size: 16px;
+    margin-bottom: 4px;
+  }
+  .top-item-sumary .user-book .left-info-sum .name {
+    padding: 4px 4px 4px 0px;
+    font-size: 12px;
+  }
+  .top-item-sumary {
+    padding: 0px;
+  }
+  .top-item-sumary .user-book .left-info-sum .name {
+    font-size: 12px;
+    padding-left: 2px;
+    padding-top: 14px;
+  }
+  .top-item-sumary .user-book .left-info-sum h2 svg {
+    width: 12px;
+    height: 12px;
+    left: 2px;
+  }
+  .top-item-sumary .user-book .left-info-sum .name::after {
+    width: 1px;
+    height: 32%;
+    top: 16px;
+  }
+  .top-item-sumary .user-book .right-info-sum {
+    font-size: 12px;
+    justify-content: space-around;
+  }
+  .item-right-info.first::after,
+  .item-right-info.second::after {
+    display: none;
+    width: 1px;
+  }
+  .wrap-cash-base.addon {
+    width: 30%;
+    padding-right: 6px;
   }
 }

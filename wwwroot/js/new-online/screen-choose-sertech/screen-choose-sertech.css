@@ -820,7 +820,11 @@
   }
   .wrap-search-ser {
     width: 94%;
+    height: 40px;
     padding: 0px 8px;
+  }
+  .wrap-search-ser .btn-search-toggle {
+    height: 40px;
   }
   .wrap-search-ser.active .input-search-ser {
     width: 100%;
@@ -837,13 +841,15 @@
     height: 36px;
     border: 1px solid #c9c9c9;
   }
-  .item-cate.active {
+  .item-cate.active,
+  .item-ftcate.active {
     background-color: transparent;
     border: none;
     position: relative;
   }
   /* mặc định: ẩn gạch */
-  .item-cate::after {
+  .item-cate::after,
+  .item-ftcate::after {
     content: "";
     position: absolute;
     bottom: 0px;
@@ -855,7 +861,8 @@
     background-color: var(--bs-main);
     transition: width 0.3s ease;
   }
-  .item-cate.active::after {
+  .item-cate.active::after,
+  .item-ftcate.active::after {
     width: 100%;
   }
   .item-cate.active .name-cate,
@@ -874,14 +881,10 @@
     background: #ecf8fb;
     color: var(--bs-main);
   }
-  .choose-services {
-    margin: 12px 0px 6px;
-    height: 116px;
-  }
   .list-services {
     grid-template-columns: repeat(2, 1fr);
     padding: 8px;
-    margin-top: 4px;
+    margin-top: 0px;
   }
   .service-title {
     font: normal normal 600 var(--s-13);
@@ -903,8 +906,12 @@
   .wrap-ftservice-card {
     height: 100px;
   }
+  .wrap-ftservice-card {
+    padding: 8px 0px;
+  }
   .service-card {
-    padding: 0px 0px 0px 16px;
+    padding: 0px 0px 0px 12px;
+    gap: 0px;
   }
   .dis-addOn {
     width: 8px;
@@ -933,5 +940,28 @@
   }
   .popup-container-template {
     padding: 32px 12px;
+  }
+  .info-icon.has-addon {
+    bottom: -4px;
+  }
+  .dir-btn-back-ser,
+  .dir-btn-back-time,
+  .dir-btn-next-ser,
+  .dir-btn-next-time {
+    padding: 8px 16px;
+  }
+  .list-pesers3 {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    padding: 8px;
+    margin-top: 0px;
+    grid-auto-rows: max-content;
+    gap: 8px;
+    overflow-y: auto;
+    flex: 1 0 0;
+  }
+  .info-icon.serfortech {
+    bottom: -4px;
   }
 }

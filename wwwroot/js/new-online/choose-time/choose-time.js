@@ -310,6 +310,7 @@ export function renderFooterChooseTime() {
   const isNext = user.selectedTimeSlot ? true : false;
   // kiểm tra có slot nào active không
   const hasAnySlotActive = $(".time-slot-1.active").length > 0;
+  const isMobile = $(window).width() <= 786;
 
   const backBtn = `
     <button id="btn-back-choose-time" class="dir-btn-back-time text-uppercase">
@@ -325,7 +326,9 @@ export function renderFooterChooseTime() {
       }">Next</button>
       ${
         !hasAnySlotActive
-          ? `<div class="tip-text">Please come back and choose another technician for a suitable time or choose a new date. </div>`
+          ? `<div class="tip-text ${
+              isMobile ? "mobile" : ""
+            }">Please come back and choose another technician for a suitable time or choose a new date. </div>`
           : ""
       }
     </div>

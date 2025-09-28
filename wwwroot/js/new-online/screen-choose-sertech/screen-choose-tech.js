@@ -215,6 +215,9 @@ export async function ScreenChooseTech() {
 
   const htmlHeaderSalon = HeaderSalon(salonChoosing);
   const $wrapDirBtn = renderFooterTech_PageChooseTech();
+
+  const isMobile = $(window).width() <= 768;
+
   const htmlScreenChooseTechs = `
         <div class="wrap-content-salon">
              <div class="header-sertech">
@@ -244,14 +247,18 @@ export async function ScreenChooseTech() {
                             <path d="M12.1648 7.64548L13.2748 6.52142C12.3983 5.40669 11.7267 5.0907 11.3755 5.20937C9.15854 5.9586 8.76585 8.47073 8.74778 8.55941C8.6055 9.25781 8.37724 12.0699 8.58767 12.9955C9.23862 15.8588 14.1562 16.0523 14.4134 12.6727L14.3606 9.64588C13.8269 10.9952 13.6333 11.1888 13.2116 11.3689C11.3358 11.8818 10.4727 10.1336 10.4366 9.50017C10.3593 8.14428 11.5396 8.05763 12.1648 7.64548Z" stroke="black" stroke-width="0.1"/>
                             <path d="M15.0875 12.9955C13.3642 17.9122 8.2904 15.9377 7.79359 12.939C7.78663 12.8969 7.53951 13.1765 7.37227 14.5207C7.35493 14.6601 7.22157 21.0383 7.37227 21.788C7.52296 22.5377 8.13672 22.7443 8.30154 22.7443C8.55859 22.7443 14.0692 22.7752 14.5113 22.7443C15.383 22.625 15.4922 22.0859 15.5251 21.788C15.5492 21.5691 15.6114 17.3499 15.5469 15.2656C15.5469 14.2266 15.125 12.9453 15.0875 12.9955Z" stroke="black" stroke-width="0.1"/>
                           </svg>
-                          SERVICE - I want to choose a service
+                          SERVICE - ${
+                            !isMobile ? "- I want to choose a service" : ""
+                          }
                         </button>
                         <button id="flow-tech" class="btn-service active" data-type="staff">
                         <i class="fa-solid fa-user-plus"></i>
-                        STAFF - I want to choose a technician
+                        STAFF - ${
+                          !isMobile ? "- I want to choose a technician" : ""
+                        }
                         </button>
                     </div>
-                    <div class="wrap-search-tech mt-3">
+                    <div class="wrap-search-tech ${isMobile ? "mt-0" : "mt-3"}">
                         <div class="container-search-tech">
                           <input id="input-search-tech-1" type="text" class="input-search-tech" placeholder="Search by name..."/>
                           <button class="btn-search-toggle"><i class="fa-solid fa-magnifying-glass"></i></button>
@@ -337,14 +344,7 @@ $(document).ready(async function () {
         ? store.listStaffUser
         : await store.getListUserStaff();
 
-    // Lặp qua tất cả staff trong danh sách và re-render (để trạng thái chính xác)
-    listStaff.forEach((staff) => {
-      const $staffEl = $(`.item-tech-sctpage[data-id="${staff.employeeID}"]`);
-      if ($staffEl.length) {
-        const newHtml = renderItemTech(staff);
-        $staffEl.replaceWith(newHtml);
-      }
-    });
+    renderListStaff_PageChooseTech(listStaff);
 
     // Render lại footer (cập nhật nút Next nếu cần)
     renderFooterTech_PageChooseTech();
