@@ -659,6 +659,7 @@
     width: 100%;
   }
   .list-peser {
+    padding: 8px;
     overflow-y: hidden;
     overflow-x: scroll;
     flex-direction: row;
@@ -691,7 +692,7 @@
     font: normal normal 500 var(--s-10);
   }
   .wrap-sametime-op {
-    padding: 6px 8px 0px 0px;
+    padding: 6px 8px 0px 8px;
   }
   .mbs-serfortech {
     padding-left: 8px;
