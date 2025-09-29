@@ -544,7 +544,11 @@ export function renderSumary(dataBooking, listDataService) {
                       Just to confirm, would you like me to process this payment now?
                     </div>
                   </div>
-                  <div data-id=${cardChoosing?.id} class="payment-method-item">
+                  ${
+                    cardChoosing
+                      ? `<div data-id=${
+                          cardChoosing?.id
+                        } class="payment-method-item">
                     <div class="wrap-name-method">
                       <div class=""wrap-img-method>
                       </div>
@@ -562,7 +566,9 @@ export function renderSumary(dataBooking, listDataService) {
                         <path d="M11.75 8L8.75 11L7.25 9.5M9.5 16.25C5.77208 16.25 2.75 13.2279 2.75 9.5C2.75 5.77208 5.77208 2.75 9.5 2.75C13.2279 2.75 16.25 5.77208 16.25 9.5C16.25 13.2279 13.2279 16.25 9.5 16.25Z" stroke="#3BA755" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                       </svg>
                     </div>
-                  </div>
+                  </div>`
+                      : ""
+                  }
                   <div class="confirm-booking ${allSelected ? "" : "not-ser"}">
                       ${backBtn}
                       <button id="add-guest" class="btn-add-guest ${

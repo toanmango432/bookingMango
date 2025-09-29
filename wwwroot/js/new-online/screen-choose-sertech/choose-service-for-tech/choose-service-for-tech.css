@@ -370,4 +370,30 @@
   .wrap-search-ftser .input-search-ftser {
     width: 100%;
   }
+  .techd-item::after {
+    content: none;
+  }
+
+  .techd-item.guide-item::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%) scaleX(0);
+    opacity: 0;
+    transition: transform 0.5s ease, opacity 0.5s ease;
+    right: -8px;
+    border-top: 3px solid transparent;
+    border-bottom: 3px solid transparent;
+    border-left: 4px solid #333;
+  }
+
+  .techd-item.active.guide-item::after {
+    transform: translateY(-50%) scaleX(1); /* bung ra */
+    opacity: 1;
+    animation: arrowShake 1.2s ease-in-out 0.2s 2;
+  }
+  /* Ẩn mũi tên cho item cuối cùng */
+  .list-petech .techd-item.active.guide-item:last-child::after {
+    content: none;
+  }
 }

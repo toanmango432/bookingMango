@@ -228,7 +228,10 @@ export function renderListPeTech_PageChooseServiceTech(forceChoose = false) {
     }
     if (!isValidSameTime) {
       isSameTime = false;
-      salonStore.setState({ ...store, isSameTime: isSameTime });
+      salonStore.setState((prev) => ({
+        ...prev,
+        isSameTime: isSameTime,
+      }));
     }
     const htmlSameTime = `${
       totalSelected >= 2
@@ -688,6 +691,12 @@ $(document).ready(async function () {
     renderFooterService();
     renderListPeTech_PageChooseServiceTech();
     Cart();
+
+    // Chọn xong item này show mũi tên sang item kia trên mobile
+    if (isMobile) {
+      const $techdItemActive = $(".techd-item.active");
+      $techdItemActive.addClass("guide-item");
+    }
   });
 
   $(document).on("click", ".techd-item", function () {

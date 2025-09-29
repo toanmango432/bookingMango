@@ -8,7 +8,7 @@ export function renderBasePopup(
   persistent = false,
   height = 620,
   width = 560,
-  cusStyle
+  cusStyle = ""
 ) {
   // Clear popup cũ nếu có
   $(".overlay-screen").remove();

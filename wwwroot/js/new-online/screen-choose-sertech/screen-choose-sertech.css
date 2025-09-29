@@ -928,15 +928,15 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08), 0 4px 6px rgba(0, 0, 0, 0.06);
   }
   .content-choose-sertech .wrap-calendar-time {
-    height: 420px;
+    height: 480px;
     overflow-y: scroll;
     overflow-x: hidden;
-    padding: 8px;
+    padding: 0px 8px;
   }
   .content-choose-sertech .container-choose-time {
     height: 1200px;
     flex-direction: column;
-    gap: 18px;
+    gap: 8px;
   }
   .popup-container-template {
     padding: 32px 12px;

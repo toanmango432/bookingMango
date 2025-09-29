@@ -180,6 +180,7 @@
 @media (max-width: 768px) {
   .list-salon {
     padding: 20px;
+    gap: 16px;
   }
   .list-salon.mbs8 {
     display: flex;
@@ -188,7 +189,7 @@
     justify-content: center;
     align-items: flex-end;
     align-content: start;
-    gap: 32px;
+    gap: 16px;
     flex-shrink: 0;
     flex-wrap: wrap;
     background: #eceef0;

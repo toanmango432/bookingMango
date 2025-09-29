@@ -383,9 +383,10 @@
     position: relative;
     padding: 8px;
     align-items: center;
+    border-radius: 8px;
   }
   .item-tech .wrap-image {
-    height: 80px;
+    height: 60px;
     border: 1px solid #e0e0e0;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
   }

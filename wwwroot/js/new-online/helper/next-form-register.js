@@ -27,7 +27,7 @@ export function nextFormRegister(actionCur) {
   let height = 762;
   let width = 886;
   if (isMobile) {
-    height = 800;
+    height = "fit-content";
     width = "100%";
   }
   const html = renderBasePopup(htmlFormRegis, persistent, height, width);

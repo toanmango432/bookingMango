@@ -373,6 +373,7 @@ export const salonStore = {
     let isConfirm = "0";
     let isPolicy = false;
     let storeInfo = null;
+    let OBLogin = "";
 
     const getDataSetting = async () => {
       const store = salonStore.getState();
@@ -405,6 +406,7 @@ export const salonStore = {
           isConfirm: resSetting?.data?.isConfirm == "0" ? "1" : "0",
           isPolicy: resSetting?.data?.isPolicy === "1" || false,
           storeInfo: resSetting?.data?.StoreInfo || null,
+          OBLogin: resSetting?.data?.OBLogin || "2",
         });
         return resSetting;
       } catch (e) {
@@ -470,6 +472,7 @@ export const salonStore = {
       isConfirm,
       isPolicy,
       storeInfo,
+      OBLogin,
       //
       popupFlowCountdownInterval,
       // slots time

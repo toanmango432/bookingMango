@@ -219,7 +219,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding-top: 24px;
+  margin-top: 24px 0 12px 0px;
 }
 
 .text-choose-time .wrap-title {
@@ -573,9 +573,8 @@
   border: 1px solid var(--bs-main);
   background: #e6eee8;
   flex: 1 0 0;
-
   color: var(--text-color-primary);
-  font: normal normal 700 var(--s-20);
+  font: normal normal 600 var(--s-20);
 }
 
 .button-container .btn-next-policies-1 {
@@ -1500,7 +1499,7 @@ select {
   }
   .calendar {
     width: 100%;
-    padding: 12px;
+    padding: 6px 12px;
   }
   .container-choose-time .line-ca-ti {
     width: 100%;
@@ -1534,19 +1533,27 @@ select {
     font: normal normal 500 var(--s-16);
   }
   .day {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    padding: 4px;
     font: normal normal 500 var(--s-16);
   }
   .title-appointment h2 {
     font: normal normal 500 var(--s-16);
   }
   .appointment-input {
-    font: normal normal 500 var(--s-14);
+    padding: 8px 16px;
+    font-size: 13px;
+    border-radius: 8px;
   }
   .consent-container label {
-    font: normal normal 500 var(--s-16);
+    font: normal normal 500 var(--s-13);
   }
   .popup-wrap-verify-emailPhone {
     padding: 24px 16px 16px 16px;
+    border-radius: 12px;
+    gap: 12px;
   }
   .title-payment {
     font: normal normal 600 var(--s-16);
@@ -1558,7 +1565,8 @@ select {
     font: normal normal 500 var(--s-16);
   }
   .payment-method-item {
-    height: 48px;
+    height: 42px;
+    border-radius: 8px;
   }
   .sub-deposit-1r {
     font: normal normal 500 var(--s-16);
@@ -1571,13 +1579,142 @@ select {
   }
   .clear-icon {
     height: 24px;
-    top: 23px;
+    top: 20px;
+    right: 12px;
   }
   .wrap-name-method {
     gap: 0px;
   }
   .wrap-popup-payment-methods,
   .wrap-popup-policies {
+    width: 100%;
     padding: 24px 16px 16px 16px;
+    border-radius: 12px;
+  }
+  .wrap-help-support .contact-to {
+    padding: 4px 12px;
+  }
+
+  .wrap-help-support {
+    padding-bottom: 0px;
+  }
+  .wrap-help-support .contact-to .phone-contact {
+    font: normal normal 600 var(--s-14);
+  }
+  .slot-group {
+    gap: 8px;
+  }
+  .text-choose-time .wrap-title .title {
+    font-size: 14px;
+  }
+  .text-choose-time {
+    margin: 12px 0px 6px 0px;
+  }
+  .text-choose-time .desc {
+    font-size: 13px;
+  }
+  .calendar-header {
+    margin-bottom: 8px;
+  }
+  .calendar-header button {
+    height: 32px;
+    width: 32px;
+  }
+  .btn-next-emailPhone-1,
+  .button-container .btn-back-policies-1,
+  .button-container .btn-next-policies-1,
+  .btn-back-payment-1,
+  .btn-next-payment-1,
+  .btn-back-add-card-1,
+  .btn-add-card-1 {
+    border-radius: 8px;
+    padding: 6px 20px;
+  }
+  .payment-summary {
+    padding: 8px 16px;
+    height: 64px;
+    gap: 0px;
+    border-radius: 8px;
+  }
+  .payment-methods-list {
+    padding-right: 4px;
+  }
+  .wrap-popup-payment-methods .add-new-card-btn-1 {
+    font-size: 13px;
+  }
+  .wrap-popup-payment-methods {
+    gap: 8px;
+  }
+  .title-register {
+    font-size: 18px;
+  }
+  .wrap-popup-register {
+    padding: 24px 16px 16px 16px;
+    gap: 12px;
+    border-radius: 12px;
+  }
+  .pa-intro-register p {
+    font-size: 12px;
+    line-height: 1.2;
+  }
+  .form-input-phone,
+  .form-input-email,
+  .form-input-zipcode {
+    gap: 4px;
+  }
+  .form-group {
+    gap: 4px;
+  }
+  .form-group input {
+    font-size: 13px;
+    border-radius: 8px;
+  }
+  .error-message {
+    font-size: 11px;
+  }
+  .btn-back-verify-1,
+  .btn-back-verify-register-1 {
+    padding: 8px 20px;
+  }
+  .form-input-fullname {
+    flex-direction: column;
+    gap: 4px;
+  }
+  .form-input-firstname-register,
+  .form-input-lastname-register {
+    width: 100%;
+  }
+  .title-policies {
+    font-size: 16px;
+  }
+  .sub-deposit-2l {
+    font-size: 24px;
+  }
+  .wrap-popup-add-card {
+    gap: 8px;
+    padding: 24px 16px 16px 16px;
+    border-radius: 12px;
+  }
+  .subtitle-card-new .subtitle {
+    margin-bottom: 0px;
+    font-size: 16px;
+  }
+
+  .form-group-card-new label,
+  .group-card-ex label,
+  .group-card-ccv label {
+    font-size: 14px;
+  }
+  .form-group-card-new {
+    width: 98%;
+    gap: 4px;
+    margin-left: 0px;
+  }
+  .form-group-card-new input,
+  .group-card-ex input,
+  .group-card-ccv input {
+    padding: 8px 16px;
+    font-size: 13px;
+    border-radius: 8px;
   }
 }

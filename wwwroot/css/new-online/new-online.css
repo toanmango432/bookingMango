@@ -242,8 +242,11 @@
     padding: 16px;
   }
   .wrap-newonline .btn-closepopup {
-    right: 7px;
-    top: 9px;
+    height: 36px;
+    width: 36px;
+    right: 2px;
+    top: 16px;
+    padding: 8px;
   }
   .wrap-name-method {
     gap: 0px;

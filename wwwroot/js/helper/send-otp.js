@@ -164,7 +164,7 @@ export async function sendOTP(inputValue, type) {
         let height = 768;
         let width = 886;
         if (isMobile) {
-          height = 700;
+          height = "fit-content";
           width = "100%";
         }
         const persistent = true;
@@ -329,7 +329,7 @@ export async function sendOTP(inputValue, type) {
         let height = 768;
         let width = 886;
         if (isMobile) {
-          height = 700;
+          height = "fit-content";
           width = "100%";
         }
         const persistent = true;

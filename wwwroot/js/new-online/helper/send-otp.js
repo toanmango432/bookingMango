@@ -189,7 +189,7 @@ export async function sendOTP(inputValue, type) {
           let height = 768;
           let width = 886;
           if (isMobile) {
-            height = 700;
+            height = "fit-content";
             width = "100%";
           }
           const persistent = true;
@@ -216,13 +216,14 @@ export async function sendOTP(inputValue, type) {
               renderPaymentMethodsForm(newDataBooking);
             let height = 776;
             let width = 886;
+            let persistent = true;
             if (isMobile) {
-              height = 676;
+              height = "fit-content";
               width = "100%";
             }
             const html = renderBasePopup(
               contentPaymentMethod,
-              false,
+              persistent,
               height,
               width
             );
@@ -400,7 +401,7 @@ export async function sendOTP(inputValue, type) {
           let height = 768;
           let width = 886;
           if (isMobile) {
-            height = 700;
+            height = "fit-content";
             width = "100%";
           }
           const persistent = true;
@@ -427,13 +428,14 @@ export async function sendOTP(inputValue, type) {
               renderPaymentMethodsForm(newDataBooking);
             let height = 776;
             let width = 886;
+            let persistent = true;
             if (isMobile) {
-              height = 676;
+              height = "fit-content";
               width = "100%";
             }
             const html = renderBasePopup(
               contentPaymentMethod,
-              false,
+              persistent,
               height,
               width
             );

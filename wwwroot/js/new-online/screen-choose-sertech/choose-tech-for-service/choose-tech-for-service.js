@@ -327,7 +327,7 @@ export async function ChooseTechForServices() {
                     </div>
                 </div>
                 <div class="list-techs"></div>
-                <div class="wrap-choose-multitech">
+                <div class="wrap-choose-multitech mt-0">
                 </div>
                 <div class="footer-dir">
                   ${$wrapDirBtn}
@@ -346,6 +346,7 @@ export async function ChooseTechForServices() {
   });
   const isBookMultipleTech = store.isBookMultipleTech;
   if (isChooseMultiSer && isBookMultipleTech) {
+    $wrapChooseMultitech.removeClass("mt-0");
     const htmlChooseMulti = `
       <div class="choose-multitech">
         <span class="icon-c-multitech">

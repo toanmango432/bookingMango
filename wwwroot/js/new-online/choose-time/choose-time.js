@@ -948,7 +948,7 @@ $(document).ready(async function () {
       let height = 776;
       let width = 886;
       if (isMobile) {
-        height = "96%";
+        height = "fit-content";
         width = "100%";
       }
       const htmlAddNewMethod = renderAddNewMethod();
@@ -968,7 +968,8 @@ $(document).ready(async function () {
       let height = 620;
       let width = 560;
       if (isMobile) {
-        height = 620;
+        persistent = true;
+        height = "fit-content";
         width = "100%";
       }
       const htmlPaymentMethodsForm = renderPaymentMethodsForm(dataBooking);
@@ -994,12 +995,19 @@ $(document).ready(async function () {
         renderVerifyEmailPhoneContent(phoneEmailOrNull);
       let height = 620;
       let width = 560;
+      let persistent = false;
       if (isMobile) {
-        height = 620;
+        persistent = true;
+        height = "fit-content";
         width = "100%";
       }
       // const persistent = true;
-      const html = renderBasePopup(htmlVerifyEmailPhone, false, height, width);
+      const html = renderBasePopup(
+        htmlVerifyEmailPhone,
+        persistent,
+        height,
+        width
+      );
       $wrapNewOnline.append(html);
       setTimeout(() => {
         $(".overlay-screen").addClass("show");
@@ -1021,12 +1029,19 @@ $(document).ready(async function () {
     const htmlVerifyEmailPhone = renderVerifyEmailPhoneContent();
     let height = 620;
     let width = 560;
+    let persistent = false;
     if (isMobile) {
-      height = 620;
+      persistent = true;
+      height = "fit-content";
       width = "100%";
     }
     // const persistent = true;
-    const html = renderBasePopup(htmlVerifyEmailPhone, false, height, width);
+    const html = renderBasePopup(
+      htmlVerifyEmailPhone,
+      persistent,
+      height,
+      width
+    );
     $wrapNewOnline.append(html);
     setTimeout(() => {
       $(".overlay-screen").addClass("show");
@@ -1046,12 +1061,19 @@ $(document).ready(async function () {
       renderVerifyEmailPhoneContent(phoneEmailOrNull);
     let height = 620;
     let width = 560;
+    let persistent = false;
     if (isMobile) {
-      height = 620;
+      persistent = true;
+      height = "fit-content";
       width = "100%";
     }
     // const persistent = true;
-    const html = renderBasePopup(htmlVerifyEmailPhone, false, height, width);
+    const html = renderBasePopup(
+      htmlVerifyEmailPhone,
+      persistent,
+      height,
+      width
+    );
     $wrapNewOnline.append(html);
     setTimeout(() => {
       $(".overlay-screen").addClass("show");
@@ -1066,7 +1088,7 @@ $(document).ready(async function () {
     let height = 768;
     let width = 886;
     if (isMobile) {
-      height = 700;
+      height = "fit-content";
       width = "100%";
     }
     const persistent = true;
@@ -1329,11 +1351,17 @@ $(document).ready(async function () {
       const contentPaymentMethod = renderPaymentMethodsForm(dataBooking);
       let height = 776;
       let width = 886;
+      let persistent = true;
       if (isMobile) {
-        height = 676;
+        height = "fit-content";
         width = "100%";
       }
-      const html = renderBasePopup(contentPaymentMethod, false, height, width);
+      const html = renderBasePopup(
+        contentPaymentMethod,
+        persistent,
+        height,
+        width
+      );
       $wrapNewOnline.append(html);
       setTimeout(() => {
         $(".overlay-screen").addClass("show");
@@ -1378,12 +1406,13 @@ $(document).ready(async function () {
     const dataBooking = store.dataBooking;
     let height = 776;
     let width = 886;
+    let persistent = true;
     if (isMobile) {
-      height = 676;
+      height = "fit-content";
       width = "100%";
     }
     const htmlPaymentMethod = renderPaymentMethodsForm(dataBooking);
-    const html = renderBasePopup(htmlPaymentMethod, false, height, width);
+    const html = renderBasePopup(htmlPaymentMethod, persistent, height, width);
 
     $wrapNewOnline.append(html);
     setTimeout(() => {
@@ -1595,14 +1624,16 @@ $(document).ready(async function () {
           renderVerifyEmailPhoneContent(phoneEmailOrNull);
         let height = 620;
         let width = 560;
+        let persistent = false;
         if (isMobile) {
-          height = 620;
+          persistent = true;
+          height = "fit-content";
           width = "100%";
         }
         // const persistent = true;
         const html = renderBasePopup(
           htmlVerifyEmailPhone,
-          false,
+          persistent,
           height,
           width
         );
@@ -1860,7 +1891,7 @@ $(document).ready(async function () {
         let height = 768;
         let width = 886;
         if (isMobile) {
-          height = 700;
+          height = "fit-content";
           width = "100%";
         }
         const persistent = true;
@@ -1922,12 +1953,19 @@ $(document).ready(async function () {
       renderVerifyEmailPhoneContent(phoneEmailOrNull);
     let height = 620;
     let width = 560;
+    let persistent = false;
     if (isMobile) {
-      height = 620;
+      persistent = true;
+      height = "fit-content";
       width = "100%";
     }
     // const persistent = true;
-    const html = renderBasePopup(htmlVerifyEmailPhone, false, height, width);
+    const html = renderBasePopup(
+      htmlVerifyEmailPhone,
+      persistent,
+      height,
+      width
+    );
     $wrapNewOnline.append(html);
     setTimeout(() => {
       $(".overlay-screen").addClass("show");
@@ -2128,6 +2166,7 @@ $(document).ready(async function () {
 
           let height = 776;
           let width = 886;
+          let persistent = true;
           if (isMobile) {
             height = 676;
             width = "100%";
@@ -2135,7 +2174,7 @@ $(document).ready(async function () {
 
           const html = renderBasePopup(
             contentPaymentMethod,
-            false,
+            persistent,
             height,
             width
           );

@@ -695,6 +695,9 @@
     padding: 6px 8px 0px 8px;
   }
   .mbs-serfortech {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
     padding-left: 8px;
   }
   .wrap-sametime-op .guide-sametime {
