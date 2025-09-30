@@ -591,6 +591,7 @@ $(document).ready(async function () {
     const listStaffUser = store.listStaffUser;
     let itemTechChoosing = store.itemTechChoosing;
     let dataService = store.dataServices;
+    const dataCustomerSerOfTech = store.dataCustomerSerOfTech;
 
     const cate = dataService.find((c) => c.item.id === cateId);
     const itemService = cate?.item.listItem.find((s) => s.id === serviceId);
@@ -640,7 +641,7 @@ $(document).ready(async function () {
         );
       } else if (!existingForTech) {
         // Nếu service đã được chọn bởi tech khác thì add thêm service cho tech active
-        cateInUser.itemService.push({
+        const newService = {
           serviceInstanceId,
           idItemService: itemService.id,
           title: itemService.title,
@@ -652,7 +653,19 @@ $(document).ready(async function () {
             nickName: techActive.nickName,
           },
           optionals: [],
-        });
+        };
+        // --- check custom duration ---
+        const customSrv = dataCustomerSerOfTech.find(
+          (d) =>
+            d.employeeID === techActive.employeeID &&
+            d.itemID === itemService.id &&
+            d.duration > 0
+        );
+        if (customSrv) {
+          newService.duration = customSrv.duration;
+        }
+
+        cateInUser.itemService.push(newService);
         // mở AddOn cho tech mới này
         if (itemService.listOptionAddOn?.length) {
           renderAddonPanel(itemService, techActive.employeeID);
@@ -663,7 +676,7 @@ $(document).ready(async function () {
       }
     } else {
       // Service chưa có -> thêm mới cho tech active
-      cateInUser.itemService.push({
+      const newService = {
         serviceInstanceId,
         idItemService: itemService.id,
         title: itemService.title,
@@ -675,7 +688,19 @@ $(document).ready(async function () {
           nickName: techActive.nickName,
         },
         optionals: [],
-      });
+      };
+      // --- check custom duration ---
+      const customSrv = dataCustomerSerOfTech.find(
+        (d) =>
+          d.employeeID === techActive.employeeID &&
+          d.itemID === itemService.id &&
+          d.duration > 0
+      );
+      if (customSrv) {
+        newService.duration = customSrv.duration;
+      }
+
+      cateInUser.itemService.push(newService);
 
       // Nếu có AddOn, chỗ này add on cho tech đầu tiên
       if (itemService.listOptionAddOn?.length) {

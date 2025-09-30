@@ -11,7 +11,7 @@ export function renderAddGuestContent(emailOrPhone, colorPrimary) {
             <span>Please enter guest phone number</span>
           </div>
           <div class="container-addguest">
-            <input type="text" id="addguest-input" class="appointment-input" value="${
+            <input type="text" id="addguest-input" class="appointment-input-1" value="${
               emailOrPhone ? emailOrPhone : ""
             }" placeholder="Enter phone number">
             <span class="clear-icon-addguest">

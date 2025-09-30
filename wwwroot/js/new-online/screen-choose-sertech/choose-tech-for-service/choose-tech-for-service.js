@@ -425,7 +425,6 @@ $(document).ready(async function () {
   });
 
   // Xử lý chọn staff tại đây, dù có setting multitech hay không thì
-  // cũng gán tất cả service đã chọn bằng staff được chọn
   $(document).on("click", ".item-tech-ctpage", async function () {
     const $this = $(this);
     if ($this.hasClass("not-ser")) {
@@ -433,6 +432,9 @@ $(document).ready(async function () {
       return;
     }
     const store = salonStore.getState();
+    const dataServices = store.dataServices;
+    const dataCustomerSerOfTech = store.dataCustomerSerOfTech;
+
     const listStaffUser = store.listStaffUser;
     const dataBooking = store.dataBooking;
     const user = dataBooking.users.find((u) => u.isChoosing);
@@ -444,6 +446,50 @@ $(document).ready(async function () {
     user.services.forEach((cate) => {
       cate.itemService.forEach((srv) => {
         srv.selectedStaff = inforStaff;
+
+        // kiểm tra duration custom cho service chính
+        const customSrv = dataCustomerSerOfTech.find(
+          (d) =>
+            d.employeeID == inforStaff.employeeID &&
+            d.itemID == srv.idItemService &&
+            d.duration > 0
+        );
+        if (customSrv) {
+          srv.duration = customSrv.duration;
+        }
+        // kiểm tra duration custom cho addOn (optionals)
+        if (srv.optionals && srv.optionals.length > 0) {
+          srv.optionals.forEach((opt) => {
+            const customOpt = dataCustomerSerOfTech.find(
+              (d) =>
+                d.employeeID == inforStaff.employeeID &&
+                d.itemID == opt.id &&
+                d.duration > 0
+            );
+            if (customOpt) {
+              console.log("check 2:", customOpt);
+
+              opt.timedura = customOpt.duration;
+            } else {
+              console.log("check 1:");
+              // fallback default timedura từ dataServices
+              const cateSrv = dataServices.find((c) =>
+                c.item.listItem.some((s) =>
+                  s.listOptionAddOn.some((o) => o.id == opt.id)
+                )
+              );
+              const parentSrv = cateSrv?.item.listItem.find((s) =>
+                s.listOptionAddOn.some((o) => o.id == opt.id)
+              );
+              const defaultOpt = parentSrv?.listOptionAddOn.find(
+                (o) => o.id == opt.id
+              );
+              if (defaultOpt) {
+                opt.timedura = defaultOpt.timedura; // default duration addOn
+              }
+            }
+          });
+        }
       });
     });
 

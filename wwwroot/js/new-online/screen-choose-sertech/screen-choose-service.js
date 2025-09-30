@@ -738,6 +738,7 @@ $(document).ready(async function () {
     const store = salonStore.getState();
     const dataServices = store.dataServices;
     const dataBooking = store.dataBooking;
+    const dataCustomerSerOfTech = store.dataCustomerSerOfTech;
 
     const user = dataBooking.users.find((u) => u.isChoosing);
     if (!user) return;
@@ -763,6 +764,7 @@ $(document).ready(async function () {
     }
     if (!currentService) return;
     // toggle chọn
+    console.log("check");
     if ($item.hasClass("selected")) {
       $item.removeClass("selected");
       currentService.optionals = currentService.optionals.filter(
@@ -771,16 +773,32 @@ $(document).ready(async function () {
     } else {
       $item.addClass("selected");
       const opt = findAddonById(optId, dataServices);
+      // --- check custom duration cho AddOn ---
+      const instanceId = $this.closest(".addon-list").data("instance-id");
+      let employeeID = null;
+      if (instanceId && instanceId.includes("-")) {
+        employeeID = instanceId.split("-")[1]; // lấy phần sau dấu -
+      }
+
+      if (employeeID) {
+        const customOpt = dataCustomerSerOfTech.find(
+          (d) =>
+            d.employeeID == employeeID && d.itemID == optId && d.duration > 0
+        );
+        if (customOpt) {
+          opt.timedura = customOpt.duration;
+        }
+      }
+
       currentService.optionals.push(opt);
     }
-
+    console.log("databooking: ", dataBooking);
     salonStore.setState({
       ...store,
-      dataBooking: store.dataBooking,
+      dataBooking: dataBooking,
     });
     // Tuỳ pageCurrent mà render lại component cần thiết
     const pageCurrent = store.pageCurrent;
-    console.log("PageCur: ", pageCurrent);
     if (pageCurrent === PageCurrent.CHOOSE_SERVICE) {
       // Load lại service khi thay đổi addOn
       let cateId = $(".item-cate.active").data("id");

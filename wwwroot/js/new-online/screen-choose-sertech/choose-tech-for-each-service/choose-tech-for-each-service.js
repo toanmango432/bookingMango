@@ -679,7 +679,6 @@ $(document).ready(async function () {
   });
 
   // Xử lý chọn staff tại đây, setting multitech thì cho phép chọn nhiều tech cho các service, nếu không thì xử lý chọn 1 tech cho tất cả service
-  // cũng gán tất cả service đã chọn bằng staff được chọn
   $(document).on("click", ".item-tech-pepage", async function () {
     const $this = $(this);
     if ($this.hasClass("not-ser")) {
@@ -687,6 +686,8 @@ $(document).ready(async function () {
       return;
     }
     const store = salonStore.getState();
+    const dataCustomerSerOfTech = store.dataCustomerSerOfTech;
+
     const listStaffUser =
       store.listStaffUser.length > 0
         ? store.listStaffUser
@@ -718,6 +719,35 @@ $(document).ready(async function () {
       );
     if (itemServiceSelected) {
       itemServiceSelected.selectedStaff = staffSelected;
+
+      // Check duration custom cho service chính
+      const customSrv = dataCustomerSerOfTech.find(
+        (d) =>
+          d.employeeID == staffSelected.employeeID &&
+          d.itemID == itemServiceSelected.idItemService &&
+          d.duration > 0
+      );
+      if (customSrv) {
+        itemServiceSelected.duration = customSrv.duration;
+      }
+
+      // Check duration custom cho optionals (addOn)
+      if (
+        itemServiceSelected.optionals &&
+        itemServiceSelected.optionals.length > 0
+      ) {
+        itemServiceSelected.optionals.forEach((opt) => {
+          const customOpt = dataCustomerSerOfTech.find(
+            (d) =>
+              d.employeeID == staffSelected.employeeID &&
+              d.itemID == opt.id &&
+              d.duration > 0
+          );
+          if (customOpt) {
+            opt.timedura = customOpt.duration;
+          }
+        });
+      }
     }
     // Cập nhật store
     salonStore.setState({ ...store, dataBooking: { ...dataBooking } });

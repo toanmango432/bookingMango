@@ -4,10 +4,22 @@ export function renderVerifyEmailPhoneContent(emailOrPhone, colorPrimary) {
   const dataBooking = store.dataBooking;
   const owner = dataBooking.users[0];
   const cardChoosing = dataBooking.cardNumber.find((card) => card.isChoosing);
+  const OBLogin = store.OBLogin;
 
   const isSkipVerify =
     (owner.phoneNumber || owner.email) && cardChoosing ? true : false;
 
+  const textTitle = {
+    0: "Please enter your cell phone number to make an appointment",
+    1: "Please enter your email to make an appointment",
+    2: "Please enter your cell phone number or email to make an appointment",
+  };
+
+  const textPlaceholder = {
+    0: "Enter your phone number",
+    1: "Enter your email address",
+    2: "Enter phone number or email address",
+  };
   return `
         <div class="popup-wrap-verify-emailPhone"
           style="
@@ -15,12 +27,12 @@ export function renderVerifyEmailPhoneContent(emailOrPhone, colorPrimary) {
           "
         >
           <div class="title-appointment">
-            <h2>Please enter your cell phone number or email to make an appointment</h2>
+            <h2>${textTitle[OBLogin || 0]}</h2>
           </div>
           <div class="container-verify-emailPhone">
-            <input type="text" id="appointment-input" class="appointment-input" value="${
+            <input type="text" id="appointment-input-1" class="appointment-input-1" value="${
               emailOrPhone ? formatPhoneNumber(emailOrPhone) : ""
-            }" placeholder="Enter phone number or email">
+            }" placeholder="${textPlaceholder[OBLogin || "0"]}">
             <span class="clear-icon">
               <i class="fa-solid fa-arrow-left"></i>
             </span>

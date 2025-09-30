@@ -56,10 +56,34 @@ export const salonStore = {
         const resSalon = await fetchAPI.get(
           `/api/store/getliststorechain?RVCNo=${newRVCNo}`
         );
-        salonStore.setState({ ...store, allSalon: resSalon });
-        return resSalon;
+        // lọc isBooKOnline
+        if (Array.isArray(resSalon)) {
+          const filteredSalons = resSalon.filter((salon) => salon.isBookOnline);
+          salonStore.setState({ ...store, allSalon: filteredSalons });
+          return filteredSalons;
+        }
+
+        // Nếu resSalon không phải là mảng, trả về mảng rỗng hoặc xử lý lỗi
+        salonStore.setState({ ...store, allSalon: [] });
+        return [];
       } catch (e) {
         console.error("[getAllSalon]", e);
+      }
+    };
+    let dataCustomerSerOfTech = [];
+    let getDataCustomerSerOfTech = async () => {
+      const store = salonStore.getState();
+      const newRVCNo = store.RVCNo;
+      try {
+        const resData = await fetchAPI.get(
+          `/api/tech/gettechcustommenu?rvcNo=${newRVCNo}`
+        );
+        salonStore.setState((prev) => ({
+          ...prev,
+          dataCustomerSerOfTech: resData?.data || [],
+        }));
+      } catch (e) {
+        console.error("[getliststorechain", e);
       }
     };
     // --- API: Services ---
@@ -452,6 +476,8 @@ export const salonStore = {
       getListUserStaff,
       listStaffUser,
       getDataSetting,
+      dataCustomerSerOfTech,
+      getDataCustomerSerOfTech,
       timeKeySlot,
       getTimeKeySlot,
       timeBeginCurDate,

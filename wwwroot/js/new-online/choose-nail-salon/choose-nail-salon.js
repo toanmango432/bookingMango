@@ -213,6 +213,7 @@ $(document).ready(async function () {
 
     // lấy setting sau khi đổi RVCNo
     await salonStore.getState().getDataSetting();
+    await salonStore.getState().getDataCustomerSerOfTech();
 
     // đổi route mà không reload
     history.pushState({}, "", `/new-online/${rvcNoChoose}`);

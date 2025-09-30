@@ -2,6 +2,8 @@ import { isValidPhoneNumber } from "../format-phone.js";
 import { templateStore } from "../../store/template-store.js";
 import { shakeError } from "../shake-error.js";
 import { showInputError } from "../shake-error.js";
+import { salonStore } from "../../store/new-online-store.js";
+import { errorMessagesPhoneEmail } from "../../constants/errorMessage.js";
 
 // BLUR firstName
 export function validateFirstNameInput($input) {
@@ -72,28 +74,53 @@ export function validateEmailPhoneInputBanner($input) {
 }
 // BLUR phone&email
 export function validateEmailPhoneInput($input) {
+  const store = salonStore.getState();
+  const OBLogin = store.OBLogin; // 0 = phone, 1 = email, 2 = phone|email
+
   const val = $input.val().trim();
   const $error = $input.siblings(".error-message");
 
   const isPhone = isValidPhoneNumber(val);
   const isEmail = isValidEmail(val);
 
+  let errorMsg = "";
+  let type = "";
+
   if (val === "") {
+    errorMsg =
+      OBLogin === "0"
+        ? "Phone is required."
+        : OBLogin === "1"
+        ? "Email is required."
+        : "Phone or email is required.";
+  } else {
+    if (OBLogin === "0") {
+      if (!isPhone) errorMsg = "Phone number is invalid.";
+      else type = "PHONE";
+    } else if (OBLogin === "1") {
+      if (!isEmail) errorMsg = "Email is invalid.";
+      else type = "EMAIL";
+    } else {
+      if (!(isPhone || isEmail)) {
+        errorMsg = "Email or phone format is invalid.";
+      } else {
+        type = isPhone ? "PHONE" : "EMAIL";
+      }
+    }
+  }
+
+  if (errorMsg) {
     $input.addClass("is-invalid");
-    $error.text("Email or phone is required.");
-    shakeError($error);
-  } else if (val !== "" && !isPhone && !isEmail) {
-    $input.addClass("is-invalid");
-    $error.text("Email or phone is incorrect format.");
-    shakeError($error);
+    $error.text(errorMsg);
+    shakeError?.($error);
   } else {
     $input.removeClass("is-invalid");
     $error.text("");
   }
-  if (isPhone) return "PHONE";
-  if (isEmail) return "EMAIL";
-  return;
+
+  return type;
 }
+
 // Check phone form register blur
 export function validatePhoneFormRegister($input) {
   const val = $input.val().trim();

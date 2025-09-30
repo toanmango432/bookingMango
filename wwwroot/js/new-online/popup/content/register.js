@@ -1,15 +1,43 @@
 // Content popup register
 import { typeRequire, typeInput } from "../../../constants/template-online.js";
+import { salonStore } from "../../../store/new-online-store.js";
 export function renderRegisterForm(
   dataRegis,
   fieldEntered = null,
   actionCur,
   colorPrimary
 ) {
+  const store = salonStore.getState();
+  const OBLogin = store.OBLogin;
+
   const valCheckDis =
     fieldEntered === typeInput.EMAIL ? dataRegis.email : dataRegis.phoneNumber;
   const isDisabled = dataRegis.firstName && dataRegis.lastName && valCheckDis;
-  console.log("field");
+
+  let phoneRequire, emailRequire;
+  if (fieldEntered === null) {
+    if (OBLogin === "0") {
+      phoneRequire = typeRequire.REQUIRED;
+      emailRequire = typeRequire.NOTREQUIRED;
+    } else if (OBLogin === "1") {
+      phoneRequire = typeRequire.NOTREQUIRED;
+      emailRequire = typeRequire.REQUIRED;
+    } else {
+      phoneRequire = typeRequire.REQUIRED;
+      emailRequire = typeRequire.REQUIRED;
+    }
+  } else {
+    // Nếu có fieldEntered thì giữ nguyên logic cũ
+    phoneRequire =
+      fieldEntered === typeInput.EMAIL
+        ? typeRequire.NOTREQUIRED
+        : typeRequire.REQUIRED;
+    emailRequire =
+      fieldEntered === typeInput.PHONE
+        ? typeRequire.NOTREQUIRED
+        : typeRequire.REQUIRED;
+  }
+
   return `
         <div class="wrap-popup-register"
           style="
@@ -30,17 +58,13 @@ export function renderRegisterForm(
             <div class="form-input-phone">
               <label>
                 Phone
-                <p>${fieldEntered === typeInput.EMAIL ? "" : "*"}</p>
+                <p>${phoneRequire === typeRequire.REQUIRED ? "*" : ""}</p>
               </label>
               <input
                 id="phone-register"
                 placeholder="Phone number"
-                value="${dataRegis.phoneNumber ? dataRegis.phoneNumber : ""}"
-                data-type="${
-                  fieldEntered === typeInput.EMAIL
-                    ? typeRequire.NOTREQUIRED
-                    : typeRequire.REQUIRED
-                }"
+                value="${dataRegis.phoneNumber || ""}"
+                data-type="${phoneRequire}"
               />
               <p class="error-message"></p>
             </div>
@@ -73,17 +97,13 @@ export function renderRegisterForm(
             <div class="form-input-email">
               <label>
                 Email
-                <p>${fieldEntered === typeInput.PHONE ? "" : "*"}</p>
+                <p>${emailRequire === typeRequire.REQUIRED ? "*" : ""}</p>
               </label>
               <input
                 id="email-register"
                 placeholder="Email"
-                value="${dataRegis.email ? dataRegis.email : ""}"
-                data-type="${
-                  fieldEntered === typeInput.PHONE
-                    ? typeRequire.NOTREQUIRED
-                    : typeRequire.REQUIRED
-                }"
+                value="${dataRegis.email || ""}"
+                data-type="${emailRequire}"
               />
               <p class="error-message"></p>
             </div>

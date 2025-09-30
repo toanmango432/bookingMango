@@ -354,7 +354,7 @@
   background: #fff;
   margin-bottom: 0px;
 }
-.appointment-input {
+.appointment-input-1 {
   color: var(--text-color-primary);
   font: normal normal 400 var(--s-16);
   line-height: var(--px-20);
@@ -368,7 +368,7 @@
   gap: var(--px-8);
   align-self: stretch;
 }
-.appointment-input:focus-visible {
+.appointment-input-1:focus-visible {
   outline: 2px solid var(--bs-main);
   border: none;
 }
@@ -416,7 +416,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  right: var(--px-24);
+  right: var(--px-12);
   top: 25.5px;
   transform: translateY(-50%);
   cursor: pointer;
@@ -1542,7 +1542,7 @@ select {
   .title-appointment h2 {
     font: normal normal 500 var(--s-16);
   }
-  .appointment-input {
+  .appointment-input-1 {
     padding: 8px 16px;
     font-size: 13px;
     border-radius: 8px;

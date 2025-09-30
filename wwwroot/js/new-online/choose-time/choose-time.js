@@ -13,6 +13,100 @@ export function startResendTimer(resendCountdown) {
     }
   }, 1000);
 }
+export function syncEmailPhoneErrors($wrapRegis) {
+  const valPhone = $wrapRegis.find("#phone-register").val().trim();
+  const valEmail = $wrapRegis.find("#email-register").val().trim();
+
+  const isPhone = isValidPhoneNumber(valPhone);
+  const isEmail = isValidEmail(valEmail);
+
+  const $phone = $wrapRegis.find("#phone-register");
+  const $email = $wrapRegis.find("#email-register");
+
+  // Nếu 1 trong 2 hợp lệ -> clear error bên còn lại
+  if (isPhone) {
+    clearInputError($email);
+    $email.attr("data-type", typeRequire.NOTREQUIRED);
+    $wrapRegis.find(".form-input-email label p").text("");
+  }
+  if (isEmail) {
+    clearInputError($phone);
+    $phone.attr("data-type", typeRequire.NOTREQUIRED);
+    $wrapRegis.find(".form-input-phone label p").text("");
+  }
+
+  // Nếu cả 2 rỗng hoặc cả 2 sai => để lại required
+  if (!isPhone && !isEmail) {
+    $phone.attr("data-type", typeRequire.REQUIRED);
+    $wrapRegis.find(".form-input-phone label p").text("*");
+    $email.attr("data-type", typeRequire.REQUIRED);
+    $wrapRegis.find(".form-input-email label p").text("*");
+  }
+}
+
+export function syncEmailPhoneErrorRegister() {
+  const $email = $("#email-register");
+  const $phone = $("#phone-register");
+  const $labelEmail = $(".form-input-email label p");
+  const $labelPhone = $(".form-input-phone label p");
+
+  const emailVal = $email.val().trim();
+  const phoneVal = $phone.val().trim();
+
+  let validEmail = emailVal ? isValidEmail(emailVal) : false;
+  let phoneDigits = phoneVal.replace(/\D/g, "");
+  let validPhone = phoneVal ? isValidPhoneNumber(phoneVal) : false;
+
+  // format phone nếu đủ 10 số
+  if (phoneDigits.length === 10 && /^\d+$/.test(phoneDigits)) {
+    const formatted = formatPhoneNumber(phoneDigits);
+    $phone.val(formatted);
+    validPhone = isValidPhoneNumber(formatted);
+  }
+
+  // --- required logic ---
+  if (validEmail) {
+    // email đúng → phone optional
+    $phone.attr("data-type", typeRequire.NOTREQUIRED);
+    $labelPhone.text("");
+  } else if (validPhone) {
+    // phone đúng → email optional
+    $email.attr("data-type", typeRequire.NOTREQUIRED);
+    $labelEmail.text("");
+  } else {
+    // chưa có email/phone đúng → cả 2 required
+    $phone.attr("data-type", typeRequire.REQUIRED);
+    $email.attr("data-type", typeRequire.REQUIRED);
+    $labelPhone.text("*");
+    $labelEmail.text("*");
+  }
+
+  // --- hiển thị error ---
+  if (emailVal && !validEmail) {
+    showInputError($email, "Email is incorrect format");
+  } else {
+    clearInputError($email);
+  }
+
+  if (phoneVal && !validPhone) {
+    showInputError($phone, "Phone is incorrect format");
+  } else {
+    clearInputError($phone);
+  }
+
+  // --- check firstname & lastname ---
+  let allFilled =
+    $("#firstname-register").val().trim() &&
+    $("#lastname-register").val().trim();
+
+  // cần ít nhất một trong hai đúng
+  const hasValidContact = validEmail || validPhone;
+
+  $(".btn-next-verify-register-1").prop(
+    "disabled",
+    !(allFilled && hasValidContact)
+  );
+}
 
 // render container time-booking && select time// render calender
 export async function renderCalendar(
@@ -932,6 +1026,8 @@ $(document).ready(async function () {
     const store = salonStore.getState();
     const dataBooking = store.dataBooking;
     const userChoosing = dataBooking.users.find((u) => u.isChoosing);
+    const isDeposit = store.isDeposit;
+
     const dataServices = store.dataServices;
     // Nếu owner có thông tin rồi thì qua thẳng sumary cần phone/email và đã chọn card thanh toán
     if (!userChoosing.selectedTimeSlot) return;
@@ -939,11 +1035,16 @@ $(document).ready(async function () {
     const owner = dataBooking.users[0];
     const cardNumber = dataBooking.cardNumber || [];
     const cardChoosing = dataBooking.cardNumber.find((card) => card.isChoosing);
-
-    if ((owner.phoneNumber || owner.email) && cardChoosing) {
+    if ((owner.phoneNumber || owner.email) && !isDeposit) {
+      renderSumary(dataBooking, dataServices);
+    } else if ((owner.phoneNumber || owner.email) && cardChoosing) {
       // qua sumary
       renderSumary(dataBooking, dataServices);
-    } else if ((owner.phoneNumber || owner.email) && cardNumber.length === 0) {
+    } else if (
+      (owner.phoneNumber || owner.email) &&
+      cardNumber.length === 0 &&
+      isDeposit
+    ) {
       // chưa có thẻ thanh toán, qua page add thẻ mới
       let height = 776;
       let width = 886;
@@ -1018,15 +1119,23 @@ $(document).ready(async function () {
     const store = salonStore.getState();
     const dataBooking = store.dataBooking;
     const user = dataBooking.users.find((u) => u.isChoosing);
+
+    let phoneOrMail = "";
+    const OBLogin = store.OBLogin;
+    if (OBLogin === "0") phoneOrMail = user.phoneNumber;
+    else if (OBLogin === "1") phoneOrMail = user.email;
+    else {
+      phoneOrMail = user.phoneNumber || user.email;
+    }
     // reset
-    user.phoneNumber = "";
-    user.email = "";
+    // user.phoneNumber = "";
+    // user.email = "";
     salonStore.setState((prev) => ({
       ...prev,
       dataBooking,
     }));
 
-    const htmlVerifyEmailPhone = renderVerifyEmailPhoneContent();
+    const htmlVerifyEmailPhone = renderVerifyEmailPhoneContent(phoneOrMail);
     let height = 620;
     let width = 560;
     let persistent = false;
@@ -1104,7 +1213,7 @@ $(document).ready(async function () {
   // Xử lý onChange input appointment-input
   function updateNextButtonState() {
     const $wrapCheckPoli = $(".wrap-icon-checked");
-    const $inputAppt = $("#appointment-input");
+    const $inputAppt = $("#appointment-input-1");
     const $btnNext = $(".btn-next-emailPhone-1");
 
     const isChecked = $wrapCheckPoli.hasClass("active");
@@ -1132,34 +1241,70 @@ $(document).ready(async function () {
   });
 
   // Validate input
-  $(document).on("input", "#appointment-input", function () {
+  $(document).on("input", "#appointment-input-1", function (e) {
     const $this = $(this);
-    const val = $this.val().trim();
+    const store = salonStore.getState();
+    const OBLogin = store.OBLogin; // 0 = phone, 1 = email, 2 = phone or email
+    let val = $this.val().trim();
     const digits = val.replace(/\D/g, "");
     const $error = $this.siblings(".error-message");
 
     let isPhone = false;
     let isEmail = false;
 
-    if (digits.length === 10 && /^\d+$/.test(digits)) {
-      $this.val(formatPhoneNumber(digits));
-      isPhone = true;
-    } else {
-      if (val.includes("(") || val.includes(")") || val.includes("-")) {
-        if (digits.length !== 10) {
-          $this.val(digits);
-        }
+    // Nếu chỉ cho nhập số (OBLogin = 0)
+    if (OBLogin === "0") {
+      // ép input chỉ giữ lại số
+      val = digits;
+      $this.val(val);
+
+      // format nếu đủ 10 số
+      if (digits.length === 10) {
+        $this.val(formatPhoneNumber(digits));
+        isPhone = true;
       }
-      isPhone = isValidPhoneNumber(val);
-      isEmail = isValidEmail(val);
+    } else {
+      // Cho phép nhập email/phone
+      if (digits.length === 10 && /^\d+$/.test(digits)) {
+        $this.val(formatPhoneNumber(digits));
+        isPhone = true;
+      } else {
+        if (val.includes("(") || val.includes(")") || val.includes("-")) {
+          if (digits.length !== 10) {
+            $this.val(digits); // xoá format sai
+          }
+        }
+        isPhone = isValidPhoneNumber(val);
+        isEmail = isValidEmail(val);
+      }
     }
 
+    let isValid = false;
+    let errorMsg = "";
+
     if (val === "") {
+      errorMsg =
+        OBLogin === "0"
+          ? "Phone is required."
+          : OBLogin === "1"
+          ? "Email is required."
+          : "Email or phone is required.";
+    } else {
+      if (OBLogin === "0") {
+        isValid = isPhone;
+        if (!isValid) errorMsg = "Phone number is invalid.";
+      } else if (OBLogin === "1") {
+        isValid = isEmail;
+        if (!isValid) errorMsg = "Email is invalid.";
+      } else {
+        isValid = isPhone || isEmail;
+        if (!isValid) errorMsg = "Email or phone is incorrect format.";
+      }
+    }
+
+    if (!isValid) {
       $this.addClass("is-invalid");
-      $error.text("Email or phone is required.");
-    } else if (!isPhone && !isEmail) {
-      $this.addClass("is-invalid");
-      $error.text("Email or phone is incorrect format.");
+      $error.text(errorMsg);
     } else {
       $this.removeClass("is-invalid");
       $error.text("");
@@ -1168,7 +1313,7 @@ $(document).ready(async function () {
     updateNextButtonState();
   });
 
-  // clear input #appointment-input
+  // clear input #appointment-input-1
   $(document).on("click", ".clear-icon", function (e) {
     const $btn = $(this);
 
@@ -1186,14 +1331,14 @@ $(document).ready(async function () {
     }, 600);
 
     // logic clear input
-    const $inputAppt = $("#appointment-input");
+    const $inputAppt = $("#appointment-input-1");
     $inputAppt.val("");
     clearInputError($inputAppt);
     $inputAppt.focus();
     $("#skip-verify").remove();
   });
   // Xử lý blur input apointment-input
-  $(document).on("blur", "#appointment-input", function () {
+  $(document).on("blur", "#appointment-input-1", function () {
     const store = salonStore.getState();
     const dataBooking = store.dataBooking;
 
@@ -1214,7 +1359,7 @@ $(document).ready(async function () {
     const dataBooking = store.dataBooking;
     const RVCNo = store.RVCNo;
 
-    const $appointInput = $("#appointment-input");
+    const $appointInput = $("#appointment-input-1");
     const $wrapCheckPoli = $(".wrap-icon-checked");
     const isChecked = $wrapCheckPoli.hasClass("active");
 
@@ -1679,90 +1824,7 @@ $(document).ready(async function () {
       if (val) {
         clearInputError($this);
       }
-
-      // verify button next :(Verify)
-      let allFilled =
-        $("#firstname-register").val().trim() &&
-        $("#lastname-register").val().trim();
-
-      if ($this.attr("id") === "email-register") {
-        const valid = isValidEmail(val);
-
-        if ($this.data("type") === typeRequire.REQUIRED) {
-          allFilled = allFilled && val;
-        }
-
-        // --- update phone required/not required ---
-        const $phone = $("#phone-register");
-        const $labelPhone = $(".form-input-phone label p");
-
-        if (valid && val !== "") {
-          // Email hợp lệ -> Phone không bắt buộc
-          $phone.attr("data-type", typeRequire.NOTREQUIRED);
-          $labelPhone.text("");
-        } else {
-          // Email rỗng/không hợp lệ -> Phone bắt buộc
-          $phone.attr("data-type", typeRequire.REQUIRED);
-          $labelPhone.text("*");
-        }
-      }
-      if ($this.attr("id") === "phone-register") {
-        const $this = $(this);
-
-        let phoneVal = $this.val().trim();
-        const isRequired = $this.data("type") === typeRequire.REQUIRED;
-        const phoneDigits = phoneVal.replace(/\D/g, "");
-
-        let valid = true;
-
-        // Check nếu là phone đủ 10 số
-        if (phoneDigits.length === 10 && /^\d+$/.test(phoneDigits)) {
-          phoneVal = formatPhoneNumber(phoneDigits);
-          $this.val(phoneVal);
-          valid = isValidPhoneNumber(phoneVal);
-        } else {
-          // Nếu đang ở dạng đã format mà không còn đủ 10 số → gỡ format
-          if (
-            phoneVal.includes("(") ||
-            phoneVal.includes(")") ||
-            phoneVal.includes("-")
-          ) {
-            if (phoneDigits.length !== 10) {
-              phoneVal = phoneDigits;
-              $this.val(phoneVal);
-            }
-          }
-          valid = isValidPhoneNumber(phoneVal);
-        }
-        if (phoneVal === "" && !isRequired) {
-          clearInputError($this);
-        } else if (!valid) {
-          showInputError($this, "Phone is incorrect format");
-        } else {
-          clearInputError($this);
-        }
-
-        if ($this.data("type") === typeRequire.REQUIRED) {
-          const valPhone = $this.val().trim();
-          allFilled = allFilled && valPhone;
-        }
-
-        // --- update email required/not required ---
-        const $email = $("#email-register");
-        const $labelEmail = $(".form-input-email label p");
-
-        if (valid && phoneVal !== "") {
-          // Phone hợp lệ -> Email không bắt buộc
-          $email.attr("data-type", typeRequire.NOTREQUIRED);
-          $labelEmail.text("");
-        } else {
-          // Phone rỗng/không hợp lệ -> Email bắt buộc
-          $email.attr("data-type", typeRequire.REQUIRED);
-          $labelEmail.text("*");
-        }
-      }
-
-      $(".btn-next-verify-register-1").prop("disabled", !allFilled);
+      syncEmailPhoneErrorRegister();
     }
   );
   // blur #firsname-register, #lastname-register,
@@ -1778,20 +1840,19 @@ $(document).ready(async function () {
         "lastname-register": "Last Name",
       };
 
-      const fieldName = nameMap[id] || "This field";
-
       if (!val) {
-        showInputError($input, `${fieldName} is required`, true);
+        showInputError($input, `${nameMap[id]} is required`, true);
         return;
       }
-
-      // Nếu hợp lệ => xóa lỗi
       clearInputError($input);
+      syncEmailPhoneErrorRegister();
     }
   );
   // blur #phone-register
   $(document).on("blur", "#phone-register", function () {
     const $this = $(this);
+    const $wrapRegis = $(".wrap-popup-register");
+
     const isRequired = $this.data("type");
     if (isRequired === typeRequire.REQUIRED) {
       validatePhoneFormRegister($this);
@@ -1802,11 +1863,14 @@ $(document).ready(async function () {
     } else {
       validatePhoneFormRegister($this);
     }
+    syncEmailPhoneErrors($wrapRegis);
   });
   // blur #email-register
   $(document).on("blur", "#email-register", function () {
     const $this = $(this);
+    const $wrapRegis = $(".wrap-popup-register");
     const isRequired = $this.data("type");
+    console.log("check bluer ");
     if (isRequired === typeRequire.REQUIRED) {
       validateEmailFormRegister($this);
     }
@@ -1816,6 +1880,7 @@ $(document).ready(async function () {
     } else {
       validateEmailFormRegister($this);
     }
+    syncEmailPhoneErrors($wrapRegis);
   });
 
   // Auto focus và chuyển sang ô tiếp theo

@@ -71,7 +71,7 @@ export function Cart(isOpen = false, isAddOn = false) {
 
   let totalCash = 0;
   let totalCard = 0;
-
+  console.log("databOOKING: ", dataBooking);
   const isMobile = $(window).width() <= 768;
   const userHtml = user.services
     .map((cate) =>
