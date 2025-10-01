@@ -1368,13 +1368,13 @@ $(document).ready(async function () {
 
     const value = $appointInput.val();
     const resVerifyGetOtp = await sendOTP(value, res);
-    console.log("resVerifu: ", resVerifyGetOtp);
     if (resVerifyGetOtp && resVerifyGetOtp.status === 200) {
       const extraData = resVerifyGetOtp.extraData;
+
       dataBooking.users[0] = {
         ...dataBooking.users[0],
         email: extraData?.mail,
-        phoneNumber: extraData?.contactPhone || value,
+        phoneNumber: extraData?.contactPhone,
         firstName: extraData?.firstName,
         lastName: extraData?.lastName,
         rcpCustomer: extraData?.rcpCustomer,
@@ -1922,6 +1922,7 @@ $(document).ready(async function () {
     const currencyDeposit = store.currencyDeposit;
     const paymentDeposit = store.paymentDeposit;
     // Chỉ verify code lần đầu đăng ký, những lần sau không còn cần verify
+    console.log("data: ", dataBooking.users[0]);
     const phoneVerify = unFormatPhoneNumber(
       JSON.parse(JSON.stringify(dataBooking.users[0]?.phoneNumber || ""))
     );
@@ -1933,6 +1934,7 @@ $(document).ready(async function () {
     console.log("emailVerify: ", emailVerify);
 
     const optCode = getOtpCode();
+    console.log("phoneVerify: ", phoneVerify);
     try {
       const resVerifyCode = await fetchAPI.get(
         `/api/user/checkverifycode?phone=${
@@ -1980,9 +1982,8 @@ $(document).ready(async function () {
       });
     }
   });
-  $(document).on("click", ".resend-btn", async function () {
+  $(document).on("click", ".resend-btn", async function (e) {
     const $this = $(this);
-
     // Nếu đang disabled thì không làm gì
     if ($this.is(":disabled") || $this.hasClass("disabled")) {
       e.preventDefault();
@@ -1991,19 +1992,50 @@ $(document).ready(async function () {
 
     const store = salonStore.getState();
     const dataBooking = store.dataBooking;
+    const OBLogin = store.OBLogin;
     const telInput = store.telInput;
-    console.log("databooking: ", dataBooking);
-    console.log("telInput: ", telInput);
-    const phoneVerify = unFormatPhoneNumber(
-      JSON.parse(JSON.stringify(dataBooking.users[0]?.phoneNumber || ""))
-    );
-    console.log("phoneVerify: ", phoneVerify);
+    const user = dataBooking.users[0];
+
+    let phoneVerify = "";
+    let emailVerify = "";
+    let isMail = false;
+    let valueSend = "";
+
+    if (OBLogin == "0") {
+      // phone only
+      phoneVerify = unFormatPhoneNumber(user?.phoneNumber || "");
+      valueSend = phoneVerify;
+      isMail = false;
+    } else if (OBLogin == "1") {
+      // email only
+      emailVerify = user?.email || "";
+      valueSend = emailVerify;
+      isMail = true;
+    } else if (OBLogin == "2") {
+      // phone first, fallback to email
+      if (user?.phoneNumber) {
+        phoneVerify = unFormatPhoneNumber(user.phoneNumber);
+        valueSend = phoneVerify;
+        isMail = false;
+      } else if (user?.email) {
+        emailVerify = user.email;
+        valueSend = emailVerify;
+        isMail = true;
+      }
+    }
+
+    if (!valueSend) {
+      console.log("Không tìm thấy số điện thoại hoặc email để verify!");
+      return;
+    }
+
     await fetchAPI.get(
-      `/api/user/verifycode?phone=${phoneVerify}&portalCode=${encodeURIComponent(
-        telInput
-      )}&isMail=false`
+      `/api/user/verifycode?phone=${encodeURIComponent(
+        valueSend
+      )}&portalCode=${encodeURIComponent(telInput)}&isMail=${isMail}`
     );
   });
+
   $(document).on("click", ".btn-back-verify-1", function () {
     const $this = $(this);
     const store = salonStore.getState();

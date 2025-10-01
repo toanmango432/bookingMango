@@ -459,6 +459,7 @@ $(document).ready(async function () {
         }
         // kiểm tra duration custom cho addOn (optionals)
         if (srv.optionals && srv.optionals.length > 0) {
+          console.log("srv: ", srv.optionals);
           srv.optionals.forEach((opt) => {
             const customOpt = dataCustomerSerOfTech.find(
               (d) =>
@@ -467,11 +468,8 @@ $(document).ready(async function () {
                 d.duration > 0
             );
             if (customOpt) {
-              console.log("check 2:", customOpt);
-
               opt.timedura = customOpt.duration;
             } else {
-              console.log("check 1:");
               // fallback default timedura từ dataServices
               const cateSrv = dataServices.find((c) =>
                 c.item.listItem.some((s) =>
