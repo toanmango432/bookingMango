@@ -45,13 +45,22 @@ export function syncEmailPhoneErrors($wrapRegis) {
 }
 
 export function syncEmailPhoneErrorRegister() {
+  const store = salonStore.getState();
+  const requestClient = store.requestClient || [];
+  const isZipRequired =
+    requestClient.find((p) => p.paraName === "ZipRewardMember")?.paraStr ===
+    "1";
+
   const $email = $("#email-register");
   const $phone = $("#phone-register");
+  const $zipcode = $("#zipcode-register");
   const $labelEmail = $(".form-input-email label p");
   const $labelPhone = $(".form-input-phone label p");
+  const $labelZip = $(".form-input-zipcode label p");
 
   const emailVal = $email.val().trim();
   const phoneVal = $phone.val().trim();
+  const zipVal = $zipcode.val().trim();
 
   let validEmail = emailVal ? isValidEmail(emailVal) : false;
   let phoneDigits = phoneVal.replace(/\D/g, "");
@@ -99,12 +108,25 @@ export function syncEmailPhoneErrorRegister() {
     $("#firstname-register").val().trim() &&
     $("#lastname-register").val().trim();
 
+  // --- check zip nếu required ---
+  let zipOk = true;
+  if (isZipRequired) {
+    if (!zipVal) {
+      zipOk = false;
+      $labelZip.text("*");
+    } else {
+      $labelZip.text("");
+    }
+  } else {
+    $labelZip.text("");
+  }
+
   // cần ít nhất một trong hai đúng
   const hasValidContact = validEmail || validPhone;
 
   $(".btn-next-verify-register-1").prop(
     "disabled",
-    !(allFilled && hasValidContact)
+    !(allFilled && hasValidContact && zipOk)
   );
 }
 
@@ -1602,7 +1624,11 @@ $(document).ready(async function () {
 
   $(document).on("click", ".btn-next-verify-register-1", async function () {
     const $this = $(this);
-
+    const store = salonStore.getState();
+    const requestClient = store.requestClient || [];
+    const isZipRequired =
+      requestClient.find((p) => p.paraName === "ZipRewardMember")?.paraStr ===
+      "1";
     // xử lý check lại toàn bộ form input, verify và snake text error
     // Chỉ check format mail và phone, đã xử lý onChange input verify button verify
     // Lấy giá trị trên tab hiện tại
@@ -1611,6 +1637,7 @@ $(document).ready(async function () {
     const valFirstRegis = $wrapRegis.find("#firstname-register").val().trim();
     const valLastRegis = $wrapRegis.find("#lastname-register").val().trim();
     const valEmailRegis = $wrapRegis.find("#email-register").val().trim();
+    const valZipCode = $wrapRegis.find("#zipcode-register").val().trim();
 
     const isPhone = isValidPhoneNumber(valPhoneRegis);
     const isEmail = isValidEmail(valEmailRegis);
@@ -1684,6 +1711,27 @@ $(document).ready(async function () {
       shakeError($errorLastRegis);
       hasError = true;
     }
+    // check zipcode required
+    // check zipcode required
+    if (isZipRequired) {
+      const $zipInput = $wrapRegis.find("#zipcode-register");
+      const $errorZip = $zipInput.next(".error-message");
+
+      // chỉ cần regex đơn giản 5–10 số
+      const zipValid = /^[0-9]{5,10}$/.test(valZipCode);
+
+      if (!valZipCode) {
+        $errorZip.text("Zip Code is required!");
+        shakeError($errorZip);
+        hasError = true;
+      } else if (!zipValid) {
+        $errorZip.text("Zip Code format is incorrect!");
+        shakeError($errorZip);
+        hasError = true;
+      } else {
+        $errorZip.text(""); // clear error
+      }
+    }
 
     if (hasError) {
       $this.blur(); // Gỡ focus
@@ -1699,8 +1747,9 @@ $(document).ready(async function () {
       ),
       email: valEmailRegis,
       isMail: valEmailRegis ? true : false,
+      zip: valZipCode || "",
     };
-    const store = salonStore.getState();
+
     const dataBooking = store.dataBooking;
 
     try {
@@ -1817,7 +1866,7 @@ $(document).ready(async function () {
   // Kiểm tra và disable btn verify form register
   $(document).on(
     "input",
-    "#firstname-register, #lastname-register, #email-register, #phone-register",
+    "#firstname-register, #lastname-register, #email-register, #phone-register, #zipcode-register",
     function () {
       const $this = $(this);
       const val = $this.val().trim();
@@ -1825,6 +1874,43 @@ $(document).ready(async function () {
         clearInputError($this);
       }
       syncEmailPhoneErrorRegister();
+
+      // bắt buộc lastname / zipcode tuỳ data-type
+      const $last = $("#lastname-register");
+      const lastRequired = $last.data("type") === typeRequire.REQUIRED;
+      const lastVal = $last.val().trim();
+      if (lastRequired && !lastVal) {
+        // don't clear; will be validated on blur or block next
+      }
+
+      const $zip = $("#zipcode-register");
+      const zipRequired = $zip.data("type") === typeRequire.REQUIRED;
+      const zipVal = $zip.val().trim();
+      if (zipRequired && !zipVal) {
+        // same as above
+      }
+
+      // recompute button enabled: firstname + lastname(if required) + contact(valid)
+      let allFilled =
+        $("#firstname-register").val().trim() && (!lastRequired || lastVal); // true if not required or has value
+
+      // contact valid (email or phone) logic reused from syncEmailPhoneErrorRegister:
+      const emailVal = $("#email-register").val().trim();
+      const phoneVal = $("#phone-register").val().trim();
+      const validEmail = emailVal ? isValidEmail(emailVal) : false;
+      const phoneDigits = phoneVal.replace(/\D/g, "");
+      const validPhone = phoneVal ? isValidPhoneNumber(phoneVal) : false;
+      const hasValidContact = validEmail || validPhone;
+
+      // zipcode also required?
+      if (zipRequired) {
+        allFilled = allFilled && !!zipVal;
+      }
+
+      $(".btn-next-verify-register-1").prop(
+        "disabled",
+        !(allFilled && hasValidContact)
+      );
     }
   );
   // blur #firsname-register, #lastname-register,
@@ -1881,6 +1967,36 @@ $(document).ready(async function () {
       validateEmailFormRegister($this);
     }
     syncEmailPhoneErrors($wrapRegis);
+  });
+  // lastname blur
+  $(document).on("blur", "#lastname-register", function () {
+    const $input = $(this);
+    const val = $input.val().trim();
+    const isRequired = $input.data("type") === typeRequire.REQUIRED;
+    if (isRequired && !val) {
+      showInputError($input, "Last name is required", true);
+      return;
+    }
+    clearInputError($input);
+  });
+  // zipcode blur
+  $(document).on("blur", "#zipcode-register", function () {
+    const $input = $(this);
+    const val = $input.val().trim();
+    const isRequired = $input.data("type") === typeRequire.REQUIRED;
+
+    // simplest check: non-empty if required; optionally, validate zip pattern (5 digits)
+    const zipValid = val === "" ? false : /^[0-9]{5,10}$/.test(val); // adjust pattern to your rules
+
+    if (!val && isRequired) {
+      showInputError($input, "Zip code is required", true);
+      return;
+    }
+    if (val && !zipValid) {
+      showInputError($input, "Zip code format is incorrect");
+      return;
+    }
+    clearInputError($input);
   });
 
   // Auto focus và chuyển sang ô tiếp theo

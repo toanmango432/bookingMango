@@ -70,6 +70,23 @@ export const salonStore = {
         console.error("[getAllSalon]", e);
       }
     };
+    let requestClient = [];
+    let getRequestClient = async () => {
+      const store = salonStore.getState();
+      const newRVCNo = store.RVCNo;
+      try {
+        const resData = await fetchAPI.get(
+          `/api/client/getrequestclient?RVCNo=${newRVCNo}`
+        );
+        salonStore.setState((prev) => ({
+          ...prev,
+          requestClient: resData?.data || [],
+        }));
+      } catch (e) {
+        console.log("[getliststorechain]", e);
+      }
+    };
+
     let dataCustomerSerOfTech = [];
     let getDataCustomerSerOfTech = async () => {
       const store = salonStore.getState();
@@ -476,6 +493,8 @@ export const salonStore = {
       getListUserStaff,
       listStaffUser,
       getDataSetting,
+      requestClient,
+      getRequestClient,
       dataCustomerSerOfTech,
       getDataCustomerSerOfTech,
       timeKeySlot,

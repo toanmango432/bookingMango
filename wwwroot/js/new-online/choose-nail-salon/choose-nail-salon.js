@@ -212,8 +212,10 @@ $(document).ready(async function () {
     });
 
     // lấy setting sau khi đổi RVCNo
+    console.log("check");
     await salonStore.getState().getDataSetting();
     await salonStore.getState().getDataCustomerSerOfTech();
+    await salonStore.getState().getRequestClient();
 
     // đổi route mà không reload
     history.pushState({}, "", `/new-online/${rvcNoChoose}`);

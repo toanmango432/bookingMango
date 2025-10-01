@@ -9,10 +9,25 @@ export function renderRegisterForm(
 ) {
   const store = salonStore.getState();
   const OBLogin = store.OBLogin;
+  const requestClient = store.requestClient;
+
+  // check param config
+  const paramLastName = requestClient.find(
+    (p) => p.paraName === "ClientLastName"
+  );
+  const paramZip = requestClient.find((p) => p.paraName === "ZipRewardMember");
+  const lastNameRequired = paramLastName?.paraStr === "1";
+  const zipRequired = paramZip?.paraStr === "1";
 
   const valCheckDis =
     fieldEntered === typeInput.EMAIL ? dataRegis.email : dataRegis.phoneNumber;
-  const isDisabled = dataRegis.firstName && dataRegis.lastName && valCheckDis;
+
+  // isDisabled: firstname + (lastname nếu required) + contact field (email/phone rules)
+  const isContactFilled = valCheckDis ? true : false;
+  const isDisabled =
+    dataRegis.firstName &&
+    (lastNameRequired ? dataRegis.lastName : true) &&
+    isContactFilled;
 
   let phoneRequire, emailRequire;
   if (fieldEntered === null) {
@@ -84,12 +99,17 @@ export function renderRegisterForm(
               <div class="form-input-lastname-register">
                 <label>
                   Last Name
-                  <p>*</p>
+                  <p>${lastNameRequired ? "*" : ""}</p>
                 </label>
                 <input
                   placeholder="Last Name"
                   id="lastname-register"
-                  value="${dataRegis.lastName ? dataRegis.lastName : ""}"
+                  value="${dataRegis.lastName || ""}"
+                  data-type="${
+                    lastNameRequired
+                      ? typeRequire.REQUIRED
+                      : typeRequire.NOTREQUIRED
+                  }"
                 />
                 <p class="error-message"></p>
               </div>
@@ -109,9 +129,16 @@ export function renderRegisterForm(
             </div>
             <div class="form-input-zipcode">
               <label>
-                Zip Code
+                Zip Code <p>${zipRequired ? "*" : ""}</p>
               </label>
-              <input placeholder="Zip Code" id="zipcode-register"/>
+              <input
+                placeholder="Zip Code"
+                id="zipcode-register"
+                value="${dataRegis.zipcode || ""}"
+                data-type="${
+                  zipRequired ? typeRequire.REQUIRED : typeRequire.NOTREQUIRED
+                }"
+              />
               <p class="error-message"></p>
             </div>
           </div>

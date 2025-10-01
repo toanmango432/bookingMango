@@ -1192,7 +1192,7 @@
   padding: var(--px-32);
   flex-direction: column;
   align-items: center;
-  gap: var(--px-24);
+  gap: var(--px-12);
   border-radius: var(--px-24);
   background: #fff;
   box-shadow: 0 0 var(--px-12) 0 rgba(0, 0, 0, 0.16);
