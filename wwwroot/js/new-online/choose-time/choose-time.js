@@ -1217,7 +1217,7 @@ $(document).ready(async function () {
     const $btnNext = $(".btn-next-emailPhone-1");
 
     const isChecked = $wrapCheckPoli.hasClass("active");
-    const val = $inputAppt.val().trim();
+    const val = $inputAppt.val()?.trim();
     const digits = val.replace(/\D/g, "");
 
     const isPhone =
