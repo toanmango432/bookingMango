@@ -1057,16 +1057,12 @@ $(document).ready(async function () {
     const owner = dataBooking.users[0];
     const cardNumber = dataBooking.cardNumber || [];
     const cardChoosing = dataBooking.cardNumber.find((card) => card.isChoosing);
-    if ((owner.phoneNumber || owner.email) && !isDeposit) {
+    if (owner.isVerify && !isDeposit) {
       renderSumary(dataBooking, dataServices);
-    } else if ((owner.phoneNumber || owner.email) && cardChoosing) {
+    } else if (owner.isVerify && cardChoosing) {
       // qua sumary
       renderSumary(dataBooking, dataServices);
-    } else if (
-      (owner.phoneNumber || owner.email) &&
-      cardNumber.length === 0 &&
-      isDeposit
-    ) {
+    } else if (owner.isVerify && cardNumber.length === 0 && isDeposit) {
       // chưa có thẻ thanh toán, qua page add thẻ mới
       let height = 776;
       let width = 886;
@@ -1082,11 +1078,7 @@ $(document).ready(async function () {
       setTimeout(() => {
         $(".overlay-screen").addClass("show");
       }, 10);
-    } else if (
-      (owner.phoneNumber || owner.email) &&
-      !cardChoosing &&
-      cardNumber.length > 0
-    ) {
+    } else if (owner.isVerify && !cardChoosing && cardNumber.length > 0) {
       // đã có thẻ nhưng chưa chọn thẻ thanh toán, qua chọn thẻ thanh toán
       let height = 620;
       let width = 560;

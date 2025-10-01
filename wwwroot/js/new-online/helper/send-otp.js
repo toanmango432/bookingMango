@@ -18,6 +18,7 @@ export async function sendOTP(inputValue, type) {
   const store = salonStore.getState();
   const RVCNo = store.RVCNo;
   const telInput = store.telInput;
+  const isDeposit = store.isDeposit;
 
   const isMobile = $(window).width() <= 768;
   const $wrapNewOnline = $(".wrap-newonline");
@@ -39,6 +40,7 @@ export async function sendOTP(inputValue, type) {
     dataBooking: newDataBooking,
   });
 
+  console.log("is: ", isDeposit);
   if (type == typeInput.PHONE) {
     const phoneFormatVerify = inputValue;
     dataBooking.users[0].phoneNumber = phoneFormatVerify;
@@ -48,7 +50,10 @@ export async function sendOTP(inputValue, type) {
       const resVerifyAccount = await fetchAPI.get(
         `/api/client/getcustomerfamily?RVCNo=${RVCNo}&key=${phoneUnformat}&ismail=false`
       );
-      if (resVerifyAccount.status === 201 || resVerifyAccount.status === 200) {
+      if (
+        (resVerifyAccount.status === 201 && isDeposit) ||
+        (resVerifyAccount.status === 200 && isDeposit)
+      ) {
         // check exit authorized accout
         const resExitAccount = await fetchAPI.get(
           `/api/card/checkexistaccountauthorize?CustomerID=${resVerifyAccount?.data[0]?.customerID}&RVCNo=${RVCNo}&TypeAuthorize=0`
@@ -274,7 +279,10 @@ export async function sendOTP(inputValue, type) {
       const resVerifyAccount = await fetchAPI.get(
         `/api/client/getcustomerfamily?RVCNo=${RVCNo}&key=${emailVerify}&ismail=true`
       );
-      if (resVerifyAccount.status === 201 || resVerifyAccount.status === 200) {
+      if (
+        (resVerifyAccount.status === 201 && isDeposit) ||
+        (resVerifyAccount.status === 200 && isDeposit)
+      ) {
         // check exit accout
         const resExitAccount = await fetchAPI.get(
           `/api/card/checkexistaccountauthorize?CustomerID=${resVerifyAccount?.data[0]?.customerID}&RVCNo=${RVCNo}&TypeAuthorize=0`
