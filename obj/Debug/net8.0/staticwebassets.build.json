@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "s4qX9cZ9Ri+/QTYfDAkKqgG17uCAQgpV9ziXduRB1/U=",
+  "Hash": "doFJXUIgMZvceVYSEW3hNq05PL8F4fM1ocDXSEMsykw=",
   "Source": "OnlineStore",
   "BasePath": "_content/OnlineStore",
   "Mode": "Default",
@@ -1404,6 +1404,25 @@
       "OriginalItemSpec": "wwwroot/js/calander/calander.js"
     },
     {
+      "Identity": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/client-profile/client-profile.js",
+      "SourceId": "OnlineStore",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/",
+      "BasePath": "_content/OnlineStore",
+      "RelativePath": "js/client-profile/client-profile.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/js/client-profile/client-profile.js"
+    },
+    {
       "Identity": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/constants/base-url.js",
       "SourceId": "OnlineStore",
       "SourceType": "Discovered",
@@ -1440,6 +1459,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/js/constants/days-weeks.js"
+    },
+    {
+      "Identity": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/constants/errorMessage.js",
+      "SourceId": "OnlineStore",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/",
+      "BasePath": "_content/OnlineStore",
+      "RelativePath": "js/constants/errorMessage.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/js/constants/errorMessage.js"
     },
     {
       "Identity": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/constants/new-online.js",

@@ -289,12 +289,20 @@
       "PackagePath": "staticwebassets/js/calander/calander.js"
     },
     {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/client-profile/client-profile.js",
+      "PackagePath": "staticwebassets/js/client-profile/client-profile.js"
+    },
+    {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/constants/base-url.js",
       "PackagePath": "staticwebassets/js/constants/base-url.js"
     },
     {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/constants/days-weeks.js",
       "PackagePath": "staticwebassets/js/constants/days-weeks.js"
+    },
+    {
+      "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/constants/errorMessage.js",
+      "PackagePath": "staticwebassets/js/constants/errorMessage.js"
     },
     {
       "Id": "/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/wwwroot/js/constants/new-online.js",

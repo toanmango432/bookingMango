@@ -18,6 +18,10 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = /Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango
 build_property._RazorSourceGeneratorDebug = 
 
+[/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/Pages/Client-profile.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ2xpZW50LXByb2ZpbGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [/Users/nguyenkhactoan/Documents/company/Enrich.Co/bookingMango/Pages/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvRXJyb3IuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
