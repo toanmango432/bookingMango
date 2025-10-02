@@ -430,12 +430,18 @@ export const salonStore = {
         let currencyDepositRes = parts[1];
         let paymentDepositRes = parts[2];
 
+        const DualPrice = resSetting?.data?.DualPrice;
+
+        const partsPrice = DualPrice.split("|");
+        let isDualPrice = partsPrice[0] === "1";
+
         salonStore.setState({
           ...store,
           policySetting: resSetting?.data?.Policy,
           isDeposit: isDepositRes,
           currencyDeposit: currencyDepositRes,
           paymentDeposit: paymentDepositRes,
+          isDualPrice: isDualPrice,
           isBookMultipleTech: resSetting?.data?.BookMultipleTech === "1",
           telInput: resSetting?.data?.TelInput || "+84",
           isHidePrice: resSetting?.data?.HidePrice === "1" || false,

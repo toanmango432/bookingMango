@@ -179,6 +179,7 @@ export function renderSumary(dataBooking, listDataService) {
   const paymentDeposit = parseFloat(store?.paymentDeposit);
   const isHidePrice = store.isHidePrice;
   const priceDisplay = store.priceDisplay;
+  const isDeposit = store.isDeposit;
 
   const htmlHeaderSalon = HeaderSalon(salonChoosing);
 
@@ -525,14 +526,18 @@ export function renderSumary(dataBooking, listDataService) {
                           { totalPayment, totalCashPayment }
                         )}
                     </span>
-                    <span class="total-2">
+                    ${
+                      isDeposit
+                        ? `<span class="total-2">
                         <span class="depo-text">
                           Deposit
                         </span>
                         <span class="depo-value">
                           ${"$" + totalDeposit}
                         </span>
-                    </span>
+                    </span>`
+                        : ""
+                    }
                   </div>
                   <div class="checkbox-confirm">
                     <div class="checkbox-confirm-sum">
@@ -1154,7 +1159,7 @@ $(document).ready(async function () {
         const appointment = {
           AppointmentID: "0",
           CustomerID: customerID,
-          CustomerName: customerName,
+          CustomerName: user.firstName + " " + user.lastName,
           CustomerPhone: customerPhone,
           AppointmentSubject: userAppointmentSubjectStr,
           ServiceDate: userMinDateStr,
@@ -1477,10 +1482,10 @@ $(document).ready(async function () {
 
           // Tạo guest và isChoosing cho guest này
           let guest = {
-            id: resCheckCus.customerID,
-            firstName: resCheckCus.firstName,
-            lastName: resCheckCus.lastName,
-            phoneNumber: resCheckCus.contactPhone,
+            id: resCheckCus.data.customerID,
+            firstName: resCheckCus.data.firstName,
+            lastName: resCheckCus.data.lastName,
+            phoneNumber: resCheckCus.data.contactPhone,
             email: null,
             gender: null,
             services: [],

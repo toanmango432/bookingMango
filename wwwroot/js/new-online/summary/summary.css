@@ -152,7 +152,7 @@
   display: none;
 }
 .wrap-bottom-sum {
-  height: 308px;
+  height: fit-content;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -575,8 +575,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-
-  font: normal normal 600 var(--s-14);
+  font: normal normal 600 var(--s-18);
 }
 .total-value .total-cash {
   color: #f44c7f;
