@@ -318,6 +318,8 @@ function renderFooterService() {
 // Hàm dựng HTML cho 1 service
 function renderServiceItem(serviceItem, selectedServices, itemTechChoosing) {
   const store = salonStore.getState();
+
+  const isDualPrice = store.isDualPrice;
   const isHidePrice = store.isHidePrice;
   const priceDisplay = store.priceDisplay;
 
@@ -368,12 +370,16 @@ function renderServiceItem(serviceItem, selectedServices, itemTechChoosing) {
         <div class="service-title text-uppercase">
           ${serviceItem.title}
         </div>
-        ${funcDisplayPrice(serviceItem, { isHidePrice, priceDisplay })}
+        ${funcDisplayPrice(serviceItem, {
+          isDualPrice,
+          isHidePrice,
+          priceDisplay,
+        })}
         <div class="bot-item-service">
           ${
             addonCount > 0
               ? renderAddOnInItemService(
-                  { isHidePrice, priceDisplay },
+                  { isDualPrice, isHidePrice, priceDisplay },
                   {
                     addonCount,
                     addOnTotalPrice,

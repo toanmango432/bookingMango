@@ -1,5 +1,5 @@
 import { fetchAPI } from "../site.js";
-import { buildLocktimePayload } from "./build-lock-time.js";
+import { buildLocktimePayloadTemplate } from "./build-lock-time.js";
 import { unFormatPhoneNumber } from "./format-phone.js";
 import { renderPoliciesForm } from "../popup/content/policies.js";
 import { updateGuestSection } from "../layout-template/layout.js";
@@ -139,7 +139,7 @@ export async function sendOTP(inputValue, type) {
 
         // locktime thợ đã chọn
         for (const user of newDataBooking.users) {
-          const listPayload = buildLocktimePayload(user);
+          const listPayload = buildLocktimePayloadTemplate(user);
           for (const payload of listPayload) {
             try {
               await fetchAPI.post("/api/appointment/createlocktime", payload);
@@ -302,7 +302,7 @@ export async function sendOTP(inputValue, type) {
 
         // locktime thợ đã chọn
         for (const user of newDataBooking.users) {
-          const listPayload = buildLocktimePayload(user);
+          const listPayload = buildLocktimePayloadTemplate(user);
           for (const payload of listPayload) {
             try {
               await fetchAPI.post("/api/appointment/createlocktime", payload);

@@ -402,6 +402,7 @@ export const salonStore = {
     // --- API: Setting ---
     let dataSetting;
     let paymentDeposit;
+    let isDualPrice;
     let isDeposit;
     let currencyDeposit;
     let policySetting;
@@ -433,7 +434,7 @@ export const salonStore = {
         const DualPrice = resSetting?.data?.DualPrice;
 
         const partsPrice = DualPrice.split("|");
-        let isDualPrice = partsPrice[0] === "1";
+        isDualPrice = partsPrice[0] === "1";
 
         salonStore.setState({
           ...store,
@@ -510,6 +511,7 @@ export const salonStore = {
       // setting
       dataSetting,
       paymentDeposit,
+      isDualPrice,
       isDeposit,
       currencyDeposit,
       policySetting,
@@ -550,11 +552,31 @@ export const salonStore = {
 
   // Hàm reset dataBooking khi cần
   resetDataBooking() {
-    if (!this._state?.createDefaultDataBooking) return;
-    const freshDataBooking = this._state.createDefaultDataBooking();
-    this.setState({ dataBooking: freshDataBooking });
-  },
+    const state = this._state;
+    if (!state?.dataBooking) return;
 
+    const dataBooking = state.dataBooking;
+
+    // giữ lại user[0] + clone để reset service, time...
+    const firstUser = {
+      ...dataBooking.users[0],
+      services: [],
+      selectedDate: new Date(),
+      selectedTimeSlot: null,
+      isSelecting: false,
+      isChoosing: true,
+    };
+
+    // giữ các field khác trong dataBooking
+    const resetBooking = {
+      ...dataBooking,
+      type: typeBookingEnum.ME, // đưa về mặc định
+      users: [firstUser], // chỉ giữ lại user[0]
+      cardNumber: [], // reset thẻ
+    };
+
+    this.setState({ dataBooking: resetBooking });
+  },
   getState() {
     return this._state;
   },

@@ -1,11 +1,11 @@
 export function funcDisPriceItemSerCart(
-  { isHidePrice, priceDisplay },
+  { isDualPrice, isHidePrice, priceDisplay },
   { basePrice, baseCashPrice }
 ) {
   if (isHidePrice) {
     return ``;
   }
-  if (priceDisplay === "0" || priceDisplay === "1") {
+  if (!isDualPrice || priceDisplay === "0" || priceDisplay === "1") {
     // Hiển thị giá gốc
     return `<div class="cart-prices">
             <span class="cardaddon-in-cart">$${basePrice.toFixed(2)}</span>
@@ -21,10 +21,10 @@ export function funcDisPriceItemSerCart(
   }
 }
 export function funcDisPriceTotal(
-  { isHidePrice, priceDisplay },
+  { isDualPrice, isHidePrice, priceDisplay },
   { totalCard, totalCash }
 ) {
-  if (priceDisplay === "0") {
+  if (!isDualPrice || priceDisplay === "0") {
     return `<div class="end-cart ${isHidePrice ? "hide-price" : ""}">
                 <div class="total-card">
                   <span class="left">Total Card:</span>
@@ -45,10 +45,10 @@ export function funcDisPriceTotal(
   }
 }
 export function renderDisPriceItemAddonCart(
-  { isHidePrice, priceDisplay },
+  { isDualPrice, isHidePrice, priceDisplay },
   { basePrice, priceCash }
 ) {
-  if (priceDisplay === "0" || priceDisplay === "1") {
+  if (!isDualPrice || priceDisplay === "0" || priceDisplay === "1") {
     return `<span class="addon-price ${isHidePrice ? "hide-price" : ""}">
               <span class="cardser-in-cart">$${basePrice.toFixed(2)}</span>
             </span>`;
@@ -66,12 +66,13 @@ export function Cart(isOpen = false, isAddOn = false) {
   const dataBooking = store.dataBooking;
   const user = dataBooking.users.find((u) => u.isChoosing);
   const flowCur = store.flow;
+
+  const isDualPrice = store.isDualPrice;
   const isHidePrice = store.isHidePrice;
   const priceDisplay = store.priceDisplay;
 
   let totalCash = 0;
   let totalCard = 0;
-  console.log("databOOKING: ", dataBooking);
   const isMobile = $(window).width() <= 768;
   const userHtml = user.services
     .map((cate) =>
@@ -127,7 +128,7 @@ export function Cart(isOpen = false, isAddOn = false) {
                       <div class="d-title-price">
                         <span class="addon-title">${opt.title}</span>
                         ${renderDisPriceItemAddonCart(
-                          { isHidePrice, priceDisplay },
+                          { isDualPrice, isHidePrice, priceDisplay },
                           {
                             basePrice: optPrice,
                             priceCash: optBasePrice,
@@ -170,7 +171,7 @@ export function Cart(isOpen = false, isAddOn = false) {
                   <div class="cart-item-header">
                     <div class="cart-title">${srv.title}</div>
                     ${funcDisPriceItemSerCart(
-                      { isHidePrice, priceDisplay },
+                      { isDualPrice, isHidePrice, priceDisplay },
                       { basePrice: price, baseCashPrice: priceCash }
                     )}
                   </div>
@@ -248,7 +249,7 @@ export function Cart(isOpen = false, isAddOn = false) {
             ${userHtml}
           </div>
           ${funcDisPriceTotal(
-            { isHidePrice, priceDisplay },
+            { isDualPrice, isHidePrice, priceDisplay },
             { totalCard, totalCash }
           )}
         </div>

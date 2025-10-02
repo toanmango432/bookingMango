@@ -1,9 +1,9 @@
 // total deposit sumary
 export function renderDisSumaryTotalDeposit(
-  { isHidePrice, priceDisplay },
+  { isDualPrice, isHidePrice, priceDisplay },
   { totalPayment, totalCashPayment }
 ) {
-  if (priceDisplay === "0") {
+  if (!isDualPrice || priceDisplay === "0") {
     return `<span class="total-value">
             <span class="total-price">
               ${"$" + totalPayment.toFixed(2)}
@@ -22,10 +22,10 @@ export function renderDisSumaryTotalDeposit(
 }
 // total item 1 user sumary
 export function renderDisTotalItemSumary(
-  { isHidePrice, priceDisplay },
+  { isDualPrice, isHidePrice, priceDisplay },
   { userTotalPayment, userTotalCashPayment }
 ) {
-  if (priceDisplay === "0") {
+  if (!isDualPrice || priceDisplay === "0") {
     return `<p class="item wrap-cash-base">
               <span class="text-total-price ${isHidePrice ? "hide-price" : ""}">
                 $ ${userTotalPayment.toFixed(2)}
@@ -44,10 +44,10 @@ export function renderDisTotalItemSumary(
 }
 // addon item sumary
 export function renderDisAddonSumary(
-  { isHidePrice, priceDisplay },
+  { isDualPrice, isHidePrice, priceDisplay },
   { price, priceCash }
 ) {
-  if (priceDisplay === "0" || priceDisplay === "1") {
+  if (!isDualPrice || priceDisplay === "0" || priceDisplay === "1") {
     return `<p class="wrap-cash-base addon">
             <span
               class="item-addon text-price-service price-addon ${
@@ -73,10 +73,10 @@ export function renderDisAddonSumary(
 }
 // item service sumary
 export function renderDisItemSumary(
-  { isHidePrice, priceDisplay },
+  { isDualPrice, isHidePrice, priceDisplay },
   { basePrice, baseCashPrice }
 ) {
-  if (priceDisplay === "0" || priceDisplay === "1") {
+  if (!isDualPrice || priceDisplay === "0" || priceDisplay === "1") {
     return `<p class="item wrap-cash-base ${isHidePrice ? "hide-price" : ""}">
               <span class="text-price-service">
                 $ ${basePrice}
@@ -145,7 +145,6 @@ export function buildServiceSummary(data, listDataService) {
 export function parsePrice(priceStr) {
   // Bỏ ký tự $ và chuyển sang số
   if (typeof priceStr === "number") return priceStr;
-  console.log("check: ", priceStr);
   return parseFloat(priceStr.replace("$", "")) || 0;
 }
 export function getTotalPrice(service) {
@@ -177,6 +176,8 @@ export function renderSumary(dataBooking, listDataService) {
   $wrapNewOnline.empty();
   const salonChoosing = store.salonChoosing;
   const paymentDeposit = parseFloat(store?.paymentDeposit);
+
+  const isDualPrice = store.isDualPrice;
   const isHidePrice = store.isHidePrice;
   const priceDisplay = store.priceDisplay;
   const isDeposit = store.isDeposit;
@@ -206,7 +207,7 @@ export function renderSumary(dataBooking, listDataService) {
       )
     );
   });
-  const isConfirm = allSelected && dataBooking?.isConfirmBook;
+  // const isConfirm = allSelected && dataBooking?.isConfirmBook;
 
   // kiểm tra có slot nào active không
   const backBtn = `
@@ -280,9 +281,7 @@ export function renderSumary(dataBooking, listDataService) {
 
                         totalPayment = calcTotal.total;
                         totalCashPayment = calcTotal.totalCash;
-                        console.log("dataBooking: ", dataBooking);
                         if (dataBooking?.currencyDeposit === "%") {
-                          console.log("check 2");
                           totalDeposit = (
                             (totalPayment * paymentDeposit) /
                             100
@@ -290,10 +289,8 @@ export function renderSumary(dataBooking, listDataService) {
                         } else if (dataBooking?.currencyDeposit === "$") {
                           totalDeposit = paymentDeposit;
                         } else {
-                          console.log("Unprocessed");
+                          console.log("Not deposit");
                         }
-                        console.log("paymentDeposit: ", paymentDeposit);
-                        console.log("totalDeposit: ", totalDeposit);
                         const fullName =
                           userBooking.firstName + " " + userBooking?.lastName;
                         return `
@@ -433,6 +430,7 @@ export function renderSumary(dataBooking, listDataService) {
                                             }</p>
                                                     ${renderDisAddonSumary(
                                                       {
+                                                        isDualPrice,
                                                         isHidePrice,
                                                         priceDisplay,
                                                       },
@@ -474,6 +472,7 @@ export function renderSumary(dataBooking, listDataService) {
                                                     }">${is?.timetext}</p>
                                                     ${renderDisItemSumary(
                                                       {
+                                                        isDualPrice,
                                                         isHidePrice,
                                                         priceDisplay,
                                                       },
@@ -500,7 +499,7 @@ export function renderSumary(dataBooking, listDataService) {
                                 isHidePrice ? "hide-price" : ""
                               }">${totalMinutes} min</p>
                               ${renderDisTotalItemSumary(
-                                { isHidePrice, priceDisplay },
+                                { isDualPrice, isHidePrice, priceDisplay },
                                 { userTotalPayment, userTotalCashPayment }
                               )}
                           </div>
@@ -522,7 +521,7 @@ export function renderSumary(dataBooking, listDataService) {
                           Total
                         </span>
                         ${renderDisSumaryTotalDeposit(
-                          { isHidePrice, priceDisplay },
+                          { isDualPrice, isHidePrice, priceDisplay },
                           { totalPayment, totalCashPayment }
                         )}
                     </span>
@@ -579,9 +578,7 @@ export function renderSumary(dataBooking, listDataService) {
                       <button id="add-guest" class="btn-add-guest ${
                         allSelected ? "" : "not-ser"
                       } text-uppercase">Add guest</button>
-                      <button ${
-                        isConfirm ? "" : "disabled"
-                      } class="btn-confirm-booking-1 text-uppercase">
+                      <button disabled class="btn-confirm-booking-1 text-uppercase">
                           Book now
                       </button>
                       ${
@@ -602,6 +599,11 @@ export function renderSumary(dataBooking, listDataService) {
   // gán totalPayment cho dataBooking
   dataBooking.totalAmount = totalPayment;
   dataBooking.totalCashAmount = totalCashPayment;
+  console.log("dataBooking: ", dataBooking);
+  salonStore.setState((prev) => ({
+    ...prev,
+    dataBooking,
+  }));
   $wrapNewOnline.empty();
   $wrapNewOnline.append(htmlSumary);
 }
@@ -1263,15 +1265,17 @@ $(document).ready(async function () {
     }
 
     const findCardChoosing = dataBooking.cardNumber.find((c) => c.isChoosing);
+    console.log("dataBooking: ", dataBooking);
     const dataBill = {
       image: "/assets/images/payment-success/img-succes-payment.png",
       ticketNumber: dataBookXLM.appointmentID,
       dateTime: dataBookXLM.bookedDate,
       paymentMethodLabel: findCardChoosing?.cardType || null,
       paymentMethodMasked: maskCardNumber(findCardChoosing?.last4 || null),
-      deposit: dataBooking.paymentDeposit,
+      deposit: dataBooking?.paymentDeposit || 0,
       remaining:
-        dataBooking.totalAmount - parseFloat(dataBooking.paymentDeposit),
+        dataBooking?.totalAmount -
+          parseFloat(dataBooking?.paymentDeposit || 0) || 0,
       requestAnotherCount: 5,
       currencyDeposit: dataBooking.currencyDeposit,
     };
@@ -1686,6 +1690,7 @@ $(document).ready(async function () {
     }
     salonStore.setState((prev) => ({
       ...prev,
+      chooseStaffBefore: {},
       pageCurrent: pageNext,
     }));
   });

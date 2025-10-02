@@ -35,8 +35,8 @@ export function nextFormRegister(actionCur) {
   setTimeout(() => {
     $(".overlay-screen").addClass("show");
   }, 10);
-  document.getElementById("phone-register").readOnly =
-    fieldEntered === typeInput.PHONE;
-  document.getElementById("email-register").readOnly =
-    fieldEntered === typeInput.EMAIL;
+  // document.getElementById("phone-register").readOnly =
+  //   fieldEntered === typeInput.PHONE;
+  // document.getElementById("email-register").readOnly =
+  //   fieldEntered === typeInput.EMAIL;
 }

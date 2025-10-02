@@ -310,6 +310,9 @@ export function renderListPeSer(forceChoose = false, objIdSelected = null) {
   const user = dataBooking.users.find((u) => u.isChoosing);
   let itemServiceChoosing = store.itemServiceChoosing;
   let isSameTime = store.isSameTime;
+
+  const isDualPrice = store.isDualPrice;
+  const priceDisplay = store.priceDisplay;
   const isHidePrice = store.isHidePrice;
 
   const isMobile = $(window).width() <= 768;
@@ -327,47 +330,43 @@ export function renderListPeSer(forceChoose = false, objIdSelected = null) {
         .map((srv) => {
           const staffName = srv.selectedStaff?.nickName || "";
           const price = srv.price || 0;
+          const priceCash = srv.priceCash || 0;
           const duration = srv.duration || 0;
 
-          totalCash += price;
           totalCard += price;
+          totalCash += priceCash;
 
-          let totalAddonCount = 0;
-          let totalAddonPrice = 0;
+          let addonCount = 0;
+          let addOnTotalPrice = 0;
+          let addOnTotalPriceCash = 0;
           if (Array.isArray(srv.optionals)) {
-            totalAddonCount = srv.optionals.length;
-            totalAddonPrice = srv.optionals.reduce(
+            addonCount = srv.optionals.length;
+            addOnTotalPrice = srv.optionals.reduce(
               (sum, opt) => sum + (opt.price || 0),
+              0
+            );
+            addOnTotalPriceCash = srv.optionals.reduce(
+              (sum, opt) => sum + (opt.priceCash || 0),
               0
             );
           }
           // Build dòng AddOn tổng
           let optionalsHtml = "";
-          if (totalAddonCount > 0) {
-            optionalsHtml = `
-                          <div class="addon-indicator-forser">
-                            <span class="be-addOn">
-                              ${totalAddonCount} Add on
-                              <span class="w-price-addon ${
-                                isHidePrice ? "hide-price" : ""
-                              }">
-                                <span class="be-addOn_cash">$${totalAddonPrice.toFixed(
-                                  2
-                                )}</span>
-                                <span class="partiti">|</span>
-                                <span class="be-addOn_card">$${totalAddonPrice.toFixed(
-                                  2
-                                )}</span>
-                              </span>
-                            </span>
-                          </div>
-                        `;
+          if (addonCount > 0) {
+            optionalsHtml = renderAddOnInItemService(
+              { isDualPrice, isHidePrice, priceDisplay },
+              {
+                addonCount,
+                addOnTotalPrice,
+                addOnTotalPriceCash,
+              }
+            );
           }
 
           // block HTML khép kín
           return `
             <div
-                class="serd-item ${totalAddonCount > 0 ? "has-addon" : ""}"
+                class="serd-item ${addonCount > 0 ? "has-addon" : ""}"
                 data-service-id="${cate.idService}"
                 data-item-service-id="${srv.idItemService}"
             >
@@ -375,15 +374,10 @@ export function renderListPeSer(forceChoose = false, objIdSelected = null) {
                 <div class="d-wrap-header-serd">
                   <div class="cart-item-header">
                     <div class="cart-title">${srv.title}</div>
-                    <div class="cart-prices ${isHidePrice ? "hide-price" : ""}">
-                      <span class="cashaddon-in-cart">$${price.toFixed(
-                        2
-                      )}</span>
-                      <span class="line-cs">|</span>
-                      <span class="cardaddon-in-cart">$${price.toFixed(
-                        2
-                      )}</span>
-                    </div>
+                    ${funcDisPriceItemSerCart(
+                      { isDualPrice, isHidePrice, priceDisplay },
+                      { basePrice: price, baseCashPrice: priceCash }
+                    )}
                   </div>
                   <div class="staff-serd">
                     <div class="cart-staff text-uppercase">${staffName}</div>
@@ -608,6 +602,8 @@ import {
   updateCalendarData,
   renderCalendar,
 } from "../../choose-time/choose-time.js";
+import { funcDisPriceItemSerCart } from "../../cart/cart.js";
+import { renderAddOnInItemService } from "../screen-choose-service.js";
 
 $(document).ready(async function () {
   const store = salonStore.getState();

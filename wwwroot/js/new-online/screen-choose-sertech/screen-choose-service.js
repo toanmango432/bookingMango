@@ -1,9 +1,9 @@
 export function renderAddOnInItemService(
-  { isHidePrice, priceDisplay },
+  { isDualPrice, isHidePrice, priceDisplay },
   { addonCount, addOnTotalPrice, addOnTotalPriceCash },
   className = ""
 ) {
-  if (priceDisplay === "0" || priceDisplay === "1") {
+  if (!isDualPrice || priceDisplay === "0" || priceDisplay === "1") {
     return `<div class="addon-indicator ${className}">
             <span class="be-addOn">
               ${addonCount} Add on
@@ -32,11 +32,10 @@ export function renderAddOnInItemService(
   }
 }
 export function renderAddonInLeftPanelAddon(
-  { isHidePrice, priceDisplay },
+  { isDualPrice, isHidePrice, priceDisplay },
   { basePrice, priceCash }
 ) {
-  console.log("priceCash: ", priceCash);
-  if (priceDisplay === "0" || priceDisplay === "1") {
+  if (!isDualPrice || priceDisplay === "0" || priceDisplay === "1") {
     return `<span class="cash-card ${isHidePrice ? "hide-price" : ""}">
               <p class="addOn-card">
                   $${basePrice}
@@ -251,8 +250,11 @@ export async function ScreenChooseService() {
   return htmlScreenChooseService;
 }
 
-export function funcDisplayPrice(serviceItem, { isHidePrice, priceDisplay }) {
-  if (priceDisplay === "0" || priceDisplay === "1") {
+export function funcDisplayPrice(
+  serviceItem,
+  { isDualPrice, isHidePrice, priceDisplay }
+) {
+  if (!isDualPrice || priceDisplay === "0" || priceDisplay === "1") {
     return `<div class="service-price ${isHidePrice ? "hide-price" : ""}">
           <span class="pcard">
             $${serviceItem.basePrice.toFixed(2)}
@@ -277,6 +279,7 @@ function renderServiceItemHTML(serviceItem, selectedServices) {
   const store = salonStore.getState();
   const isHidePrice = store.isHidePrice;
   const priceDisplay = store.priceDisplay;
+  const isDualPrice = store.isDualPrice;
 
   const matchedService = selectedServices.find(
     (s) => s.idItemService === serviceItem.id
@@ -312,16 +315,20 @@ function renderServiceItemHTML(serviceItem, selectedServices) {
         <div class="service-title text-uppercase">
           ${serviceItem.title}
         </div>
-        ${funcDisplayPrice(serviceItem, { isHidePrice, priceDisplay })}
+        ${funcDisplayPrice(serviceItem, {
+          isDualPrice,
+          isHidePrice,
+          priceDisplay,
+        })}
         <div class="bot-item-service">
           ${
             addonCount > 0
               ? renderAddOnInItemService(
-                  { isHidePrice, priceDisplay },
+                  { isDualPrice, isHidePrice, priceDisplay },
                   {
                     addonCount,
                     addOnTotalPrice,
-                    addOnTotalPriceCash: addOnTotalPriceCash,
+                    addOnTotalPriceCash,
                   }
                 )
               : ""
@@ -365,6 +372,8 @@ export function renderServices(listItem) {
   const store = salonStore.getState();
   const dataBooking = store.dataBooking;
   const user = dataBooking.users.find((u) => u.isChoosing);
+
+  const isDualPrice = store.isDualPrice;
   const isHidePrice = store.isHidePrice;
   const priceDisplay = store.priceDisplay;
 
@@ -416,12 +425,16 @@ export function renderServices(listItem) {
             <div class="service-title text-uppercase">
               ${serviceItem.title}
             </div>
-            ${funcDisplayPrice(serviceItem, { isHidePrice, priceDisplay })}
+            ${funcDisplayPrice(serviceItem, {
+              isDualPrice,
+              isHidePrice,
+              priceDisplay,
+            })}
             <div class="bot-item-service">
               ${
                 addonCount > 0
                   ? renderAddOnInItemService(
-                      { isHidePrice, priceDisplay },
+                      { isDualPrice, isHidePrice, priceDisplay },
                       {
                         addonCount,
                         addOnTotalPrice,
@@ -460,6 +473,7 @@ export function renderAddonPanel(itemService, employeeID) {
 
   const isHidePrice = store.isHidePrice;
   const priceDisplay = store.priceDisplay;
+  const isDualPrice = store.isDualPrice;
 
   let currentService = null;
   let serviceInstanceId = null;
@@ -519,7 +533,6 @@ export function renderAddonPanel(itemService, employeeID) {
             ${itemService.listOptionAddOn
               .map((opt) => {
                 const isSelected = selectedOptIds.includes(opt.id);
-                console.log("opt:", opt);
                 return `
                   <label class="addon-item" data-id="${opt.id}">
                     <div class="checkbox-addOn ${isSelected ? "selected" : ""}">
@@ -529,7 +542,7 @@ export function renderAddonPanel(itemService, employeeID) {
                     </div>
                     <span>${opt.title}</span>
                     ${renderAddonInLeftPanelAddon(
-                      { isHidePrice, priceDisplay },
+                      { isDualPrice, isHidePrice, priceDisplay },
                       { basePrice: opt.price, priceCash: opt.priceCash }
                     )}
                   </label>

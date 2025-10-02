@@ -154,7 +154,7 @@ import {
   isValidEmail,
 } from "./helper/input/valid-form.js";
 import { formatDateMMDDYYYY } from "./helper/format-day.js";
-import { buildLocktimePayload } from "./helper/build-lock-time.js";
+import { buildLocktimePayloadTemplate } from "./helper/build-lock-time.js";
 import {
   validateEmailFormRegister,
   validatePhoneFormRegister,
@@ -368,7 +368,7 @@ $(document).ready(async function () {
 
       // locktime thợ đã chọn
       for (const user of dataBooking.users) {
-        const listPayload = buildLocktimePayload(user);
+        const listPayload = buildLocktimePayloadTemplate(user);
         for (const payload of listPayload) {
           try {
             await fetchAPI.post("/api/appointment/createlocktime", payload);

@@ -1,3 +1,26 @@
+// Xử lý onChange input appointment-input
+export function updateNextButtonState() {
+  const $wrapCheckPoli = $(".wrap-icon-checked");
+  const $inputAppt = $("#appointment-input-1");
+  const $btnNext = $(".btn-next-emailPhone-1");
+
+  const isChecked = $wrapCheckPoli.hasClass("active");
+  const val = $inputAppt.val()?.trim();
+  const digits = val.replace(/\D/g, "");
+
+  const isPhone =
+    isValidPhoneNumber(val) || (digits.length === 10 && /^\d+$/.test(digits));
+  const isEmail = isValidEmail(val);
+
+  const isValidInput = val !== "" && (isPhone || isEmail);
+
+  // Điều kiện hợp lệ để enable
+  if (isChecked && isValidInput) {
+    $btnNext.prop("disabled", false);
+  } else {
+    $btnNext.prop("disabled", true);
+  }
+}
 export function startResendTimer(resendCountdown) {
   $(".resend-btn").addClass("disabled");
 
@@ -894,7 +917,7 @@ import { ScreenChooseServiceForTech } from "../screen-choose-sertech/choose-serv
 import { Cart } from "../cart/cart.js";
 // help function
 import { validateEmailPhoneInput } from "../../helper/input/valid-form.js";
-import { buildLocktimePayload } from "../../helper/build-lock-time.js";
+import { buildLocktimePayloadOB } from "../../helper/build-lock-time.js";
 import { sendOTP } from "../helper/send-otp.js";
 // import constant
 import { PageCurrent } from "../../constants/new-online.js";
@@ -1048,6 +1071,7 @@ $(document).ready(async function () {
     const store = salonStore.getState();
     const dataBooking = store.dataBooking;
     const userChoosing = dataBooking.users.find((u) => u.isChoosing);
+    console.log("dataBooking: ", dataBooking);
     const isDeposit = store.isDeposit;
 
     const dataServices = store.dataServices;
@@ -1058,9 +1082,31 @@ $(document).ready(async function () {
     const cardNumber = dataBooking.cardNumber || [];
     const cardChoosing = dataBooking.cardNumber.find((card) => card.isChoosing);
     if (owner.isVerify && !isDeposit) {
+      // locktime thợ đã chọn
+      for (const user of dataBooking.users) {
+        const listPayload = buildLocktimePayloadOB(user);
+        for (const payload of listPayload) {
+          try {
+            await fetchAPI.post("/api/appointment/createlocktime", payload);
+          } catch (e) {
+            console.error("[sendOTP - locktime tech]", payload, e);
+          }
+        }
+      }
       renderSumary(dataBooking, dataServices);
     } else if (owner.isVerify && cardChoosing) {
       // qua sumary
+      // locktime thợ đã chọn
+      for (const user of dataBooking.users) {
+        const listPayload = buildLocktimePayloadOB(user);
+        for (const payload of listPayload) {
+          try {
+            await fetchAPI.post("/api/appointment/createlocktime", payload);
+          } catch (e) {
+            console.error("[sendOTP - locktime tech]", payload, e);
+          }
+        }
+      }
       renderSumary(dataBooking, dataServices);
     } else if (owner.isVerify && cardNumber.length === 0 && isDeposit) {
       // chưa có thẻ thanh toán, qua page add thẻ mới
@@ -1078,6 +1124,17 @@ $(document).ready(async function () {
       setTimeout(() => {
         $(".overlay-screen").addClass("show");
       }, 10);
+      // locktime thợ đã chọn
+      for (const user of dataBooking.users) {
+        const listPayload = buildLocktimePayloadOB(user);
+        for (const payload of listPayload) {
+          try {
+            await fetchAPI.post("/api/appointment/createlocktime", payload);
+          } catch (e) {
+            console.error("[sendOTP - locktime tech]", payload, e);
+          }
+        }
+      }
     } else if (owner.isVerify && !cardChoosing && cardNumber.length > 0) {
       // đã có thẻ nhưng chưa chọn thẻ thanh toán, qua chọn thẻ thanh toán
       let height = 620;
@@ -1110,7 +1167,7 @@ $(document).ready(async function () {
         renderVerifyEmailPhoneContent(phoneEmailOrNull);
       let height = 620;
       let width = 560;
-      let persistent = false;
+      let persistent = true;
       if (isMobile) {
         persistent = true;
         height = "fit-content";
@@ -1124,6 +1181,8 @@ $(document).ready(async function () {
         width
       );
       $wrapNewOnline.append(html);
+      updateNextButtonState();
+
       setTimeout(() => {
         $(".overlay-screen").addClass("show");
       }, 10);
@@ -1152,7 +1211,7 @@ $(document).ready(async function () {
     const htmlVerifyEmailPhone = renderVerifyEmailPhoneContent(phoneOrMail);
     let height = 620;
     let width = 560;
-    let persistent = false;
+    let persistent = true;
     if (isMobile) {
       persistent = true;
       height = "fit-content";
@@ -1166,6 +1225,8 @@ $(document).ready(async function () {
       width
     );
     $wrapNewOnline.append(html);
+    updateNextButtonState();
+
     setTimeout(() => {
       $(".overlay-screen").addClass("show");
     }, 10);
@@ -1184,7 +1245,7 @@ $(document).ready(async function () {
       renderVerifyEmailPhoneContent(phoneEmailOrNull);
     let height = 620;
     let width = 560;
-    let persistent = false;
+    let persistent = true;
     if (isMobile) {
       persistent = true;
       height = "fit-content";
@@ -1198,6 +1259,8 @@ $(document).ready(async function () {
       width
     );
     $wrapNewOnline.append(html);
+    updateNextButtonState();
+
     setTimeout(() => {
       $(".overlay-screen").addClass("show");
     }, 10);
@@ -1223,30 +1286,6 @@ $(document).ready(async function () {
     }, 10);
     // settime close
   });
-
-  // Xử lý onChange input appointment-input
-  function updateNextButtonState() {
-    const $wrapCheckPoli = $(".wrap-icon-checked");
-    const $inputAppt = $("#appointment-input-1");
-    const $btnNext = $(".btn-next-emailPhone-1");
-
-    const isChecked = $wrapCheckPoli.hasClass("active");
-    const val = $inputAppt.val()?.trim();
-    const digits = val.replace(/\D/g, "");
-
-    const isPhone =
-      isValidPhoneNumber(val) || (digits.length === 10 && /^\d+$/.test(digits));
-    const isEmail = isValidEmail(val);
-
-    const isValidInput = val !== "" && (isPhone || isEmail);
-
-    // Điều kiện hợp lệ để enable
-    if (isChecked && isValidInput) {
-      $btnNext.prop("disabled", false);
-    } else {
-      $btnNext.prop("disabled", true);
-    }
-  }
 
   // Toggle icon check
   $(document).on("click", ".wrap-icon-checked", function () {
@@ -1363,7 +1402,8 @@ $(document).ready(async function () {
     } else if (res === "PHONE") {
       dataBooking.users[0].phoneNumber = $this.val();
     } else {
-      // $('.btn-next-emailPhone').prop('disabled', true)
+      dataBooking.users[0].phoneNumber = $this.val();
+      dataBooking.users[0].email = $this.val();
     }
   });
 
@@ -1440,7 +1480,7 @@ $(document).ready(async function () {
 
       // locktime thợ đã chọn
       for (const user of dataBooking.users) {
-        const listPayload = buildLocktimePayload(user);
+        const listPayload = buildLocktimePayloadOB(user);
         for (const payload of listPayload) {
           try {
             await fetchAPI.post("/api/appointment/createlocktime", payload);
@@ -1808,9 +1848,10 @@ $(document).ready(async function () {
           userHavePhone?.phoneNumber || userHavePhone?.email || "";
         const htmlVerifyEmailPhone =
           renderVerifyEmailPhoneContent(phoneEmailOrNull);
+
         let height = 620;
         let width = 560;
-        let persistent = false;
+        let persistent = true;
         if (isMobile) {
           persistent = true;
           height = "fit-content";
@@ -1824,6 +1865,8 @@ $(document).ready(async function () {
           width
         );
         $wrapNewOnline.append(html);
+        updateNextButtonState();
+
         setTimeout(() => {
           $(".overlay-screen").addClass("show");
         }, 10);
@@ -1877,9 +1920,10 @@ $(document).ready(async function () {
 
       const $zip = $("#zipcode-register");
       const zipRequired = $zip.data("type") === typeRequire.REQUIRED;
-      const zipVal = $zip.val().trim();
-      if (zipRequired && !zipVal) {
-        // same as above
+      let zipVal = $zip.val().replace(/\D/g, "");
+      if (zipVal.length > 5) {
+        zipVal = zipVal.substring(0, 5);
+        $zip.val(zipVal);
       }
 
       // recompute button enabled: firstname + lastname(if required) + contact(valid)
@@ -1994,10 +2038,22 @@ $(document).ready(async function () {
   // Auto focus và chuyển sang ô tiếp theo
   $(document).on("input", ".otp-box", function () {
     const $this = $(this);
-    const val = $this.val();
+    let val = $this.val();
+
+    // chỉ giữ số
+    val = val.replace(/\D/g, "");
+
+    // chỉ lấy 1 ký tự
+    if (val.length > 1) {
+      val = val.charAt(0);
+    }
+
+    $this.val(val);
+
     const index = parseInt($this.data("index"), 10);
 
     if (val.length === 1) {
+      // focus sang ô tiếp theo
       $(`.otp-box[data-index="${index + 1}"]`).focus();
     }
 
@@ -2007,6 +2063,7 @@ $(document).ready(async function () {
       .every((input) => $(input).val().length === 1);
     $(".btn-next-verify-1").prop("disabled", !allFilled);
   });
+
   function getOtpCode() {
     return $(".otp-box")
       .toArray()
@@ -2030,19 +2087,18 @@ $(document).ready(async function () {
     const currencyDeposit = store.currencyDeposit;
     const paymentDeposit = store.paymentDeposit;
     // Chỉ verify code lần đầu đăng ký, những lần sau không còn cần verify
-    console.log("data: ", dataBooking.users[0]);
     const phoneVerify = unFormatPhoneNumber(
       JSON.parse(JSON.stringify(dataBooking.users[0]?.phoneNumber || ""))
     );
     dataBooking.currencyDeposit = currencyDeposit;
     dataBooking.paymentDeposit = paymentDeposit;
-    salonStore.setState({ dataBooking });
+    salonStore.setState((prev) => ({
+      ...prev,
+      dataBooking,
+    }));
 
     const emailVerify = dataBooking.users[0].email;
-    console.log("emailVerify: ", emailVerify);
-
     const optCode = getOtpCode();
-    console.log("phoneVerify: ", phoneVerify);
     try {
       const resVerifyCode = await fetchAPI.get(
         `/api/user/checkverifycode?phone=${
@@ -2076,7 +2132,6 @@ $(document).ready(async function () {
           height,
           width
         );
-
         $wrapNewOnline.append(html);
         setTimeout(() => {
           $(".overlay-screen").addClass("show");
@@ -2156,9 +2211,10 @@ $(document).ready(async function () {
       userHavePhone?.phoneNumber || userHavePhone?.email || "";
     const htmlVerifyEmailPhone =
       renderVerifyEmailPhoneContent(phoneEmailOrNull);
+
     let height = 620;
     let width = 560;
-    let persistent = false;
+    let persistent = true;
     if (isMobile) {
       persistent = true;
       height = "fit-content";
@@ -2172,6 +2228,8 @@ $(document).ready(async function () {
       width
     );
     $wrapNewOnline.append(html);
+    updateNextButtonState();
+
     setTimeout(() => {
       $(".overlay-screen").addClass("show");
     }, 10);
